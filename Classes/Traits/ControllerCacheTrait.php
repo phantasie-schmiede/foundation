@@ -26,11 +26,11 @@ trait ControllerCacheTrait
     /**
      * @throws NoSuchCacheGroupException
      */
-    private function deletePagesCache(string $cacheTag): void
+    private function deletePagesCache(string ...$cacheTags): void
     {
         /** @var CacheManager $cacheManager */
         $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
-        $cacheManager->flushCachesInGroupByTag('pages', $cacheTag);
+        $cacheManager->flushCachesInGroupByTags('pages', $cacheTags);
     }
 
     private function setCacheTags(string ...$cacheTags): void
