@@ -27,15 +27,15 @@ use function is_string;
 #[Attribute(Attribute::TARGET_CLASS)]
 class Ctrl extends AbstractTcaAttribute
 {
-    public const DEFAULT_SORTBY = 'uid DESC';
+    public const string DEFAULT_SORTBY = 'uid DESC';
 
-    public const ENABLE_COLUMNS = [
+    public const array ENABLE_COLUMNS = [
         self::ENABLE_COLUMN_IDENTIFIERS['DISABLED']  => 'hidden',
         self::ENABLE_COLUMN_IDENTIFIERS['ENDTIME']   => 'endtime',
         self::ENABLE_COLUMN_IDENTIFIERS['STARTTIME'] => 'starttime',
     ];
 
-    public const ENABLE_COLUMN_IDENTIFIERS = [
+    public const array ENABLE_COLUMN_IDENTIFIERS = [
         'DISABLED'  => 'disabled',
         'ENDTIME'   => 'endtime',
         'STARTTIME' => 'starttime',

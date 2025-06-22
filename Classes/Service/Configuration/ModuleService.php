@@ -35,7 +35,7 @@ use function is_int;
  */
 class ModuleService
 {
-    public const  ICON_SUFFIXES = [
+    public const array ICON_SUFFIXES = [
         'CONTENT_FROM_PID' => '-contentFromPid',
         'ROOT'             => '-root',
         'HIDE_IN_MENU'     => '-hideinmenu',

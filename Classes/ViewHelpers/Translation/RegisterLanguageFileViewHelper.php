@@ -31,8 +31,8 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class RegisterLanguageFileViewHelper extends AbstractViewHelper
 {
-    public const REGISTRY_KEY  = 'languageFileRegistry';
-    public const VARIABLE_NAME = 'foundation';
+    public const string REGISTRY_KEY  = 'languageFileRegistry';
+    public const string VARIABLE_NAME = 'foundation';
 
     public function initializeArguments(): void
     {

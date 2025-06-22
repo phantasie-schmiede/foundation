@@ -26,7 +26,7 @@ namespace PSBits\Foundation\Utility\Localization;
  */
 class PluralFormUtility
 {
-    private const LANGUAGE_RULE_MAPPING = [
+    private const array LANGUAGE_RULE_MAPPING = [
         'ach'   => 1,
         'af'    => 2,
         'ak'    => 1,

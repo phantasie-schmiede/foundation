@@ -25,12 +25,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS)]
 class Palette extends AbstractTcaAttribute
 {
-    public const SPECIAL_FIELDS = [
+    public const array SPECIAL_FIELDS = [
         'LINE_BREAK' => '--linebreak--',
     ];
 
     // These values can be used by attributes of type AbstractColumnAttribute, if placed inside a palette.
-    public const SPECIAL_POSITIONS = [
+    public const array SPECIAL_POSITIONS = [
         'NEW_LINE_AFTER'  => 'newLineAfter',
         'NEW_LINE_BEFORE' => 'newLineBefore',
     ];

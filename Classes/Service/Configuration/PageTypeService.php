@@ -30,12 +30,12 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
  */
 class PageTypeService
 {
-    public const  ICON_SUFFIXES                = [
+    public const array ICON_SUFFIXES                = [
         'CONTENT_FROM_PID' => '-contentFromPid',
         'ROOT'             => '-root',
         'HIDE_IN_MENU'     => '-hideinmenu',
     ];
-    public const  PAGE_TYPE_REGISTRATION_MODES = [
+    public const array PAGE_TYPE_REGISTRATION_MODES = [
         'EXT_TABLES'   => 'ext_tables',
         'TCA_OVERRIDE' => 'tca_override',
     ];

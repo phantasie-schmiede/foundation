@@ -31,7 +31,7 @@ class FileUtility
      * Although calculated on a base of 2, the average user might be confused when he is shown the technically correct
      * unit names like KiB, MiB or GiB. Hence, the inaccurate, "old" units are being used.
      */
-    public const FILE_SIZE_UNITS = [
+    public const array FILE_SIZE_UNITS = [
         'B'  => 0,
         'KB' => 1,
         'MB' => 2,

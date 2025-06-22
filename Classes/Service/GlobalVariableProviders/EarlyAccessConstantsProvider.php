@@ -46,7 +46,7 @@ use function count;
  */
 class EarlyAccessConstantsProvider extends AbstractProvider
 {
-    public const DIRECTORY = '/Configuration/EarlyAccessConstants/';
+    public const string DIRECTORY = '/Configuration/EarlyAccessConstants/';
 
     /**
      * @throws ImplementationException

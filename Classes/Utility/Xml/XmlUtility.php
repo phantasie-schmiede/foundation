@@ -29,21 +29,21 @@ use function is_string;
  */
 class XmlUtility
 {
-    public const SPECIAL_ARRAY_KEYS = [
+    public const array SPECIAL_ARRAY_KEYS = [
         'ATTRIBUTES' => '@attributes',
         'NAMESPACES' => '@namespaces',
         'NODE_VALUE' => '@nodeValue',
         'POSITION'   => '@position',
     ];
 
-    public const SPECIAL_XML_KEYS = [
+    public const array SPECIAL_XML_KEYS = [
         '_attributes',
         '_namespaces',
         '_nodeValue',
         '_position',
     ];
 
-    public const XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>';
+    public const string XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>';
 
     public static function beautifyXml(string $xml, bool $forceNoWrap = false): string
     {

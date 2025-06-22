@@ -32,7 +32,7 @@ use function strlen;
  */
 class StringUtility
 {
-    public const EMPTY_CHARACTERS = " \t\n\r\0\x0B\xC2\xA0";
+    public const string EMPTY_CHARACTERS = " \t\n\r\0\x0B\xC2\xA0";
 
     public static function cleanUrl(string $url): string
     {

@@ -43,7 +43,7 @@ use function in_array;
  */
 class UploadService
 {
-    public const DEFAULT_UPLOAD_DIRECTORY = 'user_upload';
+    public const string DEFAULT_UPLOAD_DIRECTORY = 'user_upload';
 
     public function __construct(
         protected readonly FileReferenceService $fileReferenceService,

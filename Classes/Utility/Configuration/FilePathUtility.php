@@ -24,10 +24,10 @@ use function array_slice;
  */
 class FilePathUtility
 {
-    public const EXTENSION_DIRECTORY_PREFIX    = 'EXT:';
-    public const LANGUAGE_FILE_EXTENSION       = '.xlf';
-    public const LANGUAGE_LABEL_LOG_FILES_PATH = 'log/foundation/language_labels/';
-    public const LANGUAGE_LABEL_PREFIX         = 'LLL:';
+    public const string EXTENSION_DIRECTORY_PREFIX = 'EXT:';
+    public const string LANGUAGE_FILE_EXTENSION    = '.xlf';
+    public const string LANGUAGE_LABEL_LOG_FILES_PATH = 'log/foundation/language_labels/';
+    public const string LANGUAGE_LABEL_PREFIX         = 'LLL:';
 
     public static function getLanguageFilePath(ExtensionInformationInterface $extensionInformation): string
     {

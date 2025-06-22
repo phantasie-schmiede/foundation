@@ -23,7 +23,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 class ObjectUtility
 {
-    public const NAMESPACE_FALLBACK_KEY = '__fallback';
+    public const string NAMESPACE_FALLBACK_KEY = '__fallback';
 
     public static function getFullQualifiedClassName(string $className, array $namespaces): bool|string
     {

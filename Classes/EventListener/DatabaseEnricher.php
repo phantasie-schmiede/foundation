@@ -22,10 +22,10 @@ use function in_array;
  */
 class DatabaseEnricher
 {
-    protected const CREATE_TABLE_PHRASE = 'CREATE TABLE';
-    protected const INDENTATION         = '    ';
-    protected const KEY_DEFINITION      = 'KEY ';
-    protected const SKIP_KEYWORDS       = [
+    protected const string CREATE_TABLE_PHRASE = 'CREATE TABLE';
+    protected const string INDENTATION         = '    ';
+    protected const string KEY_DEFINITION = 'KEY ';
+    protected const array  SKIP_KEYWORDS  = [
         'PRIMARY',
         'UNIQUE',
     ];

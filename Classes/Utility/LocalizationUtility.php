@@ -33,15 +33,15 @@ use function is_string;
  */
 class LocalizationUtility
 {
-    public const PLACEHOLDER_MARKERS = [
+    public const array PLACEHOLDER_MARKERS = [
         'BEGIN' => '{',
         'END'   => '}',
     ];
-    public const PLURAL_FORM_MARKERS = [
+    public const array PLURAL_FORM_MARKERS = [
         'BEGIN' => '[',
         'END'   => ']',
     ];
-    public const QUANTITY_ARGUMENT   = 'quantity';
+    public const string QUANTITY_ARGUMENT  = 'quantity';
 
     /**
      * Returns the localized label of the LOCAL_LANG key, $key.

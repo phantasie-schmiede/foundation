@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
  */
 class FlexFormService
 {
-    public const ALL_PLUGINS = '*';
+    public const string ALL_PLUGINS = '*';
 
     /**
      * @param string $xml             Pass the raw XML-data, not the file path!

@@ -27,7 +27,7 @@ use function str_contains;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Column extends AbstractTcaAttribute
 {
-    public const COLUMN_FIELDS = [
+    public const array COLUMN_FIELDS = [
         'description',
         'displayCond',
         'exclude',
@@ -37,12 +37,12 @@ class Column extends AbstractTcaAttribute
         'onChange',
     ];
 
-    public const CONFIGURATION_IDENTIFIERS = [
+    public const array CONFIGURATION_IDENTIFIERS = [
         'DATABASE_DEFINITION' => 'databaseDefinition',
         'DATABASE_KEY'        => 'databaseKey',
     ];
 
-    public const POSITIONS = [
+    public const array POSITIONS = [
         'AFTER'   => 'after',
         'BEFORE'  => 'before',
         'PALETTE' => 'palette',
@@ -51,7 +51,7 @@ class Column extends AbstractTcaAttribute
     ];
 
     // If you don't want a field to be shown in backend at all, set this value for typeList.
-    public const TYPE_LIST_NONE = 'none';
+    public const string TYPE_LIST_NONE = 'none';
 
     protected ?ColumnTypeInterface $configuration = null;
 

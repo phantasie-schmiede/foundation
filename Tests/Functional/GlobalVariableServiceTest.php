@@ -31,20 +31,30 @@ class GlobalVariableServiceTest extends FunctionalTestCase
 {
     use SiteBasedTestTrait;
 
-    public const ROOT_PAGE_ID = 1;
+    public const int ROOT_PAGE_ID = 1;
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/psbits/foundation',
     ];
 
     #[Test]
-    public function registeredProvidersAreAccessible(): void
+    public function earlyAccessConstantsProviderIsAccessible(): void
     {
         self::assertTrue(GlobalVariableService::has(EarlyAccessConstantsProvider::class));
+    }
+
+    #[Test]
+    public function requestParameterProviderIsAccessible(): void
+    {
         self::assertTrue(GlobalVariableService::has(RequestParameterProvider::class));
+    }
+
+    #[Test]
+    public function siteConfigurationProviderIsAccessible(): void
+    {
         self::assertTrue(GlobalVariableService::has(SiteConfigurationProvider::class));
     }
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
@@ -53,7 +63,7 @@ class GlobalVariableServiceTest extends FunctionalTestCase
         $this->mockTsfe();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($GLOBALS['TSFE'], $GLOBALS['TYPO3_REQUEST']);
         parent::tearDown();
@@ -61,8 +71,12 @@ class GlobalVariableServiceTest extends FunctionalTestCase
 
     private function mockRequest(): void
     {
-        $request = new ServerRequest('http://example.com/en/', 'GET', null, [],
-            ['HTTP_HOST' => 'example.com', 'REQUEST_URI' => '/en/']);
+        $request = new ServerRequest(
+            'http://example.com/en/', 'GET', null, [], [
+                'HTTP_HOST'   => 'example.com',
+                'REQUEST_URI' => '/en/',
+            ]
+        );
         $GLOBALS['TYPO3_REQUEST'] = $request->withQueryParams(['id' => self::ROOT_PAGE_ID])
             ->withAttribute('normalizedParams', NormalizedParams::createFromRequest($request))
             ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);

@@ -26,7 +26,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 class FileReferenceService
 {
-    public const TABLE_NAME = 'sys_file_reference';
+    public const string TABLE_NAME = 'sys_file_reference';
 
     public function __construct(
         protected readonly TcaService $tcaService,

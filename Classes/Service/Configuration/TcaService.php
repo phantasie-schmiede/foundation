@@ -53,16 +53,16 @@ use function is_array;
  */
 class TcaService
 {
-    public const    PALETTE_IDENTIFIERS      = [
+    public const    array PALETTE_IDENTIFIERS      = [
         'LANGUAGE'         => 'language',
         'TIME_RESTRICTION' => 'timeRestriction',
     ];
-    public const    UNSET_KEYWORD            = 'UNSET';
-    protected const CLASS_TABLE_MAPPING_KEYS = [
+    public const    string UNSET_KEYWORD           = 'UNSET';
+    protected const array CLASS_TABLE_MAPPING_KEYS = [
         'TCA_OVERRIDES' => 'tcaOverrides',
         'TCA'           => 'tca',
     ];
-    protected const PROTECTED_COLUMNS        = [
+    protected const array PROTECTED_COLUMNS        = [
         'crdate',
         'pid',
         'tstamp',

@@ -24,19 +24,19 @@ use function is_array;
  */
 class TypoScriptUtility
 {
-    public const COMPONENTS = [
+    public const array COMPONENTS = [
         'MODULE' => 'module',
         'PLUGIN' => 'plugin',
     ];
 
-    public const FILE_NAMES = [
+    public const array FILE_NAMES = [
         'CONSTANTS' => 'constants',
         'SETUP'     => 'setup',
     ];
 
-    public const INDENTATION = '  ';
+    public const string INDENTATION = '  ';
 
-    public const TYPO_SCRIPT_KEYS = [
+    public const array TYPO_SCRIPT_KEYS = [
         'COMMENT'     => '_comment',
         'CONDITION'   => '_condition',
         'IMPORT'      => '_import',

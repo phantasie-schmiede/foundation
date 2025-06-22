@@ -39,7 +39,7 @@ use function is_string;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
 {
-    public const EMPTY_DEFAULT_ITEM = [
+    public const array EMPTY_DEFAULT_ITEM = [
         [
             'label' => 'LLL:EXT:foundation/Resources/Private/Language/Backend/Classes/Attribute/TCA/select.xlf:pleaseChoose',
             'value' => 0,

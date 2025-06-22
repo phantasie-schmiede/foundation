@@ -33,7 +33,7 @@ use function is_array;
  */
 class ContextUtility
 {
-    public const DEFAULT_LANGUAGE_KEY = 'default';
+    public const string DEFAULT_LANGUAGE_KEY = 'default';
 
     public static function getCurrentBackendLanguage(): string
     {

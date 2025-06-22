@@ -23,8 +23,8 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class StringUtilityTest extends UnitTestCase
 {
-    public const TEST_CONSTANT       = 'test';
-    public const TEST_CONSTANT_ARRAY = [
+    public const string TEST_CONSTANT       = 'test';
+    public const array  TEST_CONSTANT_ARRAY = [
         'INDEX' => 'test',
     ];
 

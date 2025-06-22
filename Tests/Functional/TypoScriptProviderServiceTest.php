@@ -10,8 +10,11 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Tests\Functional;
 
+use JsonException;
 use PHPUnit\Framework\Attributes\Test;
 use PSBits\Foundation\Service\TypoScriptProviderService;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -29,24 +32,29 @@ class TypoScriptProviderServiceTest extends FunctionalTestCase
         'typo3conf/ext/psbits/foundation',
     ];
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws JsonException
+     * @throws NotFoundExceptionInterface
+     */
     #[Test]
     public function defaultArgumentsReturnWholeTypoScript(): void
     {
         $typoScriptProviderService = GeneralUtility::makeInstance(TypoScriptProviderService::class);
         $typoScript = $typoScriptProviderService->get();
-        $this->assertIsArray($typoScript);
-        $this->assertArrayHasKey('config', $typoScript);
-        $this->assertIsArray($typoScript['config']);
+        self::assertIsArray($typoScript);
+        self::assertArrayHasKey('config', $typoScript);
+        self::assertIsArray($typoScript['config']);
     }
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
         $this->mockRequest();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($GLOBALS['TYPO3_REQUEST']);
         parent::tearDown();

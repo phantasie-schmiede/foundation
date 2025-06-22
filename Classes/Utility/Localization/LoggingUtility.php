@@ -34,11 +34,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class LoggingUtility
 {
-    public const LOG_FILES  = [
+    public const array LOG_FILES  = [
         'ACCESS'  => 'access.log',
         'MISSING' => 'missing.log',
     ];
-    public const LOG_TABLES = [
+    public const array LOG_TABLES = [
         'ACCESS'  => 'tx_foundation_accessed_language_labels',
         'MISSING' => 'tx_foundation_missing_language_labels',
     ];
