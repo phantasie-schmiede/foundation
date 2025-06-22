@@ -2,19 +2,19 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Tests\Functional;
+namespace PSBits\Foundation\Tests\Functional;
 
 use PHPUnit\Framework\Attributes\Test;
-use PSB\PsbFoundation\Service\GlobalVariableProviders\EarlyAccessConstantsProvider;
-use PSB\PsbFoundation\Service\GlobalVariableProviders\RequestParameterProvider;
-use PSB\PsbFoundation\Service\GlobalVariableProviders\SiteConfigurationProvider;
-use PSB\PsbFoundation\Service\GlobalVariableService;
+use PSBits\Foundation\Service\GlobalVariableProviders\EarlyAccessConstantsProvider;
+use PSBits\Foundation\Service\GlobalVariableProviders\RequestParameterProvider;
+use PSBits\Foundation\Service\GlobalVariableProviders\SiteConfigurationProvider;
+use PSBits\Foundation\Service\GlobalVariableService;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -25,7 +25,7 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 /**
  * Class GlobalVariableServiceTest
  *
- * @package PSB\PsbFoundation\Tests\Functional
+ * @package PSBits\Foundation\Tests\Functional
  */
 class GlobalVariableServiceTest extends FunctionalTestCase
 {
@@ -33,7 +33,7 @@ class GlobalVariableServiceTest extends FunctionalTestCase
 
     public const ROOT_PAGE_ID = 1;
     protected array $testExtensionsToLoad = [
-        'typo3conf/ext/psb/psb-foundation',
+        'typo3conf/ext/psbits/foundation',
     ];
 
     #[Test]

@@ -2,25 +2,25 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Service\Configuration;
+namespace PSBits\Foundation\Service\Configuration;
 
 use Doctrine\DBAL\Exception;
 use InvalidArgumentException;
-use PSB\PsbFoundation\Service\Configuration\CacheConfigurationBuilder\BuilderInterface;
-use PSB\PsbFoundation\Utility\TypoScript\TypoScriptUtility;
+use PSBits\Foundation\Service\Configuration\CacheConfigurationBuilder\BuilderInterface;
+use PSBits\Foundation\Utility\TypoScript\TypoScriptUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class PageCacheService
  *
- * @package PSB\PsbFoundation\Service\Configuration
+ * @package PSBits\Foundation\Service\Configuration
  */
 class PageCacheService
 {

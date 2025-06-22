@@ -14,12 +14,12 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace PSB\PsbFoundation\Service\Typo3;
+namespace PSBits\Foundation\Service\Typo3;
 
 use Doctrine\DBAL\Exception;
 use JsonException;
-use PSB\PsbFoundation\Utility\Localization\LoggingUtility;
-use PSB\PsbFoundation\Utility\LocalizationUtility;
+use PSBits\Foundation\Utility\Localization\LoggingUtility;
+use PSBits\Foundation\Utility\LocalizationUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
@@ -33,7 +33,7 @@ use function strlen;
  *
  * Overwrites the original functions in order to respect plural forms and support logging.
  *
- * @package PSB\PsbFoundation\Service\Typo3
+ * @package PSBits\Foundation\Service\Typo3
  * @TODO    Check original file on TYPO3 update!
  */
 class LanguageService extends Typo3LanguageService

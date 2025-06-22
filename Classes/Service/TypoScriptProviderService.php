@@ -2,18 +2,18 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Service;
+namespace PSBits\Foundation\Service;
 
 use Exception;
 use JsonException;
-use PSB\PsbFoundation\Utility\StringUtility;
-use PSB\PsbFoundation\Utility\ValidationUtility;
+use PSBits\Foundation\Utility\StringUtility;
+use PSBits\Foundation\Utility\ValidationUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
@@ -25,7 +25,7 @@ use function is_string;
 /**
  * Class TypoScriptProviderService
  *
- * @package PSB\PsbFoundation\Service
+ * @package PSBits\Foundation\Service
  */
 class TypoScriptProviderService
 {

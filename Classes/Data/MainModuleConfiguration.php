@@ -2,18 +2,18 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Data;
+namespace PSBits\Foundation\Data;
 
 /**
  * Class MainModuleConfiguration
  *
- * @package PSB\PsbFoundation\Data
+ * @package PSBits\Foundation\Data
  * @see     https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ExtensionArchitecture/HowTo/BackendModule/ModuleConfiguration.html
  */
 class MainModuleConfiguration

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use PSB\PsbFoundation\Service\Configuration\TcaService;
+use PSBits\Foundation\Service\Configuration\TcaService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 defined('TYPO3') or die();

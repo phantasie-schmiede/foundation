@@ -2,19 +2,19 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Utility;
+namespace PSBits\Foundation\Utility;
 
 use DateTime;
 use Exception;
 use JsonException;
 use NumberFormatter;
-use PSB\PsbFoundation\Service\TypoScriptProviderService;
+use PSBits\Foundation\Service\TypoScriptProviderService;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
@@ -28,7 +28,7 @@ use function strlen;
 /**
  * Class StringUtility
  *
- * @package PSB\PsbFoundation\Utility
+ * @package PSBits\Foundation\Utility
  */
 class StringUtility
 {

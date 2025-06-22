@@ -1,17 +1,17 @@
 // Comment on top level
 [request.getQueryParams()['type'] == 1589385441]
   // Comment on second level
-  ajax_psb_foundation_typoscriptutility_test = PAGE
-  ajax_psb_foundation_typoscriptutility_test {
+  ajax_foundation_typoscriptutility_test = PAGE
+  ajax_foundation_typoscriptutility_test {
     10 = USER_INT
     10 {
       action = test
       controller = TypoScriptUtility
-      extensionName = PsbFoundation
+      extensionName = Foundation
       pluginName = TypoScriptUtilityTest
       switchableControllerActions.TypoScriptUtility.1 = test
       userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
-      vendorName = PSB
+      vendorName = PSBits
     }
 
     // Comment on third level

@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use PSB\PsbFoundation\Service\ExtensionInformationService;
-use PSB\PsbFoundation\Utility\Configuration\FilePathUtility;
+use PSBits\Foundation\Service\ExtensionInformationService;
+use PSBits\Foundation\Utility\Configuration\FilePathUtility;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;

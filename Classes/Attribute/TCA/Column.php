@@ -2,17 +2,17 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Attribute\TCA;
+namespace PSBits\Foundation\Attribute\TCA;
 
 use Attribute;
-use PSB\PsbFoundation\Attribute\TCA\ColumnType\ColumnTypeInterface;
-use PSB\PsbFoundation\Utility\Configuration\TcaUtility;
+use PSBits\Foundation\Attribute\TCA\ColumnType\ColumnTypeInterface;
+use PSBits\Foundation\Utility\Configuration\TcaUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
@@ -22,7 +22,7 @@ use function str_contains;
 /**
  * Class Column
  *
- * @package PSB\PsbFoundation\Attribute\TCA
+ * @package PSBits\Foundation\Attribute\TCA
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Column extends AbstractTcaAttribute
@@ -240,11 +240,11 @@ class Column extends AbstractTcaAttribute
                 $databaseDefinition .= ' NOT NULL';
             }
 
-            $configuration['config']['EXT']['psb_foundation'][self::CONFIGURATION_IDENTIFIERS['DATABASE_DEFINITION']] = $databaseDefinition;
+            $configuration['config']['EXT']['foundation'][self::CONFIGURATION_IDENTIFIERS['DATABASE_DEFINITION']] = $databaseDefinition;
         }
 
         if ($this->addDatabaseKey) {
-            $configuration['config']['EXT']['psb_foundation'][self::CONFIGURATION_IDENTIFIERS['DATABASE_KEY']] = true;
+            $configuration['config']['EXT']['foundation'][self::CONFIGURATION_IDENTIFIERS['DATABASE_KEY']] = true;
         }
 
         if (null !== $this->readOnly) {

@@ -2,30 +2,30 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Service\Configuration;
+namespace PSBits\Foundation\Service\Configuration;
 
 use JsonException;
-use PSB\PsbFoundation\Attribute\TCA\Column;
-use PSB\PsbFoundation\Attribute\TCA\ColumnType\ColumnTypeInterface;
-use PSB\PsbFoundation\Attribute\TCA\ColumnType\ColumnTypeWithItemsInterface;
-use PSB\PsbFoundation\Attribute\TCA\Ctrl;
-use PSB\PsbFoundation\Attribute\TCA\Mapping\Field;
-use PSB\PsbFoundation\Attribute\TCA\Mapping\Table;
-use PSB\PsbFoundation\Attribute\TCA\Palette;
-use PSB\PsbFoundation\Attribute\TCA\Tab;
-use PSB\PsbFoundation\Exceptions\ImplementationException;
-use PSB\PsbFoundation\Exceptions\MisconfiguredTcaException;
-use PSB\PsbFoundation\Service\ExtensionInformationService;
-use PSB\PsbFoundation\Utility\ArrayUtility;
-use PSB\PsbFoundation\Utility\Configuration\TcaUtility;
-use PSB\PsbFoundation\Utility\LocalizationUtility;
-use PSB\PsbFoundation\Utility\ReflectionUtility;
+use PSBits\Foundation\Attribute\TCA\Column;
+use PSBits\Foundation\Attribute\TCA\ColumnType\ColumnTypeInterface;
+use PSBits\Foundation\Attribute\TCA\ColumnType\ColumnTypeWithItemsInterface;
+use PSBits\Foundation\Attribute\TCA\Ctrl;
+use PSBits\Foundation\Attribute\TCA\Mapping\Field;
+use PSBits\Foundation\Attribute\TCA\Mapping\Table;
+use PSBits\Foundation\Attribute\TCA\Palette;
+use PSBits\Foundation\Attribute\TCA\Tab;
+use PSBits\Foundation\Exceptions\ImplementationException;
+use PSBits\Foundation\Exceptions\MisconfiguredTcaException;
+use PSBits\Foundation\Service\ExtensionInformationService;
+use PSBits\Foundation\Utility\ArrayUtility;
+use PSBits\Foundation\Utility\Configuration\TcaUtility;
+use PSBits\Foundation\Utility\LocalizationUtility;
+use PSBits\Foundation\Utility\ReflectionUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
@@ -49,7 +49,7 @@ use function is_array;
 /**
  * Class TcaService
  *
- * @package PSB\PsbFoundation\Service\Configuration
+ * @package PSBits\Foundation\Service\Configuration
  */
 class TcaService
 {
@@ -131,7 +131,7 @@ class TcaService
      * This function will be executed when the core builds the TCA, but as it does not return an array there will be no
      * entry for the required file, instead this function expands the TCA on its own by scanning through the domain
      * models of all registered extensions (extensions which provide an ExtensionInformation class, see
-     * \PSB\PsbFoundation\Data\ExtensionInformationInterface).
+     * \PSBits\Foundation\Data\ExtensionInformationInterface).
      * Transient domain models (those without a corresponding table in the database) will be skipped.
      *
      * @param bool $overrideMode If set to false, the configuration of all original domain models (not extending other

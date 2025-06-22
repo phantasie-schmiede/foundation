@@ -2,13 +2,13 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Utility;
+namespace PSBits\Foundation\Utility;
 
 use Generator;
 use JsonException;
@@ -19,7 +19,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 /**
  * Class StringUtilityTest
  *
- * @package PSB\PsbFoundation\Utility
+ * @package PSBits\Foundation\Utility
  */
 class StringUtilityTest extends UnitTestCase
 {
@@ -94,15 +94,15 @@ class StringUtilityTest extends UnitTestCase
             ],
         ];
         yield 'constant' => [
-            '\PSB\PsbFoundation\Utility\StringUtilityTest::TEST_CONSTANT',
+            '\PSBits\Foundation\Utility\StringUtilityTest::TEST_CONSTANT',
             self::TEST_CONSTANT,
         ];
         yield 'array constant with quotes' => [
-            '\PSB\PsbFoundation\Utility\StringUtilityTest::TEST_CONSTANT_ARRAY[\'INDEX\']',
+            '\PSBits\Foundation\Utility\StringUtilityTest::TEST_CONSTANT_ARRAY[\'INDEX\']',
             self::TEST_CONSTANT_ARRAY['INDEX'],
         ];
         yield 'array constant without quotes' => [
-            '\PSB\PsbFoundation\Utility\StringUtilityTest::TEST_CONSTANT_ARRAY[INDEX]',
+            '\PSBits\Foundation\Utility\StringUtilityTest::TEST_CONSTANT_ARRAY[INDEX]',
             self::TEST_CONSTANT_ARRAY['INDEX'],
         ];
         // @TODO: test TypoScript ('TS:...')!

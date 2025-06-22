@@ -2,19 +2,19 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Utility;
+namespace PSBits\Foundation\Utility;
 
 use JsonException;
-use PSB\PsbFoundation\Utility\Configuration\FilePathUtility;
-use PSB\PsbFoundation\Utility\Localization\LoggingUtility;
-use PSB\PsbFoundation\Utility\Localization\PluralFormUtility;
-use PSB\PsbFoundation\Utility\Xml\XmlUtility;
+use PSBits\Foundation\Utility\Configuration\FilePathUtility;
+use PSBits\Foundation\Utility\Localization\LoggingUtility;
+use PSBits\Foundation\Utility\Localization\PluralFormUtility;
+use PSBits\Foundation\Utility\Xml\XmlUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
@@ -29,7 +29,7 @@ use function is_string;
 /**
  * Class LocalizationUtility
  *
- * @package PSB\PsbFoundation\Utility
+ * @package PSBits\Foundation\Utility
  */
 class LocalizationUtility
 {

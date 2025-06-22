@@ -2,15 +2,15 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Utility\TypoScript;
+namespace PSBits\Foundation\Utility\TypoScript;
 
-use PSB\PsbFoundation\Data\ExtensionInformationInterface;
+use PSBits\Foundation\Data\ExtensionInformationInterface;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use UnexpectedValueException;
@@ -20,7 +20,7 @@ use function is_array;
 /**
  * Class TypoScriptUtility
  *
- * @package PSB\PsbFoundation\Utility
+ * @package PSBits\Foundation\Utility
  */
 class TypoScriptUtility
 {

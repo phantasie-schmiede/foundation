@@ -2,32 +2,32 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\EventListener;
+namespace PSBits\Foundation\EventListener;
 
 use Doctrine\DBAL\Exception as DbalException;
 use Exception;
 use JetBrains\PhpStorm\NoReturn;
-use PSB\PsbFoundation\Service\Configuration\PageCacheService;
-use PSB\PsbFoundation\Utility\FileUtility;
+use PSBits\Foundation\Service\Configuration\PageCacheService;
+use PSBits\Foundation\Utility\FileUtility;
 use TYPO3\CMS\Core\Cache\Event\CacheFlushEvent;
 use TYPO3\CMS\Core\Core\Environment;
 
 /**
  * Class CacheConfigurationBuilder
  *
- * @package PSB\PsbFoundation\EventListener
+ * @package PSBits\Foundation\EventListener
  */
 final readonly class CacheConfigurationBuilder
 {
     public const array FILE_PATHS = [
-        'TSCONFIG'   => '/cache/psb_foundation/TSconfig/cacheConfiguration.tsconfig',
-        'TYPOSCRIPT' => '/cache/psb_foundation/TypoScript/cacheConfiguration.typoscript',
+        'TSCONFIG'   => '/cache/foundation/TSconfig/cacheConfiguration.tsconfig',
+        'TYPOSCRIPT' => '/cache/foundation/TypoScript/cacheConfiguration.typoscript',
     ];
 
     public function __construct(

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use PSB\PsbFoundation\ExpressionLanguage\TypoScriptConditionProvider;
+use PSBits\Foundation\ExpressionLanguage\TypoScriptConditionProvider;
 
 return [
     'typoscript' => [

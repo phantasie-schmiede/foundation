@@ -2,17 +2,17 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Service;
+namespace PSBits\Foundation\Service;
 
 use Exception;
-use PSB\PsbFoundation\Service\GlobalVariableProviders\GlobalVariableProviderInterface;
-use PSB\PsbFoundation\Utility\VariableUtility;
+use PSBits\Foundation\Service\GlobalVariableProviders\GlobalVariableProviderInterface;
+use PSBits\Foundation\Utility\VariableUtility;
 use RuntimeException;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -20,7 +20,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Class GlobalVariableService
  *
- * @package PSB\PsbFoundation\Service
+ * @package PSBits\Foundation\Service
  */
 class GlobalVariableService
 {

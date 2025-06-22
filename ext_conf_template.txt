@@ -1,6 +1,6 @@
 debug {
-    # cat=debugging/enable; type=boolean; label=LLL:EXT:psb_foundation/Resources/Private/Language/Backend/extensionConfiguration.xlf:debug.logLanguageLabelAccess
+    # cat=debugging/enable; type=boolean; label=LLL:EXT:foundation/Resources/Private/Language/Backend/extensionConfiguration.xlf:debug.logLanguageLabelAccess
     logLanguageLabelAccess =
-    # cat=debugging/enable; type=boolean; label=LLL:EXT:psb_foundation/Resources/Private/Language/Backend/extensionConfiguration.xlf:debug.logMissingLanguageLabels
+    # cat=debugging/enable; type=boolean; label=LLL:EXT:foundation/Resources/Private/Language/Backend/extensionConfiguration.xlf:debug.logMissingLanguageLabels
     logMissingLanguageLabels =
 }

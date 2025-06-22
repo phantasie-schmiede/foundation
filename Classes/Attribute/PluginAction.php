@@ -2,13 +2,13 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Attribute;
+namespace PSBits\Foundation\Attribute;
 
 use Attribute;
 
@@ -17,7 +17,7 @@ use Attribute;
  *
  * Use this attribute for methods in a plugin controller.
  *
- * @package PSB\PsbFoundation\Attribute
+ * @package PSBits\Foundation\Attribute
  */
 #[Attribute(Attribute::TARGET_METHOD)]
 class PluginAction extends AbstractAttribute

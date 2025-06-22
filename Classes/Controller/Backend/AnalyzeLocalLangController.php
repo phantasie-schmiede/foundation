@@ -2,22 +2,22 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Controller\Backend;
+namespace PSBits\Foundation\Controller\Backend;
 
 use Doctrine\DBAL\Exception;
 use JsonException;
-use PSB\PsbFoundation\Attribute\ModuleAction;
-use PSB\PsbFoundation\Exceptions\ImplementationException;
-use PSB\PsbFoundation\Service\ExtensionInformationService;
-use PSB\PsbFoundation\Utility\Configuration\FilePathUtility;
-use PSB\PsbFoundation\Utility\Localization\LoggingUtility;
-use PSB\PsbFoundation\Utility\Xml\XmlUtility;
+use PSBits\Foundation\Attribute\ModuleAction;
+use PSBits\Foundation\Exceptions\ImplementationException;
+use PSBits\Foundation\Service\ExtensionInformationService;
+use PSBits\Foundation\Utility\Configuration\FilePathUtility;
+use PSBits\Foundation\Utility\Localization\LoggingUtility;
+use PSBits\Foundation\Utility\Xml\XmlUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -32,7 +32,7 @@ use function is_array;
 /**
  * Class AbstractModuleController
  *
- * @package PSB\PsbFoundation\Controller\Backend
+ * @package PSBits\Foundation\Controller\Backend
  */
 #[AsController]
 class AnalyzeLocalLangController extends AbstractModuleController
@@ -141,7 +141,7 @@ class AnalyzeLocalLangController extends AbstractModuleController
         foreach ($logData as $logRecord) {
             $key = $logRecord['locallang_key'];
 
-            // Skip log entries of keys which are not present in extensions based on psb_foundation.
+            // Skip log entries of keys which are not present in extensions based on foundation.
             if (!array_key_exists($key, $languageLabels)) {
                 continue;
             }

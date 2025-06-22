@@ -2,16 +2,16 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Attribute\TCA;
+namespace PSBits\Foundation\Attribute\TCA;
 
 use Attribute;
-use PSB\PsbFoundation\Utility\Configuration\TcaUtility;
+use PSBits\Foundation\Utility\Configuration\TcaUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
@@ -22,7 +22,7 @@ use function is_string;
  * Class TcaConfig
  *
  * @link    https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html
- * @package PSB\PsbFoundation\Attribute\TCA
+ * @package PSBits\Foundation\Attribute\TCA
  */
 #[Attribute(Attribute::TARGET_CLASS)]
 class Ctrl extends AbstractTcaAttribute

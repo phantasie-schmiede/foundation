@@ -2,20 +2,20 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Service;
+namespace PSBits\Foundation\Service;
 
-use PSB\PsbFoundation\Exceptions\MisconfiguredTcaException;
-use PSB\PsbFoundation\Service\Configuration\TcaService;
-use PSB\PsbFoundation\Utility\ArrayUtility;
-use PSB\PsbFoundation\Utility\ContextUtility;
-use PSB\PsbFoundation\Utility\FileUtility;
-use PSB\PsbFoundation\Utility\StringUtility;
+use PSBits\Foundation\Exceptions\MisconfiguredTcaException;
+use PSBits\Foundation\Service\Configuration\TcaService;
+use PSBits\Foundation\Utility\ArrayUtility;
+use PSBits\Foundation\Utility\ContextUtility;
+use PSBits\Foundation\Utility\FileUtility;
+use PSBits\Foundation\Utility\StringUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
@@ -39,7 +39,7 @@ use function in_array;
 /**
  * Class UploadService
  *
- * @package PSB\PsbFoundation\Service
+ * @package PSBits\Foundation\Service
  */
 class UploadService
 {

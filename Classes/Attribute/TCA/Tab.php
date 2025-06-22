@@ -2,13 +2,13 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Attribute\TCA;
+namespace PSBits\Foundation\Attribute\TCA;
 
 use Attribute;
 use Psr\Container\ContainerExceptionInterface;
@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Class Tab
  *
- * @package PSB\PsbFoundation\Attribute\TCA
+ * @package PSBits\Foundation\Attribute\TCA
  */
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS)]
 class Tab extends AbstractTcaAttribute

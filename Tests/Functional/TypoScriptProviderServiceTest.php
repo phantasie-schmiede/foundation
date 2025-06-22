@@ -2,16 +2,16 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Tests\Functional;
+namespace PSBits\Foundation\Tests\Functional;
 
 use PHPUnit\Framework\Attributes\Test;
-use PSB\PsbFoundation\Service\TypoScriptProviderService;
+use PSBits\Foundation\Service\TypoScriptProviderService;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -21,12 +21,12 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 /**
  * Class TypoScriptProviderServiceTest
  *
- * @package PSB\PsbFoundation\Tests\Functional
+ * @package PSBits\Foundation\Tests\Functional
  */
 class TypoScriptProviderServiceTest extends FunctionalTestCase
 {
     protected array $testExtensionsToLoad = [
-        'typo3conf/ext/psb/psb-foundation',
+        'typo3conf/ext/psbits/foundation',
     ];
 
     #[Test]

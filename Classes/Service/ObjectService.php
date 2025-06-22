@@ -2,20 +2,20 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Service;
+namespace PSBits\Foundation\Service;
 
 use Exception;
-use PSB\PsbFoundation\Attribute\TCA\ColumnType\Select;
-use PSB\PsbFoundation\Exceptions\ImplementationException;
-use PSB\PsbFoundation\Service\Configuration\TcaService;
-use PSB\PsbFoundation\Utility\ObjectUtility;
-use PSB\PsbFoundation\Utility\ReflectionUtility;
+use PSBits\Foundation\Attribute\TCA\ColumnType\Select;
+use PSBits\Foundation\Exceptions\ImplementationException;
+use PSBits\Foundation\Service\Configuration\TcaService;
+use PSBits\Foundation\Utility\ObjectUtility;
+use PSBits\Foundation\Utility\ReflectionUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
@@ -33,7 +33,7 @@ use function get_class;
 /**
  * Class ObjectService
  *
- * @package PSB\PsbFoundation\Service
+ * @package PSBits\Foundation\Service
  */
 class ObjectService
 {

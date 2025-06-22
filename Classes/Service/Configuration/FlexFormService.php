@@ -2,20 +2,20 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Service\Configuration;
+namespace PSBits\Foundation\Service\Configuration;
 
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 /**
  * Class FlexFormService
  *
- * @package PSB\PsbFoundation\Service\Configuration
+ * @package PSBits\Foundation\Service\Configuration
  */
 class FlexFormService
 {

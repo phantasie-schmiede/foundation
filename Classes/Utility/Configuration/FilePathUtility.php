@@ -2,16 +2,16 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Utility\Configuration;
+namespace PSBits\Foundation\Utility\Configuration;
 
-use PSB\PsbFoundation\Data\ExtensionInformationInterface;
-use PSB\PsbFoundation\Utility\ArrayUtility;
+use PSBits\Foundation\Data\ExtensionInformationInterface;
+use PSBits\Foundation\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Resource\Exception\InvalidFileException;
 use TYPO3\CMS\Core\Utility\PathUtility;
@@ -20,13 +20,13 @@ use function array_slice;
 /**
  * Class FilePathUtility
  *
- * @package PSB\PsbFoundation\Utility\Configuration
+ * @package PSBits\Foundation\Utility\Configuration
  */
 class FilePathUtility
 {
     public const EXTENSION_DIRECTORY_PREFIX    = 'EXT:';
     public const LANGUAGE_FILE_EXTENSION       = '.xlf';
-    public const LANGUAGE_LABEL_LOG_FILES_PATH = 'log/psb_foundation/language_labels/';
+    public const LANGUAGE_LABEL_LOG_FILES_PATH = 'log/foundation/language_labels/';
     public const LANGUAGE_LABEL_PREFIX         = 'LLL:';
 
     public static function getLanguageFilePath(ExtensionInformationInterface $extensionInformation): string

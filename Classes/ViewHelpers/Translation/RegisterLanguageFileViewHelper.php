@@ -2,13 +2,13 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\ViewHelpers\Translation;
+namespace PSBits\Foundation\ViewHelpers\Translation;
 
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -19,20 +19,20 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  * TranslateViewHelper of this extension only.
  *
  * Examples:
- * <psb:translation.registerLanguageFile file="EXT:my_extension/Resources/Private/Language/myFile.xlf"
+ * <psbits:translation.registerLanguageFile file="EXT:my_extension/Resources/Private/Language/myFile.xlf"
  * name="myLanguageFile" />
- * <psb:translate id="myLanguageFile:myLabel" />
+ * <psbits:translate id="myLanguageFile:myLabel" />
  *
  * If you omit the name attribute, the filename will be used as alias:
- * <psb:translation.registerLanguageFile file="EXT:my_extension/Resources/Private/Language/myFile.xlf" />
- * <psb:translate id="myFile:myLabel" />
+ * <psbits:translation.registerLanguageFile file="EXT:my_extension/Resources/Private/Language/myFile.xlf" />
+ * <psbits:translate id="myFile:myLabel" />
  *
- * @package PSB\PsbFoundation\ViewHelpers\Translation
+ * @package PSBits\Foundation\ViewHelpers\Translation
  */
 class RegisterLanguageFileViewHelper extends AbstractViewHelper
 {
     public const REGISTRY_KEY  = 'languageFileRegistry';
-    public const VARIABLE_NAME = 'psbFoundation';
+    public const VARIABLE_NAME = 'foundation';
 
     public function initializeArguments(): void
     {

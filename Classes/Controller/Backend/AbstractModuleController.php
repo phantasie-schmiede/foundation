@@ -2,13 +2,13 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Controller\Backend;
+namespace PSBits\Foundation\Controller\Backend;
 
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
@@ -18,7 +18,7 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 /**
  * Class AbstractModuleController
  *
- * @package PSB\PsbFoundation\Controller\Backend
+ * @package PSBits\Foundation\Controller\Backend
  */
 abstract class AbstractModuleController extends ActionController
 {

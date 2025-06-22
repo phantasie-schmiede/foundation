@@ -2,21 +2,21 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Traits;
+namespace PSBits\Foundation\Traits;
 
-use PSB\PsbFoundation\Utility\ObjectUtility;
+use PSBits\Foundation\Utility\ObjectUtility;
 use ReflectionException;
 
 /**
  * Trait ObjectToArrayTrait
  *
- * @package PSB\PsbFoundation\Traits
+ * @package PSBits\Foundation\Traits
  */
 trait ObjectToArrayTrait
 {

@@ -2,23 +2,23 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Service\Configuration;
+namespace PSBits\Foundation\Service\Configuration;
 
 use JsonException;
-use PSB\PsbFoundation\Attribute\PluginAction;
-use PSB\PsbFoundation\Data\ExtensionInformationInterface;
-use PSB\PsbFoundation\Data\PluginConfiguration;
-use PSB\PsbFoundation\Utility\Configuration\FilePathUtility;
-use PSB\PsbFoundation\Utility\LocalizationUtility;
-use PSB\PsbFoundation\Utility\ReflectionUtility;
-use PSB\PsbFoundation\Utility\TypoScript\PageObjectConfiguration;
-use PSB\PsbFoundation\Utility\TypoScript\TypoScriptUtility;
+use PSBits\Foundation\Attribute\PluginAction;
+use PSBits\Foundation\Data\ExtensionInformationInterface;
+use PSBits\Foundation\Data\PluginConfiguration;
+use PSBits\Foundation\Utility\Configuration\FilePathUtility;
+use PSBits\Foundation\Utility\LocalizationUtility;
+use PSBits\Foundation\Utility\ReflectionUtility;
+use PSBits\Foundation\Utility\TypoScript\PageObjectConfiguration;
+use PSBits\Foundation\Utility\TypoScript\TypoScriptUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
@@ -36,7 +36,7 @@ use function is_int;
 /**
  * Class PluginService
  *
- * @package PSB\PsbFoundation\Service\Configuration
+ * @package PSBits\Foundation\Service\Configuration
  */
 class PluginService
 {
