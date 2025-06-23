@@ -19,6 +19,8 @@ use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
+use TYPO3\CMS\Core\TypoScript\AST\Node\RootNode;
+use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -37,40 +39,66 @@ class GlobalVariableServiceTest extends FunctionalTestCase
     ];
 
     #[Test]
-    public function earlyAccessConstantsProviderIsAccessible(): void
+    public function earlyAccessConstantsProviderIsAccessibleInBackendContext(): void
     {
+        $this->mockBackendRequest();
         self::assertTrue(GlobalVariableService::has(EarlyAccessConstantsProvider::class));
     }
 
     #[Test]
-    public function requestParameterProviderIsAccessible(): void
+    public function earlyAccessConstantsProviderIsAccessibleInFrontendContext(): void
     {
+        $this->mockFrontendRequest();
+        self::assertTrue(GlobalVariableService::has(EarlyAccessConstantsProvider::class));
+    }
+
+    #[Test]
+    public function requestParameterProviderIsAccessibleInBackendContext(): void
+    {
+        $this->mockBackendRequest();
         self::assertTrue(GlobalVariableService::has(RequestParameterProvider::class));
     }
 
     #[Test]
-    public function siteConfigurationProviderIsAccessible(): void
+    public function requestParameterProviderIsAccessibleInFrontendContext(): void
     {
+        $this->mockFrontendRequest();
+        self::assertTrue(GlobalVariableService::has(RequestParameterProvider::class));
+    }
+
+    #[Test]
+    public function siteConfigurationProviderIsAccessibleInFrontendContext(): void
+    {
+        $this->mockFrontendRequest();
         self::assertTrue(GlobalVariableService::has(SiteConfigurationProvider::class));
     }
 
-    protected function setUp(): void
+    #[Test]
+    public function siteConfigurationProviderIsNotAccessibleInBackendContext(): void
     {
-        parent::setUp();
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
-        $this->mockRequest();
-        $this->mockSiteConfiguration();
-        $this->mockTsfe();
+        $this->mockBackendRequest();
+        self::assertFalse(GlobalVariableService::has(SiteConfigurationProvider::class));
     }
 
     protected function tearDown(): void
     {
+        GlobalVariableService::clearCache();
         unset($GLOBALS['TSFE'], $GLOBALS['TYPO3_REQUEST']);
         parent::tearDown();
     }
 
-    private function mockRequest(): void
+    private function mockBackendRequest(): void
     {
+        $GLOBALS['TYPO3_REQUEST'] = (new ServerRequest())->withAttribute(
+            'applicationType',
+            SystemEnvironmentBuilder::REQUESTTYPE_BE
+        );
+    }
+
+    private function mockFrontendRequest(): void
+    {
+        $frontendTypoScript = new FrontendTypoScript(new RootNode(), [], [], []);
+        $frontendTypoScript->setSetupArray([]);
         $request = new ServerRequest(
             'http://example.com/en/', 'GET', null, [], [
                 'HTTP_HOST'   => 'example.com',
@@ -79,7 +107,12 @@ class GlobalVariableServiceTest extends FunctionalTestCase
         );
         $GLOBALS['TYPO3_REQUEST'] = $request->withQueryParams(['id' => self::ROOT_PAGE_ID])
             ->withAttribute('normalizedParams', NormalizedParams::createFromRequest($request))
-            ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
+            ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE)
+            ->withAttribute('frontend.typoscript', $frontendTypoScript);
+
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
+        $this->mockSiteConfiguration();
+        $this->mockTsfe();
     }
 
     private function mockSiteConfiguration(): void
@@ -91,7 +124,8 @@ class GlobalVariableServiceTest extends FunctionalTestCase
     {
         $GLOBALS['TSFE'] = $this->getMockBuilder(TypoScriptFrontendController::class)
             ->disableOriginalConstructor()
+            ->onlyMethods([])
             ->getMock();
-        $GLOBALS['TSFE']->id = 1;
+        $GLOBALS['TSFE']->id = self::ROOT_PAGE_ID;
     }
 }

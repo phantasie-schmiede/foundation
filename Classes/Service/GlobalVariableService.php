@@ -28,6 +28,18 @@ class GlobalVariableService
     protected static array $globalVariableProviders = [];
 
     /**
+     * Clears the cached global variables to ensure that the next call to get() will fetch fresh data.
+     * This should not be necessary in most cases, as the providers can handle caching themselves (see
+     * GlobalVariableProviderInterface::isCacheable()).
+     *
+     * This method is used for unit tests and should not be used in production code.
+     */
+    public static function clearCache(): void
+    {
+        self::$cachedVariables = [];
+    }
+
+    /**
      * @throws Exception
      */
     public static function get(string $path, bool $strict = true, mixed $fallback = null): mixed

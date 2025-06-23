@@ -32,6 +32,7 @@ class SiteConfigurationProvider extends AbstractProvider
      */
     public function getGlobalVariables(): Site
     {
+        ValidationUtility::requiresFrontendContext();
         ValidationUtility::requiresTypoScriptLoaded();
 
         return $this->siteFinder->getSiteByPageId($GLOBALS['TSFE']->id);

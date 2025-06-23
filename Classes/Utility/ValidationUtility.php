@@ -71,7 +71,7 @@ class ValidationUtility
     {
         if (!ContextUtility::isTypoScriptAvailable()) {
             throw new RuntimeException(
-                __CLASS__ . ': This method is allowed in frontend context only! TypoScript is not loaded yet when ext_localconf and TCA files are processed.',
+                __CLASS__ . ': This method requires TypoScript to be available, but it is not loaded yet! (e.g. when ext_localconf and TCA files are processed)',
                 1727172047
             );
         }
