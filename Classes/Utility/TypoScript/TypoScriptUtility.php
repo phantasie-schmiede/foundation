@@ -2,15 +2,15 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Utility\TypoScript;
+namespace PSBits\Foundation\Utility\TypoScript;
 
-use PSB\PsbFoundation\Data\ExtensionInformationInterface;
+use PSBits\Foundation\Data\ExtensionInformationInterface;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use UnexpectedValueException;
@@ -20,23 +20,23 @@ use function is_array;
 /**
  * Class TypoScriptUtility
  *
- * @package PSB\PsbFoundation\Utility
+ * @package PSBits\Foundation\Utility
  */
 class TypoScriptUtility
 {
-    public const COMPONENTS = [
+    public const array COMPONENTS = [
         'MODULE' => 'module',
         'PLUGIN' => 'plugin',
     ];
 
-    public const FILE_NAMES = [
+    public const array FILE_NAMES = [
         'CONSTANTS' => 'constants',
         'SETUP'     => 'setup',
     ];
 
-    public const INDENTATION = '  ';
+    public const string INDENTATION = '  ';
 
-    public const TYPO_SCRIPT_KEYS = [
+    public const array TYPO_SCRIPT_KEYS = [
         'COMMENT'     => '_comment',
         'CONDITION'   => '_condition',
         'IMPORT'      => '_import',

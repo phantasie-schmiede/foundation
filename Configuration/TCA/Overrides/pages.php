@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use PSB\PsbFoundation\Service\Configuration\PageTypeService;
-use PSB\PsbFoundation\Service\ExtensionInformationService;
+use PSBits\Foundation\Service\Configuration\PageTypeService;
+use PSBits\Foundation\Service\ExtensionInformationService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 defined('TYPO3') or die();
@@ -15,4 +15,3 @@ defined('TYPO3') or die();
         $pageTypeService->addToSelectBox($extensionInformation);
     }
 })();
-

@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use PSB\PsbFoundation\Attribute\TCA\Mapping\Field;
-use PSB\PsbFoundation\Attribute\TCA\Mapping\Table;
-use PSB\PsbFoundation\Service\ExtensionInformationService;
-use PSB\PsbFoundation\Utility\ReflectionUtility;
+use PSBits\Foundation\Attribute\TCA\Mapping\Field;
+use PSBits\Foundation\Attribute\TCA\Mapping\Table;
+use PSBits\Foundation\Service\ExtensionInformationService;
+use PSBits\Foundation\Utility\ReflectionUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 $classesConfiguration = [];

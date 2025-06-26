@@ -2,18 +2,18 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Service\GlobalVariableProviders;
+namespace PSBits\Foundation\Service\GlobalVariableProviders;
 
-use PSB\PsbFoundation\Exceptions\ImplementationException;
-use PSB\PsbFoundation\Service\ExtensionInformationService;
-use PSB\PsbFoundation\Utility\Configuration\FilePathUtility;
-use PSB\PsbFoundation\Utility\TypoScript\TypoScriptUtility;
+use PSBits\Foundation\Exceptions\ImplementationException;
+use PSBits\Foundation\Service\ExtensionInformationService;
+use PSBits\Foundation\Utility\Configuration\FilePathUtility;
+use PSBits\Foundation\Utility\TypoScript\TypoScriptUtility;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
@@ -42,11 +42,11 @@ use function count;
  * /Configuration/EarlyAccessConstants/production.yaml
  * /Configuration/EarlyAccessConstants/Production/staging.yaml
  *
- * @package PSB\PsbFoundation\Service\GlobalVariableProviders
+ * @package PSBits\Foundation\Service\GlobalVariableProviders
  */
 class EarlyAccessConstantsProvider extends AbstractProvider
 {
-    public const DIRECTORY = '/Configuration/EarlyAccessConstants/';
+    public const string DIRECTORY = '/Configuration/EarlyAccessConstants/';
 
     /**
      * @throws ImplementationException

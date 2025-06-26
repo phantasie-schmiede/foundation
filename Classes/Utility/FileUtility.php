@@ -2,13 +2,13 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Utility;
+namespace PSBits\Foundation\Utility;
 
 use DateTime;
 use Exception;
@@ -23,7 +23,7 @@ use function strlen;
 /**
  * Class FileUtility
  *
- * @package PSB\PsbFoundation\Utility
+ * @package PSBits\Foundation\Utility
  */
 class FileUtility
 {
@@ -31,7 +31,7 @@ class FileUtility
      * Although calculated on a base of 2, the average user might be confused when he is shown the technically correct
      * unit names like KiB, MiB or GiB. Hence, the inaccurate, "old" units are being used.
      */
-    public const FILE_SIZE_UNITS = [
+    public const array FILE_SIZE_UNITS = [
         'B'  => 0,
         'KB' => 1,
         'MB' => 2,

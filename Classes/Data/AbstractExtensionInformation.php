@@ -2,13 +2,13 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Data;
+namespace PSBits\Foundation\Data;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use function get_class;
@@ -22,7 +22,7 @@ use function get_class;
  * information
  * (see examples below).
  *
- * @package PSB\PsbFoundation\Data
+ * @package PSBits\Foundation\Data
  */
 abstract class AbstractExtensionInformation implements ExtensionInformationInterface
 {

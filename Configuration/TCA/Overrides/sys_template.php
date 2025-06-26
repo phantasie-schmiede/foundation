@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use PSB\PsbFoundation\Service\ExtensionInformationService;
-use PSB\PsbFoundation\Utility\LocalizationUtility;
-use PSB\PsbFoundation\Utility\TypoScript\TypoScriptUtility;
+use PSBits\Foundation\Service\ExtensionInformationService;
+use PSBits\Foundation\Utility\LocalizationUtility;
+use PSBits\Foundation\Utility\TypoScript\TypoScriptUtility;
 use Symfony\Component\Finder\Finder;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

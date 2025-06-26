@@ -4,42 +4,42 @@ services:
     autowire: true
     public: false
 
-  PSB\PsbFoundation\:
+  PSBits\Foundation\:
     resource: '../Classes/*'
 
-  PSB\PsbFoundation\EventListener\CacheConfigurationBuilder:
+  PSBits\Foundation\EventListener\CacheConfigurationBuilder:
     tags:
-      - identifier: 'psbFoundation_cacheConfigurationBuilder'
+      - identifier: 'foundation_cacheConfigurationBuilder'
         name: event.listener
 
-  PSB\PsbFoundation\EventListener\DatabaseEnricher:
+  PSBits\Foundation\EventListener\DatabaseEnricher:
     tags:
-      - identifier: 'psbFoundation_databaseEnricher'
+      - identifier: 'foundation_databaseEnricher'
         name: event.listener
 
-  PSB\PsbFoundation\Service\Configuration\ModuleService:
+  PSBits\Foundation\Service\Configuration\ModuleService:
     public: true
 
-  PSB\PsbFoundation\Service\Configuration\PageTypeService:
+  PSBits\Foundation\Service\Configuration\PageTypeService:
     public: true
 
-  PSB\PsbFoundation\Service\Configuration\PluginService:
+  PSBits\Foundation\Service\Configuration\PluginService:
     public: true
 
-  PSB\PsbFoundation\Service\Configuration\TcaService:
+  PSBits\Foundation\Service\Configuration\TcaService:
     public: true
 
-  PSB\PsbFoundation\Service\ExtensionInformationService:
+  PSBits\Foundation\Service\ExtensionInformationService:
     public: true
 
-  PSB\PsbFoundation\Service\GlobalVariableProviders\SiteConfigurationProvider:
+  PSBits\Foundation\Service\GlobalVariableProviders\SiteConfigurationProvider:
     public: true
 
-  PSB\PsbFoundation\Service\LocalizationService:
+  PSBits\Foundation\Service\LocalizationService:
     public: true
 
-  PSB\PsbFoundation\Service\ObjectService:
+  PSBits\Foundation\Service\ObjectService:
     public: true
 
-  PSB\PsbFoundation\Service\TypoScriptProviderService:
+  PSBits\Foundation\Service\TypoScriptProviderService:
     public: true

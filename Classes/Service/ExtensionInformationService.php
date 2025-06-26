@@ -2,17 +2,17 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Service;
+namespace PSBits\Foundation\Service;
 
 use InvalidArgumentException;
-use PSB\PsbFoundation\Data\ExtensionInformationInterface;
-use PSB\PsbFoundation\Exceptions\ImplementationException;
+use PSBits\Foundation\Data\ExtensionInformationInterface;
+use PSBits\Foundation\Exceptions\ImplementationException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
@@ -29,7 +29,7 @@ use function is_array;
 /**
  * Class ExtensionInformationService
  *
- * @package PSB\PsbFoundation\Service
+ * @package PSBits\Foundation\Service
  */
 class ExtensionInformationService
 {

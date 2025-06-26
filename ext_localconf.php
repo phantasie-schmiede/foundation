@@ -1,17 +1,17 @@
 <?php
 declare(strict_types=1);
 
-use PSB\PsbFoundation\EventListener\CacheConfigurationBuilder;
-use PSB\PsbFoundation\Service\Configuration\PageTypeService;
-use PSB\PsbFoundation\Service\Configuration\PluginService;
-use PSB\PsbFoundation\Service\ExtensionInformationService;
-use PSB\PsbFoundation\Service\GlobalVariableProviders\EarlyAccessConstantsProvider;
-use PSB\PsbFoundation\Service\GlobalVariableProviders\RequestParameterProvider;
-use PSB\PsbFoundation\Service\GlobalVariableProviders\SiteConfigurationProvider;
-use PSB\PsbFoundation\Service\GlobalVariableService;
-use PSB\PsbFoundation\Service\Typo3\LanguageServiceFactory;
-use PSB\PsbFoundation\Utility\Configuration\FilePathUtility;
-use PSB\PsbFoundation\Utility\FileUtility;
+use PSBits\Foundation\EventListener\CacheConfigurationBuilder;
+use PSBits\Foundation\Service\Configuration\PageTypeService;
+use PSBits\Foundation\Service\Configuration\PluginService;
+use PSBits\Foundation\Service\ExtensionInformationService;
+use PSBits\Foundation\Service\GlobalVariableProviders\EarlyAccessConstantsProvider;
+use PSBits\Foundation\Service\GlobalVariableProviders\RequestParameterProvider;
+use PSBits\Foundation\Service\GlobalVariableProviders\SiteConfigurationProvider;
+use PSBits\Foundation\Service\GlobalVariableService;
+use PSBits\Foundation\Service\Typo3\LanguageServiceFactory;
+use PSBits\Foundation\Utility\Configuration\FilePathUtility;
+use PSBits\Foundation\Utility\FileUtility;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory as Typo3LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;

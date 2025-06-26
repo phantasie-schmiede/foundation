@@ -2,17 +2,17 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Attribute\TCA;
+namespace PSBits\Foundation\Attribute\TCA;
 
 use Attribute;
-use PSB\PsbFoundation\Attribute\TCA\ColumnType\ColumnTypeInterface;
-use PSB\PsbFoundation\Utility\Configuration\TcaUtility;
+use PSBits\Foundation\Attribute\TCA\ColumnType\ColumnTypeInterface;
+use PSBits\Foundation\Utility\Configuration\TcaUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
@@ -22,12 +22,12 @@ use function str_contains;
 /**
  * Class Column
  *
- * @package PSB\PsbFoundation\Attribute\TCA
+ * @package PSBits\Foundation\Attribute\TCA
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Column extends AbstractTcaAttribute
 {
-    public const COLUMN_FIELDS = [
+    public const array COLUMN_FIELDS = [
         'description',
         'displayCond',
         'exclude',
@@ -37,12 +37,12 @@ class Column extends AbstractTcaAttribute
         'onChange',
     ];
 
-    public const CONFIGURATION_IDENTIFIERS = [
+    public const array CONFIGURATION_IDENTIFIERS = [
         'DATABASE_DEFINITION' => 'databaseDefinition',
         'DATABASE_KEY'        => 'databaseKey',
     ];
 
-    public const POSITIONS = [
+    public const array POSITIONS = [
         'AFTER'   => 'after',
         'BEFORE'  => 'before',
         'PALETTE' => 'palette',
@@ -51,7 +51,7 @@ class Column extends AbstractTcaAttribute
     ];
 
     // If you don't want a field to be shown in backend at all, set this value for typeList.
-    public const TYPE_LIST_NONE = 'none';
+    public const string TYPE_LIST_NONE = 'none';
 
     protected ?ColumnTypeInterface $configuration = null;
 
@@ -240,11 +240,11 @@ class Column extends AbstractTcaAttribute
                 $databaseDefinition .= ' NOT NULL';
             }
 
-            $configuration['config']['EXT']['psb_foundation'][self::CONFIGURATION_IDENTIFIERS['DATABASE_DEFINITION']] = $databaseDefinition;
+            $configuration['config']['EXT']['foundation'][self::CONFIGURATION_IDENTIFIERS['DATABASE_DEFINITION']] = $databaseDefinition;
         }
 
         if ($this->addDatabaseKey) {
-            $configuration['config']['EXT']['psb_foundation'][self::CONFIGURATION_IDENTIFIERS['DATABASE_KEY']] = true;
+            $configuration['config']['EXT']['foundation'][self::CONFIGURATION_IDENTIFIERS['DATABASE_KEY']] = true;
         }
 
         if (null !== $this->readOnly) {

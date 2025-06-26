@@ -2,24 +2,24 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Utility\Localization;
+namespace PSBits\Foundation\Utility\Localization;
 
 use Closure;
 use DateTime;
 use Doctrine\DBAL\Exception;
 use JsonException;
-use PSB\PsbFoundation\Data\ExtensionInformation;
-use PSB\PsbFoundation\Service\ExtensionInformationService;
-use PSB\PsbFoundation\Utility\Configuration\FilePathUtility;
-use PSB\PsbFoundation\Utility\ContextUtility;
-use PSB\PsbFoundation\Utility\FileUtility;
-use PSB\PsbFoundation\Utility\StringUtility;
+use PSBits\Foundation\Data\ExtensionInformation;
+use PSBits\Foundation\Service\ExtensionInformationService;
+use PSBits\Foundation\Utility\Configuration\FilePathUtility;
+use PSBits\Foundation\Utility\ContextUtility;
+use PSBits\Foundation\Utility\FileUtility;
+use PSBits\Foundation\Utility\StringUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
@@ -30,17 +30,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Class LoggingUtility
  *
- * @package PSB\PsbFoundation\Utility\Localization
+ * @package PSBits\Foundation\Utility\Localization
  */
 class LoggingUtility
 {
-    public const LOG_FILES  = [
+    public const array LOG_FILES  = [
         'ACCESS'  => 'access.log',
         'MISSING' => 'missing.log',
     ];
-    public const LOG_TABLES = [
-        'ACCESS'  => 'tx_psbfoundation_accessed_language_labels',
-        'MISSING' => 'tx_psbfoundation_missing_language_labels',
+    public const array LOG_TABLES = [
+        'ACCESS'  => 'tx_foundation_accessed_language_labels',
+        'MISSING' => 'tx_foundation_missing_language_labels',
     ];
 
     // Store extension configuration settings in static variables to avoid recurrent lookup. It's a mini cache.

@@ -2,17 +2,17 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Utility\Xml;
+namespace PSBits\Foundation\Utility\Xml;
 
 use DOMDocument;
 use JsonException;
-use PSB\PsbFoundation\Utility\StringUtility;
+use PSBits\Foundation\Utility\StringUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
@@ -25,25 +25,25 @@ use function is_string;
 /**
  * Class XmlUtility
  *
- * @package PSB\PsbFoundation\Utility\Xml
+ * @package PSBits\Foundation\Utility\Xml
  */
 class XmlUtility
 {
-    public const SPECIAL_ARRAY_KEYS = [
+    public const array SPECIAL_ARRAY_KEYS = [
         'ATTRIBUTES' => '@attributes',
         'NAMESPACES' => '@namespaces',
         'NODE_VALUE' => '@nodeValue',
         'POSITION'   => '@position',
     ];
 
-    public const SPECIAL_XML_KEYS = [
+    public const array SPECIAL_XML_KEYS = [
         '_attributes',
         '_namespaces',
         '_nodeValue',
         '_position',
     ];
 
-    public const XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>';
+    public const string XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>';
 
     public static function beautifyXml(string $xml, bool $forceNoWrap = false): string
     {

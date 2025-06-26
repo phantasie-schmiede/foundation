@@ -2,13 +2,13 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Utility\Localization;
+namespace PSBits\Foundation\Utility\Localization;
 
 /**
  * Class PluralFormsUtility
@@ -22,11 +22,11 @@ namespace PSB\PsbFoundation\Utility\Localization;
  * https://www.unicode.org/cldr/charts/43/supplemental/language_plural_rules.html
  * https://cldr.unicode.org/index/cldr-spec/plural-rules
  *
- * @package PSB\PsbFoundation\Utility\Localization
+ * @package PSBits\Foundation\Utility\Localization
  */
 class PluralFormUtility
 {
-    private const LANGUAGE_RULE_MAPPING = [
+    private const array LANGUAGE_RULE_MAPPING = [
         'ach'   => 1,
         'af'    => 2,
         'ak'    => 1,

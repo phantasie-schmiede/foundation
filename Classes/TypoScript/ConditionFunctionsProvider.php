@@ -2,13 +2,13 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\TypoScript;
+namespace PSBits\Foundation\TypoScript;
 
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
@@ -18,7 +18,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Class ConditionFunctionsProvider
  *
- * @package PSB\PsbFoundation\TypoScript
+ * @package PSBits\Foundation\TypoScript
  */
 class ConditionFunctionsProvider implements ExpressionFunctionProviderInterface
 {

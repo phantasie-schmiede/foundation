@@ -2,16 +2,16 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Utility;
+namespace PSBits\Foundation\Utility;
 
-use PSB\PsbFoundation\Service\GlobalVariableProviders\SiteConfigurationProvider;
-use PSB\PsbFoundation\Service\GlobalVariableService;
+use PSBits\Foundation\Service\GlobalVariableProviders\SiteConfigurationProvider;
+use PSBits\Foundation\Service\GlobalVariableService;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,11 +29,11 @@ use function is_array;
 /**
  * Class ContextUtility
  *
- * @package PSB\PsbFoundation\Utility
+ * @package PSBits\Foundation\Utility
  */
 class ContextUtility
 {
-    public const DEFAULT_LANGUAGE_KEY = 'default';
+    public const string DEFAULT_LANGUAGE_KEY = 'default';
 
     public static function getCurrentBackendLanguage(): string
     {

@@ -8,12 +8,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "PSB\\PsbFoundation\\": "Classes"
+            "PSBits\\Foundation\\": "Classes"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "PSB\\PsbFoundation\\Tests\\": "Tests",
+            "PSBits\\Foundation\\Tests\\": "Tests",
             "TYPO3\\CMS\\Core\\Tests\\": ".Build/vendor/typo3/cms-core/Tests"
         }
     },
@@ -33,7 +33,7 @@
     "description": "Configuration framework for TYPO3 extension development",
     "extra": {
         "typo3/cms": {
-            "extension-key": "psb_foundation",
+            "extension-key": "foundation",
             "web-dir": ".Build/public"
         }
     },
@@ -44,14 +44,14 @@
         "typo3"
     ],
     "license": "GPL-3.0-or-later",
-    "name": "psb/psb-foundation",
+    "name": "psbits/foundation",
     "require": {
         "ext-fileinfo": "*",
         "ext-intl": "*",
         "ext-mbstring": "*",
         "ext-simplexml": "*",
-        "php": "^8.2",
-        "typo3/cms-core": "^12.4 || ^13"
+        "php": "^8.3",
+        "typo3/cms-core": "^12.4 || ^13.4"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.13.0",
@@ -67,7 +67,8 @@
             "rm -rf Tests",
             "rm .editorconfig",
             "rm .gitattributes",
-            "rm .gitignore"
+            "rm .gitignore",
+            "rm .phpstorm.meta.php"
         ]
     },
     "type": "typo3-cms-extension"

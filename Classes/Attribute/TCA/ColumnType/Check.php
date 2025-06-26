@@ -2,22 +2,22 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Attribute\TCA\ColumnType;
+namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
 use Attribute;
 use JsonException;
-use PSB\PsbFoundation\Enum\CheckboxRenderType;
-use PSB\PsbFoundation\Exceptions\MisconfiguredTcaException;
-use PSB\PsbFoundation\Utility\ArrayUtility;
-use PSB\PsbFoundation\Utility\Configuration\FilePathUtility;
-use PSB\PsbFoundation\Utility\Database\DefinitionUtility;
-use PSB\PsbFoundation\Utility\LocalizationUtility;
+use PSBits\Foundation\Enum\CheckboxRenderType;
+use PSBits\Foundation\Exceptions\MisconfiguredTcaException;
+use PSBits\Foundation\Utility\ArrayUtility;
+use PSBits\Foundation\Utility\Configuration\FilePathUtility;
+use PSBits\Foundation\Utility\Database\DefinitionUtility;
+use PSBits\Foundation\Utility\LocalizationUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
@@ -28,7 +28,7 @@ use function is_array;
 /**
  * Class Check
  *
- * @package PSB\PsbFoundation\Attribute\TCA\ColumnType
+ * @package PSBits\Foundation\Attribute\TCA\ColumnType
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Check extends AbstractColumnType implements ColumnTypeWithItemsInterface

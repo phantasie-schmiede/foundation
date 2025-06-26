@@ -2,16 +2,16 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Utility\Xml;
+namespace PSBits\Foundation\Utility\Xml;
 
-use PSB\PsbFoundation\Traits\AutoFillPropertiesTrait;
-use PSB\PsbFoundation\Utility\ObjectUtility;
+use PSBits\Foundation\Traits\AutoFillPropertiesTrait;
+use PSBits\Foundation\Utility\ObjectUtility;
 use ReflectionClass;
 use ReflectionException;
 use function in_array;
@@ -20,7 +20,7 @@ use function is_array;
 /**
  * Class AbstractXmlElement
  *
- * @package PSB\PsbFoundation\Utility\Xml
+ * @package PSBits\Foundation\Utility\Xml
  */
 class AbstractXmlElement implements XmlElementInterface
 {

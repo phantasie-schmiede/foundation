@@ -2,20 +2,20 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Exceptions;
+namespace PSBits\Foundation\Exceptions;
 
 use Exception;
 
 /**
  * Class BaseException
  *
- * @package PSB\PsbFoundation\Exceptions
+ * @package PSBits\Foundation\Exceptions
  */
 class BaseException extends Exception
 {

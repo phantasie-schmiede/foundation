@@ -2,16 +2,16 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Attribute\TCA;
+namespace PSBits\Foundation\Attribute\TCA;
 
 use Attribute;
-use PSB\PsbFoundation\Utility\Configuration\TcaUtility;
+use PSBits\Foundation\Utility\Configuration\TcaUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
@@ -22,20 +22,20 @@ use function is_string;
  * Class TcaConfig
  *
  * @link    https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html
- * @package PSB\PsbFoundation\Attribute\TCA
+ * @package PSBits\Foundation\Attribute\TCA
  */
 #[Attribute(Attribute::TARGET_CLASS)]
 class Ctrl extends AbstractTcaAttribute
 {
-    public const DEFAULT_SORTBY = 'uid DESC';
+    public const string DEFAULT_SORTBY = 'uid DESC';
 
-    public const ENABLE_COLUMNS = [
+    public const array ENABLE_COLUMNS = [
         self::ENABLE_COLUMN_IDENTIFIERS['DISABLED']  => 'hidden',
         self::ENABLE_COLUMN_IDENTIFIERS['ENDTIME']   => 'endtime',
         self::ENABLE_COLUMN_IDENTIFIERS['STARTTIME'] => 'starttime',
     ];
 
-    public const ENABLE_COLUMN_IDENTIFIERS = [
+    public const array ENABLE_COLUMN_IDENTIFIERS = [
         'DISABLED'  => 'disabled',
         'ENDTIME'   => 'endtime',
         'STARTTIME' => 'starttime',

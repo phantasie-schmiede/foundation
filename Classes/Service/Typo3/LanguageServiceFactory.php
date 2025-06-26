@@ -14,7 +14,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace PSB\PsbFoundation\Service\Typo3;
+namespace PSBits\Foundation\Service\Typo3;
 
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory as Typo3LanguageServiceFactory;
 use TYPO3\CMS\Core\Localization\Locale;
@@ -24,7 +24,7 @@ use TYPO3\CMS\Core\Localization\Locale;
  *
  * Overwrites the original class to load custom LanguageService.
  *
- * @package PSB\PsbFoundation\Service\Typo3
+ * @package PSBits\Foundation\Service\Typo3
  * @TODO    Check original file on TYPO3 update!
  */
 class LanguageServiceFactory extends Typo3LanguageServiceFactory

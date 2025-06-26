@@ -2,30 +2,30 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\EventListener;
+namespace PSBits\Foundation\EventListener;
 
-use PSB\PsbFoundation\Attribute\TCA\Column;
-use PSB\PsbFoundation\Utility\StringUtility;
+use PSBits\Foundation\Attribute\TCA\Column;
+use PSBits\Foundation\Utility\StringUtility;
 use TYPO3\CMS\Core\Database\Event\AlterTableDefinitionStatementsEvent;
 use function in_array;
 
 /**
  * Class DatabaseEnricher
  *
- * @package PSB\PsbFoundation\EventListener
+ * @package PSBits\Foundation\EventListener
  */
 class DatabaseEnricher
 {
-    protected const CREATE_TABLE_PHRASE = 'CREATE TABLE';
-    protected const INDENTATION         = '    ';
-    protected const KEY_DEFINITION      = 'KEY ';
-    protected const SKIP_KEYWORDS       = [
+    protected const string CREATE_TABLE_PHRASE = 'CREATE TABLE';
+    protected const string INDENTATION         = '    ';
+    protected const string KEY_DEFINITION = 'KEY ';
+    protected const array  SKIP_KEYWORDS  = [
         'PRIMARY',
         'UNIQUE',
     ];
@@ -41,14 +41,14 @@ class DatabaseEnricher
 
         foreach ($GLOBALS['TCA'] as $tableName => $tableConfiguration) {
             foreach ($tableConfiguration['columns'] as $columnName => $columnConfiguration) {
-                if (!empty($columnConfiguration['config']['EXT']['psb_foundation'][Column::CONFIGURATION_IDENTIFIERS['DATABASE_DEFINITION']]) && !$this->sqlHasFieldDefinition(
+                if (!empty($columnConfiguration['config']['EXT']['foundation'][Column::CONFIGURATION_IDENTIFIERS['DATABASE_DEFINITION']]) && !$this->sqlHasFieldDefinition(
                         $columnName,
                         $tableName
                     )) {
-                    $additionalFields[$tableName][$columnName] = $columnConfiguration['config']['EXT']['psb_foundation'][Column::CONFIGURATION_IDENTIFIERS['DATABASE_DEFINITION']];
+                    $additionalFields[$tableName][$columnName] = $columnConfiguration['config']['EXT']['foundation'][Column::CONFIGURATION_IDENTIFIERS['DATABASE_DEFINITION']];
                 }
 
-                if (!empty($columnConfiguration['config']['EXT']['psb_foundation'][Column::CONFIGURATION_IDENTIFIERS['DATABASE_KEY']]) && !$this->sqlHasKeyDefinition(
+                if (!empty($columnConfiguration['config']['EXT']['foundation'][Column::CONFIGURATION_IDENTIFIERS['DATABASE_KEY']]) && !$this->sqlHasKeyDefinition(
                         $columnName,
                         $tableName
                     )) {

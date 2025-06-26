@@ -2,24 +2,24 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\ViewHelpers;
+namespace PSBits\Foundation\ViewHelpers;
 
 use Closure;
 use Exception;
-use PSB\PsbFoundation\Service\GlobalVariableService;
+use PSBits\Foundation\Service\GlobalVariableService;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * Class GlobalVariablesViewHelper
  *
- * @package PSB\PsbFoundation\ViewHelpers
+ * @package PSBits\Foundation\ViewHelpers
  */
 class GlobalVariablesViewHelper extends AbstractViewHelper
 {

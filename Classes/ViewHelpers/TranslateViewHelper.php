@@ -2,21 +2,21 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\ViewHelpers;
+namespace PSBits\Foundation\ViewHelpers;
 
 use Closure;
 use InvalidArgumentException;
 use JsonException;
-use PSB\PsbFoundation\Utility\Configuration\FilePathUtility;
-use PSB\PsbFoundation\Utility\ContextUtility;
-use PSB\PsbFoundation\Utility\LocalizationUtility;
-use PSB\PsbFoundation\ViewHelpers\Translation\RegisterLanguageFileViewHelper;
+use PSBits\Foundation\Utility\Configuration\FilePathUtility;
+use PSBits\Foundation\Utility\ContextUtility;
+use PSBits\Foundation\Utility\LocalizationUtility;
+use PSBits\Foundation\ViewHelpers\Translation\RegisterLanguageFileViewHelper;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
@@ -38,7 +38,7 @@ use function is_array;
  * Class TranslateViewHelper
  *
  * Extended clone of the core ViewHelper.
- * - uses \PSB\PsbFoundation\Utility\LocalizationUtility to log missing language labels
+ * - uses \PSBits\Foundation\Utility\LocalizationUtility to log missing language labels
  * - supports plural forms in language files:
  *   <trans-unit>-tags in xlf-files can be grouped like this to define plural forms of a translation:
  *       <group id=“day” restype=“x-gettext-plurals”>
@@ -51,22 +51,22 @@ use function is_array;
  *       </group>
  *   The number in [] defines the plural form as defined here:
  *   http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html
- *   See \PSB\PsbFoundation\Utility\Localization\PluralFormUtility for more information.
+ *   See \PSBits\Foundation\Utility\Localization\PluralFormUtility for more information.
  *   In order to use the plural forms defined in your language files, you have to transfer an argument named 'quantity':
- *   <psb:translate arguments="{quantity: 1}" id="..." />
+ *   <psbits:translate arguments="{quantity: 1}" id="..." />
  *   This argument can be combined with others (see support of named arguments below).
  * - provides a more convenient way to pass variables into translations:
  *   Instead of:
  *   <f:translate arguments="{0: 'myVar', 1: 123} id="myLabel" />
  *   <source>My two variables are %1$s and %2$s.</source>
  *   you can use:
- *   <psb:translate arguments="{myVar: 'myVar', anotherVar: 123} id="myLabel" />
+ *   <psbits:translate arguments="{myVar: 'myVar', anotherVar: 123} id="myLabel" />
  *   <source>My two variables are {myVar} and {anotherVar}.</source>
  *   If a variable is not passed, the marker will remain untouched!
  * - adds the attribute "excludedLanguages": matching language keys will return null (bypasses fallbacks!)
  *   This way you can remove texts from certain site languages without additional condition wrappers in your template.
  *
- * @package PSB\PsbFoundation\ViewHelpers
+ * @package PSBits\Foundation\ViewHelpers
  */
 class TranslateViewHelper extends AbstractViewHelper
 {

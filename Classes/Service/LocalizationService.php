@@ -2,16 +2,16 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Service;
+namespace PSBits\Foundation\Service;
 
 use JsonException;
-use PSB\PsbFoundation\Utility\LocalizationUtility;
+use PSBits\Foundation\Utility\LocalizationUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
@@ -21,8 +21,8 @@ use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 /**
  * Class LocalizationService
  *
- * @deprecated Use \PSB\PsbFoundation\Utility\LocalizationUtility instead!
- * @package    PSB\PsbFoundation\Service
+ * @deprecated Use \PSBits\Foundation\Utility\LocalizationUtility instead!
+ * @package    PSBits\Foundation\Service
  */
 class LocalizationService
 {

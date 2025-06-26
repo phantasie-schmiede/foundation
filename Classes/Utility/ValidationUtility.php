@@ -2,13 +2,13 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Utility;
+namespace PSBits\Foundation\Utility;
 
 use InvalidArgumentException;
 use RuntimeException;
@@ -17,7 +17,7 @@ use function in_array;
 /**
  * Class ValidationUtility
  *
- * @package PSB\PsbFoundation\Utility
+ * @package PSBits\Foundation\Utility
  */
 class ValidationUtility
 {
@@ -71,7 +71,7 @@ class ValidationUtility
     {
         if (!ContextUtility::isTypoScriptAvailable()) {
             throw new RuntimeException(
-                __CLASS__ . ': This method is allowed in frontend context only! TypoScript is not loaded yet when ext_localconf and TCA files are processed.',
+                __CLASS__ . ': This method requires TypoScript to be available, but it is not loaded yet! (e.g. when ext_localconf and TCA files are processed)',
                 1727172047
             );
         }

@@ -2,13 +2,13 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Utility\Xml;
+namespace PSBits\Foundation\Utility\Xml;
 
 use Generator;
 use JsonException;
@@ -19,7 +19,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 /**
  * Class XmlUtilityTest
  *
- * @package PSB\PsbFoundation\Utility\Xml
+ * @package PSBits\Foundation\Utility\Xml
  */
 class XmlUtilityTest extends UnitTestCase
 {

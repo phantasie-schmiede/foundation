@@ -2,13 +2,13 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Service\Configuration\CacheConfigurationBuilder;
+namespace PSBits\Foundation\Service\Configuration\CacheConfigurationBuilder;
 
 use Doctrine\DBAL\Exception;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -18,7 +18,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Class BuilderForNews
  *
- * @package PSB\PsbFoundation\Service\Configuration\CacheConfigurationBuilder
+ * @package PSBits\Foundation\Service\Configuration\CacheConfigurationBuilder
  */
 readonly class BuilderForNews implements BuilderInterface
 {

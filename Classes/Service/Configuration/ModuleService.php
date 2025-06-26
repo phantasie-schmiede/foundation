@@ -2,21 +2,21 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Service\Configuration;
+namespace PSBits\Foundation\Service\Configuration;
 
 use JsonException;
-use PSB\PsbFoundation\Attribute\ModuleAction;
-use PSB\PsbFoundation\Data\ExtensionInformationInterface;
-use PSB\PsbFoundation\Data\MainModuleConfiguration;
-use PSB\PsbFoundation\Data\ModuleConfiguration;
-use PSB\PsbFoundation\Utility\LocalizationUtility;
-use PSB\PsbFoundation\Utility\ReflectionUtility;
+use PSBits\Foundation\Attribute\ModuleAction;
+use PSBits\Foundation\Data\ExtensionInformationInterface;
+use PSBits\Foundation\Data\MainModuleConfiguration;
+use PSBits\Foundation\Data\ModuleConfiguration;
+use PSBits\Foundation\Utility\LocalizationUtility;
+use PSBits\Foundation\Utility\ReflectionUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
@@ -31,11 +31,11 @@ use function is_int;
 /**
  * Class ModuleService
  *
- * @package PSB\PsbFoundation\Service\Configuration
+ * @package PSBits\Foundation\Service\Configuration
  */
 class ModuleService
 {
-    public const  ICON_SUFFIXES = [
+    public const array ICON_SUFFIXES = [
         'CONTENT_FROM_PID' => '-contentFromPid',
         'ROOT'             => '-root',
         'HIDE_IN_MENU'     => '-hideinmenu',

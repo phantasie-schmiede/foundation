@@ -2,17 +2,17 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Service\GlobalVariableProviders;
+namespace PSBits\Foundation\Service\GlobalVariableProviders;
 
 use JsonException;
-use PSB\PsbFoundation\Utility\ContextUtility;
-use PSB\PsbFoundation\Utility\StringUtility;
+use PSBits\Foundation\Utility\ContextUtility;
+use PSBits\Foundation\Utility\StringUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
@@ -21,7 +21,7 @@ use function is_array;
 /**
  * Class RequestParameterProvider
  *
- * @package PSB\PsbFoundation\Service\GlobalVariableProviders
+ * @package PSBits\Foundation\Service\GlobalVariableProviders
  */
 class RequestParameterProvider extends AbstractProvider
 {

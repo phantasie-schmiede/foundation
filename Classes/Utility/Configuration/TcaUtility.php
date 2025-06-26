@@ -2,22 +2,22 @@
 declare(strict_types=1);
 
 /*
- * This file is part of PSB Foundation.
+ * This file is part of PSBits Foundation.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace PSB\PsbFoundation\Utility\Configuration;
+namespace PSBits\Foundation\Utility\Configuration;
 
 /**
  * Class TcaUtility
  *
- * @package PSB\PsbFoundation\Utility\Configuration
+ * @package PSBits\Foundation\Utility\Configuration
  */
 class TcaUtility
 {
-    public const CORE_FIELD_LABELS = [
+    public const array CORE_FIELD_LABELS = [
         'ENABLED'     => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.enabled',
         'END_TIME'    => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
         'L18N_PARENT' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
@@ -25,7 +25,7 @@ class TcaUtility
         'START_TIME'  => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
     ];
 
-    public const CORE_TAB_LABELS = [
+    public const array CORE_TAB_LABELS = [
         'ACCESS'   => 'LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access',
         'LANGUAGE' => 'LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language',
     ];
@@ -34,7 +34,7 @@ class TcaUtility
      * This array constant compensates inconsistencies in TCA key naming. All keys that are not listed here will be
      * kept unchanged.
      */
-    private const PROPERTY_KEY_MAPPING = [
+    private const array PROPERTY_KEY_MAPPING = [
         'defaultSortBy'                 => 'default_sortby',
         'editLock'                      => 'editlock',
         'enableColumns'                 => 'enablecolumns',
