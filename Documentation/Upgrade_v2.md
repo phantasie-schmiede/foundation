@@ -8,7 +8,7 @@ love!) - and with php 8.1
 at hand - I decided to go for a big refactoring. Sorry for that! But I hope that you will love the new structure and
 features. Version 1 won't be supported anymore. The following list will guide you through all necessary steps.
 I will try to support two major versions in the future.
-Thank you for using psb_foundation! ❤
+Thank you for using Foundation! ❤
 
 New features
 ------------
