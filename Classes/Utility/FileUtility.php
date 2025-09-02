@@ -169,7 +169,6 @@ class FileUtility
             return false;
         }
 
-        $fileName = self::resolveFileName($fileName);
         $content = trim(file_get_contents($lockFileName));
 
         if (!empty($content)) {
@@ -177,13 +176,16 @@ class FileUtility
             $now = new DateTime();
 
             if ($now > $lifetime) {
-                return !self::unlockFile($fileName);
+                return !self::unlockFile(self::resolveFileName($fileName));
             }
         }
 
         return true;
     }
 
+    /**
+     * @throws Exception
+     */
     public static function lockFile(string $fileName, ?DateTime $lifetime = null): bool
     {
         $lockFileName = self::getLockFileName($fileName);

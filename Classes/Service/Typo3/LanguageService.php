@@ -57,7 +57,7 @@ class LanguageService extends Typo3LanguageService
 
         if ('' !== $input) {
             LoggingUtility::logLanguageLabelAccess($input);
-            LoggingUtility::logMissingLanguageLabels($input, '' !== $output && !self::$pluralFormMissing);
+            LoggingUtility::logMissingLanguageLabel($input, '' !== $output && !self::$pluralFormMissing);
         }
 
         self::$pluralFormMissing = false;

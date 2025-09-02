@@ -192,7 +192,7 @@ class LocalizationUtility
                         $transUnitTagAttributes = $transUnit[XmlUtility::SPECIAL_ARRAY_KEYS['ATTRIBUTES']];
 
                         if ($id === $transUnitTagAttributes['id']) {
-                            LoggingUtility::logMissingLanguageLabels($key, true);
+                            LoggingUtility::logMissingLanguageLabel($key, true);
 
                             return true;
                         }
@@ -202,7 +202,7 @@ class LocalizationUtility
         }
 
         if ($logMissingTranslation) {
-            LoggingUtility::logMissingLanguageLabels($key, false);
+            LoggingUtility::logMissingLanguageLabel($key, false);
         }
 
         return false;

@@ -24,8 +24,8 @@ use function array_slice;
  */
 class FilePathUtility
 {
-    public const string EXTENSION_DIRECTORY_PREFIX = 'EXT:';
-    public const string LANGUAGE_FILE_EXTENSION    = '.xlf';
+    public const string EXTENSION_DIRECTORY_PREFIX    = 'EXT:';
+    public const string LANGUAGE_FILE_EXTENSION       = '.xlf';
     public const string LANGUAGE_LABEL_LOG_FILES_PATH = 'log/foundation/language_labels/';
     public const string LANGUAGE_LABEL_PREFIX         = 'LLL:';
 

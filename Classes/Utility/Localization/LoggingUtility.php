@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Utility\Localization;
 
 use Closure;
-use DateTime;
 use Doctrine\DBAL\Exception;
 use JsonException;
 use PSBits\Foundation\Data\ExtensionInformation;
@@ -19,9 +18,10 @@ use PSBits\Foundation\Service\ExtensionInformationService;
 use PSBits\Foundation\Utility\Configuration\FilePathUtility;
 use PSBits\Foundation\Utility\ContextUtility;
 use PSBits\Foundation\Utility\FileUtility;
-use PSBits\Foundation\Utility\StringUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -34,11 +34,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class LoggingUtility
 {
-    public const array LOG_FILES  = [
-        'ACCESS'  => 'access.log',
-        'MISSING' => 'missing.log',
+    public const string LOCK_FILE_NAME    = '_.lock';
+    public const array  LOG_FILE_PATTERNS = [
+        'ACCESS'  => 'access.*.log',
+        'MISSING' => 'missing.*.log',
     ];
-    public const array LOG_TABLES = [
+    public const array  LOG_TABLES        = [
         'ACCESS'  => 'tx_foundation_accessed_language_labels',
         'MISSING' => 'tx_foundation_missing_language_labels',
     ];
@@ -55,30 +56,48 @@ class LoggingUtility
     {
         self::checkPostponedLogEntries(
             static function($logEntry) {
-                self::writeAccessLogToDatabase($logEntry);
+                [
+                    $postponedKey,
+                    $count,
+                ] = json_decode(
+                    $logEntry,
+                    false,
+                    512,
+                    JSON_THROW_ON_ERROR
+                );
+                self::writeAccessLogToDatabase($postponedKey, (int)$count);
             },
-            FilePathUtility::getLanguageLabelLogFilesPath() . self::LOG_FILES['ACCESS']
+            self::LOG_FILE_PATTERNS['ACCESS']
         );
     }
 
     /**
      * @throws \Exception
      */
-    public static function checkPostponedLogEntries(Closure $closure, string $logFile): void
+    public static function checkPostponedLogEntries(Closure $closure, string $logFilePattern): void
     {
-        if (file_exists($logFile) && !FileUtility::isFileLocked($logFile) && $logContent = file_get_contents(
-                $logFile
-            )) {
-            FileUtility::lockFile($logFile, (new DateTime())->modify('+5 seconds'));
-            $postponedEntries = StringUtility::explodeByLineBreaks($logContent);
+        $logFilePath = FilePathUtility::getLanguageLabelLogFilesPath();
+        $lockFile = $logFilePath . self::LOCK_FILE_NAME;
 
-            foreach (array_filter($postponedEntries) as $postponedEntry) {
-                $closure($postponedEntry);
-            }
-
-            unlink($logFile);
-            FileUtility::unlockFile($logFile);
+        if (file_exists($lockFile)) {
+            return;
         }
+
+        FileUtility::write($lockFile, '');
+        $finder = Finder::create()
+            ->files()
+            ->in($logFilePath)
+            ->name($logFilePattern);
+
+        /** @var SplFileInfo $fileInfo */
+        foreach ($finder as $fileInfo) {
+            $logFile = $fileInfo->getRealPath();
+            $logContent = trim(file_get_contents($logFile));
+            $closure($logContent);
+            unlink($logFile);
+        }
+
+        unlink($lockFile);
     }
 
     /**
@@ -100,7 +119,7 @@ class LoggingUtility
                 );
                 self::writeMissingLogToDatabase($postponedKey, $postponedKeyExists);
             },
-            FilePathUtility::getLanguageLabelLogFilesPath() . self::LOG_FILES['MISSING']
+            self::LOG_FILE_PATTERNS['MISSING']
         );
     }
 
@@ -122,7 +141,7 @@ class LoggingUtility
             );
         }
 
-        if (!self::$logLanguageLabelAccess) {
+        if (!self::$logLanguageLabelAccess || !str_starts_with($key, 'LLL:')) {
             return;
         }
 
@@ -131,14 +150,28 @@ class LoggingUtility
              * The TCA is not loaded yet. That means the ConnectionPool is not available and the logging has to be
              * postponed.
              */
+            $fileName = self::createFileName($key, self::LOG_FILE_PATTERNS['ACCESS']);
+
+            if (file_exists($fileName)) {
+                $count = (int)(json_decode(
+                                   trim(file_get_contents($fileName)),
+                                   false,
+                                   512,
+                                   JSON_THROW_ON_ERROR
+                               )[1]) + 1;
+            }
+
             FileUtility::write(
-                FilePathUtility::getLanguageLabelLogFilesPath() . self::LOG_FILES['ACCESS'],
-                $key . LF,
-                true
+                $fileName,
+                json_encode(
+                    [
+                        $key,
+                        $count ?? 1,
+                    ],
+                    JSON_THROW_ON_ERROR
+                )
             );
         } else {
-            // Check for postponed log entries.
-            self::checkPostponedAccessLogEntries();
             self::writeAccessLogToDatabase($key);
         }
     }
@@ -150,7 +183,7 @@ class LoggingUtility
      * @throws JsonException
      * @throws NotFoundExceptionInterface
      */
-    public static function logMissingLanguageLabels(string $key, bool $keyExists): void
+    public static function logMissingLanguageLabel(string $key, bool $keyExists): void
     {
         if (null === self::$logMissingLanguageLabels) {
             self::$logMissingLanguageLabels = (bool)self::getExtensionConfigurationSetting(
@@ -168,21 +201,27 @@ class LoggingUtility
              * postponed.
              */
             FileUtility::write(
-                FilePathUtility::getLanguageLabelLogFilesPath() . self::LOG_FILES['MISSING'],
+                self::createFileName($key, self::LOG_FILE_PATTERNS['MISSING']),
                 json_encode(
                     [
                         $key,
                         $keyExists,
                     ],
                     JSON_THROW_ON_ERROR
-                ) . LF,
-                true
+                )
             );
         } else {
-            // Check for postponed log entries.
-            self::checkPostponedMissingLogEntries();
             self::writeMissingLogToDatabase($key, $keyExists);
         }
+    }
+
+    private static function createFileName(string $key, string $pattern): string
+    {
+        return FilePathUtility::getLanguageLabelLogFilesPath() . str_replace(
+                '*',
+                substr(md5($key), 0, 8),
+                $pattern
+            );
     }
 
     /**
@@ -203,12 +242,8 @@ class LoggingUtility
     /**
      * @throws Exception
      */
-    private static function writeAccessLogToDatabase(string $key): void
+    private static function writeAccessLogToDatabase(string $key, int $count = 1): void
     {
-        if (!str_starts_with($key, 'LLL:')) {
-            return;
-        }
-
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable(self::LOG_TABLES['ACCESS']);
 
@@ -227,11 +262,11 @@ class LoggingUtility
 
         if (false === $hitCount) {
             $connection->insert(self::LOG_TABLES['ACCESS'], [
-                'hit_count'     => 1,
+                'hit_count'     => $count,
                 'locallang_key' => $key,
             ]);
         } else {
-            $connection->update(self::LOG_TABLES['ACCESS'], ['hit_count' => $hitCount + 1], [
+            $connection->update(self::LOG_TABLES['ACCESS'], ['hit_count' => $hitCount + $count], [
                 'locallang_key' => $key,
             ]);
         }
