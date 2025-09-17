@@ -121,6 +121,22 @@ class ArrayUtility
         return false;
     }
 
+    public static function setValueByPath(array &$array, string $path, mixed $value, string $delimiter = '.'): void
+    {
+        $pathSegments = GeneralUtility::trimExplode($delimiter, $path);
+        $section = &$array;
+
+        foreach ($pathSegments as $pathSegment) {
+            if (!isset($section[$pathSegment]) || !is_array($section[$pathSegment])) {
+                $section[$pathSegment] = [];
+            }
+
+            $section = &$section[$pathSegment];
+        }
+
+        $section = $value;
+    }
+
     /**
      * This function shuffles associative arrays and those with integer keys - even multidimensional ones if desired.
      */
