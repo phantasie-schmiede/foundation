@@ -73,9 +73,9 @@ class LocalizationService
         string $newLineMarker = '||',
     ): string {
         return LocalizationUtility::translateConcatenatingNewLines(
-            $key,
-            $extension,
-            $newLineMarker
+            key          : $key,
+            extensionName: $extension,
+            newLineMarker: $newLineMarker
         );
     }
 

@@ -33,15 +33,15 @@ use function is_string;
  */
 class LocalizationUtility
 {
-    public const array PLACEHOLDER_MARKERS = [
+    public const array  PLACEHOLDER_MARKERS = [
         'BEGIN' => '{',
         'END'   => '}',
     ];
-    public const array PLURAL_FORM_MARKERS = [
+    public const array  PLURAL_FORM_MARKERS = [
         'BEGIN' => '[',
         'END'   => ']',
     ];
-    public const string QUANTITY_ARGUMENT  = 'quantity';
+    public const string QUANTITY_ARGUMENT   = 'quantity';
 
     /**
      * Returns the localized label of the LOCAL_LANG key, $key.
@@ -106,7 +106,9 @@ class LocalizationUtility
 
     /**
      * @param string      $key
-     * @param string|null $extension
+     * @param string|null $extensionName
+     * @param array|null  $arguments
+     * @param string|null $languageKey
      * @param string      $newLineMarker If set, user defined new lines are created while plain line breaks will still
      *                                   be removed
      *
@@ -118,10 +120,12 @@ class LocalizationUtility
      */
     public static function translateConcatenatingNewLines(
         string $key,
-        string $extension = null,
+        string $extensionName = null,
+        array  $arguments = null,
+        string $languageKey = null,
         string $newLineMarker = '||',
     ): string {
-        $translation = self::translate($key, $extension);
+        $translation = self::translate($key, $extensionName, $arguments, $languageKey);
         $translation = preg_replace('/\s+/', ' ', $translation);
         if ('' !== $newLineMarker) {
             $translation = str_replace($newLineMarker, "\n", $translation);
@@ -136,12 +140,16 @@ class LocalizationUtility
      * @throws JsonException
      * @throws NotFoundExceptionInterface
      */
-    public static function translatePreservingNewLines(string $key, string $extension = null): string
-    {
-        $translation = self::translate($key, $extension);
+    public static function translatePreservingNewLines(
+        string $key,
+        string $extensionName = null,
+        array  $arguments = null,
+        string $languageKey = null,
+    ): string {
+        $translation = self::translate($key, $extensionName, $arguments, $languageKey);
 
         // split string by line breaks and remove surrounding whitespaces for each line
-        $lines = array_map('trim', explode(LF, $translation));
+        $lines = array_map('trim', StringUtility::explodeByLineBreaks($translation));
 
         // remove first and/or last element if they are empty
         if ('' === $lines[0]) {
