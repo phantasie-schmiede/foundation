@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file datatype="plaintext"
+        date="2025-12-01T07:01:00+01:00"
+        original="messages"
+        product-name="foundation"
+        source-language="en"
+        target-language="de">
+        <body>
+            <trans-unit id="pleaseChoose">
+                <source>--- Please choose ---</source>
+                <target>--- Bitte wählen ---</target>
+            </trans-unit>
+            <trans-unit id="pleaseChoose.mandatory">
+                <source>--- Please choose ---</source>
+                <target>--- Bitte wählen ---</target>
+            </trans-unit>
+            <trans-unit id="pleaseChoose.optional">
+                <source>--- Nothing selected ---</source>
+                <target>--- Nichts ausgewählt ---</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

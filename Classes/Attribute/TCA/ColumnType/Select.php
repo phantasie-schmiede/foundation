@@ -39,12 +39,39 @@ use function is_string;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
 {
-    public const array EMPTY_DEFAULT_ITEM = [
+    /** @deprecated Will be removed in v4.0. Use more specific constant instead! */
+    public const array EMPTY_DEFAULT_ITEM                  = [
         [
-            'label' => 'LLL:EXT:foundation/Resources/Private/Language/Backend/Classes/Attribute/TCA/select.xlf:pleaseChoose',
+            'label' => self::LANGUAGE_LABEL_PREFIX . 'pleaseChoose',
             'value' => 0,
         ],
     ];
+    public const array EMPTY_DEFAULT_ITEM_MANDATORY_INT    = [
+        [
+            'label' => self::LANGUAGE_LABEL_PREFIX . 'pleaseChoose.mandatory',
+            'value' => 0,
+        ],
+    ];
+    public const array EMPTY_DEFAULT_ITEM_MANDATORY_STRING = [
+        [
+            'label' => self::LANGUAGE_LABEL_PREFIX . 'pleaseChoose.mandatory',
+            'value' => '',
+        ],
+    ];
+    public const array EMPTY_DEFAULT_ITEM_OPTIONAL_INT     = [
+        [
+            'label' => self::LANGUAGE_LABEL_PREFIX . 'pleaseChoose.optional',
+            'value' => 0,
+        ],
+    ];
+    public const array EMPTY_DEFAULT_ITEM_OPTIONAL_STRING  = [
+        [
+            'label' => self::LANGUAGE_LABEL_PREFIX . 'pleaseChoose.optional',
+            'value' => '',
+        ],
+    ];
+
+    private const string LANGUAGE_LABEL_PREFIX = 'LLL:EXT:foundation/Resources/Private/Language/Backend/Classes/Attribute/TCA/ColumnType/select.xlf:';
 
     protected ExtensionInformationService $extensionInformationService;
     protected TcaService                  $tcaService;

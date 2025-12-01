@@ -6,6 +6,12 @@
 			<trans-unit id="pleaseChoose">
 				<source>--- Please choose ---</source>
 			</trans-unit>
+			<trans-unit id="pleaseChoose.mandatory">
+				<source>--- Please choose ---</source>
+			</trans-unit>
+			<trans-unit id="pleaseChoose.optional">
+				<source>--- Nothing selected ---</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
