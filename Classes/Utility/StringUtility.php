@@ -17,6 +17,8 @@ use NumberFormatter;
 use PSBits\Foundation\Service\TypoScriptProviderService;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use ReflectionEnum;
+use ReflectionException;
 use RuntimeException;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
@@ -43,6 +45,7 @@ class StringUtility
      * @throws ContainerExceptionInterface
      * @throws JsonException
      * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
      */
     public static function convertString(
         ?string $variable,
@@ -99,27 +102,36 @@ class StringUtility
             }
         }
 
-        // check for constant
+        // check for constant or enum
         if (0 < mb_strpos($variable, '::')) {
             [
-                $className,
-                $constantName,
+                $scope,
+                $member,
             ] = GeneralUtility::trimExplode('::', $variable, true, 2);
-            $className = ObjectUtility::getFullQualifiedClassName($className, $namespaces);
+            $className = ObjectUtility::getFullQualifiedClassName($scope, $namespaces);
 
-            // If $className is false, we have a false positive. It's not a constant, but for example CSS.
+            // If $className is false, we have a false positive. It may be CSS, for example.
             if (false !== $className) {
-                if ('class' === $constantName) {
+                if ('class' === $member) {
                     return $className;
                 }
 
-                $variable = $className . '::' . $constantName;
+                if (enum_exists($className)) {
+                    $enumReflection = new ReflectionEnum($className);
+
+                    if ($enumReflection->hasCase($member)) {
+                        return $enumReflection->getCase($member)
+                            ->getValue();
+                    }
+                }
+
+                $variable = $className . '::' . $member;
 
                 /*
                  * find all [...] segments after constant name and convert each one separately before trying to access that
                  * array path.
                  */
-                if (0 < preg_match_all('/\[\'?(.*)\'?(](?=\[)|]$)/U', $constantName, $pathSegments)) {
+                if (0 < preg_match_all('/\[\'?(.*)\'?(](?=\[)|]$)/U', $member, $pathSegments)) {
                     $pathSegments = array_map(static function($value) use ($convertEmptyStringToNull, $namespaces) {
                         return self::convertString(trim($value, '\'"'), $convertEmptyStringToNull, $namespaces);
                     }, $pathSegments[1]);
@@ -141,8 +153,8 @@ class StringUtility
                 }
 
                 // check for dot-notation of array path
-                if (str_contains($constantName, '.')) {
-                    $pathSegments = explode('.', $constantName);
+                if (str_contains($member, '.')) {
+                    $pathSegments = explode('.', $member);
                     $pathSegments = array_map(static function($value) use ($convertEmptyStringToNull, $namespaces) {
                         return self::convertString(trim($value, '\'"'), $convertEmptyStringToNull, $namespaces);
                     }, $pathSegments);
