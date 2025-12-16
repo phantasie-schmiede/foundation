@@ -53,16 +53,16 @@ use function is_array;
  */
 class TcaService
 {
-    public const    array PALETTE_IDENTIFIERS      = [
+    public const    array  PALETTE_IDENTIFIERS      = [
         'LANGUAGE'         => 'language',
         'TIME_RESTRICTION' => 'timeRestriction',
     ];
-    public const    string UNSET_KEYWORD           = 'UNSET';
-    protected const array CLASS_TABLE_MAPPING_KEYS = [
+    public const    string UNSET_KEYWORD            = 'UNSET';
+    protected const array  CLASS_TABLE_MAPPING_KEYS = [
         'TCA_OVERRIDES' => 'tcaOverrides',
         'TCA'           => 'tca',
     ];
-    protected const array PROTECTED_COLUMNS        = [
+    protected const array  PROTECTED_COLUMNS        = [
         'crdate',
         'pid',
         'tstamp',
@@ -560,16 +560,22 @@ class TcaService
          * Drawback: These fields can't be used as position reference.
          */
         if (true === $this->paletteExists(self::PALETTE_IDENTIFIERS['LANGUAGE'])) {
-            $this->addTabToShowItems(TcaUtility::CORE_TAB_LABELS['LANGUAGE']);
+            $this->addTabToShowItems(
+                TcaUtility::CORE_TAB_IDENTIFIERS['LANGUAGE'],
+                TcaUtility::CORE_TAB_LABELS['LANGUAGE']
+            );
             $this->addPaletteToShowItems(self::PALETTE_IDENTIFIERS['LANGUAGE']);
         }
 
-        if (null !== $ctrl && is_array($ctrl->getEnablecolumns())) {
-            $disabledColumn = $ctrl->getEnablecolumns()[Ctrl::ENABLE_COLUMN_IDENTIFIERS['DISABLED']];
+        if (null !== $ctrl && is_array($ctrl->getEnableColumns())) {
+            $disabledColumn = $ctrl->getEnableColumns()[Ctrl::ENABLE_COLUMN_IDENTIFIERS['DISABLED']];
         }
 
         if (isset($disabledColumn) || true === $this->paletteExists(self::PALETTE_IDENTIFIERS['TIME_RESTRICTION'])) {
-            $this->addTabToShowItems(TcaUtility::CORE_TAB_LABELS['ACCESS']);
+            $this->addTabToShowItems(
+                TcaUtility::CORE_TAB_IDENTIFIERS['ACCESS'],
+                TcaUtility::CORE_TAB_LABELS['ACCESS']
+            );
         }
 
         if (isset($disabledColumn)) {
@@ -724,7 +730,10 @@ class TcaService
 
         if (true === $fieldCanBeAdded) {
             if (null !== $newTabIdentifier) {
-                $tabDefinition = $this->addTabToShowItems($newTabIdentifier, $attribute->getTypeList());
+                $tabDefinition = $this->addTabToShowItems(
+                    identifier: $newTabIdentifier,
+                    typeList  : $attribute->getTypeList()
+                );
                 $position = Column::POSITIONS['AFTER'] . ':' . $tabDefinition;
             }
 
@@ -771,14 +780,14 @@ class TcaService
      * @throws NotFoundExceptionInterface
      * @throws ReflectionException
      */
-    private function addTabToShowItems(string $identifier, string $typeList = ''): string
+    private function addTabToShowItems(string $identifier, string $label = '', string $typeList = ''): string
     {
         if (isset($this->tabs[$identifier])) {
             $label = $this->tabs[$identifier]->getLabel();
             $tabPosition = $this->tabs[$identifier]->getPosition();
         }
 
-        if (false === LocalizationUtility::validateLabel($label ?? $identifier)) {
+        if (false === LocalizationUtility::validateLabel($label)) {
             $defaultLabel = $this->defaultLabelPath . 'tab.' . $identifier . '.label';
 
             if (LocalizationUtility::translationExists($defaultLabel)) {

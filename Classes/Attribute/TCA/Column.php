@@ -86,6 +86,7 @@ class Column extends AbstractTcaAttribute
         protected string            $label = '',
         protected ?bool             $nullable = null,
         protected ?string           $onChange = null,
+
         /**
          * Usage: 'key:propertyName'
          * You can use the keys 'after', 'before', 'palette', 'replace' and 'tab'.

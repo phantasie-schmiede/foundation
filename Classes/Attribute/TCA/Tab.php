@@ -28,6 +28,7 @@ class Tab extends AbstractTcaAttribute
         // The identifier has to be written in snake_case!
         protected string $identifier = '',
         protected string $label = '',
+
         /**
          * Usage: 'key:propertyName'
          * You can use the keys 'after', 'before' and 'replace'.
