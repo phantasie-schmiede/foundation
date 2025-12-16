@@ -128,8 +128,8 @@ class StringUtility
                 $variable = $className . '::' . $member;
 
                 /*
-                 * find all [...] segments after constant name and convert each one separately before trying to access that
-                 * array path.
+                 * find all [...] segments after constant name and convert each one separately before trying to access
+                 * that array path.
                  */
                 if (0 < preg_match_all('/\[\'?(.*)\'?(](?=\[)|]$)/U', $member, $pathSegments)) {
                     $pathSegments = array_map(static function($value) use ($convertEmptyStringToNull, $namespaces) {

@@ -12,6 +12,8 @@ namespace PSBits\Foundation\Utility;
 
 use Generator;
 use JsonException;
+use PSBits\Foundation\Tests\Examples\BackedEnum;
+use PSBits\Foundation\Tests\Examples\Enum;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
@@ -104,6 +106,14 @@ class StringUtilityTest extends UnitTestCase
         yield 'array constant without quotes' => [
             '\PSBits\Foundation\Utility\StringUtilityTest::TEST_CONSTANT_ARRAY[INDEX]',
             self::TEST_CONSTANT_ARRAY['INDEX'],
+        ];
+        yield 'enum' => [
+            '\PSBits\Foundation\Tests\Examples\Enum::Alpha',
+            Enum::Alpha,
+        ];
+        yield 'backed enum' => [
+            '\PSBits\Foundation\Tests\Examples\BackedEnum::Delta',
+            BackedEnum::Delta,
         ];
         // @TODO: test TypoScript ('TS:...')!
     }
