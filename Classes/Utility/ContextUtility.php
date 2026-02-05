@@ -18,7 +18,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ApplicationType;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -125,6 +128,16 @@ class ContextUtility
                     ?->getSetupArray();
             } else {
                 $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
+
+                if (12 < (new Typo3Version())->getMajorVersion()) {
+                    $configurationManager->setRequest(
+                        (new ServerRequest())->withAttribute(
+                            'applicationType',
+                            SystemEnvironmentBuilder::REQUESTTYPE_BE
+                        )
+                    );
+                }
+
                 $typoScript = $configurationManager->getConfiguration(
                     ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
                 );
