@@ -15,8 +15,10 @@ use PSBits\Foundation\Utility\ContextUtility;
 use PSBits\Foundation\Utility\StringUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use ReflectionException;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use function is_array;
+use function is_string;
 
 /**
  * Class RequestParameterProvider
@@ -29,6 +31,7 @@ class RequestParameterProvider extends AbstractProvider
      * @throws ContainerExceptionInterface
      * @throws JsonException
      * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
      */
     public function getGlobalVariables(): array
     {

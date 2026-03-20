@@ -47,6 +47,11 @@ class DefinitionUtility
         return self::integerType('int', $default, $unsigned);
     }
 
+    public static function mediumint(int $default = 0, bool $unsigned = false): string
+    {
+        return self::integerType('mediumint', $default, $unsigned);
+    }
+
     public static function smallint(int $default = 0, bool $unsigned = false): string
     {
         return self::integerType('smallint', $default, $unsigned);
