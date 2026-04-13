@@ -209,7 +209,7 @@ class StringUtilityTest extends UnitTestCase
     {
         yield 'underscore to camelCase' => ['first_name', 'firstName'];
         yield 'dash to camelCase' => ['first-name', 'firstName'];
-        yield 'already camelCase is lowercased' => ['firstName', 'firstname'];
+        yield 'camelCase without separators becomes all lowercase' => ['firstName', 'firstname'];
         yield 'all lowercase' => ['name', 'name'];
         yield 'uppercase with underscores' => ['FIRST_NAME', 'firstName'];
         yield 'mixed case with dash' => ['some-Field', 'someField'];
