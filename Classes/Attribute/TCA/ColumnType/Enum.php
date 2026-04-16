@@ -18,6 +18,7 @@ use PSBits\Foundation\Exceptions\MisconfiguredTcaException;
 use PSBits\Foundation\Utility\Configuration\FilePathUtility;
 use PSBits\Foundation\Utility\Database\DefinitionUtility;
 use PSBits\Foundation\Utility\LocalizationUtility;
+use PSBits\Foundation\Utility\StringUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
@@ -109,7 +110,7 @@ class Enum implements ColumnTypeWithItemsInterface
         $items = [];
 
         foreach ($this->enumClass::cases() as $case) {
-            $label = (string)$case->name;
+            $label = StringUtility::sanitizePropertyName($case->name);
 
             if (str_starts_with(
                     $labelPath,
