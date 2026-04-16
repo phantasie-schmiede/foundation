@@ -137,4 +137,152 @@ class StringUtilityTest extends UnitTestCase
             StringUtility::convertString($string)
         );
     }
+
+    public static function cleanUrlDataProvider(): Generator
+    {
+        yield 'plain url unchanged' => [
+            'https://example.com/path',
+            'https://example.com/path',
+        ];
+        yield 'url encoded string is decoded' => [
+            'hello%20world',
+            'hello world',
+        ];
+        yield 'html entity decoded' => [
+            'https://example.com/path?a=1&amp;b=2',
+            'https://example.com/path?a=1&b=2',
+        ];
+        yield 'combined url and html encoding' => [
+            'hello%20world&amp;foo',
+            'hello world&foo',
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider cleanUrlDataProvider
+     */
+    public function cleanUrl(string $url, string $expectedResult): void
+    {
+        self::assertEquals($expectedResult, StringUtility::cleanUrl($url));
+    }
+
+    public static function convertToFloatDataProvider(): Generator
+    {
+        yield 'period decimal separator' => ['1.5', 1.5];
+        yield 'comma decimal separator' => ['1,5', 1.5];
+        yield 'integer string' => ['42', 42.0];
+        yield 'zero' => ['0', 0.0];
+        yield 'negative with period' => ['-3.14', -3.14];
+        yield 'negative with comma' => ['-3,14', -3.14];
+    }
+
+    /**
+     * @test
+     * @dataProvider convertToFloatDataProvider
+     */
+    public function convertToFloat(string $variable, float $expectedResult): void
+    {
+        self::assertEquals($expectedResult, StringUtility::convertToFloat($variable));
+    }
+
+    public static function isEmptyDataProvider(): Generator
+    {
+        yield 'empty string' => ['', true];
+        yield 'only spaces' => ['   ', true];
+        yield 'only tab' => ["\t", true];
+        yield 'only newline' => ["\n", true];
+        yield 'non-empty string' => ['hello', false];
+        yield 'string with content and spaces' => ['  hello  ', false];
+    }
+
+    /**
+     * @test
+     * @dataProvider isEmptyDataProvider
+     */
+    public function stringIsEmpty(string $string, bool $expectedResult): void
+    {
+        self::assertSame($expectedResult, StringUtility::isEmpty($string));
+    }
+
+    public static function sanitizePropertyNameDataProvider(): Generator
+    {
+        yield 'underscore to camelCase' => ['first_name', 'firstName'];
+        yield 'dash to camelCase' => ['first-name', 'firstName'];
+        yield 'camelCase without separators becomes all lowercase' => ['firstName', 'firstname'];
+        yield 'all lowercase' => ['name', 'name'];
+        yield 'uppercase with underscores' => ['FIRST_NAME', 'firstName'];
+        yield 'mixed case with dash' => ['some-Field', 'someField'];
+    }
+
+    /**
+     * @test
+     * @dataProvider sanitizePropertyNameDataProvider
+     */
+    public function sanitizePropertyName(string $propertyName, string $expectedResult): void
+    {
+        self::assertEquals($expectedResult, StringUtility::sanitizePropertyName($propertyName));
+    }
+
+    public static function getFirstWordDataProvider(): Generator
+    {
+        yield 'single word' => ['hello', 'hello'];
+        yield 'multiple words' => ['hello world foo', 'hello'];
+        yield 'words with extra spaces trimmed' => ['  hello  world', 'hello'];
+    }
+
+    /**
+     * @test
+     * @dataProvider getFirstWordDataProvider
+     */
+    public function getFirstWord(string $sentence, string $expectedResult): void
+    {
+        self::assertEquals($expectedResult, StringUtility::getFirstWord($sentence));
+    }
+
+    public static function cropDataProvider(): Generator
+    {
+        yield 'short string not cropped' => [
+            'Hello',
+            10,
+            '…',
+            false,
+            false,
+            'Hello',
+        ];
+        yield 'long string cropped without word boundary' => [
+            'Hello World',
+            5,
+            '…',
+            false,
+            false,
+            'Hello…',
+        ];
+        yield 'string ending with period gets no appendix' => [
+            'Hello World.',
+            12,
+            '…',
+            false,
+            false,
+            'Hello World.',
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider cropDataProvider
+     */
+    public function crop(
+        string $string,
+        int    $length,
+        string $appendix,
+        bool   $respectWordBoundaries,
+        bool   $respectHtml,
+        string $expectedResult,
+    ): void {
+        self::assertEquals(
+            $expectedResult,
+            StringUtility::crop($string, $length, $appendix, $respectWordBoundaries, $respectHtml)
+        );
+    }
 }
