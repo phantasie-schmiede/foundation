@@ -21,6 +21,11 @@ class FlexFormService
 {
     public const string ALL_PLUGINS = '*';
 
+    public function __construct(
+        protected FlexFormMarkerService $flexFormMarkerService,
+    ) {
+    }
+
     /**
      * @param string $xml             Pass the raw XML-data, not the file path!
      * @param string $pluginSignature '*' if you add a FlexForm for a content element, otherwise:
@@ -31,6 +36,8 @@ class FlexFormService
      */
     public function register(string $xml, string $pluginSignature = self::ALL_PLUGINS, string $cType = 'list'): void
     {
+        $xml = $this->flexFormMarkerService->process($xml);
+
         if (self::ALL_PLUGINS !== $pluginSignature) {
             $pluginSignature = strtolower($pluginSignature);
             $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'pi_flexform';
