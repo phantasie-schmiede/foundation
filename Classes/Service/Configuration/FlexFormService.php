@@ -65,7 +65,7 @@ class FlexFormService
     {
         return preg_replace_callback(
             '/###(.+?)###/s',
-            static function(array $matches): string {
+            static function (array $matches): string {
                 try {
                     $value = StringUtility::convertString($matches[1]);
 
