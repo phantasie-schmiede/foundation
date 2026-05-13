@@ -13,8 +13,8 @@ namespace PSBits\Foundation\Service\Configuration;
 use BackedEnum;
 use PSBits\Foundation\Utility\StringUtility;
 use Throwable;
-use UnitEnum;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use UnitEnum;
 
 /**
  * Class FlexFormService
@@ -24,8 +24,50 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 class FlexFormService
 {
     public const string ALL_PLUGINS    = '*';
-    public const string MARKER_PREFIX  = '###';
     public const string MARKER_POSTFIX = '###';
+    public const string MARKER_PREFIX  = '###';
+
+    /**
+     * Replaces ###MARKER### placeholders in the FlexForm XML with resolved values.
+     *
+     * Supported marker formats (same as StringUtility::convertString()):
+     * - ###TS:path.to.typoscript.value###    — resolved TypoScript path (only when TypoScript is available)
+     * - ###\Full\Class\Name::CONSTANT###     — PHP class constant value
+     * - ###\Full\Class\Name::EnumCaseName### — enum case: backing value for backed enums, case name for unit enums
+     *
+     * Markers that cannot be resolved are left unchanged.
+     */
+    public function processMarkers(string $xml): string
+    {
+        return preg_replace_callback(
+            '/###(.+?)###/s',
+            static function(array $matches): string {
+                try {
+                    $value = StringUtility::convertString($matches[1]);
+
+                    if ($value instanceof BackedEnum) {
+                        return (string)$value->value;
+                    }
+
+                    if ($value instanceof UnitEnum) {
+                        return $value->name;
+                    }
+
+                    $value = (string)$value;
+
+                    if ($value === $matches[1]) {
+                        // No conversion was possible, return the original marker
+                        return $matches[0];
+                    }
+
+                    return $value;
+                } catch (Throwable) {
+                    return $matches[0];
+                }
+            },
+            $xml
+        ) ?? $xml;
+    }
 
     /**
      * @param string $xml             Pass the raw XML-data, not the file path!
@@ -49,40 +91,5 @@ class FlexFormService
             $xml,
             $cType
         );
-    }
-
-    /**
-     * Replaces ###MARKER### placeholders in the FlexForm XML with resolved values.
-     *
-     * Supported marker formats (same as StringUtility::convertString()):
-     * - ###TS:path.to.typoscript.value###   — resolved TypoScript path (only when TypoScript is available)
-     * - ###\Full\Class\Name::CONSTANT###     — PHP class constant value
-     * - ###\Full\Class\Name::EnumCaseName### — enum case: backing value for backed enums, case name for unit enums
-     *
-     * Markers that cannot be resolved are left unchanged.
-     */
-    public function processMarkers(string $xml): string
-    {
-        return preg_replace_callback(
-            '/###(.+?)###/s',
-            static function (array $matches): string {
-                try {
-                    $value = StringUtility::convertString($matches[1]);
-
-                    if ($value instanceof BackedEnum) {
-                        return (string)$value->value;
-                    }
-
-                    if ($value instanceof UnitEnum) {
-                        return $value->name;
-                    }
-
-                    return (string)$value;
-                } catch (Throwable) {
-                    return $matches[0];
-                }
-            },
-            $xml
-        ) ?? $xml;
     }
 }

@@ -22,50 +22,75 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class FlexFormServiceTest extends UnitTestCase
 {
-    public const string TEST_CONSTANT = 'testValue';
-
+    public const int    TEST_INT_CONSTANT    = 42;
+    public const string TEST_STRING_CONSTANT = 'test_constant_value';
     private FlexFormService $subject;
 
-    protected function setUp(): void
+    public static function processDataProvider(): Generator
     {
-        parent::setUp();
-        $this->subject = new FlexFormService();
-    }
+        yield 'XML without markers is returned unchanged' => [
+            '<T3DataStructure><sheets/></T3DataStructure>',
+            '<T3DataStructure><sheets/></T3DataStructure>',
+        ];
 
-    public static function processMarkersDataProvider(): Generator
-    {
-        yield 'no markers' => [
-            '<T3DataStructure><sheets/></T3DataStructure>',
-            '<T3DataStructure><sheets/></T3DataStructure>',
+        yield 'backed enum case marker is replaced with backed value' => [
+            '###\PSBits\Foundation\Tests\Examples\BackedEnum::Delta###',
+            BackedEnum::Delta->value,
         ];
-        yield 'php constant' => [
-            '<value>###\PSBits\Foundation\Service\Configuration\FlexFormServiceTest::TEST_CONSTANT###</value>',
-            '<value>testValue</value>',
+
+        yield 'pure enum case marker is replaced with case name' => [
+            '###\PSBits\Foundation\Tests\Examples\Enum::Alpha###',
+            Enum::Alpha->name,
         ];
-        yield 'backed enum case' => [
-            '<value>###\PSBits\Foundation\Tests\Examples\BackedEnum::Delta###</value>',
-            '<value>' . BackedEnum::Delta->value . '</value>',
+
+        yield 'string class constant marker is replaced with constant value' => [
+            '###\PSBits\Foundation\Service\Configuration\FlexFormServiceTest::TEST_STRING_CONSTANT###',
+            self::TEST_STRING_CONSTANT,
         ];
-        yield 'unit enum case' => [
-            '<value>###\PSBits\Foundation\Tests\Examples\Enum::Alpha###</value>',
-            '<value>' . Enum::Alpha->name . '</value>',
+
+        yield 'int class constant marker is replaced with string representation of constant value' => [
+            '###\PSBits\Foundation\Service\Configuration\FlexFormServiceTest::TEST_INT_CONSTANT###',
+            (string)self::TEST_INT_CONSTANT,
         ];
-        yield 'multiple markers' => [
-            '<a>###\PSBits\Foundation\Tests\Examples\BackedEnum::Epsilon###</a><b>###\PSBits\Foundation\Tests\Examples\BackedEnum::Zeta###</b>',
-            '<a>' . BackedEnum::Epsilon->value . '</a><b>' . BackedEnum::Zeta->value . '</b>',
+
+        yield 'unknown marker expression is left unchanged' => [
+            '###\NonExistent\Class::SOMETHING###',
+            '###\NonExistent\Class::SOMETHING###',
         ];
-        yield 'unknown marker is kept as-is' => [
-            '<value>###UNKNOWN_MARKER###</value>',
-            '<value>###UNKNOWN_MARKER###</value>',
+
+        yield 'unrecognised marker format is left unchanged' => [
+            '###just_some_text###',
+            '###just_some_text###',
+        ];
+
+        yield 'TS marker without TypoScript available is left unchanged' => [
+            '###TS:some.typoscript.path###',
+            '###TS:some.typoscript.path###',
+        ];
+
+        yield 'multiple markers in XML are all replaced' => [
+            '<numIndex index="0">###\PSBits\Foundation\Tests\Examples\BackedEnum::Delta###</numIndex>' . '<numIndex index="1">###\PSBits\Foundation\Tests\Examples\BackedEnum::Epsilon###</numIndex>',
+            '<numIndex index="0">' . BackedEnum::Delta->value . '</numIndex>' . '<numIndex index="1">' . BackedEnum::Epsilon->value . '</numIndex>',
+        ];
+
+        yield 'mixed markers and plain content' => [
+            '<item><value>###\PSBits\Foundation\Tests\Examples\BackedEnum::Zeta###</value><label>My Label</label></item>',
+            '<item><value>' . BackedEnum::Zeta->value . '</value><label>My Label</label></item>',
         ];
     }
 
     /**
      * @test
-     * @dataProvider processMarkersDataProvider
+     * @dataProvider processDataProvider
      */
-    public function processMarkers(string $xml, string $expectedResult): void
+    public function process(string $xml, string $expectedResult): void
     {
         self::assertEquals($expectedResult, $this->subject->processMarkers($xml));
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->subject = new FlexFormService();
     }
 }
