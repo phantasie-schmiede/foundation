@@ -24,6 +24,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use function is_string;
+use function method_exists;
 use function strlen;
 
 /**
@@ -110,13 +111,20 @@ class Enum implements ColumnTypeWithItemsInterface
         $items = [];
 
         foreach ($this->enumClass::cases() as $case) {
-            $label = StringUtility::sanitizePropertyName($case->name);
+            $caseName = StringUtility::sanitizePropertyName($case->name);
 
+            if (method_exists($case, 'getBackendLabel')) {
+                $label = (string)$case->getBackendLabel();
+            } else {
+                $label = $caseName;
+            }
+
+            // Custom property labels override default enum labels.
             if (str_starts_with(
                     $labelPath,
                     FilePathUtility::LANGUAGE_LABEL_PREFIX
-                ) && LocalizationUtility::translationExists($labelPath . $label)) {
-                $label = $labelPath . $label;
+                ) && LocalizationUtility::translationExists($labelPath . $caseName)) {
+                $label = $labelPath . $caseName;
             }
 
             $items[] = [
