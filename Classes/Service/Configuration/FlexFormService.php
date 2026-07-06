@@ -31,7 +31,6 @@ class FlexFormService
      * Replaces ###MARKER### placeholders in the FlexForm XML with resolved values.
      *
      * Supported marker formats (same as StringUtility::convertString()):
-     * - ###TS:path.to.typoscript.value###    — resolved TypoScript path (only when TypoScript is available)
      * - ###\Full\Class\Name::CONSTANT###     — PHP class constant value
      * - ###\Full\Class\Name::EnumCaseName### — enum case: backing value for backed enums, case name for unit enums
      *

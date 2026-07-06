@@ -63,11 +63,6 @@ class FlexFormServiceTest extends UnitTestCase
             '###just_some_text###',
         ];
 
-        yield 'TS marker without TypoScript available is left unchanged' => [
-            '###TS:some.typoscript.path###',
-            '###TS:some.typoscript.path###',
-        ];
-
         yield 'multiple markers in XML are all replaced' => [
             '<numIndex index="0">###\PSBits\Foundation\Tests\Examples\BackedEnum::Delta###</numIndex>' . '<numIndex index="1">###\PSBits\Foundation\Tests\Examples\BackedEnum::Epsilon###</numIndex>',
             '<numIndex index="0">' . BackedEnum::Delta->value . '</numIndex>' . '<numIndex index="1">' . BackedEnum::Epsilon->value . '</numIndex>',
