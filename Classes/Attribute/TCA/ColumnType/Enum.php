@@ -24,10 +24,16 @@ use Psr\Container\NotFoundExceptionInterface;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use function is_string;
+use function method_exists;
 use function strlen;
 
 /**
  * Class Enum
+ *
+ * Generates a select box with items based on a backed enum.
+ * Item labels are based on sanitized case names by default.
+ * If enum cases provide `getBackendLabel()`, that value is used as label.
+ * If localized labels exist for the property label path, they override enum labels.
  *
  * @package PSBits\Foundation\Attribute\TCA\ColumnType
  */
@@ -36,6 +42,9 @@ class Enum implements ColumnTypeWithItemsInterface
 {
     protected array $items = [];
 
+    /**
+     * @param string $enumClass Full qualified class name of a backed enum.
+     */
     public function __construct(
         protected string $enumClass,
     ) {
@@ -110,13 +119,20 @@ class Enum implements ColumnTypeWithItemsInterface
         $items = [];
 
         foreach ($this->enumClass::cases() as $case) {
-            $label = StringUtility::sanitizePropertyName($case->name);
+            $caseName = StringUtility::sanitizePropertyName($case->name);
 
+            if (method_exists($case, 'getBackendLabel')) {
+                $label = (string)$case->getBackendLabel();
+            } else {
+                $label = $caseName;
+            }
+
+            // Custom property labels override default enum labels.
             if (str_starts_with(
                     $labelPath,
                     FilePathUtility::LANGUAGE_LABEL_PREFIX
-                ) && LocalizationUtility::translationExists($labelPath . $label)) {
-                $label = $labelPath . $label;
+                ) && LocalizationUtility::translationExists($labelPath . $caseName)) {
+                $label = $labelPath . $caseName;
             }
 
             $items[] = [
