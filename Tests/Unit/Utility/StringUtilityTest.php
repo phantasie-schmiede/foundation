@@ -115,6 +115,7 @@ class StringUtilityTest extends UnitTestCase
             '\PSBits\Foundation\Tests\Examples\BackedEnum::Delta',
             BackedEnum::Delta,
         ];
+        // @TODO: test TypoScript ('TS:...')!
     }
 
     /**
