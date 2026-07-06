@@ -411,6 +411,12 @@ automatically. You can override this default by passing a value for the `flexFor
 `PluginConfiguration`-constructor. You can either provide a filename if your XML-file is located inside the
 `Configuration/FlexForms/`-directory or a full file path beginning with `EXT:`.
 
+FlexForms support runtime marker replacement via `###...###`. Available marker formats:
+
+- `###EAC:path.to.value###`: resolves values from `EarlyAccessConstantsProvider`
+- `###\Full\Qualified\ClassName::CONSTANT###`: resolves PHP class constants
+- `###\Full\Qualified\ClassName::EnumCase###`: resolves enum cases
+
 #### Content element wizard
 
 Plugins will be added to the wizard automatically. There will be a tab for each vendor. You can override the location of
