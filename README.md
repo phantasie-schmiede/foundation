@@ -339,6 +339,11 @@ It will be transformed into the required multi-level format.
 The labels will be build this way:<br>
 `[propertyName].[arrayKeyTransformedToLowerCamelCase]`
 
+When you use `PSBits\Foundation\Attribute\TCA\ColumnType\Enum`, the given class must be a backed enum.
+By default, labels are derived from sanitized enum case names. If a case provides `getBackendLabel()`, this value is
+used as default label. If localized labels exist for `[propertyName].[enumCaseNameTransformedToLowerCamelCase]`,
+these localized labels override the default enum labels.
+
 ### Registering and configuring plugins
 
 - Classes/Data/ExtensionInformation.php

@@ -37,6 +37,12 @@ class Enum implements ColumnTypeWithItemsInterface
 {
     protected array $items = [];
 
+    /**
+     * @param string $enumClass Fully qualified class name of a backed enum.
+     *                          Item labels are based on sanitized case names by default.
+     *                          If enum cases provide `getBackendLabel()`, that value is used as label.
+     *                          If localized labels exist for the property label path, they override enum labels.
+     */
     public function __construct(
         protected string $enumClass,
     ) {
