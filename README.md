@@ -406,6 +406,12 @@ automatically. You can override this default by passing a value for the `flexFor
 `PluginConfiguration`-constructor. You can either provide a filename if your XML-file is located inside the
 `Configuration/FlexForms/`-directory or a full file path beginning with `EXT:`.
 
+FlexForms support runtime marker replacement via `###...###`. Available marker formats:
+
+- `###EAC:path.to.value###`: resolves values from `EarlyAccessConstantsProvider`
+- `###\Full\Qualified\ClassName::CONSTANT###`: resolves PHP class constants
+- `###\Full\Qualified\ClassName::EnumCase###`: resolves enum cases
+
 #### Content element wizard
 
 Plugins will be added to the wizard automatically. There will be a tab for each vendor. You can override the location of
@@ -678,7 +684,6 @@ GlobalVariableService::get(RequestParameterProvider::class . '.formData.hiddenIn
   | `0`, `123`                                        | returns integer                                                                             |
   | `0.1`, `0,1`                                      | returns float                                                                               |
   | `0001423`                                         | returns unchanged string                                                                    |
-  | `TS:config.headerComment`                         | returns value from TypoScript (if path is valid) which is also processed by this function.  |
   | `\Full\Qualified\ClassName::CONSTANT['arrayKey']` | returns value of constant which is also processed by this function.                         |
   | `{...}`, `[...]`                                  | returns array if valid JSON                                                                 |
   | `false`, `true`                                   | returns boolean                                                                             |

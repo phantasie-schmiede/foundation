@@ -11,6 +11,8 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Service\Configuration;
 
 use Generator;
+use PSBits\Foundation\Service\GlobalVariableProviders\AbstractProvider;
+use PSBits\Foundation\Service\GlobalVariableService;
 use PSBits\Foundation\Tests\Examples\BackedEnum;
 use PSBits\Foundation\Tests\Examples\Enum;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
@@ -31,6 +33,21 @@ class FlexFormServiceTest extends UnitTestCase
         yield 'XML without markers is returned unchanged' => [
             '<T3DataStructure><sheets/></T3DataStructure>',
             '<T3DataStructure><sheets/></T3DataStructure>',
+        ];
+
+        yield 'EarlyAccessConstants marker is replaced' => [
+            '###EAC:flexForm.value###',
+            'early_access_value',
+        ];
+
+        yield 'EarlyAccessConstants nested marker is replaced' => [
+            '###EAC:flexForm.nested.answer###',
+            '42',
+        ];
+
+        yield 'unknown EarlyAccessConstants path is left unchanged' => [
+            '###EAC:flexForm.unknown###',
+            '###EAC:flexForm.unknown###',
         ];
 
         yield 'backed enum case marker is replaced with backed value' => [
@@ -86,6 +103,23 @@ class FlexFormServiceTest extends UnitTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        GlobalVariableService::registerGlobalVariableProvider(FlexFormServiceTestEarlyAccessConstantsProvider::class);
+        GlobalVariableService::clearCache();
         $this->subject = new FlexFormService();
+    }
+}
+
+class FlexFormServiceTestEarlyAccessConstantsProvider extends AbstractProvider
+{
+    public function getGlobalVariables(): array
+    {
+        return [
+            'flexForm' => [
+                'nested' => [
+                    'answer' => 42,
+                ],
+                'value'  => 'early_access_value',
+            ],
+        ];
     }
 }

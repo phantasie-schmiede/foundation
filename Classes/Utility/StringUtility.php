@@ -14,9 +14,6 @@ use DateTime;
 use Exception;
 use JsonException;
 use NumberFormatter;
-use PSBits\Foundation\Service\TypoScriptProviderService;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionEnum;
 use ReflectionException;
 use RuntimeException;
@@ -42,9 +39,7 @@ class StringUtility
     }
 
     /**
-     * @throws ContainerExceptionInterface
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
      * @throws ReflectionException
      */
     public static function convertString(
@@ -87,18 +82,6 @@ class StringUtility
             // Avoid string manipulation by "rounding away" trailing zeros!
             if (false !== $floatRepresentation && !str_ends_with($variable, '0')) {
                 return $floatRepresentation;
-            }
-        }
-
-        if (str_starts_with($variable, 'TS:') && ContextUtility::isTypoScriptAvailable()) {
-            $typoScriptProviderService = GeneralUtility::makeInstance(TypoScriptProviderService::class);
-            [
-                ,
-                $path,
-            ] = GeneralUtility::trimExplode(':', $variable);
-
-            if ($typoScriptProviderService->has($path)) {
-                return $typoScriptProviderService->get($path);
             }
         }
 
