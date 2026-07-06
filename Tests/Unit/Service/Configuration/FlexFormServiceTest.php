@@ -109,6 +109,11 @@ class FlexFormServiceTest extends UnitTestCase
     }
 }
 
+/**
+ * Class FlexFormServiceTestEarlyAccessConstantsProvider
+ *
+ * @package PSBits\Foundation\Service\Configuration
+ */
 class FlexFormServiceTestEarlyAccessConstantsProvider extends AbstractProvider
 {
     public function getGlobalVariables(): array

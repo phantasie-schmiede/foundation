@@ -684,6 +684,7 @@ GlobalVariableService::get(RequestParameterProvider::class . '.formData.hiddenIn
   | `0`, `123`                                        | returns integer                                                                             |
   | `0.1`, `0,1`                                      | returns float                                                                               |
   | `0001423`                                         | returns unchanged string                                                                    |
+  | `TS:config.headerComment`                         | returns value from TypoScript (if path is valid) which is also processed by this function.  |
   | `\Full\Qualified\ClassName::CONSTANT['arrayKey']` | returns value of constant which is also processed by this function.                         |
   | `{...}`, `[...]`                                  | returns array if valid JSON                                                                 |
   | `false`, `true`                                   | returns boolean                                                                             |
