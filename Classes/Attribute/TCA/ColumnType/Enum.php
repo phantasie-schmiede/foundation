@@ -30,6 +30,11 @@ use function strlen;
 /**
  * Class Enum
  *
+ * Generates a select box with items based on a backed enum.
+ * Item labels are based on sanitized case names by default.
+ * If enum cases provide `getBackendLabel()`, that value is used as label.
+ * If localized labels exist for the property label path, they override enum labels.
+ *
  * @package PSBits\Foundation\Attribute\TCA\ColumnType
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
@@ -38,10 +43,7 @@ class Enum implements ColumnTypeWithItemsInterface
     protected array $items = [];
 
     /**
-     * @param string $enumClass Fully qualified class name of a backed enum.
-     *                          Item labels are based on sanitized case names by default.
-     *                          If enum cases provide `getBackendLabel()`, that value is used as label.
-     *                          If localized labels exist for the property label path, they override enum labels.
+     * @param string $enumClass Full qualified class name of a backed enum.
      */
     public function __construct(
         protected string $enumClass,
