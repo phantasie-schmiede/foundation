@@ -404,7 +404,6 @@ class TcaService
         $ctrl = ReflectionUtility::getAttributeInstance(Ctrl::class, $reflection);
 
         if (!$overrideMode && null === $ctrl) {
-            // @TODO: emit warning?
             return;
         }
 
@@ -699,29 +698,33 @@ class TcaService
                 $containingPalettes = [];
 
                 foreach ($GLOBALS['TCA'][$this->tableName]['palettes'] as $paletteIdentifier => $paletteConfiguration) {
-                    $fieldList = GeneralUtility::trimExplode(',', $paletteConfiguration['showitem']);
-                    array_walk($fieldList, static function(&$item) {
-                        $item = explode(';', $item)[0];
-                    });
+                    $fieldList = GeneralUtility::trimExplode(',', $paletteConfiguration['showitem'] ?? '');
+                    $normalizedFieldList = array_map(static function(string $item): string {
+                        return explode(';', $item)[0];
+                    }, $fieldList);
 
-                    if (in_array($referenceField, $fieldList, true)) {
-                        // @TODO: Palettes may define a label between ;;. Consider this case, too!
-                        $containingPalettes[] = '--palette--;;' . $paletteIdentifier;
+                    if (in_array($referenceField, $normalizedFieldList, true)) {
+                        $containingPalettes[] = (string)$paletteIdentifier;
                     }
                 }
 
                 foreach ($types as $typeConfiguration) {
                     $fieldList = GeneralUtility::trimExplode(',', $typeConfiguration['showitem'] ?? '');
+                    $normalizedFieldList = array_map(static function(string $item): string {
+                        return explode(';', $item)[0];
+                    }, $fieldList);
 
-                    if (in_array($referenceField, $fieldList, true)) {
+                    if (in_array($referenceField, $normalizedFieldList, true)) {
                         $fieldCanBeAdded = true;
                         break;
                     }
 
-                    foreach ($containingPalettes as $palette) {
-                        if (in_array($palette, $fieldList, true)) {
-                            $fieldCanBeAdded = true;
-                            break 2;
+                    foreach ($containingPalettes as $paletteIdentifier) {
+                        foreach ($fieldList as $showItem) {
+                            if (self::isPaletteReference($showItem, $paletteIdentifier)) {
+                                $fieldCanBeAdded = true;
+                                break 3;
+                            }
                         }
                     }
                 }
@@ -770,6 +773,13 @@ class TcaService
             $typeList,
             $palettePosition ?? ''
         );
+    }
+
+    private static function isPaletteReference(string $showItem, string $paletteIdentifier): bool
+    {
+        $parts = array_map('trim', explode(';', $showItem));
+
+        return '--palette--' === ($parts[0] ?? '') && $paletteIdentifier === ($parts[2] ?? '');
     }
 
     /**
