@@ -1,4 +1,5 @@
 .Build/
+.cache/
 .idea/
 Build/phpunit/.phpunit.cache/
 Build/phpunit/UnitTests.xml.bak

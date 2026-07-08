@@ -47,8 +47,9 @@ class TypoScriptProviderServiceTest extends FunctionalTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    public function defaultArgumentsReturnWholeTypoScript(): void
+    public function defaultArgumentsReturnWholeTypoScriptInBackendContext(): void
     {
+        $this->mockBackendRequest();
         $typoScriptProviderService = GeneralUtility::makeInstance(TypoScriptProviderService::class);
         $typoScript = $typoScriptProviderService->get();
         self::assertIsArray($typoScript);
@@ -76,7 +77,6 @@ class TypoScriptProviderServiceTest extends FunctionalTestCase
     {
         parent::setUp();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
-        $this->mockBackendRequest();
     }
 
     protected function tearDown(): void
