@@ -12,10 +12,16 @@ namespace PSBits\Foundation\Utility;
 
 use Generator;
 use JsonException;
+use PSBits\Foundation\Service\TypoScriptProviderService;
 use PSBits\Foundation\Tests\Examples\BackedEnum;
 use PSBits\Foundation\Tests\Examples\Enum;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\TypoScript\AST\Node\RootNode;
+use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -138,6 +144,51 @@ class StringUtilityTest extends UnitTestCase
         self::assertEquals(
             $expectedResult,
             StringUtility::convertString($string)
+        );
+    }
+
+    /**
+     * @test
+     * @throws ContainerExceptionInterface
+     * @throws JsonException
+     * @throws NotFoundExceptionInterface
+     */
+    public function convertStringResolvesTypoScriptPathWithTypoScriptContext(): void
+    {
+        $typoScriptProviderServiceMock = $this->getMockBuilder(TypoScriptProviderService::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods([
+                'has',
+                'get',
+            ])
+            ->getMock();
+
+        $typoScriptProviderServiceMock->expects(self::once())
+            ->method('has')
+            ->with('config.tx_foundation.someValue')
+            ->willReturn(true);
+        $typoScriptProviderServiceMock->expects(self::once())
+            ->method('get')
+            ->with('config.tx_foundation.someValue')
+            ->willReturn('resolved value');
+        GeneralUtility::addInstance(TypoScriptProviderService::class, $typoScriptProviderServiceMock);
+
+        $frontendTypoScript = new FrontendTypoScript(new RootNode(), [], [], []);
+        $frontendTypoScript->setSetupArray([
+            'config.' => [
+                'tx_foundation.' => [
+                    'someValue' => 'resolved value',
+                ],
+            ],
+        ]);
+        $GLOBALS['TYPO3_REQUEST'] = (new ServerRequest())->withAttribute(
+            'applicationType',
+            SystemEnvironmentBuilder::REQUESTTYPE_FE
+        )->withAttribute('frontend.typoscript', $frontendTypoScript);
+
+        self::assertSame(
+            'resolved value',
+            StringUtility::convertString('TS:config.tx_foundation.someValue')
         );
     }
 
@@ -287,5 +338,12 @@ class StringUtilityTest extends UnitTestCase
             $expectedResult,
             StringUtility::crop($string, $length, $appendix, $respectWordBoundaries, $respectHtml)
         );
+    }
+
+    protected function tearDown(): void
+    {
+        unset($GLOBALS['TYPO3_REQUEST']);
+        GeneralUtility::purgeInstances();
+        parent::tearDown();
     }
 }
