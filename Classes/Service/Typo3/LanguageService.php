@@ -34,6 +34,7 @@ use function strlen;
  * Overwrites the original functions in order to respect plural forms and support logging.
  *
  * @package PSBits\Foundation\Service\Typo3
+ * @TODO    Check original file on TYPO3 update (v14)!
  */
 class LanguageService extends Typo3LanguageService
 {

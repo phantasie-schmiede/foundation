@@ -15,6 +15,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PSBits\Foundation\Service\TypoScriptProviderService;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -84,13 +85,28 @@ class TypoScriptProviderServiceTest extends FunctionalTestCase
         parent::tearDown();
     }
 
+    /**
+     * @param int $applicationType Constant from SystemEnvironmentBuilder::REQUESTTYPE_*
+     *
+     * @return ServerRequestInterface
+     */
+    private function createRequest(int $applicationType): ServerRequestInterface
+    {
+        $request = new ServerRequest(
+            'http://example.com/en/', 'GET', null, [], [
+                'HTTP_HOST'   => 'example.com',
+                'REQUEST_URI' => '/en/',
+            ]
+        );
+
+        return $request->withQueryParams(['id' => self::ROOT_PAGE_ID])
+            ->withAttribute('normalizedParams', NormalizedParams::createFromRequest($request))
+            ->withAttribute('applicationType', $applicationType);
+    }
+
     private function mockBackendRequest(): void
     {
-        $request = new ServerRequest('http://example.com/en/', 'GET', null, [],
-            ['HTTP_HOST' => 'example.com', 'REQUEST_URI' => '/en/']);
-        $GLOBALS['TYPO3_REQUEST'] = $request->withQueryParams(['id' => 1])
-            ->withAttribute('normalizedParams', NormalizedParams::createFromRequest($request))
-            ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
+        $GLOBALS['TYPO3_REQUEST'] = $this->createRequest(SystemEnvironmentBuilder::REQUESTTYPE_BE);
     }
 
     private function mockFrontendRequest(): void
@@ -98,18 +114,12 @@ class TypoScriptProviderServiceTest extends FunctionalTestCase
         $frontendTypoScript = new FrontendTypoScript(new RootNode(), [], [], []);
         $frontendTypoScript->setSetupArray(['config.' => []]);
         $request = new ServerRequest(
-            'http://example.com/en/',
-            'GET',
-            null,
-            [],
-            [
+            'http://example.com/en/', 'GET', null, [], [
                 'HTTP_HOST'   => 'example.com',
                 'REQUEST_URI' => '/en/',
             ]
         );
-        $GLOBALS['TYPO3_REQUEST'] = $request->withQueryParams(['id' => self::ROOT_PAGE_ID])
-            ->withAttribute('normalizedParams', NormalizedParams::createFromRequest($request))
-            ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE)
+        $GLOBALS['TYPO3_REQUEST'] = $this->createRequest(SystemEnvironmentBuilder::REQUESTTYPE_FE)
             ->withAttribute('frontend.typoscript', $frontendTypoScript);
 
         $this->mockSiteConfiguration();
