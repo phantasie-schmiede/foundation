@@ -584,7 +584,7 @@ If that key doesn't exist, `name` will be transformed from "yourPageTypeName" to
 ### Auto-registration of TypoScript-files
 
 For TYPO3 13+, this extension provides the Site Set `psbits/foundation`.
-Add it to your site configuration to include the TypoScript automatically.
+Add it to your site configuration to include the TypoScript of this extension automatically.
 
 If there are `.typoscript`-files located in `EXT:your_extension/Configuration/TypoScript]`, foundation will execute
 `\PSBits\Foundation\Utility\TypoScript\TypoScriptUtility::registerTypoScript()` for that directory.
