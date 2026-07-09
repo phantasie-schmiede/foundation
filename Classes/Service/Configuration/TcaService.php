@@ -912,7 +912,7 @@ class TcaService
     {
         $GLOBALS['TCA'][$this->tableName] = [
             'types'    => [
-                0 => ['showitem' => ''],
+                '0' => ['showitem' => ''],
             ],
             'palettes' => [],
             'columns'  => [],
@@ -986,6 +986,11 @@ class TcaService
     {
         foreach ($columnConfigurations as $configuration) {
             $typeList = $configuration->getTypeList();
+
+            if ('' === $typeList) {
+                continue;
+            }
+
             $types = GeneralUtility::trimExplode(',', $typeList);
 
             foreach ($types as $type) {
