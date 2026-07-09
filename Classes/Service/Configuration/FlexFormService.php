@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -44,7 +45,7 @@ class FlexFormService
     {
         return preg_replace_callback(
             '/###(.+?)###/s',
-            static function (array $matches): string {
+            static function(array $matches): string {
                 try {
                     $markerContent = $matches[1];
 
@@ -113,7 +114,7 @@ class FlexFormService
         $xml = $this->processMarkers($xml);
 
         if (self::ALL_PLUGINS !== $pluginSignature) {
-            $pluginSignature = strtolower($pluginSignature);
+            $pluginSignature                                                                     = strtolower($pluginSignature);
             $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'pi_flexform';
         }
 

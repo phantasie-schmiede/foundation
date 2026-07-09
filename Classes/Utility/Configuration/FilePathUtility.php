@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -15,6 +16,7 @@ use PSBits\Foundation\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Resource\Exception\InvalidFileException;
 use TYPO3\CMS\Core\Utility\PathUtility;
+
 use function array_slice;
 
 /**
@@ -51,7 +53,7 @@ class FilePathUtility
         ExtensionInformationInterface $extensionInformation,
         string                        $filename = null,
     ): string {
-        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
+        $trace                   = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
         $callingFilePathElements = explode('/', $trace[0]['file']);
 
         // Search for extension_key in file path. If not found, search for package-key.
@@ -69,25 +71,25 @@ class FilePathUtility
 
         // Retrieve all array items AFTER the extension key.
         $relativeFilePathElements = array_slice($callingFilePathElements, $indexOfExtensionKey + 1);
-        $callingFilename = array_pop($relativeFilePathElements);
-        $filename = ($filename ?? str_replace('.php', '', $callingFilename));
+        $callingFilename          = array_pop($relativeFilePathElements);
+        $filename                 = ($filename ?? str_replace('.php', '', $callingFilename));
 
         if (!str_ends_with($filename, self::LANGUAGE_FILE_EXTENSION)) {
             $filename .= self::LANGUAGE_FILE_EXTENSION;
         }
 
         return self::getLanguageFilePath($extensionInformation) . 'Backend/' . implode(
-                '/',
-                $relativeFilePathElements
-            ) . '/' . lcfirst($filename) . ':';
+            '/',
+            $relativeFilePathElements
+        ) . '/' . lcfirst($filename) . ':';
     }
 
     public static function getLanguageLabelLogFilesPath(): string
     {
         return rtrim(
-                Environment::getVarPath(),
-                '/'
-            ) . '/' . self::LANGUAGE_LABEL_LOG_FILES_PATH;
+            Environment::getVarPath(),
+            '/'
+        ) . '/' . self::LANGUAGE_LABEL_LOG_FILES_PATH;
     }
 
     public static function getPrivateResourcePath(

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -35,7 +36,8 @@ class PageCacheService
     {
         if (!is_subclass_of($builderClass, BuilderInterface::class)) {
             throw new InvalidArgumentException(
-                __CLASS__ . ': The builder doest not implement the required BuilderInterface!', 1729847294
+                __CLASS__ . ': The builder doest not implement the required BuilderInterface!',
+                1729847294
             );
         }
 

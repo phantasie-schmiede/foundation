@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -12,6 +13,7 @@ namespace PSBits\Foundation\Utility;
 
 use InvalidArgumentException;
 use RuntimeException;
+
 use function in_array;
 
 /**
@@ -39,7 +41,8 @@ class ValidationUtility
     {
         if (!isset($constant[$key])) {
             throw new InvalidArgumentException(
-                __CLASS__ . ': Key "' . $key . '" is not present in constant!', 1564122378
+                __CLASS__ . ': Key "' . $key . '" is not present in constant!',
+                1564122378
             );
         }
     }
@@ -48,7 +51,8 @@ class ValidationUtility
     {
         if (!in_array($value, $constant, true)) {
             throw new InvalidArgumentException(
-                __CLASS__ . ': Value "' . $value . '" is not present in constant!', 1564068237
+                __CLASS__ . ': Value "' . $value . '" is not present in constant!',
+                1564068237
             );
         }
     }

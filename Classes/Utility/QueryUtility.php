@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -16,6 +17,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+
 use function count;
 
 /**
@@ -32,6 +34,7 @@ class QueryUtility
                 break;
             case 1:
                 $query->matching($constraints[0]);
+
                 break;
             default:
                 $query->matching($query->logicalAnd(...$constraints));

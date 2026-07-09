@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -30,6 +31,7 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Exception;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
+
 use function count;
 use function in_array;
 use function is_array;
@@ -140,7 +142,7 @@ class TranslateViewHelper extends AbstractViewHelper
                 $id = $result;
             } elseif (null === $extensionName && $request instanceof RequestInterface) {
                 $extensionName = $request->getControllerExtensionName();
-                $id = static::buildIdFromRequest($id, $request);
+                $id            = static::buildIdFromRequest($id, $request);
             }
         }
 
@@ -185,8 +187,8 @@ class TranslateViewHelper extends AbstractViewHelper
     private static function buildIdFromRequest(string $id, Request $request): string
     {
         $path = 'LLL:EXT:' . GeneralUtility::camelCaseToLowerCaseUnderscored(
-                $request->getControllerExtensionName()
-            ) . '/Resources/Private/Language/';
+            $request->getControllerExtensionName()
+        ) . '/Resources/Private/Language/';
 
         if (ContextUtility::isFrontend()) {
             $path .= 'Frontend';
@@ -203,8 +205,8 @@ class TranslateViewHelper extends AbstractViewHelper
         }
 
         return $path . '/' . implode('/', $controllerName) . '/' . self::getActionName(
-                $request->getControllerActionName()
-            ) . '.xlf:' . $id;
+            $request->getControllerActionName()
+        ) . '.xlf:' . $id;
     }
 
     /**
@@ -221,7 +223,7 @@ class TranslateViewHelper extends AbstractViewHelper
             [
                 $alias,
                 $id,
-            ] = GeneralUtility::trimExplode(':', $id);
+            ]                          = GeneralUtility::trimExplode(':', $id);
             $templateVariableContainer = $renderingContext->getVariableProvider();
 
             if ($templateVariableContainer->exists(RegisterLanguageFileViewHelper::VARIABLE_NAME)) {

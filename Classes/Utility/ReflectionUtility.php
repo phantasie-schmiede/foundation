@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -14,6 +15,7 @@ use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionException;
 use Reflector;
+
 use function count;
 use function is_string;
 

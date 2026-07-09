@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -34,10 +35,10 @@ readonly class BuilderForNews implements BuilderInterface
     public function collectSourceRelations(): array
     {
         $contentTable = 'tt_content';
-        $relations = [];
+        $relations    = [];
 
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable($contentTable);
-        $pluginRows = $queryBuilder->select('pi_flexform', 'pid')
+        $pluginRows   = $queryBuilder->select('pi_flexform', 'pid')
             ->from($contentTable)
             ->where(
                 $queryBuilder->expr()
@@ -52,7 +53,7 @@ readonly class BuilderForNews implements BuilderInterface
             }
 
             $pluginConfiguration = $this->flexFormService->convertFlexFormContentToArray($pluginRow['pi_flexform']);
-            $startingPoints = GeneralUtility::intExplode(',', $pluginConfiguration['settings']['startingpoint'], true);
+            $startingPoints      = GeneralUtility::intExplode(',', $pluginConfiguration['settings']['startingpoint'], true);
             array_push($relations[$pluginRow['pid']], ...$startingPoints);
         }
 

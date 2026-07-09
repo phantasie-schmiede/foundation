@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use PSBits\Foundation\Service\ExtensionInformationService;
@@ -12,11 +13,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 return call_user_func(
     static function() {
-        $icons = [];
+        $icons                       = [];
         $extensionInformationService = GeneralUtility::makeInstance(ExtensionInformationService::class);
-        $allExtensionInformation = $extensionInformationService->getAllExtensionInformation();
-        $packageManager = GeneralUtility::makeInstance(PackageManager::class);
-        $pathMapping = [];
+        $allExtensionInformation     = $extensionInformationService->getAllExtensionInformation();
+        $packageManager              = GeneralUtility::makeInstance(PackageManager::class);
+        $pathMapping                 = [];
 
         foreach ($packageManager->getAvailablePackages() as $package) {
             $pathMapping[$package->getPackagePath(
@@ -46,20 +47,20 @@ return call_user_func(
             /** @var SplFileInfo $fileInfo */
             foreach ($finder as $fileInfo) {
                 $iconIdentifier = str_replace(
-                        '_',
-                        '-',
-                        $extensionInformation->getExtensionKey()
-                    ) . '-' . str_replace(
-                        '_',
-                        '-',
-                        GeneralUtility::camelCaseToLowerCaseUnderscored($fileInfo->getFilenameWithoutExtension())
-                    );
+                    '_',
+                    '-',
+                    $extensionInformation->getExtensionKey()
+                ) . '-' . str_replace(
+                    '_',
+                    '-',
+                    GeneralUtility::camelCaseToLowerCaseUnderscored($fileInfo->getFilenameWithoutExtension())
+                );
 
                 // Absolute icon paths do not work in every context inside TYPO3. Therefore we need to use EXT: prefix.
                 $icons[$iconIdentifier] = [
                     'provider' => ('svg' === strtolower(
-                            $fileInfo->getExtension()
-                        )) ? SvgIconProvider::class : BitmapIconProvider::class,
+                        $fileInfo->getExtension()
+                    )) ? SvgIconProvider::class : BitmapIconProvider::class,
                     'source'   => str_replace(
                         array_keys($pathMapping),
                         array_values($pathMapping),

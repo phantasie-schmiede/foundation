@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -26,6 +27,7 @@ use ReflectionException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 use function is_array;
 use function is_float;
 use function is_int;
@@ -40,13 +42,13 @@ use function is_string;
 class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
 {
     /** @deprecated Will be removed in v4.0. Use more specific constant instead! */
-    public const array EMPTY_DEFAULT_ITEM                  = [
+    public const array EMPTY_DEFAULT_ITEM = [
         [
             'label' => self::LANGUAGE_LABEL_PREFIX . 'pleaseChoose',
             'value' => 0,
         ],
     ];
-    public const array EMPTY_DEFAULT_ITEM_MANDATORY_INT    = [
+    public const array EMPTY_DEFAULT_ITEM_MANDATORY_INT = [
         [
             'label' => self::LANGUAGE_LABEL_PREFIX . 'pleaseChoose.mandatory',
             'value' => 0,
@@ -58,21 +60,19 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
             'value' => '',
         ],
     ];
-    public const array EMPTY_DEFAULT_ITEM_OPTIONAL_INT     = [
+    public const array EMPTY_DEFAULT_ITEM_OPTIONAL_INT = [
         [
             'label' => self::LANGUAGE_LABEL_PREFIX . 'pleaseChoose.optional',
             'value' => 0,
         ],
     ];
-    public const array EMPTY_DEFAULT_ITEM_OPTIONAL_STRING  = [
+    public const array EMPTY_DEFAULT_ITEM_OPTIONAL_STRING = [
         [
             'label' => self::LANGUAGE_LABEL_PREFIX . 'pleaseChoose.optional',
             'value' => '',
         ],
     ];
-
     private const string LANGUAGE_LABEL_PREFIX = 'LLL:EXT:foundation/Resources/Private/Language/Backend/Classes/Attribute/TCA/ColumnType/select.xlf:';
-
     protected ExtensionInformationService $extensionInformationService;
     protected TcaService                  $tcaService;
 
@@ -154,7 +154,7 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
         protected array            $treeConfigStartingPoints = [],
     ) {
         $this->extensionInformationService = GeneralUtility::makeInstance(ExtensionInformationService::class);
-        $this->tcaService = GeneralUtility::makeInstance(TcaService::class);
+        $this->tcaService                  = GeneralUtility::makeInstance(TcaService::class);
 
         if (class_exists($linkedModel)) {
             $this->foreignTable = $this->tcaService->convertClassNameToTableName($linkedModel);
@@ -162,20 +162,20 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
 
         if (SelectRenderType::selectSingle === $renderType) {
             $this->autoSizeMax = $autoSizeMax ?? 1;
-            $this->maxItems = $maxItems ?? 1;
-            $this->size = $size ?? 1;
+            $this->maxItems    = $maxItems ?? 1;
+            $this->size        = $size ?? 1;
         }
 
         if (SelectRenderType::selectTree === $renderType) {
             $this->autoSizeMax = null;
-            $this->size = null;
+            $this->size        = null;
         }
 
         if (!empty($mm)) {
             $this->autoSizeMax = $autoSizeMax ?? 30;
-            $this->maxItems = $maxItems ?? 0;
-            $this->renderType = $renderType ?? SelectRenderType::selectMultipleSideBySide;
-            $this->size = $size ?? 10;
+            $this->maxItems    = $maxItems ?? 0;
+            $this->renderType  = $renderType ?? SelectRenderType::selectMultipleSideBySide;
+            $this->size        = $size ?? 10;
         }
     }
 
@@ -186,14 +186,14 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
 
     public function getDatabaseDefinition(): string
     {
-        $hasFloatValues = false;
+        $hasFloatValues    = false;
         $hasNegativeValues = false;
-        $hasStringValues = false;
-        $maxStringLength = 0;
+        $hasStringValues   = false;
+        $maxStringLength   = 0;
 
         if (!empty($this->items)) {
             foreach ($this->items as $item) {
-                $value = $item['value'];
+                $value           = $item['value'];
                 $maxStringLength = max($maxStringLength, strlen((string)$value));
 
                 if (is_string($value)) {
@@ -263,7 +263,7 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
             return null;
         }
 
-        $this->items = array_merge($this->prependItem ?? [], $this->items ?? []);
+        $this->items       = array_merge($this->prependItem ?? [], $this->items ?? []);
         $this->prependItem = [];
 
         return $this->items;

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -181,7 +182,7 @@ class PluralFormUtility
         // Example: If $languageKey is "de_CH" and there is no rule defined for it, try "de".
         if (!isset(static::LANGUAGE_RULE_MAPPING[$languageKey])) {
             $languageKeyParts = preg_split('/[_-]/', $languageKey);
-            $languageKey = (string)array_shift($languageKeyParts);
+            $languageKey      = (string)array_shift($languageKeyParts);
         }
 
         if (!isset(static::LANGUAGE_RULE_MAPPING[$languageKey])) {
@@ -189,19 +190,19 @@ class PluralFormUtility
         }
 
         return match (static::LANGUAGE_RULE_MAPPING[$languageKey]) {
-            0 => 0, // nplurals=1; plural=0;
-            1 => (1 < $quantity) ? 1 : 0, // nplurals=2; plural=(n > 1);
-            2 => (1 !== $quantity) ? 1 : 0, // nplurals=2; plural=(n != 1);
-            3 => (0 !== $quantity) ? 1 : 0, // nplurals=2; plural=(n != 0);
-            4 => (1 !== $quantity % 10 || 11 === $quantity % 100) ? 1 : 0, // nplurals=2; plural=(n%10!=1 || n%100==11);
-            5 => (0 === $quantity) ? 0 : ((1 === $quantity) ? 1 : 2), // nplurals=3; plural=(n==0 ? 0 : n==1 ? 1 : 2);
-            6 => (1 === $quantity) ? 0 : ((2 <= $quantity && 4 >= $quantity) ? 1 : 2), // nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;
-            7 => (1 === $quantity) ? 0 : ((2 === $quantity) ? 1 : (($quantity === 3) ? 2 : 3)), // nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n == 3) ? 2 : 3;
-            8 => (1 === $quantity % 10 && 11 !== $quantity % 100) ? 0 : (0 !== $quantity ? 1 : 2), // nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);
-            9 => (1 === $quantity) ? 0 : ((2 === $quantity) ? 1 : ((8 !== $quantity && 11 !== $quantity) ? 2 : 3)), // nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;
+            0  => 0, // nplurals=1; plural=0;
+            1  => (1 < $quantity) ? 1 : 0, // nplurals=2; plural=(n > 1);
+            2  => (1 !== $quantity) ? 1 : 0, // nplurals=2; plural=(n != 1);
+            3  => (0 !== $quantity) ? 1 : 0, // nplurals=2; plural=(n != 0);
+            4  => (1 !== $quantity % 10 || 11 === $quantity % 100) ? 1 : 0, // nplurals=2; plural=(n%10!=1 || n%100==11);
+            5  => (0 === $quantity) ? 0 : ((1 === $quantity) ? 1 : 2), // nplurals=3; plural=(n==0 ? 0 : n==1 ? 1 : 2);
+            6  => (1 === $quantity) ? 0 : ((2 <= $quantity && 4 >= $quantity) ? 1 : 2), // nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;
+            7  => (1 === $quantity) ? 0 : ((2 === $quantity) ? 1 : ((3 === $quantity) ? 2 : 3)), // nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n == 3) ? 2 : 3;
+            8  => (1 === $quantity % 10 && 11 !== $quantity % 100) ? 0 : (0 !== $quantity ? 1 : 2), // nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);
+            9  => (1 === $quantity) ? 0 : ((2 === $quantity) ? 1 : ((8 !== $quantity && 11 !== $quantity) ? 2 : 3)), // nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;
             10 => (1 === $quantity) ? 0 : ((0 === $quantity || (0 < $quantity % 100 && 20 > $quantity % 100)) ? 1 : 2), // nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);
             11 => (1 === $quantity % 100) ? 0 : ((2 === $quantity % 100) ? 1 : ((3 === $quantity % 100 || 4 === $quantity % 100) ? 2 : 3)), // nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);
-            12 => (1 === $quantity) ? 0 : ((2 === $quantity) ? 1 : ((2 < $quantity && 7 > $quantity) ? 2 :((6 < $quantity && 11 > $quantity) ? 3 : 4))), // nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : (n>2 && n<7) ? 2 :(n>6 && n<11) ? 3 : 4;
+            12 => (1 === $quantity) ? 0 : ((2 === $quantity) ? 1 : ((2 < $quantity && 7 > $quantity) ? 2 : ((6 < $quantity && 11 > $quantity) ? 3 : 4))), // nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : (n>2 && n<7) ? 2 :(n>6 && n<11) ? 3 : 4;
             13 => (1 === $quantity) ? 0 : ((2 <= $quantity % 10 && 4 >= $quantity % 10 && (10 > $quantity % 100 || 20 <= $quantity % 100)) ? 1 : 2), // nplurals=3; plural=(n==1) ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;
             14 => (1 === $quantity || 11 === $quantity) ? 0 : ((2 === $quantity || 12 === $quantity) ? 1 : ((2 < $quantity && 20 > $quantity) ? 2 : 3)), // nplurals=4; plural=(n==1 || n==11) ? 0 : (n==2 || n==12) ? 1 : (n > 2 && n < 20) ? 2 : 3;
             15 => (1 === $quantity % 10 && 11 !== $quantity % 100) ? 0 : ((2 <= $quantity % 10 && (10 > $quantity % 100 || 20 <= $quantity % 100)) ? 1 : 2), // nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);

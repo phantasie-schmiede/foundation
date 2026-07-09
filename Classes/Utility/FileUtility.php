@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -16,6 +17,7 @@ use NumberFormatter;
 use RuntimeException;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 use function is_int;
 use function is_string;
 use function strlen;
@@ -68,14 +70,17 @@ class FileUtility
         switch (true) {
             case is_int($input):
                 $bytes = $input;
+
                 break;
             case is_string($input):
                 $input = self::resolveFileName($input);
                 $bytes = filesize($input);
+
                 break;
             default:
                 throw new RuntimeException(
-                    __CLASS__ . ': Argument 1 of formatFileSize() has to be integer or string!', 1614368333
+                    __CLASS__ . ': Argument 1 of formatFileSize() has to be integer or string!',
+                    1614368333
                 );
         }
 
@@ -84,13 +89,13 @@ class FileUtility
         } else {
             $power = 0;
 
-            while ($bytes >= 1024) {
+            while (1024 <= $bytes) {
                 $bytes /= 1024;
                 $power++;
             }
         }
 
-        $unitString = array_search($power ?? $unit, self::FILE_SIZE_UNITS, true);
+        $unitString      = array_search($power ?? $unit, self::FILE_SIZE_UNITS, true);
         $numberFormatter = StringUtility::getNumberFormatter();
         $numberFormatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
 
@@ -104,9 +109,9 @@ class FileUtility
 
     public static function getMimeType(string $fileName): bool|string
     {
-        $fileName = self::resolveFileName($fileName);
+        $fileName        = self::resolveFileName($fileName);
         $fileInformation = finfo_open(FILEINFO_MIME_TYPE);
-        $mimeType = $fileInformation->file($fileName);
+        $mimeType        = $fileInformation->file($fileName);
         finfo_close($fileInformation);
 
         return $mimeType;
@@ -125,14 +130,16 @@ class FileUtility
     ): void {
         if (null === $content && null === $filename) {
             throw new RuntimeException(
-                __CLASS__ . ': Either $content or $filename has to be set!', 1739366404
+                __CLASS__ . ': Either $content or $filename has to be set!',
+                1739366404
             );
         }
 
         if (null !== $content) {
             if (null === $downloadName) {
                 throw new RuntimeException(
-                    __CLASS__ . ': $downloadName has to be set when $content is set!', 1739366548
+                    __CLASS__ . ': $downloadName has to be set when $content is set!',
+                    1739366548
                 );
             }
 
@@ -173,7 +180,7 @@ class FileUtility
 
         if (!empty($content)) {
             $lifetime = new DateTime($content);
-            $now = new DateTime();
+            $now      = new DateTime();
 
             if ($now > $lifetime) {
                 return !self::unlockFile(self::resolveFileName($fileName));

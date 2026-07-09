@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -19,6 +20,7 @@ use RuntimeException;
 use SimpleXMLElement;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 use function is_array;
 use function is_string;
 
@@ -35,23 +37,21 @@ class XmlUtility
         'NODE_VALUE' => '@nodeValue',
         'POSITION'   => '@position',
     ];
-
     public const array SPECIAL_XML_KEYS = [
         '_attributes',
         '_namespaces',
         '_nodeValue',
         '_position',
     ];
-
     public const string XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>';
 
     public static function beautifyXml(string $xml, bool $forceNoWrap = false): string
     {
-        $dom = new DOMDocument();
+        $dom                     = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->loadXML($xml, LIBXML_PARSEHUGE | LIBXML_NOCDATA);
         $dom->formatOutput = true;
-        $formattedXml = $dom->saveXML();
+        $formattedXml      = $dom->saveXML();
 
         if ($forceNoWrap) {
             // Replace spaces with non-breaking spaces to enforce correct indentation in frontend.
@@ -191,7 +191,7 @@ class XmlUtility
 
             foreach ($xml->children($prefix, true) as $childTagName => $child) {
                 $childTagName = $prependPrefix . $childTagName;
-                $parsedChild = self::buildFromXml($sortAlphabetically, $child, $mapping, $namespaces, false);
+                $parsedChild  = self::buildFromXml($sortAlphabetically, $child, $mapping, $namespaces, false);
 
                 if (isset($mapping[$childTagName])) {
                     $parsedChild = GeneralUtility::makeInstance($mapping[$childTagName], $parsedChild);
@@ -244,8 +244,8 @@ class XmlUtility
         $xml = '<' . $key;
 
         if (is_array($value) && isset($value[self::SPECIAL_ARRAY_KEYS['NAMESPACES']]) && is_array(
-                $value[self::SPECIAL_ARRAY_KEYS['NAMESPACES']]
-            )) {
+            $value[self::SPECIAL_ARRAY_KEYS['NAMESPACES']]
+        )) {
             foreach ($value[self::SPECIAL_ARRAY_KEYS['NAMESPACES']] as $prefix => $namespace) {
                 $xml .= ' xmlns' . ($prefix ? (':' . $prefix) : '') . '="' . $namespace . '"';
             }
@@ -254,8 +254,8 @@ class XmlUtility
         }
 
         if (is_array($value) && isset($value[self::SPECIAL_ARRAY_KEYS['ATTRIBUTES']]) && is_array(
-                $value[self::SPECIAL_ARRAY_KEYS['ATTRIBUTES']]
-            )) {
+            $value[self::SPECIAL_ARRAY_KEYS['ATTRIBUTES']]
+        )) {
             foreach ($value[self::SPECIAL_ARRAY_KEYS['ATTRIBUTES']] as $attributeName => $attributeValue) {
                 $xml .= ' ' . $attributeName . '="' . $attributeValue . '"';
             }
@@ -287,7 +287,7 @@ class XmlUtility
 
     private static function buildXml(array|XmlElementInterface $data)
     {
-        $xml = '';
+        $xml      = '';
         $siblings = [];
 
         if ($data instanceof XmlElementInterface) {

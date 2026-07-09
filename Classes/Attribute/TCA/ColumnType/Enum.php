@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -23,6 +24,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
+
 use function is_string;
 use function method_exists;
 use function strlen;
@@ -58,7 +60,7 @@ class Enum implements ColumnTypeWithItemsInterface
         $this->checkType();
 
         // Check if backed enum has string or integer values
-        $cases = $this->enumClass::cases();
+        $cases     = $this->enumClass::cases();
         $firstCase = reset($cases);
 
         if (is_string($firstCase->value)) {
@@ -72,10 +74,10 @@ class Enum implements ColumnTypeWithItemsInterface
         }
 
         $hasNegativeValues = false;
-        $maxValue = 0;
+        $maxValue          = 0;
 
         foreach ($cases as $case) {
-            if ($case->value < 0) {
+            if (0 > $case->value) {
                 $hasNegativeValues = true;
             }
 
@@ -84,17 +86,17 @@ class Enum implements ColumnTypeWithItemsInterface
 
         return match ($hasNegativeValues) {
             true  => match (true) {
-                $maxValue <= 127        => DefinitionUtility::tinyint(),
-                $maxValue <= 32767      => DefinitionUtility::smallint(),
-                $maxValue <= 8388607    => DefinitionUtility::mediumint(),
-                $maxValue <= 2147483647 => DefinitionUtility::int(),
+                127 >= $maxValue        => DefinitionUtility::tinyint(),
+                32767 >= $maxValue      => DefinitionUtility::smallint(),
+                8388607 >= $maxValue    => DefinitionUtility::mediumint(),
+                2147483647 >= $maxValue => DefinitionUtility::int(),
                 default                 => DefinitionUtility::bigint()
             },
             false => match (true) {
-                $maxValue <= 255        => DefinitionUtility::tinyint(unsigned: true),
-                $maxValue <= 65535      => DefinitionUtility::smallint(unsigned: true),
-                $maxValue <= 16777215   => DefinitionUtility::mediumint(unsigned: true),
-                $maxValue <= 4294967295 => DefinitionUtility::int(unsigned: true),
+                255 >= $maxValue        => DefinitionUtility::tinyint(unsigned: true),
+                65535 >= $maxValue      => DefinitionUtility::smallint(unsigned: true),
+                16777215 >= $maxValue   => DefinitionUtility::mediumint(unsigned: true),
+                4294967295 >= $maxValue => DefinitionUtility::int(unsigned: true),
                 default                 => DefinitionUtility::bigint(unsigned: true)
             },
         };
@@ -129,9 +131,9 @@ class Enum implements ColumnTypeWithItemsInterface
 
             // Custom property labels override default enum labels.
             if (str_starts_with(
-                    $labelPath,
-                    FilePathUtility::LANGUAGE_LABEL_PREFIX
-                ) && LocalizationUtility::translationExists($labelPath . $caseName)) {
+                $labelPath,
+                FilePathUtility::LANGUAGE_LABEL_PREFIX
+            ) && LocalizationUtility::translationExists($labelPath . $caseName)) {
                 $label = $labelPath . $caseName;
             }
 
@@ -160,7 +162,8 @@ class Enum implements ColumnTypeWithItemsInterface
     {
         if (!is_subclass_of($this->enumClass, BackedEnum::class)) {
             throw new MisconfiguredTcaException(
-                __CLASS__ . ': The provided class "' . $this->enumClass . '" is not a valid backend enum.', 1773836071
+                __CLASS__ . ': The provided class "' . $this->enumClass . '" is not a valid backend enum.',
+                1773836071
             );
         }
     }

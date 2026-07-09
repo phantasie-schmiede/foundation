@@ -1,0 +1,28 @@
+{
+  "name": "foundation",
+  "version": "1.0.0",
+  "description": "Configuration framework for TYPO3 extension development",
+  "scripts": {
+    "fix:classes": "node Build/Quality/lint-class-attributes.mjs",
+    "fix:htmlxml": "prettier --config Build/Quality/prettier.config.mjs --ignore-path Build/Quality/.prettierignore --write \"**/*.{html,xml,xlf}\"",
+    "lint:classes": "node Build/Quality/lint-class-attributes.mjs --dry-run",
+    "lint:htmlxml": "prettier --config Build/Quality/prettier.config.mjs --ignore-path Build/Quality/.prettierignore --check \"**/*.{html,xml,xlf}\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phantasie-schmiede/foundation.git"
+  },
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/phantasie-schmiede/foundation/issues"
+  },
+  "homepage": "https://github.com/phantasie-schmiede/foundation#readme",
+  "engines": {
+    "node": ">=24"
+  },
+  "devDependencies": {
+    "@prettier/plugin-xml": "^3.4.2",
+    "prettier": "^3.6.2",
+    "prettier-plugin-organize-attributes": "^1.0.0",
+  }
+}

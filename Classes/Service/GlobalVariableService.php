@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -53,14 +54,15 @@ class GlobalVariableService
         }
 
         $pathElements = explode('.', $path);
-        $key = array_shift($pathElements);
+        $key          = array_shift($pathElements);
 
         if (!isset(self::$globalVariableProviders[$key])) {
             throw new RuntimeException(
                 __CLASS__ . ': Key "' . $key . '" is not registered! Available keys are: ' . implode(
                     ', ',
                     array_keys(self::$globalVariableProviders),
-                ) . '.', 1622575130
+                ) . '.',
+                1622575130
             );
         }
 

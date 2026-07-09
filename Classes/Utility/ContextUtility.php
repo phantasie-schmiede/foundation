@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -27,6 +28,7 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Request;
+
 use function is_array;
 
 /**
@@ -60,7 +62,7 @@ class ContextUtility
 
         /** @var Site $siteConfiguration */
         $siteConfiguration = GlobalVariableService::get(SiteConfigurationProvider::class);
-        $context = GeneralUtility::makeInstance(Context::class);
+        $context           = GeneralUtility::makeInstance(Context::class);
 
         return $siteConfiguration->getLanguageById($context->getPropertyFromAspect('language', 'id'));
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -25,6 +26,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Localization\LanguageService as Typo3LanguageService;
+
 use function is_string;
 use function strlen;
 
@@ -52,7 +54,7 @@ class LanguageService extends Typo3LanguageService
      */
     public function sL($input): string
     {
-        $input = (string)$input;
+        $input  = (string)$input;
         $output = parent::sL($input);
 
         if ('' !== $input) {
@@ -82,7 +84,7 @@ class LanguageService extends Typo3LanguageService
             [
                 $index,
                 $pluralFormIndexStub,
-            ] = explode(LocalizationUtility::PLURAL_FORM_MARKERS['BEGIN'], $index);
+            ]                = explode(LocalizationUtility::PLURAL_FORM_MARKERS['BEGIN'], $index);
             $pluralFormIndex = (int)substr(
                 $pluralFormIndexStub,
                 0,
@@ -96,7 +98,7 @@ class LanguageService extends Typo3LanguageService
             $languageKey = 'default';
         }
 
-        if (isset ($languageKey)) {
+        if (isset($languageKey)) {
             if (is_string($localLanguage[$languageKey][$index])) {
                 $value = $localLanguage[$languageKey][$index];
             } elseif (isset($localLanguage[$languageKey][$index][$pluralFormIndex]['target'])) {
@@ -104,7 +106,7 @@ class LanguageService extends Typo3LanguageService
             } else {
                 // Set static property for logging
                 self::$pluralFormMissing = true;
-                $value = $localLanguage[$languageKey][$index][0]['target'];
+                $value                   = $localLanguage[$languageKey][$index][0]['target'];
             }
         }
 

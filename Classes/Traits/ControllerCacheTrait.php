@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -37,7 +38,7 @@ trait ControllerCacheTrait
     {
         /** @var CacheDataCollector $cacheDataCollector */
         $cacheDataCollector = $GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.cache.collector');
-        $cacheTagInstances = array_map(static fn(string $cacheTag) => new CacheTag($cacheTag), $cacheTags);
+        $cacheTagInstances  = array_map(static fn(string $cacheTag) => new CacheTag($cacheTag), $cacheTags);
         $cacheDataCollector->addCacheTags(...$cacheTagInstances);
     }
 }

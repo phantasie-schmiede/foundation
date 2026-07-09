@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -12,6 +13,7 @@ namespace PSBits\Foundation\Utility;
 
 use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 use function array_key_exists;
 use function is_array;
 use function is_object;
@@ -38,21 +40,22 @@ class VariableUtility
         string       $delimiter = '.',
     ): mixed {
         $pathSegments = GeneralUtility::trimExplode($delimiter, $path);
-        $value = $variable;
+        $value        = $variable;
 
         foreach ($pathSegments as $pathSegment) {
             if (is_array($value) && array_key_exists($pathSegment, $value)) {
                 $value = $value[$pathSegment];
             } elseif (is_object($value)) {
                 $getterMethod = 'get' . ucfirst($pathSegment);
-                $value = $value->$getterMethod();
+                $value        = $value->$getterMethod();
             } else {
                 if (false === $strict) {
                     return null;
                 }
 
                 throw new RuntimeException(
-                    __CLASS__ . ': Path "' . $path . '" does not exist in array or object!', 1614066725
+                    __CLASS__ . ': Path "' . $path . '" does not exist in array or object!',
+                    1614066725
                 );
             }
         }

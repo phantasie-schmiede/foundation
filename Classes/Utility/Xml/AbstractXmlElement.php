@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -14,6 +15,7 @@ use PSBits\Foundation\Traits\AutoFillPropertiesTrait;
 use PSBits\Foundation\Utility\ObjectUtility;
 use ReflectionClass;
 use ReflectionException;
+
 use function in_array;
 use function is_array;
 
@@ -25,7 +27,6 @@ use function is_array;
 class AbstractXmlElement implements XmlElementInterface
 {
     use AutoFillPropertiesTrait;
-
     protected array $_attributes = [];
 
     /**
@@ -33,8 +34,7 @@ class AbstractXmlElement implements XmlElementInterface
      *            workaround.
      */
     protected array $_nodeValue = [];
-
-    protected ?int $_position = null;
+    protected ?int $_position   = null;
 
     /**
      * @throws ReflectionException
@@ -45,7 +45,7 @@ class AbstractXmlElement implements XmlElementInterface
             if (is_array($childValues)) {
                 if (isset($childValues[XmlUtility::SPECIAL_ARRAY_KEYS['POSITION']])) {
                     $this->_setPosition($childValues[XmlUtility::SPECIAL_ARRAY_KEYS['POSITION']]);
-                    unset ($childValues[XmlUtility::SPECIAL_ARRAY_KEYS['POSITION']]);
+                    unset($childValues[XmlUtility::SPECIAL_ARRAY_KEYS['POSITION']]);
                 }
 
                 $onlyNodeValue = true;
@@ -114,7 +114,7 @@ class AbstractXmlElement implements XmlElementInterface
     public function toArray(): array
     {
         $propertiesArray = ObjectUtility::toArray($this);
-        $array = [];
+        $array           = [];
 
         foreach ($propertiesArray as $key => $value) {
             if (!in_array($key, XmlUtility::SPECIAL_XML_KEYS, true)) {

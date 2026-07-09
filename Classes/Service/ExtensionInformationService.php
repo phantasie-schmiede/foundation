@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -22,6 +23,7 @@ use TYPO3\CMS\Core\Package\PackageManager;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 use function count;
 use function in_array;
 use function is_array;
@@ -50,7 +52,8 @@ class ExtensionInformationService
 
         if (2 > count($classNameParts)) {
             throw new InvalidArgumentException(
-                __CLASS__ . ': ' . $className . ' is not a full qualified (namespaced) class name!', 1547120513
+                __CLASS__ . ': ' . $className . ' is not a full qualified (namespaced) class name!',
+                1547120513
             );
         }
 
@@ -70,8 +73,9 @@ class ExtensionInformationService
 
             while ($line = fgets($file)) {
                 if (str_starts_with($line, 'namespace ')) {
-                    $namespace = rtrim(GeneralUtility::trimExplode(' ', $line)[1], ';');
+                    $namespace  = rtrim(GeneralUtility::trimExplode(' ', $line)[1], ';');
                     $vendorName = explode('\\', $namespace)[0];
+
                     break;
                 }
             }
@@ -104,7 +108,7 @@ class ExtensionInformationService
         ExtensionInformationInterface $extensionInformation,
         string                        $path = '',
     ): mixed {
-        $path = str_replace('.', '/', $path);
+        $path                   = str_replace('.', '/', $path);
         $extensionConfiguration = $this->extensionConfiguration->get($extensionInformation->getExtensionKey(), $path);
 
         if (is_array($extensionConfiguration)) {
@@ -158,7 +162,8 @@ class ExtensionInformationService
         $instances = $this->getAllExtensionInformation();
 
         return $instances[$extensionKey] ?? throw new ImplementationException(
-            __CLASS__ . ': There is no ExtensionInformation registered for ' . $extensionKey . '!', 1683560687
+            __CLASS__ . ': There is no ExtensionInformation registered for ' . $extensionKey . '!',
+            1683560687
         );
     }
 
@@ -176,8 +181,8 @@ class ExtensionInformationService
 
         foreach ($activePackages as $package) {
             $extensionKey = $package->getPackageKey();
-            $fileName = $package->getPackagePath() . 'Classes/Data/ExtensionInformation.php';
-            $vendorName = $this->extractVendorNameFromFile($fileName);
+            $fileName     = $package->getPackagePath() . 'Classes/Data/ExtensionInformation.php';
+            $vendorName   = $this->extractVendorNameFromFile($fileName);
 
             if (null !== $vendorName) {
                 $className = implode('\\', [

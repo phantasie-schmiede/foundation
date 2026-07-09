@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -52,7 +53,7 @@ class RegisterLanguageFileViewHelper extends AbstractViewHelper
         [
             'file' => $file,
             'name' => $name,
-        ] = $this->arguments;
+        ]                          = $this->arguments;
         $templateVariableContainer = $this->renderingContext->getVariableProvider();
 
         if (empty($name)) {
