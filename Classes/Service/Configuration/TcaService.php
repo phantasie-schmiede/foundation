@@ -91,6 +91,13 @@ class TcaService
     ) {
     }
 
+    private static function isPaletteReference(string $showItem, string $paletteIdentifier): bool
+    {
+        $parts = array_map('trim', explode(';', $showItem));
+
+        return '--palette--' === ($parts[0] ?? '') && $paletteIdentifier === ($parts[2] ?? '');
+    }
+
     public function addColumnConfiguration(string $columnName, array $columnConfiguration): void
     {
         $this->checkIfTableNameIsSet();
@@ -282,7 +289,7 @@ class TcaService
     public function createPalette(string $identifier, string $label = '', string $description = ''): void
     {
         $this->checkIfTableNameIsSet();
-        $paletteConfiguration = [];
+        $paletteConfiguration = ['showitem' => ''];
 
         if ('' !== $label) {
             if (true === LocalizationUtility::validateLabel($label)) {
@@ -404,7 +411,6 @@ class TcaService
         $ctrl = ReflectionUtility::getAttributeInstance(Ctrl::class, $reflection);
 
         if (!$overrideMode && null === $ctrl) {
-            // @TODO: emit warning?
             return;
         }
 
@@ -418,26 +424,6 @@ class TcaService
         }
 
         $this->defaultLabelPath .= lcfirst($reflection->getShortName()) . '.xlf:';
-        $this->palettes = [];
-
-        foreach ($reflection->getAttributes(Palette::class) as $paletteAttribute) {
-            /** @var Palette $paletteConfiguration */
-            $paletteConfiguration = $paletteAttribute->newInstance();
-            $this->palettes[$paletteConfiguration->getIdentifier()] = $paletteConfiguration;
-        }
-
-        /** @var Palette $palette */
-        foreach ($this->palettes as $palette) {
-            $this->createPalette($palette->getIdentifier(), $palette->getLabel(), $palette->getDescription());
-        }
-
-        $this->tabs = [];
-
-        foreach ($reflection->getAttributes(Tab::class) as $tabAttribute) {
-            $tabConfiguration = $tabAttribute->newInstance();
-            $this->tabs[$tabConfiguration->getIdentifier()] = $tabConfiguration;
-        }
-
         $properties = $reflection->getProperties();
 
         if ($overrideMode) {
@@ -498,11 +484,6 @@ class TcaService
 
         if (!$overrideMode) {
             $this->initializeDummyConfiguration($ctrl, $this->tableName);
-
-            // default title may be overwritten by Ctrl-attribute in next block
-            $title = $this->defaultLabelPath . 'ctrl.title';
-            LocalizationUtility::translationExists($title);
-            $GLOBALS['TCA'][$this->tableName]['ctrl']['title'] = $title;
         }
 
         if (null !== $ctrl) {
@@ -524,6 +505,32 @@ class TcaService
                     $GLOBALS['TCA'][$this->tableName]['ctrl'][$property] = $value;
                 }
             }
+        }
+
+        if (empty($GLOBALS['TCA'][$this->tableName]['ctrl']['title'])) {
+            $GLOBALS['TCA'][$this->tableName]['ctrl']['title'] = $this->defaultLabelPath . 'ctrl.title';
+        }
+
+        LocalizationUtility::validateLabel($GLOBALS['TCA'][$this->tableName]['ctrl']['title']);
+
+        $this->palettes = [];
+
+        foreach ($reflection->getAttributes(Palette::class) as $paletteAttribute) {
+            /** @var Palette $paletteConfiguration */
+            $paletteConfiguration = $paletteAttribute->newInstance();
+            $this->palettes[$paletteConfiguration->getIdentifier()] = $paletteConfiguration;
+        }
+
+        /** @var Palette $palette */
+        foreach ($this->palettes as $palette) {
+            $this->createPalette($palette->getIdentifier(), $palette->getLabel(), $palette->getDescription());
+        }
+
+        $this->tabs = [];
+
+        foreach ($reflection->getAttributes(Tab::class) as $tabAttribute) {
+            $tabConfiguration = $tabAttribute->newInstance();
+            $this->tabs[$tabConfiguration->getIdentifier()] = $tabConfiguration;
         }
 
         $this->initializeTypes($columnConfigurations);
@@ -699,29 +706,33 @@ class TcaService
                 $containingPalettes = [];
 
                 foreach ($GLOBALS['TCA'][$this->tableName]['palettes'] as $paletteIdentifier => $paletteConfiguration) {
-                    $fieldList = GeneralUtility::trimExplode(',', $paletteConfiguration['showitem']);
-                    array_walk($fieldList, static function(&$item) {
-                        $item = explode(';', $item)[0];
-                    });
+                    $fieldList = GeneralUtility::trimExplode(',', $paletteConfiguration['showitem'] ?? '');
+                    $normalizedFieldList = array_map(static function(string $item): string {
+                        return explode(';', $item)[0];
+                    }, $fieldList);
 
-                    if (in_array($referenceField, $fieldList, true)) {
-                        // @TODO: Palettes may define a label between ;;. Consider this case, too!
-                        $containingPalettes[] = '--palette--;;' . $paletteIdentifier;
+                    if (in_array($referenceField, $normalizedFieldList, true)) {
+                        $containingPalettes[] = (string)$paletteIdentifier;
                     }
                 }
 
                 foreach ($types as $typeConfiguration) {
                     $fieldList = GeneralUtility::trimExplode(',', $typeConfiguration['showitem'] ?? '');
+                    $normalizedFieldList = array_map(static function(string $item): string {
+                        return explode(';', $item)[0];
+                    }, $fieldList);
 
-                    if (in_array($referenceField, $fieldList, true)) {
+                    if (in_array($referenceField, $normalizedFieldList, true)) {
                         $fieldCanBeAdded = true;
                         break;
                     }
 
-                    foreach ($containingPalettes as $palette) {
-                        if (in_array($palette, $fieldList, true)) {
-                            $fieldCanBeAdded = true;
-                            break 2;
+                    foreach ($containingPalettes as $paletteIdentifier) {
+                        foreach ($fieldList as $showItem) {
+                            if (self::isPaletteReference($showItem, $paletteIdentifier)) {
+                                $fieldCanBeAdded = true;
+                                break 3;
+                            }
                         }
                     }
                 }
@@ -901,7 +912,7 @@ class TcaService
     {
         $GLOBALS['TCA'][$this->tableName] = [
             'types'    => [
-                0 => ['showitem' => ''],
+                '0' => ['showitem' => ''],
             ],
             'palettes' => [],
             'columns'  => [],
@@ -975,6 +986,11 @@ class TcaService
     {
         foreach ($columnConfigurations as $configuration) {
             $typeList = $configuration->getTypeList();
+
+            if ('' === $typeList) {
+                continue;
+            }
+
             $types = GeneralUtility::trimExplode(',', $typeList);
 
             foreach ($types as $type) {

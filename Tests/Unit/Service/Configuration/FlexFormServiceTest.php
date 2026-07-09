@@ -11,10 +11,11 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Service\Configuration;
 
 use Generator;
-use PSBits\Foundation\Service\GlobalVariableProviders\AbstractProvider;
+use PSBits\Foundation\Service\GlobalVariableProviders\EarlyAccessConstantsProvider;
 use PSBits\Foundation\Service\GlobalVariableService;
 use PSBits\Foundation\Tests\Examples\BackedEnum;
 use PSBits\Foundation\Tests\Examples\Enum;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -103,28 +104,30 @@ class FlexFormServiceTest extends UnitTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        GlobalVariableService::registerGlobalVariableProvider(FlexFormServiceTestEarlyAccessConstantsProvider::class);
+        $providerMock = $this->getMockBuilder(EarlyAccessConstantsProvider::class)
+            ->onlyMethods(['getGlobalVariables'])
+            ->getMock();
+
+        $providerMock->method('getGlobalVariables')
+            ->willReturn([
+                'flexForm' => [
+                    'nested' => [
+                        'answer' => 42,
+                    ],
+                    'value'  => 'early_access_value',
+                ],
+            ]);
+
+        GeneralUtility::addInstance(EarlyAccessConstantsProvider::class, $providerMock);
+        GlobalVariableService::registerGlobalVariableProvider(EarlyAccessConstantsProvider::class);
         GlobalVariableService::clearCache();
         $this->subject = new FlexFormService();
     }
-}
 
-/**
- * Class FlexFormServiceTestEarlyAccessConstantsProvider
- *
- * @package PSBits\Foundation\Service\Configuration
- */
-class FlexFormServiceTestEarlyAccessConstantsProvider extends AbstractProvider
-{
-    public function getGlobalVariables(): array
+    protected function tearDown(): void
     {
-        return [
-            'flexForm' => [
-                'nested' => [
-                    'answer' => 42,
-                ],
-                'value'  => 'early_access_value',
-            ],
-        ];
+        GlobalVariableService::clearCache();
+        GeneralUtility::purgeInstances();
+        parent::tearDown();
     }
 }

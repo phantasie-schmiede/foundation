@@ -12,10 +12,17 @@ namespace PSBits\Foundation\Utility;
 
 use Generator;
 use JsonException;
+use PSBits\Foundation\Service\TypoScriptProviderService;
 use PSBits\Foundation\Tests\Examples\BackedEnum;
 use PSBits\Foundation\Tests\Examples\Enum;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use ReflectionException;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\TypoScript\AST\Node\RootNode;
+use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -29,6 +36,26 @@ class StringUtilityTest extends UnitTestCase
     public const array  TEST_CONSTANT_ARRAY = [
         'INDEX' => 'test',
     ];
+
+    public static function cleanUrlDataProvider(): Generator
+    {
+        yield 'plain url unchanged' => [
+            'https://example.com/path',
+            'https://example.com/path',
+        ];
+        yield 'url encoded string is decoded' => [
+            'hello%20world',
+            'hello world',
+        ];
+        yield 'html entity decoded' => [
+            'https://example.com/path?a=1&amp;b=2',
+            'https://example.com/path?a=1&b=2',
+        ];
+        yield 'combined url and html encoding' => [
+            'hello%20world&amp;foo',
+            'hello world&foo',
+        ];
+    }
 
     /**
      * @return Generator
@@ -115,129 +142,38 @@ class StringUtilityTest extends UnitTestCase
             '\PSBits\Foundation\Tests\Examples\BackedEnum::Delta',
             BackedEnum::Delta,
         ];
-        // @TODO: test TypoScript ('TS:...')!
-    }
-
-    /**
-     * @test
-     * @dataProvider convertStringDataProvider
-     *
-     * @param string $string
-     * @param        $expectedResult
-     *
-     * @return void
-     * @throws JsonException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    public function convertString(string $string, $expectedResult): void
-    {
-        self::assertEquals(
-            $expectedResult,
-            StringUtility::convertString($string)
-        );
-    }
-
-    public static function cleanUrlDataProvider(): Generator
-    {
-        yield 'plain url unchanged' => [
-            'https://example.com/path',
-            'https://example.com/path',
+        yield 'TypoScript path remains unchanged without TypoScript context' => [
+            'TS:config.tx_foundation.someValue',
+            'TS:config.tx_foundation.someValue',
         ];
-        yield 'url encoded string is decoded' => [
-            'hello%20world',
-            'hello world',
-        ];
-        yield 'html entity decoded' => [
-            'https://example.com/path?a=1&amp;b=2',
-            'https://example.com/path?a=1&b=2',
-        ];
-        yield 'combined url and html encoding' => [
-            'hello%20world&amp;foo',
-            'hello world&foo',
-        ];
-    }
-
-    /**
-     * @test
-     * @dataProvider cleanUrlDataProvider
-     */
-    public function cleanUrl(string $url, string $expectedResult): void
-    {
-        self::assertEquals($expectedResult, StringUtility::cleanUrl($url));
     }
 
     public static function convertToFloatDataProvider(): Generator
     {
-        yield 'period decimal separator' => ['1.5', 1.5];
-        yield 'comma decimal separator' => ['1,5', 1.5];
-        yield 'integer string' => ['42', 42.0];
-        yield 'zero' => ['0', 0.0];
-        yield 'negative with period' => ['-3.14', -3.14];
-        yield 'negative with comma' => ['-3,14', -3.14];
-    }
-
-    /**
-     * @test
-     * @dataProvider convertToFloatDataProvider
-     */
-    public function convertToFloat(string $variable, float $expectedResult): void
-    {
-        self::assertEquals($expectedResult, StringUtility::convertToFloat($variable));
-    }
-
-    public static function isEmptyDataProvider(): Generator
-    {
-        yield 'empty string' => ['', true];
-        yield 'only spaces' => ['   ', true];
-        yield 'only tab' => ["\t", true];
-        yield 'only newline' => ["\n", true];
-        yield 'non-empty string' => ['hello', false];
-        yield 'string with content and spaces' => ['  hello  ', false];
-    }
-
-    /**
-     * @test
-     * @dataProvider isEmptyDataProvider
-     */
-    public function stringIsEmpty(string $string, bool $expectedResult): void
-    {
-        self::assertSame($expectedResult, StringUtility::isEmpty($string));
-    }
-
-    public static function sanitizePropertyNameDataProvider(): Generator
-    {
-        yield 'underscore to camelCase' => ['first_name', 'firstName'];
-        yield 'dash to camelCase' => ['first-name', 'firstName'];
-        yield 'camelCase without separators becomes all lowercase' => ['firstName', 'firstname'];
-        yield 'all lowercase' => ['name', 'name'];
-        yield 'uppercase with underscores' => ['FIRST_NAME', 'firstName'];
-        yield 'mixed case with dash' => ['some-Field', 'someField'];
-    }
-
-    /**
-     * @test
-     * @dataProvider sanitizePropertyNameDataProvider
-     */
-    public function sanitizePropertyName(string $propertyName, string $expectedResult): void
-    {
-        self::assertEquals($expectedResult, StringUtility::sanitizePropertyName($propertyName));
-    }
-
-    public static function getFirstWordDataProvider(): Generator
-    {
-        yield 'single word' => ['hello', 'hello'];
-        yield 'multiple words' => ['hello world foo', 'hello'];
-        yield 'words with extra spaces trimmed' => ['  hello  world', 'hello'];
-    }
-
-    /**
-     * @test
-     * @dataProvider getFirstWordDataProvider
-     */
-    public function getFirstWord(string $sentence, string $expectedResult): void
-    {
-        self::assertEquals($expectedResult, StringUtility::getFirstWord($sentence));
+        yield 'period decimal separator' => [
+            '1.5',
+            1.5,
+        ];
+        yield 'comma decimal separator' => [
+            '1,5',
+            1.5,
+        ];
+        yield 'integer string' => [
+            '42',
+            42.0,
+        ];
+        yield 'zero' => [
+            '0',
+            0.0,
+        ];
+        yield 'negative with period' => [
+            '-3.14',
+            -3.14,
+        ];
+        yield 'negative with comma' => [
+            '-3,14',
+            -3.14,
+        ];
     }
 
     public static function cropDataProvider(): Generator
@@ -268,6 +204,163 @@ class StringUtilityTest extends UnitTestCase
         ];
     }
 
+    public static function getFirstWordDataProvider(): Generator
+    {
+        yield 'single word' => [
+            'hello',
+            'hello',
+        ];
+        yield 'multiple words' => [
+            'hello world foo',
+            'hello',
+        ];
+        yield 'words with extra spaces trimmed' => [
+            '  hello  world',
+            'hello',
+        ];
+    }
+
+    public static function isEmptyDataProvider(): Generator
+    {
+        yield 'empty string' => [
+            '',
+            true,
+        ];
+        yield 'only spaces' => [
+            '   ',
+            true,
+        ];
+        yield 'only tab' => [
+            "\t",
+            true,
+        ];
+        yield 'only newline' => [
+            "\n",
+            true,
+        ];
+        yield 'non-empty string' => [
+            'hello',
+            false,
+        ];
+        yield 'string with content and spaces' => [
+            '  hello  ',
+            false,
+        ];
+    }
+
+    public static function sanitizePropertyNameDataProvider(): Generator
+    {
+        yield 'underscore to camelCase' => [
+            'first_name',
+            'firstName',
+        ];
+        yield 'dash to camelCase' => [
+            'first-name',
+            'firstName',
+        ];
+        yield 'camelCase without separators becomes all lowercase' => [
+            'firstName',
+            'firstname',
+        ];
+        yield 'all lowercase' => [
+            'name',
+            'name',
+        ];
+        yield 'uppercase with underscores' => [
+            'FIRST_NAME',
+            'firstName',
+        ];
+        yield 'mixed case with dash' => [
+            'some-Field',
+            'someField',
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider cleanUrlDataProvider
+     */
+    public function cleanUrl(string $url, string $expectedResult): void
+    {
+        self::assertEquals($expectedResult, StringUtility::cleanUrl($url));
+    }
+
+    /**
+     * @test
+     * @dataProvider convertStringDataProvider
+     *
+     * @param string $string
+     * @param        $expectedResult
+     *
+     * @return void
+     * @throws ContainerExceptionInterface
+     * @throws JsonException
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+     */
+    public function convertString(string $string, $expectedResult): void
+    {
+        self::assertEquals(
+            $expectedResult,
+            StringUtility::convertString($string)
+        );
+    }
+
+    /**
+     * @test
+     * @throws ContainerExceptionInterface
+     * @throws JsonException
+     * @throws NotFoundExceptionInterface
+     */
+    public function convertStringResolvesTypoScriptPathWithTypoScriptContext(): void
+    {
+        $typoScriptProviderServiceMock = $this->getMockBuilder(TypoScriptProviderService::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods([
+                'has',
+                'get',
+            ])
+            ->getMock();
+
+        $typoScriptProviderServiceMock->expects(self::once())
+            ->method('has')
+            ->with('config.tx_foundation.someValue')
+            ->willReturn(true);
+        $typoScriptProviderServiceMock->expects(self::once())
+            ->method('get')
+            ->with('config.tx_foundation.someValue')
+            ->willReturn('resolved value');
+        GeneralUtility::addInstance(TypoScriptProviderService::class, $typoScriptProviderServiceMock);
+
+        $frontendTypoScript = new FrontendTypoScript(new RootNode(), [], [], []);
+        $frontendTypoScript->setSetupArray([
+            'config.' => [
+                'tx_foundation.' => [
+                    'someValue' => 'resolved value',
+                ],
+            ],
+        ]);
+        $GLOBALS['TYPO3_REQUEST'] = (new ServerRequest())->withAttribute(
+            'applicationType',
+            SystemEnvironmentBuilder::REQUESTTYPE_FE
+        )
+            ->withAttribute('frontend.typoscript', $frontendTypoScript);
+
+        self::assertSame(
+            'resolved value',
+            StringUtility::convertString('TS:config.tx_foundation.someValue')
+        );
+    }
+
+    /**
+     * @test
+     * @dataProvider convertToFloatDataProvider
+     */
+    public function convertToFloat(string $variable, float $expectedResult): void
+    {
+        self::assertEquals($expectedResult, StringUtility::convertToFloat($variable));
+    }
+
     /**
      * @test
      * @dataProvider cropDataProvider
@@ -284,5 +377,39 @@ class StringUtilityTest extends UnitTestCase
             $expectedResult,
             StringUtility::crop($string, $length, $appendix, $respectWordBoundaries, $respectHtml)
         );
+    }
+
+    /**
+     * @test
+     * @dataProvider getFirstWordDataProvider
+     */
+    public function getFirstWord(string $sentence, string $expectedResult): void
+    {
+        self::assertEquals($expectedResult, StringUtility::getFirstWord($sentence));
+    }
+
+    /**
+     * @test
+     * @dataProvider sanitizePropertyNameDataProvider
+     */
+    public function sanitizePropertyName(string $propertyName, string $expectedResult): void
+    {
+        self::assertEquals($expectedResult, StringUtility::sanitizePropertyName($propertyName));
+    }
+
+    /**
+     * @test
+     * @dataProvider isEmptyDataProvider
+     */
+    public function stringIsEmpty(string $string, bool $expectedResult): void
+    {
+        self::assertSame($expectedResult, StringUtility::isEmpty($string));
+    }
+
+    protected function tearDown(): void
+    {
+        unset($GLOBALS['TYPO3_REQUEST']);
+        GeneralUtility::purgeInstances();
+        parent::tearDown();
     }
 }
