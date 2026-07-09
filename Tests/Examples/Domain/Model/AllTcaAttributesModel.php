@@ -32,6 +32,7 @@ use PSBits\Foundation\Attribute\TCA\Mapping\Field;
 use PSBits\Foundation\Attribute\TCA\Mapping\Table;
 use PSBits\Foundation\Attribute\TCA\Palette;
 use PSBits\Foundation\Attribute\TCA\Tab;
+use PSBits\Foundation\Tests\Examples\BackedEnum;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 #[Table('tx_foundation_all_tca_attributes')]
@@ -54,6 +55,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
     crdate: null,
 )]
 #[Palette(identifier: 'main_palette')]
+#[Palette(identifier: 'labelled_palette', label: 'PaletteLabel')]
 #[Tab(identifier: 'extra_tab', label: 'Extra Tab')]
 class AllTcaAttributesModel extends AbstractEntity
 {
@@ -66,10 +68,12 @@ class AllTcaAttributesModel extends AbstractEntity
     #[Text]
     protected string $textField = '';
 
+    #[Column(position: 'after:checkField')]
     #[Number]
     protected int $numberField = 0;
 
     #[Check]
+    #[Column(position: 'palette:labelled_palette')]
     protected bool $checkField = false;
 
     #[Select(items: [
@@ -112,7 +116,7 @@ class AllTcaAttributesModel extends AbstractEntity
     #[Color]
     protected string $colorField = '';
 
-    #[Enum(AllTcaAttributesEnum::class)]
+    #[Enum(BackedEnum::class)]
     protected string $enumField = '';
 
     #[Column(databaseDefinition: 'varchar(64) DEFAULT \'\'')]
@@ -123,4 +127,3 @@ class AllTcaAttributesModel extends AbstractEntity
     #[User(renderType: 'testUserRenderType')]
     protected string $userField = '';
 }
-

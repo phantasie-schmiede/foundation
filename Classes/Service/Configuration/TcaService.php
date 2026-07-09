@@ -91,6 +91,13 @@ class TcaService
     ) {
     }
 
+    private static function isPaletteReference(string $showItem, string $paletteIdentifier): bool
+    {
+        $parts = array_map('trim', explode(';', $showItem));
+
+        return '--palette--' === ($parts[0] ?? '') && $paletteIdentifier === ($parts[2] ?? '');
+    }
+
     public function addColumnConfiguration(string $columnName, array $columnConfiguration): void
     {
         $this->checkIfTableNameIsSet();
@@ -282,7 +289,7 @@ class TcaService
     public function createPalette(string $identifier, string $label = '', string $description = ''): void
     {
         $this->checkIfTableNameIsSet();
-        $paletteConfiguration = [];
+        $paletteConfiguration = ['showitem' => ''];
 
         if ('' !== $label) {
             if (true === LocalizationUtility::validateLabel($label)) {
@@ -417,26 +424,6 @@ class TcaService
         }
 
         $this->defaultLabelPath .= lcfirst($reflection->getShortName()) . '.xlf:';
-        $this->palettes = [];
-
-        foreach ($reflection->getAttributes(Palette::class) as $paletteAttribute) {
-            /** @var Palette $paletteConfiguration */
-            $paletteConfiguration = $paletteAttribute->newInstance();
-            $this->palettes[$paletteConfiguration->getIdentifier()] = $paletteConfiguration;
-        }
-
-        /** @var Palette $palette */
-        foreach ($this->palettes as $palette) {
-            $this->createPalette($palette->getIdentifier(), $palette->getLabel(), $palette->getDescription());
-        }
-
-        $this->tabs = [];
-
-        foreach ($reflection->getAttributes(Tab::class) as $tabAttribute) {
-            $tabConfiguration = $tabAttribute->newInstance();
-            $this->tabs[$tabConfiguration->getIdentifier()] = $tabConfiguration;
-        }
-
         $properties = $reflection->getProperties();
 
         if ($overrideMode) {
@@ -497,11 +484,6 @@ class TcaService
 
         if (!$overrideMode) {
             $this->initializeDummyConfiguration($ctrl, $this->tableName);
-
-            // default title may be overwritten by Ctrl-attribute in next block
-            $title = $this->defaultLabelPath . 'ctrl.title';
-            LocalizationUtility::translationExists($title);
-            $GLOBALS['TCA'][$this->tableName]['ctrl']['title'] = $title;
         }
 
         if (null !== $ctrl) {
@@ -523,6 +505,32 @@ class TcaService
                     $GLOBALS['TCA'][$this->tableName]['ctrl'][$property] = $value;
                 }
             }
+        }
+
+        if (empty($GLOBALS['TCA'][$this->tableName]['ctrl']['title'])) {
+            $GLOBALS['TCA'][$this->tableName]['ctrl']['title'] = $this->defaultLabelPath . 'ctrl.title';
+        }
+
+        LocalizationUtility::validateLabel($GLOBALS['TCA'][$this->tableName]['ctrl']['title']);
+
+        $this->palettes = [];
+
+        foreach ($reflection->getAttributes(Palette::class) as $paletteAttribute) {
+            /** @var Palette $paletteConfiguration */
+            $paletteConfiguration = $paletteAttribute->newInstance();
+            $this->palettes[$paletteConfiguration->getIdentifier()] = $paletteConfiguration;
+        }
+
+        /** @var Palette $palette */
+        foreach ($this->palettes as $palette) {
+            $this->createPalette($palette->getIdentifier(), $palette->getLabel(), $palette->getDescription());
+        }
+
+        $this->tabs = [];
+
+        foreach ($reflection->getAttributes(Tab::class) as $tabAttribute) {
+            $tabConfiguration = $tabAttribute->newInstance();
+            $this->tabs[$tabConfiguration->getIdentifier()] = $tabConfiguration;
         }
 
         $this->initializeTypes($columnConfigurations);
@@ -773,13 +781,6 @@ class TcaService
             $typeList,
             $palettePosition ?? ''
         );
-    }
-
-    private static function isPaletteReference(string $showItem, string $paletteIdentifier): bool
-    {
-        $parts = array_map('trim', explode(';', $showItem));
-
-        return '--palette--' === ($parts[0] ?? '') && $paletteIdentifier === ($parts[2] ?? '');
     }
 
     /**

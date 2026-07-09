@@ -13,11 +13,18 @@ namespace PSBits\Foundation\Tests\Functional;
 use PHPUnit\Framework\Attributes\Test;
 use PSBits\Foundation\Service\Configuration\TcaService;
 use PSBits\Foundation\Tests\Examples\Domain\Model\AllTcaAttributesModel;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
 use ReflectionMethod;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
+/**
+ * Class TcaServiceTest
+ *
+ * @package PSBits\Foundation\Tests\Functional
+ */
 class TcaServiceTest extends FunctionalTestCase
 {
     private const string TABLE_NAME = 'tx_foundation_all_tca_attributes';
@@ -27,6 +34,8 @@ class TcaServiceTest extends FunctionalTestCase
     ];
 
     /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws ReflectionException
      */
     #[Test]
@@ -46,43 +55,47 @@ class TcaServiceTest extends FunctionalTestCase
         $baseLabelPath = 'LLL:EXT:foundation/Resources/Private/Language/Backend/Configuration/TCA/allTcaAttributesModel.xlf:';
         $expectedTcaSubset = [
             'ctrl'     => [
-                'label'         => 'mapped_field',
-                'search_fields' => 'mapped_field, text_field',
-                'title'         => $baseLabelPath . 'ctrl.title',
+                'label'        => 'mapped_field',
+                'searchFields' => 'mapped_field, text_field',
+                'title'        => $baseLabelPath . 'ctrl.title',
             ],
             'types'    => [
                 0 => [
-                    'showitem' => '--palette--;;main_palette,--div--;Extra Tab,text_field,number_field,check_field,select_field,group_field,inline_field,category_field,file_field,datetime_field,link_field,slug_field,color_field,enum_field,pass_through_field,user_field',
+                    'showitem' => '--palette--;;main_palette, --div--;Extra Tab, text_field, --palette--;;labelled_palette, number_field, select_field, group_field, inline_field, category_field, file_field, datetime_field, link_field, slug_field, color_field, enum_field, pass_through_field, user_field',
                 ],
             ],
             'palettes' => [
-                'main_palette' => [
+                'labelled_palette' => [
+                    'label'    => 'PaletteLabel',
+                    'showitem' => 'check_field',
+                ],
+                'main_palette'     => [
                     'showitem' => 'mapped_field',
                 ],
             ],
             'columns'  => [
-                'mapped_field'      => [
+                'mapped_field'       => [
                     'label'  => $baseLabelPath . 'mappedField',
                     'config' => [
                         'type' => 'input',
                         'eval' => 'trim',
                     ],
                 ],
-                'text_field'        => [
+                'text_field'         => [
                     'label'  => $baseLabelPath . 'textField',
                     'config' => [
                         'type' => 'text',
                         'eval' => 'trim',
                     ],
                 ],
-                'number_field'      => [
+                'number_field'       => [
                     'label'  => $baseLabelPath . 'numberField',
                     'config' => [
                         'type'   => 'number',
                         'format' => 'integer',
                     ],
                 ],
-                'check_field'       => [
+                'check_field'        => [
                     'label'  => $baseLabelPath . 'checkField',
                     'config' => [
                         'type'               => 'check',
@@ -90,7 +103,7 @@ class TcaServiceTest extends FunctionalTestCase
                         'invertStateDisplay' => false,
                     ],
                 ],
-                'select_field'      => [
+                'select_field'       => [
                     'label'  => $baseLabelPath . 'selectField',
                     'config' => [
                         'type'       => 'select',
@@ -107,57 +120,57 @@ class TcaServiceTest extends FunctionalTestCase
                         ],
                     ],
                 ],
-                'group_field'       => [
+                'group_field'        => [
                     'label'  => $baseLabelPath . 'groupField',
                     'config' => [
                         'type'          => 'group',
                         'foreign_table' => 'sys_category',
                     ],
                 ],
-                'inline_field'      => [
+                'inline_field'       => [
                     'label'  => $baseLabelPath . 'inlineField',
                     'config' => [
                         'type'          => 'inline',
                         'foreign_table' => 'sys_category',
                     ],
                 ],
-                'category_field'    => [
+                'category_field'     => [
                     'label'  => $baseLabelPath . 'categoryField',
                     'config' => [
                         'type'         => 'category',
                         'relationship' => 'manyToMany',
                     ],
                 ],
-                'file_field'        => [
+                'file_field'         => [
                     'label'  => $baseLabelPath . 'fileField',
                     'config' => [
                         'type'    => 'file',
                         'allowed' => 'common-image-types',
                     ],
                 ],
-                'datetime_field'    => [
+                'datetime_field'     => [
                     'label'  => $baseLabelPath . 'datetimeField',
                     'config' => [
                         'type'   => 'datetime',
                         'format' => 'datetime',
                     ],
                 ],
-                'link_field'        => [
+                'link_field'         => [
                     'label'  => $baseLabelPath . 'linkField',
                     'config' => [
                         'type'         => 'link',
                         'autocomplete' => false,
                     ],
                 ],
-                'slug_field'        => [
+                'slug_field'         => [
                     'label'  => $baseLabelPath . 'slugField',
                     'config' => [
-                        'type'             => 'slug',
-                        'eval'             => 'uniqueInSite',
+                        'type'              => 'slug',
+                        'eval'              => 'uniqueInSite',
                         'fallbackCharacter' => '-',
                     ],
                 ],
-                'color_field'       => [
+                'color_field'        => [
                     'label'  => $baseLabelPath . 'colorField',
                     'config' => [
                         'type'        => 'color',
@@ -166,18 +179,22 @@ class TcaServiceTest extends FunctionalTestCase
                         ],
                     ],
                 ],
-                'enum_field'        => [
+                'enum_field'         => [
                     'label'  => $baseLabelPath . 'enumField',
                     'config' => [
                         'type'  => 'select',
                         'items' => [
                             [
-                                'label' => 'alpha',
-                                'value' => 'alpha',
+                                'label' => 'delta',
+                                'value' => 'delta',
                             ],
                             [
-                                'label' => 'beta',
-                                'value' => 'beta',
+                                'label' => 'epsilon',
+                                'value' => 'epsilon',
+                            ],
+                            [
+                                'label' => 'zeta',
+                                'value' => 'zeta',
                             ],
                         ],
                     ],
@@ -226,4 +243,3 @@ class TcaServiceTest extends FunctionalTestCase
         return $result;
     }
 }
-
