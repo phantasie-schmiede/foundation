@@ -1,6 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<MediaInfo xmlns="https://mediaarea.net/mediainfo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0" xsi:schemaLocation="https://mediaarea.net/mediainfo https://mediaarea.net/mediainfo/mediainfo_2_0.xsd">
-  <creatingLibrary version="21.09" url="https://mediaarea.net/MediaInfo">MediaInfoLib</creatingLibrary>
+<?xml version="1.0" encoding="UTF-8" ?>
+<MediaInfo
+    xmlns="https://mediaarea.net/mediainfo"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://mediaarea.net/mediainfo https://mediaarea.net/mediainfo/mediainfo_2_0.xsd"
+    version="2.0">
+  <creatingLibrary
+        url="https://mediaarea.net/MediaInfo"
+        version="21.09">MediaInfoLib</creatingLibrary>
   <media ref="UnitTest.mp4">
     <track type="General">
       <AudioCount>1</AudioCount>
