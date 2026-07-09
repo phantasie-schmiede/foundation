@@ -96,7 +96,7 @@ class TcaService
     {
         $parts = array_map('trim', explode(';', $showItem));
 
-        return '--palette--' === ($parts[0] ?? '') && $paletteIdentifier === ($parts[2] ?? '');
+        return '--palette--' === $parts[0] && $paletteIdentifier === ($parts[2] ?? '');
     }
 
     public function addColumnConfiguration(string $columnName, array $columnConfiguration): void
@@ -194,7 +194,9 @@ class TcaService
      */
     public function convertClassNameToTableName(string $className): string
     {
-        if ($this->checkClassesConfiguration() && $this->classesConfiguration->hasClass($className)) {
+        $this->checkClassesConfiguration();
+
+        if ($this->classesConfiguration->hasClass($className)) {
             $configuration = $this->classesConfiguration->getConfigurationFor($className);
 
             if (!empty($configuration['tableName'])) {
@@ -232,7 +234,9 @@ class TcaService
     public function convertPropertyNameToColumnName(string $propertyName, string $className = null): string
     {
         if (!empty($className)) {
-            if ($this->checkClassesConfiguration() && $this->classesConfiguration->hasClass($className)) {
+            $this->checkClassesConfiguration();
+
+            if ($this->classesConfiguration->hasClass($className)) {
                 $configuration = $this->classesConfiguration->getConfigurationFor($className);
 
                 if (!empty($configuration['properties'][$propertyName]['fieldName'])) {
@@ -821,7 +825,7 @@ class TcaService
             }
         }
 
-        $tabDefinition = '--div--;' . ($label ?? $identifier);
+        $tabDefinition = '--div--;' . $label;
         ExtensionManagementUtility::addToAllTCAtypes($this->tableName, $tabDefinition, $typeList, $tabPosition ?? '');
 
         return $tabDefinition;
@@ -831,12 +835,12 @@ class TcaService
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    private function checkClassesConfiguration(): bool
+    private function checkClassesConfiguration(): void
     {
         if (null === $this->classesConfiguration) {
             /*
              * Copied from TYPO3\CMS\Extbase\Persistence\ClassesConfigurationFactory because instantiation of that class
-             * would throw an exception (e. g. CacheManager not available, dependency injection not ready).
+             * would throw an exception (e.g. CacheManager not available, dependency injection not ready).
              */
             $classes = [];
 
@@ -861,13 +865,11 @@ class TcaService
             $classes                    = $this->inheritPropertiesFromParentClasses($classes);
             $this->classesConfiguration = GeneralUtility::makeInstance(ClassesConfiguration::class, $classes);
         }
-
-        return $this->classesConfiguration instanceof ClassesConfiguration;
     }
 
     /**
      * Copied from TYPO3\CMS\Extbase\Persistence\ClassesConfigurationFactory because instantiation of that class would
-     * throw an exception (e. g. CacheManager not available, dependency injection not ready).
+     * throw an exception (e.g. CacheManager not available, dependency injection not ready).
      */
     private function inheritPropertiesFromParentClasses(array $classes): array
     {

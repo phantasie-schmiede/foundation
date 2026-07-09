@@ -25,6 +25,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PageCacheService
 {
+    /**
+     * @var array<class-string<BuilderInterface>>
+     */
     protected static array $registeredBuilders = [];
 
     public function __construct(
@@ -32,6 +35,9 @@ class PageCacheService
     ) {
     }
 
+    /**
+     * @param class-string<BuilderInterface> $builderClass
+     */
     public static function registerBuilder(string $builderClass): void
     {
         if (!is_subclass_of($builderClass, BuilderInterface::class)) {
@@ -52,7 +58,7 @@ class PageCacheService
         $pagesArray = [];
 
         foreach (self::$registeredBuilders as $builder) {
-            /** @var BuilderInterface $builderInstance */
+            /** @var class-string<BuilderInterface> $builder */
             $builderInstance = GeneralUtility::makeInstance($builder);
 
             $queryBuilder = $this->connectionPool->getQueryBuilderForTable($builderInstance->getTable());
@@ -106,7 +112,7 @@ class PageCacheService
         $pagesArray = [];
 
         foreach (self::$registeredBuilders as $builder) {
-            /** @var BuilderInterface $builderInstance */
+            /** @var class-string<BuilderInterface> $builder */
             $builderInstance = GeneralUtility::makeInstance($builder);
 
             foreach ($builderInstance->collectSourceRelations() as $pid => $configuration) {

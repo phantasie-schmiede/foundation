@@ -25,8 +25,6 @@ use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotCon
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-use function is_array;
-
 /**
  * Class Check
  *
@@ -137,10 +135,6 @@ class Check extends AbstractColumnType implements ColumnTypeWithItemsInterface
      */
     public function processItems(string $labelPath = ''): void
     {
-        if (!is_array($this->items)) {
-            return;
-        }
-
         // $items already has TCA format
         if (ArrayUtility::isMultiDimensionalArray($this->items)) {
             $this->processTcaFormat();

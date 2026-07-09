@@ -24,7 +24,6 @@ use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotCon
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
@@ -136,13 +135,13 @@ class TranslateViewHelper extends AbstractViewHelper
         }
 
         if (!str_starts_with($id, FilePathUtility::LANGUAGE_LABEL_PREFIX)) {
-            $result = static::checkRegisteredLanguageFiles($id, $renderingContext);
+            $result = self::checkRegisteredLanguageFiles($id, $renderingContext);
 
             if (false !== $result) {
                 $id = $result;
             } elseif (null === $extensionName && $request instanceof RequestInterface) {
                 $extensionName = $request->getControllerExtensionName();
-                $id            = static::buildIdFromRequest($id, $request);
+                $id            = self::buildIdFromRequest($id, $request);
             }
         }
 
@@ -155,8 +154,8 @@ class TranslateViewHelper extends AbstractViewHelper
         if (null === $value) {
             $value = $default ?? $renderChildrenClosure() ?? '';
 
-            if (null !== $value && !empty($translateArguments)) {
-                $value = vsprintf($value, $translateArguments);
+            if (!empty($translateArguments)) {
+                $value = vsprintf((string)$value, $translateArguments);
             }
         }
 
@@ -184,7 +183,7 @@ class TranslateViewHelper extends AbstractViewHelper
         return LocalizationUtility::translate($id, $extensionName, $arguments, $languageKey);
     }
 
-    private static function buildIdFromRequest(string $id, Request $request): string
+    private static function buildIdFromRequest(string $id, RequestInterface $request): string
     {
         $path = 'LLL:EXT:' . GeneralUtility::camelCaseToLowerCaseUnderscored(
             $request->getControllerExtensionName()

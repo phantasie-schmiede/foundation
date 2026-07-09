@@ -27,6 +27,11 @@ use function count;
  */
 class QueryUtility
 {
+    /**
+     * @template T of object
+     * @param array<int, mixed> $constraints
+     * @param QueryInterface<T> $query
+     */
     public static function applyConstraints(array $constraints, QueryInterface $query): void
     {
         switch (count($constraints)) {
@@ -42,6 +47,9 @@ class QueryUtility
     }
 
     /**
+     * @template T of object
+     * @param QueryInterface<T> $query
+     * @return Generator<int, mixed>
      * @throws Exception
      */
     public static function processInChunks(QueryInterface $query, int $chunkSize): Generator

@@ -27,7 +27,7 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Mvc\Request;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 
 use function is_array;
 
@@ -85,7 +85,7 @@ class ContextUtility
         return self::DEFAULT_LANGUAGE_KEY;
     }
 
-    public static function getPluginSignatureFromRequest(Request $request): string
+    public static function getPluginSignatureFromRequest(RequestInterface $request): string
     {
         return strtolower('tx_' . $request->getControllerExtensionName() . '_' . $request->getPluginName());
     }

@@ -13,8 +13,12 @@ namespace PSBits\Foundation\Utility;
 
 use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionClassConstant;
 use ReflectionException;
-use Reflector;
+use ReflectionFunctionAbstract;
+use ReflectionMethod;
+use ReflectionParameter;
+use ReflectionProperty;
 
 use function count;
 use function is_string;
@@ -27,15 +31,15 @@ use function is_string;
 class ReflectionUtility
 {
     /**
-     * @param string           $attributeClass
-     * @param Reflector|string $reflection Can be a reflection or a full qualified class name.
+     * @param string $attributeClass
+     * @param ReflectionClass<object>|ReflectionClassConstant|ReflectionFunctionAbstract|ReflectionMethod|ReflectionParameter|ReflectionProperty|string $reflection Can be a reflection or a full qualified class name.
      *
      * @return object|null
      * @throws ReflectionException
      */
     public static function getAttributeInstance(
-        string           $attributeClass,
-        Reflector|string $reflection,
+        string $attributeClass,
+        ReflectionClass|ReflectionClassConstant|ReflectionFunctionAbstract|ReflectionMethod|ReflectionParameter|ReflectionProperty|string $reflection,
     ): ?object {
         if (is_string($reflection)) {
             $reflection = new ReflectionClass($reflection);

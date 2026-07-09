@@ -98,15 +98,9 @@ class File extends AbstractColumnType
         $configuration = null;
 
         if (null !== $this->uploadFileNameGeneratorProperties) {
-            $fileNameGeneratorOptions['properties'] = $this->uploadFileNameGeneratorProperties;
-
-            if (null !== $this->uploadFileNameGeneratorAppendHash) {
-                $fileNameGeneratorOptions['appendHash'] = $this->uploadFileNameGeneratorAppendHash;
-            }
-
-            if (null !== $this->uploadFileNameGeneratorPartSeparator) {
-                $fileNameGeneratorOptions['partSeparator'] = $this->uploadFileNameGeneratorPartSeparator;
-            }
+            $fileNameGeneratorOptions['appendHash']    = $this->uploadFileNameGeneratorAppendHash;
+            $fileNameGeneratorOptions['partSeparator'] = $this->uploadFileNameGeneratorPartSeparator;
+            $fileNameGeneratorOptions['properties']    = $this->uploadFileNameGeneratorProperties;
 
             if (null !== $this->uploadFileNameGeneratorPrefix) {
                 $fileNameGeneratorOptions['prefix'] = $this->uploadFileNameGeneratorPrefix;

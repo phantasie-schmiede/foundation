@@ -174,7 +174,6 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
         if (!empty($mm)) {
             $this->autoSizeMax = $autoSizeMax ?? 30;
             $this->maxItems    = $maxItems ?? 0;
-            $this->renderType  = $renderType ?? SelectRenderType::selectMultipleSideBySide;
             $this->size        = $size ?? 10;
         }
     }
@@ -346,6 +345,8 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
                 1682339361
             );
         }
+
+        $configuration = [];
 
         if (null !== $this->treeConfigExpandAll) {
             $configuration['appearance']['expandAll'] = $this->treeConfigExpandAll;

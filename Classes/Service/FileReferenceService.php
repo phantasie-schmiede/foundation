@@ -54,7 +54,7 @@ class FileReferenceService
             'tablenames'  => $tableName,
             'tstamp'      => time(),
             'uid_foreign' => $domainModel->getUid(),
-            'uid_local'   => $file->getUid(),
+            'uid_local'   => $file->getProperty('uid'),
         ];
 
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -64,6 +64,6 @@ class FileReferenceService
             ->values($data);
         $queryBuilder->executeStatement();
 
-        return (int)$connection->lastInsertId($tableName);
+        return (int)$connection->lastInsertId();
     }
 }

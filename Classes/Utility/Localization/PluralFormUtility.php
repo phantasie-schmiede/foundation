@@ -180,16 +180,16 @@ class PluralFormUtility
     public static function getPluralForm(string $languageKey, int|float $quantity): int
     {
         // Example: If $languageKey is "de_CH" and there is no rule defined for it, try "de".
-        if (!isset(static::LANGUAGE_RULE_MAPPING[$languageKey])) {
+        if (!isset(self::LANGUAGE_RULE_MAPPING[$languageKey])) {
             $languageKeyParts = preg_split('/[_-]/', $languageKey);
             $languageKey      = (string)array_shift($languageKeyParts);
         }
 
-        if (!isset(static::LANGUAGE_RULE_MAPPING[$languageKey])) {
+        if (!isset(self::LANGUAGE_RULE_MAPPING[$languageKey])) {
             return 0;
         }
 
-        return match (static::LANGUAGE_RULE_MAPPING[$languageKey]) {
+        return match (self::LANGUAGE_RULE_MAPPING[$languageKey]) {
             0  => 0, // nplurals=1; plural=0;
             1  => (1 < $quantity) ? 1 : 0, // nplurals=2; plural=(n > 1);
             2  => (1 !== $quantity) ? 1 : 0, // nplurals=2; plural=(n != 1);

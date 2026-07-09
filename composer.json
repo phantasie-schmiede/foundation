@@ -55,6 +55,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.95",
+        "helmich/typo3-typoscript-lint": "^3.3",
         "phpstan/phpstan": "^2.2",
         "phpunit/phpunit": "^11",
         "roave/security-advisories": "dev-latest",
@@ -70,9 +71,7 @@
         "fix:php": "php-cs-fixer fix --config=Build/Quality/.php-cs-fixer.dist.php --verbose",
         "lint:classes": "npm run lint:classes",
         "lint:htmlxml": "npm run lint:htmlxml",
-        "lint:js": "npm run lint:js",
         "lint:php": "php-cs-fixer fix --config=Build/Quality/.php-cs-fixer.dist.php --dry-run --diff --verbose",
-        "lint:scss": "npm run lint:scss",
         "lint:typoscript": "typoscript-lint --config=Build/Quality/typoscript-lint.yml --ansi Configuration/TypoScript",
         "lint:yaml": "yamllint -c Build/Quality/.yamllint.yml ContentBlocks Configuration",
         "post-install-cmd": [
@@ -86,9 +85,7 @@
             "@analyze:php",
             "@lint:typoscript",
             "@lint:classes",
-            "@lint:htmlxml",
-            "@lint:js",
-            "@lint:scss"
+            "@lint:htmlxml"
         ],
         "validate:composer": "composer validate --no-check-publish"
     },

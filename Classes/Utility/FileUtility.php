@@ -19,7 +19,6 @@ use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 use function is_int;
-use function is_string;
 use function strlen;
 
 /**
@@ -67,21 +66,11 @@ class FileUtility
         int        $unit = null,
         int        $decimals = 2,
     ): string {
-        switch (true) {
-            case is_int($input):
-                $bytes = $input;
-
-                break;
-            case is_string($input):
-                $input = self::resolveFileName($input);
-                $bytes = filesize($input);
-
-                break;
-            default:
-                throw new RuntimeException(
-                    __CLASS__ . ': Argument 1 of formatFileSize() has to be integer or string!',
-                    1614368333
-                );
+        if (is_int($input)) {
+            $bytes = $input;
+        } else {
+            $input = self::resolveFileName($input);
+            $bytes = filesize($input);
         }
 
         if ($unit) {

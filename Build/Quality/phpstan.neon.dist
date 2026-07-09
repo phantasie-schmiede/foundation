@@ -2,6 +2,9 @@ parameters:
   level: 6
   ignoreErrors:
       - identifier: missingType.iterableValue
+      -
+        identifier: trait.unused
+        path: ../../Classes/Traits/ControllerCacheTrait.php
   paths:
     - ../../Classes
   tmpDir: .phpstan

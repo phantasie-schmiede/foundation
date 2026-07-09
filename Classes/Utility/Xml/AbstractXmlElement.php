@@ -98,7 +98,7 @@ class AbstractXmlElement implements XmlElementInterface
         $this->_attributes = $attributes;
     }
 
-    public function _setNodeValue($nodeValue): void
+    public function _setNodeValue(mixed $nodeValue): void
     {
         $this->_nodeValue = [$nodeValue];
     }

@@ -60,7 +60,7 @@ class EarlyAccessConstantsProvider extends AbstractProvider
         $allExtensionInformation     = $extensionInformationService->getAllExtensionInformation();
 
         // This builds the path for a context-specific file with a lowercase filename.
-        /** @var array $contextParts */
+        /** @var list<string> $contextParts */
         $contextParts = explode(
             '/',
             Environment::getContext()

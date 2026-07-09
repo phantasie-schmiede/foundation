@@ -64,9 +64,9 @@ class XmlUtility
     /**
      * @param SimpleXMLElement|string $xml
      * @param bool                    $sortAlphabetically Sort tags on same level alphabetically by tag name.
-     * @param array                   $mapping
+     * @param array<string, class-string<XmlElementInterface>> $mapping
      *
-     * @return object|array|string
+     * @return array|object
      * @throws ContainerExceptionInterface
      * @throws JsonException
      * @throws NotFoundExceptionInterface
@@ -75,7 +75,7 @@ class XmlUtility
         SimpleXMLElement|string $xml,
         bool                    $sortAlphabetically = false,
         array                   $mapping = [],
-    ): object|array|string {
+    ): array|object {
         if (is_string($xml)) {
             /** @noinspection CallableParameterUseCaseInTypeContextInspection */
             $xml = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_PARSEHUGE | LIBXML_NOCDATA);
@@ -144,11 +144,11 @@ class XmlUtility
     /**
      * @param bool             $sortAlphabetically
      * @param SimpleXMLElement $xml
-     * @param array            $mapping
+     * @param array<string, class-string<XmlElementInterface>> $mapping
      * @param array            $namespaces
      * @param bool             $rootLevel This is an internal parameter only to be set from within this function.
      *
-     * @return array|object|string
+     * @return array|object
      * @throws ContainerExceptionInterface
      * @throws JsonException
      * @throws NotFoundExceptionInterface
@@ -159,7 +159,7 @@ class XmlUtility
         array            $mapping,
         array            $namespaces = [],
         bool             $rootLevel = true,
-    ): array|object|string {
+    ): array|object {
         $array = [];
 
         foreach ($xml->getDocNamespaces(false, false) as $prefix => $namespace) {
@@ -194,7 +194,9 @@ class XmlUtility
                 $parsedChild  = self::buildFromXml($sortAlphabetically, $child, $mapping, $namespaces, false);
 
                 if (isset($mapping[$childTagName])) {
-                    $parsedChild = GeneralUtility::makeInstance($mapping[$childTagName], $parsedChild);
+                    /** @var class-string<XmlElementInterface> $mappedClass */
+                    $mappedClass = $mapping[$childTagName];
+                    $parsedChild = GeneralUtility::makeInstance($mappedClass, $parsedChild);
                 }
 
                 if ($parsedChild instanceof XmlElementInterface) {
@@ -230,7 +232,10 @@ class XmlUtility
             $rootName = $xml->getName();
 
             if (isset($mapping[$rootName])) {
-                return GeneralUtility::makeInstance($mapping[$rootName], $array);
+                /** @var class-string<XmlElementInterface> $mappedClass */
+                $mappedClass = $mapping[$rootName];
+
+                return GeneralUtility::makeInstance($mappedClass, $array);
             }
 
             return [$xml->getName() => $array];
@@ -285,7 +290,7 @@ class XmlUtility
         return $xml;
     }
 
-    private static function buildXml(array|XmlElementInterface $data)
+    private static function buildXml(array|XmlElementInterface $data): string
     {
         $xml      = '';
         $siblings = [];

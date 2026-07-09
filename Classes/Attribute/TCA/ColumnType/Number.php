@@ -54,13 +54,12 @@ class Number extends AbstractColumnType
 
     public function getDatabaseDefinition(): string
     {
-        if (NumberFormat::decimal === $this->format) {
-            return DefinitionUtility::decimal($this->precision, $this->scale);
-        }
-
-        $unsigned = NumberFormat::integer === $this->format && null !== $this->rangeLower && 0 <= $this->rangeLower;
-
-        return DefinitionUtility::int(unsigned: $unsigned);
+        return match ($this->format) {
+            NumberFormat::decimal => DefinitionUtility::decimal($this->precision, $this->scale),
+            NumberFormat::integer => DefinitionUtility::int(
+                unsigned: null !== $this->rangeLower && 0 <= $this->rangeLower,
+            ),
+        };
     }
 
     public function getFormat(): string
