@@ -73,19 +73,20 @@
         "lint:htmlxml": "npm run lint:htmlxml",
         "lint:php": "php-cs-fixer fix --config=Build/Quality/.php-cs-fixer.dist.php --dry-run --diff --verbose",
         "lint:typoscript": "typoscript-lint --config=Build/Quality/typoscript-lint.yml --ansi Configuration/TypoScript",
-        "lint:yaml": "yamllint -c Build/Quality/.yamllint.yml ContentBlocks Configuration",
+        "lint:yaml": "bash -lc 'command -v yamllint >/dev/null 2>&1 || sudo apt install -y yamllint; yamllint -c Build/Quality/.yamllint.yml Build/Quality Configuration'",
         "post-install-cmd": [
             "npm install",
             "cp Build/GitHooks/pre-commit .git/hooks/pre-commit"
         ],
         "qa": [
-            "@audit:composer",
-            "@validate:composer",
-            "@lint:php",
             "@analyze:php",
-            "@lint:typoscript",
+            "@audit:composer",
             "@lint:classes",
-            "@lint:htmlxml"
+            "@lint:htmlxml",
+            "@lint:php",
+            "@lint:typoscript",
+            "@lint:yaml",
+            "@validate:composer"
         ],
         "validate:composer": "composer validate --no-check-publish"
     },
