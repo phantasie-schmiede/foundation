@@ -20,8 +20,10 @@ return (new PhpCsFixer\Config())->setRiskyAllowed(true)
         'attribute_empty_parentheses'     => true,
         'binary_operator_spaces'          => [
             'operators' => [
-                '='  => 'align_single_space_minimal',
-                '=>' => 'align_by_scope',
+                '.='  => 'align_single_space_minimal',
+                '='   => 'align_single_space_minimal',
+                '=>'  => 'align_by_scope',
+                '??=' => 'align_single_space_minimal',
             ],
         ],
         'blank_line_before_statement'     => [

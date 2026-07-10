@@ -1,5 +1,6 @@
 sniffs:
   - class: Indentation
     parameters:
-      useSpaces: true
+      indentConditions: true
       indentPerLevel: 2
+      useSpaces: true

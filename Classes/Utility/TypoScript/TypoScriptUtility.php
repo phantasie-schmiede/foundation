@@ -164,7 +164,7 @@ class TypoScriptUtility
                     } elseif (1 === count($value)) {
                         self::resetLineBreaks();
                         self::$objectPath .= $key . '.';
-                        $typoScript .= self::buildTypoScriptFromArray($value, $indentationLevel);
+                        $typoScript       .= self::buildTypoScriptFromArray($value, $indentationLevel);
                     } else {
                         $typoScript .= self::$lineBreakBeforeCurlyBracketOpen . $indentation . self::$objectPath . $key . ' {' . LF;
                         self::resetLineBreaks();

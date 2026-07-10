@@ -4,9 +4,9 @@
   "description": "Configuration framework for TYPO3 extension development",
   "scripts": {
     "fix:classes": "node Build/Quality/lint-class-attributes.mjs",
-    "fix:htmlxml": "prettier --config Build/Quality/prettier.config.mjs --ignore-path Build/Quality/.prettierignore --write \"**/*.{html,xml,xlf}\"",
+    "fix:htmlxml": "prettier --config Build/Quality/prettier.config.mjs --ignore-path Build/Quality/.prettierignore --write \"**/*.{xml,xlf}\"",
     "lint:classes": "node Build/Quality/lint-class-attributes.mjs --dry-run",
-    "lint:htmlxml": "prettier --config Build/Quality/prettier.config.mjs --ignore-path Build/Quality/.prettierignore --check \"**/*.{html,xml,xlf}\""
+    "lint:htmlxml": "prettier --config Build/Quality/prettier.config.mjs --ignore-path Build/Quality/.prettierignore --check \"**/*.{xml,xlf}\""
   },
   "repository": {
     "type": "git",
