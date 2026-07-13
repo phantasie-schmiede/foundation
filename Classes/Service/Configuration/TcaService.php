@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -41,6 +42,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\DomainObject\AbstractValueObject;
 use TYPO3\CMS\Extbase\Persistence\ClassesConfiguration;
+
 use function array_slice;
 use function get_class;
 use function in_array;
@@ -53,7 +55,7 @@ use function is_array;
  */
 class TcaService
 {
-    public const    array  PALETTE_IDENTIFIERS      = [
+    public const    array  PALETTE_IDENTIFIERS = [
         'LANGUAGE'         => 'language',
         'TIME_RESTRICTION' => 'timeRestriction',
     ];
@@ -62,7 +64,7 @@ class TcaService
         'TCA_OVERRIDES' => 'tcaOverrides',
         'TCA'           => 'tca',
     ];
-    protected const array  PROTECTED_COLUMNS        = [
+    protected const array  PROTECTED_COLUMNS = [
         'crdate',
         'pid',
         'tstamp',
@@ -95,7 +97,7 @@ class TcaService
     {
         $parts = array_map('trim', explode(';', $showItem));
 
-        return '--palette--' === ($parts[0] ?? '') && $paletteIdentifier === ($parts[2] ?? '');
+        return '--palette--' === $parts[0] && $paletteIdentifier === ($parts[2] ?? '');
     }
 
     public function addColumnConfiguration(string $columnName, array $columnConfiguration): void
@@ -118,10 +120,12 @@ class TcaService
                 case Palette::SPECIAL_POSITIONS['NEW_LINE_AFTER']:
                     $position = Column::POSITIONS['AFTER'] . ':' . $referenceField;
                     array_unshift($fieldNames, Palette::SPECIAL_FIELDS['LINE_BREAK']);
+
                     break;
                 case Palette::SPECIAL_POSITIONS['NEW_LINE_BEFORE']:
-                    $position = Column::POSITIONS['BEFORE'] . ':' . $referenceField;
+                    $position     = Column::POSITIONS['BEFORE'] . ':' . $referenceField;
                     $fieldNames[] = Palette::SPECIAL_FIELDS['LINE_BREAK'];
+
                     break;
             }
         }
@@ -191,7 +195,9 @@ class TcaService
      */
     public function convertClassNameToTableName(string $className): string
     {
-        if ($this->checkClassesConfiguration() && $this->classesConfiguration->hasClass($className)) {
+        $this->checkClassesConfiguration();
+
+        if ($this->classesConfiguration->hasClass($className)) {
             $configuration = $this->classesConfiguration->getConfigurationFor($className);
 
             if (!empty($configuration['tableName'])) {
@@ -229,7 +235,9 @@ class TcaService
     public function convertPropertyNameToColumnName(string $propertyName, string $className = null): string
     {
         if (!empty($className)) {
-            if ($this->checkClassesConfiguration() && $this->classesConfiguration->hasClass($className)) {
+            $this->checkClassesConfiguration();
+
+            if ($this->classesConfiguration->hasClass($className)) {
                 $configuration = $this->classesConfiguration->getConfigurationFor($className);
 
                 if (!empty($configuration['properties'][$propertyName]['fieldName'])) {
@@ -238,7 +246,7 @@ class TcaService
             }
 
             $propertyReflection = new ReflectionProperty($className, $propertyName);
-            $fieldMapping = ReflectionUtility::getAttributeInstance(Field::class, $propertyReflection);
+            $fieldMapping       = ReflectionUtility::getAttributeInstance(Field::class, $propertyReflection);
 
             if ($fieldMapping instanceof Field) {
                 return $fieldMapping->getName();
@@ -341,10 +349,11 @@ class TcaService
     public function getConfigurationForPropertyOfDomainModel(AbstractEntity $domainModel, string $property): array
     {
         $tableName = $this->convertClassNameToTableName(get_class($domainModel));
-        $column = $this->convertPropertyNameToColumnName($property);
+        $column    = $this->convertPropertyNameToColumnName($property);
 
         return $GLOBALS['TCA'][$tableName]['columns'][$column] ?? throw new RuntimeException(
-            __CLASS__ . ': "' . $column . '" is not defined for table "' . $tableName . '"!', 1660914340
+            __CLASS__ . ': "' . $column . '" is not defined for table "' . $tableName . '"!',
+            1660914340
         );
     }
 
@@ -489,7 +498,7 @@ class TcaService
         if (null !== $ctrl) {
             if ($overrideMode) {
                 $ctrlProperties = [];
-                $setArguments = $reflection->getAttributes(Ctrl::class)[0]->getArguments();
+                $setArguments   = $reflection->getAttributes(Ctrl::class)[0]->getArguments();
 
                 foreach ($setArguments as $key => $value) {
                     $ctrlProperties[TcaUtility::convertKey($key)] = $value;
@@ -517,7 +526,7 @@ class TcaService
 
         foreach ($reflection->getAttributes(Palette::class) as $paletteAttribute) {
             /** @var Palette $paletteConfiguration */
-            $paletteConfiguration = $paletteAttribute->newInstance();
+            $paletteConfiguration                                   = $paletteAttribute->newInstance();
             $this->palettes[$paletteConfiguration->getIdentifier()] = $paletteConfiguration;
         }
 
@@ -529,7 +538,7 @@ class TcaService
         $this->tabs = [];
 
         foreach ($reflection->getAttributes(Tab::class) as $tabAttribute) {
-            $tabConfiguration = $tabAttribute->newInstance();
+            $tabConfiguration                               = $tabAttribute->newInstance();
             $this->tabs[$tabConfiguration->getIdentifier()] = $tabConfiguration;
         }
 
@@ -557,7 +566,8 @@ class TcaService
                     __CLASS__ . ': Position relations create a loop! Please remove unnecessary specifications. The combination fieldA:position="before:fieldB" and fieldB:position="after:fieldA" would cause this error. The unresolved fields are: ' . implode(
                         ', ',
                         array_keys($columnConfigurations)
-                    ), 1646995607
+                    ),
+                    1646995607
                 );
             }
         }
@@ -613,15 +623,15 @@ class TcaService
      */
     private function addFieldIfAlreadyPossible(Column $attribute, string $columnName): bool
     {
-        $fieldCanBeAdded = false;
+        $fieldCanBeAdded      = false;
         $newPaletteIdentifier = null;
-        $newTabIdentifier = null;
-        $position = $attribute->getPosition();
-        $types = $GLOBALS['TCA'][$this->tableName]['types'];
+        $newTabIdentifier     = null;
+        $position             = $attribute->getPosition();
+        $types                = $GLOBALS['TCA'][$this->tableName]['types'];
 
         if ('' !== $attribute->getTypeList()) {
             $typeList = GeneralUtility::trimExplode(',', $attribute->getTypeList());
-            $types = array_filter($types, static function($typeIdentifier) use ($typeList) {
+            $types    = array_filter($types, static function($typeIdentifier) use ($typeList) {
                 return in_array($typeIdentifier, $typeList, true);
             }, ARRAY_FILTER_USE_KEY);
         }
@@ -639,13 +649,14 @@ class TcaService
                     $newPaletteIdentifier = $referenceField;
 
                     if (!isset($this->palettes[$referenceField]) || '' === $this->palettes[$referenceField]->getPosition(
-                        )) {
+                    )) {
                         // Palette has no specified position: field and palette can be added without problems.
                         if (!isset($GLOBALS['TCA'][$this->tableName]['palettes'][$referenceField])) {
                             $this->createPalette($referenceField);
                         }
 
                         $fieldCanBeAdded = true;
+
                         break;
                     }
 
@@ -661,9 +672,10 @@ class TcaService
                         $newTabIdentifier = $referenceField;
 
                         if (!isset($this->tabs[$referenceField]) || '' === $this->tabs[$referenceField]->getPosition(
-                            )) {
+                        )) {
                             // Tab has no specified position: palette and tab can be added without problems.
                             $fieldCanBeAdded = true;
+
                             break;
                         }
 
@@ -683,6 +695,7 @@ class TcaService
                     if (!isset($this->tabs[$referenceField]) || '' === $this->tabs[$referenceField]->getPosition()) {
                         // Tab has no specified position: field and tab can be added without problems.
                         $fieldCanBeAdded = true;
+
                         break;
                     }
 
@@ -690,14 +703,17 @@ class TcaService
                         ,
                         $referenceField,
                     ] = GeneralUtility::trimExplode(':', $this->tabs[$referenceField]->getPosition());
+
                     break;
                 case Palette::SPECIAL_POSITIONS['NEW_LINE_AFTER']:
-                    $position = Column::POSITIONS['AFTER'] . ':' . $referenceField;
+                    $position   = Column::POSITIONS['AFTER'] . ':' . $referenceField;
                     $columnName = Palette::SPECIAL_FIELDS['LINE_BREAK'] . ',' . $columnName;
+
                     break;
                 case Palette::SPECIAL_POSITIONS['NEW_LINE_BEFORE']:
                     $position = Column::POSITIONS['BEFORE'] . ':' . $referenceField;
                     $columnName .= ',' . Palette::SPECIAL_FIELDS['LINE_BREAK'];
+
                     break;
             }
 
@@ -706,7 +722,7 @@ class TcaService
                 $containingPalettes = [];
 
                 foreach ($GLOBALS['TCA'][$this->tableName]['palettes'] as $paletteIdentifier => $paletteConfiguration) {
-                    $fieldList = GeneralUtility::trimExplode(',', $paletteConfiguration['showitem'] ?? '');
+                    $fieldList           = GeneralUtility::trimExplode(',', $paletteConfiguration['showitem'] ?? '');
                     $normalizedFieldList = array_map(static function(string $item): string {
                         return explode(';', $item)[0];
                     }, $fieldList);
@@ -717,13 +733,14 @@ class TcaService
                 }
 
                 foreach ($types as $typeConfiguration) {
-                    $fieldList = GeneralUtility::trimExplode(',', $typeConfiguration['showitem'] ?? '');
+                    $fieldList           = GeneralUtility::trimExplode(',', $typeConfiguration['showitem'] ?? '');
                     $normalizedFieldList = array_map(static function(string $item): string {
                         return explode(';', $item)[0];
                     }, $fieldList);
 
                     if (in_array($referenceField, $normalizedFieldList, true)) {
                         $fieldCanBeAdded = true;
+
                         break;
                     }
 
@@ -731,6 +748,7 @@ class TcaService
                         foreach ($fieldList as $showItem) {
                             if (self::isPaletteReference($showItem, $paletteIdentifier)) {
                                 $fieldCanBeAdded = true;
+
                                 break 3;
                             }
                         }
@@ -794,7 +812,7 @@ class TcaService
     private function addTabToShowItems(string $identifier, string $label = '', string $typeList = ''): string
     {
         if (isset($this->tabs[$identifier])) {
-            $label = $this->tabs[$identifier]->getLabel();
+            $label       = $this->tabs[$identifier]->getLabel();
             $tabPosition = $this->tabs[$identifier]->getPosition();
         }
 
@@ -808,7 +826,7 @@ class TcaService
             }
         }
 
-        $tabDefinition = '--div--;' . ($label ?? $identifier);
+        $tabDefinition = '--div--;' . $label;
         ExtensionManagementUtility::addToAllTCAtypes($this->tableName, $tabDefinition, $typeList, $tabPosition ?? '');
 
         return $tabDefinition;
@@ -818,18 +836,18 @@ class TcaService
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    private function checkClassesConfiguration(): bool
+    private function checkClassesConfiguration(): void
     {
         if (null === $this->classesConfiguration) {
             /*
              * Copied from TYPO3\CMS\Extbase\Persistence\ClassesConfigurationFactory because instantiation of that class
-             * would throw an exception (e. g. CacheManager not available, dependency injection not ready).
+             * would throw an exception (e.g. CacheManager not available, dependency injection not ready).
              */
             $classes = [];
 
             foreach ($this->packageManager->getActivePackages() as $activePackage) {
                 $persistenceClassesFile = $activePackage->getPackagePath(
-                    ) . 'Configuration/Extbase/Persistence/Classes.php';
+                ) . 'Configuration/Extbase/Persistence/Classes.php';
 
                 if (file_exists($persistenceClassesFile)) {
                     $definedClasses = require $persistenceClassesFile;
@@ -845,16 +863,14 @@ class TcaService
                 }
             }
 
-            $classes = $this->inheritPropertiesFromParentClasses($classes);
+            $classes                    = $this->inheritPropertiesFromParentClasses($classes);
             $this->classesConfiguration = GeneralUtility::makeInstance(ClassesConfiguration::class, $classes);
         }
-
-        return $this->classesConfiguration instanceof ClassesConfiguration;
     }
 
     /**
      * Copied from TYPO3\CMS\Extbase\Persistence\ClassesConfigurationFactory because instantiation of that class would
-     * throw an exception (e. g. CacheManager not available, dependency injection not ready).
+     * throw an exception (e.g. CacheManager not available, dependency injection not ready).
      */
     private function inheritPropertiesFromParentClasses(array $classes): array
     {
@@ -870,7 +886,8 @@ class TcaService
              * parents of $className until one of these parents.
              */
             $relevantParentClasses = [];
-            $parentClasses = class_parents($className) ?: [];
+            $parentClasses         = class_parents($className) ?: [];
+
             while (null !== $parentClass = array_shift($parentClasses)) {
                 if (in_array(
                     $parentClass,

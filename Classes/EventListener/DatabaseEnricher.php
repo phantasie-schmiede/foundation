@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -13,6 +14,7 @@ namespace PSBits\Foundation\EventListener;
 use PSBits\Foundation\Attribute\TCA\Column;
 use PSBits\Foundation\Utility\StringUtility;
 use TYPO3\CMS\Core\Database\Event\AlterTableDefinitionStatementsEvent;
+
 use function in_array;
 
 /**
@@ -24,8 +26,8 @@ class DatabaseEnricher
 {
     protected const string CREATE_TABLE_PHRASE = 'CREATE TABLE';
     protected const string INDENTATION         = '    ';
-    protected const string KEY_DEFINITION = 'KEY ';
-    protected const array  SKIP_KEYWORDS  = [
+    protected const string KEY_DEFINITION      = 'KEY ';
+    protected const array  SKIP_KEYWORDS       = [
         'PRIMARY',
         'UNIQUE',
     ];
@@ -34,24 +36,24 @@ class DatabaseEnricher
 
     public function __invoke(AlterTableDefinitionStatementsEvent $event): void
     {
-        $additionalFields = [];
-        $additionalKeys = [];
-        $sql = implode(LF, $event->getSqlData());
+        $additionalFields     = [];
+        $additionalKeys       = [];
+        $sql                  = implode(LF, $event->getSqlData());
         $this->originalFields = $this->generateDataFromRawSql($sql);
 
         foreach ($GLOBALS['TCA'] as $tableName => $tableConfiguration) {
             foreach ($tableConfiguration['columns'] as $columnName => $columnConfiguration) {
                 if (!empty($columnConfiguration['config']['EXT']['foundation'][Column::CONFIGURATION_IDENTIFIERS['DATABASE_DEFINITION']]) && !$this->sqlHasFieldDefinition(
-                        $columnName,
-                        $tableName
-                    )) {
+                    $columnName,
+                    $tableName
+                )) {
                     $additionalFields[$tableName][$columnName] = $columnConfiguration['config']['EXT']['foundation'][Column::CONFIGURATION_IDENTIFIERS['DATABASE_DEFINITION']];
                 }
 
                 if (!empty($columnConfiguration['config']['EXT']['foundation'][Column::CONFIGURATION_IDENTIFIERS['DATABASE_KEY']]) && !$this->sqlHasKeyDefinition(
-                        $columnName,
-                        $tableName
-                    )) {
+                    $columnName,
+                    $tableName
+                )) {
                     $additionalKeys[$tableName][] = $columnName;
                 }
             }
@@ -104,20 +106,23 @@ class DatabaseEnricher
             // Detect end of table definition.
             if (str_contains($line, ';')) {
                 $tableName = null;
+
                 continue;
             }
 
             if (str_starts_with($line, self::CREATE_TABLE_PHRASE)) {
                 // Remove 'CREATE TABLE'.
-                $line = trim(substr($line, strlen(self::CREATE_TABLE_PHRASE)));
+                $line      = trim(substr($line, strlen(self::CREATE_TABLE_PHRASE)));
                 $tableName = StringUtility::getFirstWord($line);
+
                 continue;
             }
 
             if (!empty($tableName)) {
                 if (str_starts_with($line, self::KEY_DEFINITION)) {
-                    $keyName = StringUtility::getFirstWord(substr($line, strlen(self::KEY_DEFINITION)));
+                    $keyName                    = StringUtility::getFirstWord(substr($line, strlen(self::KEY_DEFINITION)));
                     $data[$tableName]['keys'][] = $keyName;
+
                     continue;
                 }
 
@@ -125,8 +130,8 @@ class DatabaseEnricher
                  * Should be a field definition at this point!
                  * Remove backticks.
                  */
-                $line = trim($line, '`');
-                $fieldName = StringUtility::getFirstWord($line);
+                $line                         = trim($line, '`');
+                $fieldName                    = StringUtility::getFirstWord($line);
                 $data[$tableName]['fields'][] = $fieldName;
             }
         }

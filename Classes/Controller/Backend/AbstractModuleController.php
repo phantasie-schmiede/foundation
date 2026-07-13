@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -47,7 +48,7 @@ abstract class AbstractModuleController extends ActionController
         $extbaseParameters = $this->request->getAttribute('extbase');
 
         return str_replace('\\', '/', $extbaseParameters->getControllerName()) . '/' . ucfirst(
-                $extbaseParameters->getControllerActionName()
-            );
+            $extbaseParameters->getControllerActionName()
+        );
     }
 }

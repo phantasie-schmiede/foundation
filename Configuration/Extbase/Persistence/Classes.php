@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use PSBits\Foundation\Attribute\TCA\Mapping\Field;
@@ -7,7 +8,7 @@ use PSBits\Foundation\Service\ExtensionInformationService;
 use PSBits\Foundation\Utility\ReflectionUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-$classesConfiguration = [];
+$classesConfiguration        = [];
 $extensionInformationService = GeneralUtility::makeInstance(ExtensionInformationService::class);
 
 foreach ($extensionInformationService->getAllExtensionInformation() as $extensionInformation) {

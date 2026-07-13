@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -25,6 +26,7 @@ use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotCon
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 use function in_array;
 use function is_int;
 
@@ -65,10 +67,10 @@ class ModuleService
         }
 
         foreach ($extensionInformation->getModules() as $configuration) {
-            $moduleConfiguration = $this->buildBasicConfiguration($configuration, $extensionInformation);
-            $moduleConfiguration['access'] = $configuration->getAccess();
+            $moduleConfiguration                  = $this->buildBasicConfiguration($configuration, $extensionInformation);
+            $moduleConfiguration['access']        = $configuration->getAccess();
             $moduleConfiguration['extensionName'] = $extensionInformation->getExtensionName();
-            $moduleConfiguration['parent'] = $configuration->getParentModule();
+            $moduleConfiguration['parent']        = $configuration->getParentModule();
 
             if (!empty($configuration->getControllers())) {
                 $moduleConfiguration['controllerActions'] = $this->collectActions($configuration->getControllers());
@@ -91,16 +93,16 @@ class ModuleService
         MainModuleConfiguration       $configuration,
         ExtensionInformationInterface $extensionInformation,
     ): array {
-        $moduleKey = $configuration->getKey();
+        $moduleKey           = $configuration->getKey();
         $moduleConfiguration = [
             'appearance'     => [
                 'renderInModuleMenu' => $configuration->getRenderInModuleMenu(),
             ],
             'iconIdentifier' => $this->determineIconIdentifier($configuration, $extensionInformation),
             'labels'         => $configuration->getLabels() ?? $this->getDefaultLabelPath(
-                    $extensionInformation,
-                    $moduleKey
-                ),
+                $extensionInformation,
+                $moduleKey
+            ),
         ];
 
         if (!empty($configuration->getNavigationComponent())) {
@@ -151,12 +153,12 @@ class ModuleService
                 $controllerClassName = $value;
             } else {
                 $controllerClassName = $key;
-                $specifiedActions = $value;
+                $specifiedActions    = $value;
             }
 
-            $controller = new ReflectionClass($controllerClassName);
+            $controller                                  = new ReflectionClass($controllerClassName);
             $controllersAndActions[$controllerClassName] = [];
-            $methods = $controller->getMethods();
+            $methods                                     = $controller->getMethods();
 
             foreach ($methods as $method) {
                 $moduleActionAttribute = ReflectionUtility::getAttributeInstance(ModuleAction::class, $method);
@@ -215,6 +217,6 @@ class ModuleService
         string                        $moduleKey,
     ): string {
         return 'LLL:EXT:' . $extensionInformation->getExtensionKey(
-            ) . '/Resources/Private/Language/Backend/Modules/' . lcfirst($moduleKey) . '.xlf';
+        ) . '/Resources/Private/Language/Backend/Modules/' . lcfirst($moduleKey) . '.xlf';
     }
 }

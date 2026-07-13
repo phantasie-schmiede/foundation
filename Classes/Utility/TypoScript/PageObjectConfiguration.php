@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -24,7 +25,7 @@ class PageObjectConfiguration
     protected bool        $disableAllHeaderCode = true;
     protected string      $extensionName;
     protected string      $pluginName;
-    protected array       $settings             = [];
+    protected array       $settings = [];
     protected int         $typeNum;
     protected string      $typoScriptObjectName = '';
     protected string      $userFunc             = '';

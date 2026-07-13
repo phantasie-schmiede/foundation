@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -14,6 +15,7 @@ use PSBits\Foundation\Data\ExtensionInformationInterface;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use UnexpectedValueException;
+
 use function count;
 use function is_array;
 
@@ -28,14 +30,11 @@ class TypoScriptUtility
         'MODULE' => 'module',
         'PLUGIN' => 'plugin',
     ];
-
     public const array FILE_NAMES = [
         'CONSTANTS' => 'constants',
         'SETUP'     => 'setup',
     ];
-
-    public const string INDENTATION = '  ';
-
+    public const string INDENTATION     = '  ';
     public const array TYPO_SCRIPT_KEYS = [
         'COMMENT'     => '_comment',
         'CONDITION'   => '_condition',
@@ -52,7 +51,7 @@ class TypoScriptUtility
         if (Environment::getContext()
                 ->isDevelopment() || Environment::getContext()
                 ->isTesting()) {
-            $backtrace = debug_backtrace();
+            $backtrace        = debug_backtrace();
             $debugInformation = [
                 'class'    => $backtrace[1]['class'],
                 'function' => $backtrace[1]['function'],
@@ -105,7 +104,7 @@ class TypoScriptUtility
                     'additionalHeaders'    => [
                         10 => [
                             'header' => 'Content-type: ' . $pageTypeConfiguration->getContentType(
-                                )->value . '; charset=utf-8',
+                            )->value . '; charset=utf-8',
                         ],
                     ],
                     'admPanel'             => false,
@@ -134,19 +133,20 @@ class TypoScriptUtility
     {
         ksort($array);
         $indentation = self::createIndentation($indentationLevel);
-        $typoScript = '';
+        $typoScript  = '';
 
         self::processComment($array, $indentation, $typoScript);
 
         if (isset($array[self::TYPO_SCRIPT_KEYS['CONDITION']])) {
             if (0 < $indentationLevel) {
                 throw new UnexpectedValueException(
-                    __CLASS__ . ': TypoScript conditions must not be placed inside nested elements!', 1552992577
+                    __CLASS__ . ': TypoScript conditions must not be placed inside nested elements!',
+                    1552992577
                 );
             }
 
             $typoScript .= '[' . $array[self::TYPO_SCRIPT_KEYS['CONDITION']] . ']' . LF;
-            unset ($array[self::TYPO_SCRIPT_KEYS['CONDITION']]);
+            unset($array[self::TYPO_SCRIPT_KEYS['CONDITION']]);
             $typoScript .= $indentation . self::buildTypoScriptFromArray($array, $indentationLevel + 1);
             $typoScript .= '[END]' . LF;
         } else {
@@ -165,7 +165,7 @@ class TypoScriptUtility
                     } elseif (1 === count($value)) {
                         self::resetLineBreaks();
                         self::$objectPath .= $key . '.';
-                        $typoScript .= self::buildTypoScriptFromArray($value, $indentationLevel);
+                        $typoScript       .= self::buildTypoScriptFromArray($value, $indentationLevel);
                     } else {
                         $typoScript .= self::$lineBreakBeforeCurlyBracketOpen . $indentation . self::$objectPath . $key . ' {' . LF;
                         self::resetLineBreaks();

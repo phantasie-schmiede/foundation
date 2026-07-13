@@ -1,4 +1,5 @@
-<?xml version="1.0"?><!--
+<?xml version="1.0" ?>
+<!--
     Unit test suite setup.
 
     Unit tests should extend \TYPO3\TestingFramework\Core\Tests\UnitTestCase,
@@ -7,7 +8,10 @@
     TYPO3 CMS unit test suite also needs phpunit bootstrap code, the
     file is located next to this .xml as UnitTestsBootstrap.php
 -->
-<phpunit backupGlobals="true"
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.3/phpunit.xsd"
+    backupGlobals="true"
     beStrictAboutTestsThatDoNotTestAnything="true"
     bootstrap="UnitTestsBootstrap.php"
     cacheDirectory=".phpunit.cache"
@@ -20,9 +24,7 @@
     stopOnError="false"
     stopOnFailure="false"
     stopOnIncomplete="false"
-    stopOnSkipped="false"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.3/phpunit.xsd">
+    stopOnSkipped="false">
     <testsuites>
         <testsuite name="Unit tests">
             <!--
@@ -33,9 +35,11 @@
         </testsuite>
     </testsuites>
     <php>
-        <ini name="display_errors"
+        <ini
+            name="display_errors"
             value="1" />
-        <env name="TYPO3_CONTEXT"
+        <env
+            name="TYPO3_CONTEXT"
             value="Testing" />
     </php>
 </phpunit>

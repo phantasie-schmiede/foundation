@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -24,12 +25,10 @@ class TcaUtility
         'LANGUAGE'    => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
         'START_TIME'  => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
     ];
-
     public const array CORE_TAB_IDENTIFIERS = [
         'ACCESS'   => 'access',
         'LANGUAGE' => 'language',
     ];
-
     public const array CORE_TAB_LABELS = [
         'ACCESS'   => 'LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access',
         'LANGUAGE' => 'LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language',

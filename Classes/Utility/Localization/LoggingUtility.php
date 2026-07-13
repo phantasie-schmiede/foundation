@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -39,7 +40,7 @@ class LoggingUtility
         'ACCESS'  => 'access.*.log',
         'MISSING' => 'missing.*.log',
     ];
-    public const array  LOG_TABLES        = [
+    public const array  LOG_TABLES = [
         'ACCESS'  => 'tx_foundation_accessed_language_labels',
         'MISSING' => 'tx_foundation_missing_language_labels',
     ];
@@ -77,7 +78,7 @@ class LoggingUtility
     public static function checkPostponedLogEntries(Closure $closure, string $logFilePattern): void
     {
         $logFilePath = FilePathUtility::getLanguageLabelLogFilesPath();
-        $lockFile = $logFilePath . self::LOCK_FILE_NAME;
+        $lockFile    = $logFilePath . self::LOCK_FILE_NAME;
 
         if (file_exists($lockFile)) {
             return;
@@ -91,7 +92,7 @@ class LoggingUtility
 
         /** @var SplFileInfo $fileInfo */
         foreach ($finder as $fileInfo) {
-            $logFile = $fileInfo->getRealPath();
+            $logFile    = $fileInfo->getRealPath();
             $logContent = trim(file_get_contents($logFile));
             $closure($logContent);
             unlink($logFile);
@@ -154,11 +155,11 @@ class LoggingUtility
 
             if (file_exists($fileName)) {
                 $count = (int)(json_decode(
-                                   trim(file_get_contents($fileName)),
-                                   false,
-                                   512,
-                                   JSON_THROW_ON_ERROR
-                               )[1]) + 1;
+                    trim(file_get_contents($fileName)),
+                    false,
+                    512,
+                    JSON_THROW_ON_ERROR
+                )[1]) + 1;
             }
 
             FileUtility::write(
@@ -218,10 +219,10 @@ class LoggingUtility
     private static function createFileName(string $key, string $pattern): string
     {
         return FilePathUtility::getLanguageLabelLogFilesPath() . str_replace(
-                '*',
-                substr(md5($key), 0, 8),
-                $pattern
-            );
+            '*',
+            substr(md5($key), 0, 8),
+            $pattern
+        );
     }
 
     /**
@@ -230,7 +231,7 @@ class LoggingUtility
      */
     private static function getExtensionConfigurationSetting(string $key): mixed
     {
-        $extensionInformation = GeneralUtility::makeInstance(ExtensionInformation::class);
+        $extensionInformation        = GeneralUtility::makeInstance(ExtensionInformation::class);
         $extensionInformationService = GeneralUtility::makeInstance(ExtensionInformationService::class);
 
         return $extensionInformationService->getConfiguration(
@@ -248,7 +249,7 @@ class LoggingUtility
             ->getConnectionForTable(self::LOG_TABLES['ACCESS']);
 
         $queryBuilder = $connection->createQueryBuilder();
-        $hitCount = $queryBuilder->select('hit_count')
+        $hitCount     = $queryBuilder->select('hit_count')
             ->from(self::LOG_TABLES['ACCESS'])
             ->where(
                 $queryBuilder->expr()

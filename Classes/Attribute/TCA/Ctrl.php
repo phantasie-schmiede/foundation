@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -16,6 +17,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 use function is_string;
 
 /**
@@ -28,13 +30,11 @@ use function is_string;
 class Ctrl extends AbstractTcaAttribute
 {
     public const string DEFAULT_SORTBY = 'uid DESC';
-
-    public const array ENABLE_COLUMNS = [
+    public const array ENABLE_COLUMNS  = [
         self::ENABLE_COLUMN_IDENTIFIERS['DISABLED']  => 'hidden',
         self::ENABLE_COLUMN_IDENTIFIERS['ENDTIME']   => 'endtime',
         self::ENABLE_COLUMN_IDENTIFIERS['STARTTIME'] => 'starttime',
     ];
-
     public const array ENABLE_COLUMN_IDENTIFIERS = [
         'DISABLED'  => 'disabled',
         'ENDTIME'   => 'endtime',
@@ -418,7 +418,7 @@ class Ctrl extends AbstractTcaAttribute
      */
     public function toArray(): array
     {
-        $array = parent::toArray();
+        $array  = parent::toArray();
         $result = [];
 
         foreach ($array as $key => $value) {

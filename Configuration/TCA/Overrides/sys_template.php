@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use PSBits\Foundation\Service\ExtensionInformationService;
@@ -13,7 +14,7 @@ defined('TYPO3') or die();
 (static function() {
     // register TypoScript of those extensions which provide an ExtensionInformation-class
     $extensionInformationService = GeneralUtility::makeInstance(ExtensionInformationService::class);
-    $allExtensionInformation = $extensionInformationService->getAllExtensionInformation();
+    $allExtensionInformation     = $extensionInformationService->getAllExtensionInformation();
 
     foreach ($allExtensionInformation as $extensionInformation) {
         $pathStub = 'Configuration/TypoScript';
@@ -30,7 +31,7 @@ defined('TYPO3') or die();
 
         if (true === $finder->hasResults()) {
             $title = 'LLL:EXT:' . $extensionInformation->getExtensionKey(
-                ) . '/Resources/Private/Language/Backend/Configuration/TCA/Overrides/sys_template.xlf:template.title';
+            ) . '/Resources/Private/Language/Backend/Configuration/TCA/Overrides/sys_template.xlf:template.title';
 
             if (false === LocalizationUtility::translationExists($title, false)) {
                 $title = 'Main configuration';

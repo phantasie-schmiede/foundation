@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -30,7 +31,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
  */
 class PageTypeService
 {
-    public const array ICON_SUFFIXES                = [
+    public const array ICON_SUFFIXES = [
         'CONTENT_FROM_PID' => '-contentFromPid',
         'ROOT'             => '-root',
         'HIDE_IN_MENU'     => '-hideinmenu',
@@ -62,7 +63,7 @@ class PageTypeService
     {
         foreach ($extensionInformation->getPageTypes() as $configuration) {
             if (!empty($configuration->getAllowedTables())) {
-                $doktypeConfiguration['allowedTables'] = implode(',', $configuration->getAllowedTables());
+                $doktypeConfiguration['allowedTables']     = implode(',', $configuration->getAllowedTables());
                 $doktypeConfiguration['onlyAllowedTables'] = true;
             }
 
@@ -86,7 +87,7 @@ class PageTypeService
 
         foreach ($extensionInformation->getPageTypes() as $configuration) {
             $doktype = $configuration->getDoktype();
-            $label = $configuration['label'] ?? 'LLL:EXT:' . $extensionInformation->getExtensionKey(
+            $label   = $configuration['label'] ?? 'LLL:EXT:' . $extensionInformation->getExtensionKey(
             ) . '/Resources/Private/Language/Backend/Configuration/TCA/Overrides/page.xlf:pageType.' . $doktype;
             LocalizationUtility::translationExists($label);
 
@@ -96,7 +97,7 @@ class PageTypeService
             ], '1', 'after');
 
             $iconIdentifier = $configuration['iconIdentifier'] ?? 'page-type-' . $doktype;
-            $icons = [
+            $icons          = [
                 $doktype => $iconIdentifier,
             ];
 

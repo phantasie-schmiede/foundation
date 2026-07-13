@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -26,10 +27,12 @@ class ExtensionInformation extends AbstractExtensionInformation
         $mainModuleKey = $this->buildModuleKeyPrefix() . 'main';
         $this->addMainModule(
             GeneralUtility::makeInstance(
-                MainModuleConfiguration::class, key: $mainModuleKey, position: [
-                'after'  => 'tools',
-                'before' => 'system',
-            ]
+                MainModuleConfiguration::class,
+                key: $mainModuleKey,
+                position: [
+                    'after'  => 'tools',
+                    'before' => 'system',
+                ]
             )
         );
         $this->addModule(

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -27,6 +28,7 @@ use TYPO3\CMS\Backend\Attribute\AsController;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 use function is_array;
 
 /**
@@ -73,11 +75,11 @@ class AnalyzeLocalLangController extends AbstractModuleController
     private function collectAllLanguageLabels(): array
     {
         $allExtensionInformation = $this->extensionInformationService->getAllExtensionInformation();
-        $languageLabels = [];
+        $languageLabels          = [];
 
         foreach ($allExtensionInformation as $extensionInformation) {
             $languageDirectory = FilePathUtility::getResourcePath($extensionInformation) . 'Private/Language/';
-            $realPath = GeneralUtility::getFileAbsFileName($languageDirectory);
+            $realPath          = GeneralUtility::getFileAbsFileName($languageDirectory);
 
             if (!is_dir($realPath)) {
                 continue;
@@ -91,14 +93,14 @@ class AnalyzeLocalLangController extends AbstractModuleController
             /** @var SplFileInfo $fileInfo */
             foreach ($finder as $fileInfo) {
                 $fileIdentifier = FilePathUtility::LANGUAGE_LABEL_PREFIX . $languageDirectory . $fileInfo->getRelativePathname(
-                    );
+                );
 
                 $xmlData = XmlUtility::convertFromXml(file_get_contents($fileInfo->getRealPath()));
 
                 // Skip empty files.
                 if (!isset($xmlData['xliff']['file']['body']['trans-unit']) || !is_array(
-                        $xmlData['xliff']['file']['body']['trans-unit']
-                    )) {
+                    $xmlData['xliff']['file']['body']['trans-unit']
+                )) {
                     continue;
                 }
 

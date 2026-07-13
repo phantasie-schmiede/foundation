@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -21,7 +22,6 @@ use Psr\Container\NotFoundExceptionInterface;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use function is_array;
 
 /**
  * Class Color
@@ -60,10 +60,6 @@ class Color extends AbstractColumnType implements ColumnTypeWithItemsInterface
      */
     public function processItems(string $labelPath = ''): void
     {
-        if (!is_array($this->items)) {
-            return;
-        }
-
         // $items already has TCA format
         if (ArrayUtility::isMultiDimensionalArray($this->items)) {
             $this->processTcaFormat();

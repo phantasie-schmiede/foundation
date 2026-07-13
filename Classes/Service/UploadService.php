@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -33,6 +34,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use TYPO3\CMS\Extbase\Reflection\Exception\PropertyNotAccessibleException;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
+
 use function count;
 use function in_array;
 
@@ -65,7 +67,7 @@ class UploadService
      */
     public function fromRequest(AbstractEntity $domainModel, RequestInterface $request): void
     {
-        $pluginSignature = ContextUtility::getPluginSignatureFromRequest($request);
+        $pluginSignature         = ContextUtility::getPluginSignatureFromRequest($request);
         $uploadedFilesCollection = $request->getUploadedFiles();
 
         if (isset($uploadedFilesCollection[$pluginSignature])) {
@@ -77,7 +79,7 @@ class UploadService
         }
 
         // Preparation
-        $domainModelReflection = new ReflectionClass($domainModel);
+        $domainModelReflection   = new ReflectionClass($domainModel);
         $uploadedFilesCollection = array_filter(
             $uploadedFilesCollection,
             static function($property) use ($domainModelReflection) {
@@ -116,7 +118,7 @@ class UploadService
         UploadedFile   $uploadedFile,
     ): ?string {
         $fileNameGeneratorConfiguration = $uploadConfiguration[$property]['fileNameGenerator'] ?? [];
-        $nameParts = [];
+        $nameParts                      = [];
 
         if (!empty($fileNameGeneratorConfiguration['properties'] ?? [])) {
             foreach ($fileNameGeneratorConfiguration['properties'] as $fileNameProperty) {
@@ -153,9 +155,9 @@ class UploadService
         }
 
         return implode(
-                $fileNameGeneratorConfiguration['partSeparator'],
-                $nameParts
-            ) . '.' . $this->getFileExtensionByMimeType($uploadedFile);
+            $fileNameGeneratorConfiguration['partSeparator'],
+            $nameParts
+        ) . '.' . $this->getFileExtensionByMimeType($uploadedFile);
     }
 
     /**
@@ -164,11 +166,12 @@ class UploadService
     private function checkFileSize(string $property, array $uploadConfiguration, UploadedFile $uploadedFile): void
     {
         if (isset($uploadConfiguration[$property]['maxSize']) && 0 < (int)$uploadConfiguration[$property]['maxSize'] && (int)$uploadConfiguration[$property]['maxSize'] < $uploadedFile->getSize(
-            )) {
+        )) {
             throw new RuntimeException(
                 __CLASS__ . ': File too large (exceeds ' . FileUtility::formatFileSize(
                     $uploadConfiguration[$property]['maxSize']
-                ) . ')!', 1719230057
+                ) . ')!',
+                1719230057
             );
         }
     }
@@ -197,14 +200,15 @@ class UploadService
         }
 
         $allowedFileExtensions = $uploadConfiguration[$property]['allowed'] ?? null;
-        $fileExtension = $this->getFileExtensionByMimeType($uploadedFile);
+        $fileExtension         = $this->getFileExtensionByMimeType($uploadedFile);
 
         if (null !== $allowedFileExtensions && !in_array($fileExtension, $allowedFileExtensions, true)) {
             throw new RuntimeException(
                 __CLASS__ . ': File type not allowed (has to be one of: ' . implode(
                     ', ',
                     $allowedFileExtensions
-                ) . ')!', 1678280990
+                ) . ')!',
+                1678280990
             );
         }
     }
@@ -219,8 +223,8 @@ class UploadService
         $uploadConfiguration = [];
 
         foreach ($properties as $property) {
-            $fieldConfiguration = $this->tcaService->getConfigurationForPropertyOfDomainModel($domainModel, $property);
-            $uploadConfiguration[$property] = $fieldConfiguration['config']['upload'] ?? [];
+            $fieldConfiguration                        = $this->tcaService->getConfigurationForPropertyOfDomainModel($domainModel, $property);
+            $uploadConfiguration[$property]            = $fieldConfiguration['config']['upload'] ?? [];
             $uploadConfiguration[$property]['allowed'] = $fieldConfiguration['config']['allowed'] ? ArrayUtility::guaranteeArrayType(
                 $fieldConfiguration['config']['allowed'],
                 ','
@@ -316,7 +320,7 @@ class UploadService
                     );
                 }
 
-                $storage = $this->storageRepository->findByUid((int)$parts[0]);
+                $storage      = $this->storageRepository->findByUid((int)$parts[0]);
                 $targetFolder = $parts[1];
             }
         } else {
@@ -329,7 +333,7 @@ class UploadService
 
         $parentFolder = $storage->getRootLevelFolder();
 
-        $uploadConfiguration[$property]['storage'] = $storage;
+        $uploadConfiguration[$property]['storage']      = $storage;
         $uploadConfiguration[$property]['targetFolder'] = $parentFolder->hasFolder(
             $targetFolder
         ) ? $parentFolder->getSubfolder($targetFolder) : $parentFolder->createFolder($targetFolder);

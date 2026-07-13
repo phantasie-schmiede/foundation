@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -24,7 +25,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class GlobalVariableService
 {
-    protected static array $cachedVariables         = [];
+    protected static array $cachedVariables = [];
+
+    /**
+     * @var array<class-string<GlobalVariableProviderInterface>, GlobalVariableProviderInterface|string>
+     */
     protected static array $globalVariableProviders = [];
 
     /**
@@ -53,25 +58,30 @@ class GlobalVariableService
         }
 
         $pathElements = explode('.', $path);
-        $key = array_shift($pathElements);
+        $key          = array_shift($pathElements);
 
         if (!isset(self::$globalVariableProviders[$key])) {
             throw new RuntimeException(
                 __CLASS__ . ': Key "' . $key . '" is not registered! Available keys are: ' . implode(
                     ', ',
                     array_keys(self::$globalVariableProviders),
-                ) . '.', 1622575130
+                ) . '.',
+                1622575130
             );
         }
 
-        if (!self::$globalVariableProviders[$key] instanceof GlobalVariableProviderInterface) {
-            self::$globalVariableProviders[$key] = GeneralUtility::makeInstance($key);
+        /** @var class-string<GlobalVariableProviderInterface> $providerClass */
+        $providerClass = $key;
+
+        if (!self::$globalVariableProviders[$providerClass] instanceof GlobalVariableProviderInterface) {
+            self::$globalVariableProviders[$providerClass] = GeneralUtility::makeInstance($providerClass);
         }
 
-        $variables = [$key => self::$globalVariableProviders[$key]->getGlobalVariables()];
+        $provider  = self::$globalVariableProviders[$providerClass];
+        $variables = [$providerClass => $provider->getGlobalVariables()];
         ArrayUtility::mergeRecursiveWithOverrule($globalVariables, $variables);
 
-        if (true === self::$globalVariableProviders[$key]->isCacheable()) {
+        if (true === $provider->isCacheable()) {
             self::$cachedVariables = $globalVariables;
         }
 

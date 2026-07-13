@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -17,6 +18,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 use function str_contains;
 
 /**
@@ -36,12 +38,10 @@ class Column extends AbstractTcaAttribute
         'label',
         'onChange',
     ];
-
     public const array CONFIGURATION_IDENTIFIERS = [
         'DATABASE_DEFINITION' => 'databaseDefinition',
         'DATABASE_KEY'        => 'databaseKey',
     ];
-
     public const array POSITIONS = [
         'AFTER'   => 'after',
         'BEFORE'  => 'before',
@@ -86,7 +86,6 @@ class Column extends AbstractTcaAttribute
         protected string            $label = '',
         protected ?bool             $nullable = null,
         protected ?string           $onChange = null,
-
         /**
          * Usage: 'key:propertyName'
          * You can use the keys 'after', 'before', 'palette', 'replace' and 'tab'.
@@ -210,7 +209,7 @@ class Column extends AbstractTcaAttribute
      */
     public function toArray(): array
     {
-        $properties = parent::toArray();
+        $properties    = parent::toArray();
         $configuration = [];
 
         foreach (self::COLUMN_FIELDS as $key) {

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-    <file datatype="plaintext"
+    <file
+        datatype="plaintext"
         date="2023-09-21T19:33:00+01:00"
         original="messages"
         product-name="foundation"

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -35,7 +36,7 @@ abstract class AbstractColumnType extends AbstractAttribute implements ColumnTyp
      */
     public function toArray(): array
     {
-        $configuration = parent::toArray();
+        $configuration         = parent::toArray();
         $configuration['type'] = $this->getType();
 
         return $configuration;

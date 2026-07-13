@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -16,6 +17,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+
 use function count;
 
 /**
@@ -25,6 +27,11 @@ use function count;
  */
 class QueryUtility
 {
+    /**
+     * @template T of object
+     * @param array<int, mixed> $constraints
+     * @param QueryInterface<T> $query
+     */
     public static function applyConstraints(array $constraints, QueryInterface $query): void
     {
         switch (count($constraints)) {
@@ -32,6 +39,7 @@ class QueryUtility
                 break;
             case 1:
                 $query->matching($constraints[0]);
+
                 break;
             default:
                 $query->matching($query->logicalAnd(...$constraints));
@@ -39,6 +47,9 @@ class QueryUtility
     }
 
     /**
+     * @template T of object
+     * @param QueryInterface<T> $query
+     * @return Generator<int, mixed>
      * @throws Exception
      */
     public static function processInChunks(QueryInterface $query, int $chunkSize): Generator

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -17,6 +18,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
+
 use function is_array;
 use function is_string;
 
@@ -35,8 +37,8 @@ class RequestParameterProvider extends AbstractProvider
      */
     public function getGlobalVariables(): array
     {
-        $request = ContextUtility::getRequest();
-        $parameters = $request?->getQueryParams() ?? [];
+        $request        = ContextUtility::getRequest();
+        $parameters     = $request?->getQueryParams() ?? [];
         $postParameters = $request?->getParsedBody();
 
         if (is_array($postParameters)) {

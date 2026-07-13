@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -23,6 +24,7 @@ use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility as ExtbaseLocalizationUtility;
+
 use function array_slice;
 use function is_string;
 
@@ -41,7 +43,7 @@ class LocalizationUtility
         'BEGIN' => '[',
         'END'   => ']',
     ];
-    public const string QUANTITY_ARGUMENT   = 'quantity';
+    public const string QUANTITY_ARGUMENT = 'quantity';
 
     /**
      * Returns the localized label of the LOCAL_LANG key, $key.
@@ -127,6 +129,7 @@ class LocalizationUtility
     ): string {
         $translation = self::translate($key, $extensionName, $arguments, $languageKey);
         $translation = preg_replace('/\s+/', ' ', $translation);
+
         if ('' !== $newLineMarker) {
             $translation = str_replace($newLineMarker, "\n", $translation);
         }
@@ -181,12 +184,12 @@ class LocalizationUtility
             unset($keyParts[0]);
         }
 
-        $id = array_pop($keyParts);
+        $id               = array_pop($keyParts);
         $languageFilePath = implode(':', $keyParts);
         $languageFilePath = GeneralUtility::getFileAbsFileName($languageFilePath);
 
         if (file_exists($languageFilePath)) {
-            $xmlData = XmlUtility::convertFromXml(file_get_contents($languageFilePath));
+            $xmlData        = XmlUtility::convertFromXml(file_get_contents($languageFilePath));
             $transUnitArray = $xmlData['xliff']['file']['body']['trans-unit'] ?? null;
 
             if (null !== $transUnitArray) {

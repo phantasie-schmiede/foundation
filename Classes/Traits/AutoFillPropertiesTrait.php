@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -31,7 +32,7 @@ trait AutoFillPropertiesTrait
         $reflectionClass = new ReflectionClass($this);
 
         foreach ($properties as $property => $value) {
-            $property = StringUtility::sanitizePropertyName($property);
+            $property         = StringUtility::sanitizePropertyName($property);
             $setterMethodName = 'set' . ucfirst($property);
 
             if ($reflectionClass->hasMethod($setterMethodName)) {

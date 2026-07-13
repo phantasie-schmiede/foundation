@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-    <file source-language="en"
-        target-language="de"
+    <file
         datatype="plaintext"
+        date="2024-02-23T22:00:00+01:00"
         original="messages"
         product-name="foundation"
-        date="2024-02-23T22:00:00+01:00">
+        source-language="en"
+        target-language="de">
         <header />
         <body>
             <trans-unit id="header">

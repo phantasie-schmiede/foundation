@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -19,6 +20,7 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 use function count;
 
 /**
@@ -53,23 +55,23 @@ class EarlyAccessConstantsProvider extends AbstractProvider
      */
     public function getGlobalVariables(): array
     {
-        $mergedConstants = [];
+        $mergedConstants             = [];
         $extensionInformationService = GeneralUtility::makeInstance(ExtensionInformationService::class);
-        $allExtensionInformation = $extensionInformationService->getAllExtensionInformation();
+        $allExtensionInformation     = $extensionInformationService->getAllExtensionInformation();
 
         // This builds the path for a context-specific file with a lowercase filename.
-        /** @var array $contextParts */
+        /** @var list<string> $contextParts */
         $contextParts = explode(
             '/',
             Environment::getContext()
                 ->__toString()
         );
-        $lastIndex = count($contextParts) - 1;
+        $lastIndex                = count($contextParts) - 1;
         $contextParts[$lastIndex] = lcfirst($contextParts[$lastIndex]);
-        $contextSpecificFilePath = self::DIRECTORY . implode('/', $contextParts) . '.yaml';
+        $contextSpecificFilePath  = self::DIRECTORY . implode('/', $contextParts) . '.yaml';
 
         foreach ($allExtensionInformation as $extensionInformation) {
-            $basePath = FilePathUtility::EXTENSION_DIRECTORY_PREFIX . $extensionInformation->getExtensionKey();
+            $basePath  = FilePathUtility::EXTENSION_DIRECTORY_PREFIX . $extensionInformation->getExtensionKey();
             $yamlFiles = [
                 GeneralUtility::getFileAbsFileName($basePath . self::DIRECTORY . 'constants.yaml'),
                 GeneralUtility::getFileAbsFileName($basePath . $contextSpecificFilePath),

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -23,6 +24,7 @@ use RuntimeException;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 use function constant;
 use function in_array;
 use function strlen;
@@ -69,13 +71,13 @@ class StringUtility
          * - any other number not beginning with a zero
          */
         if (1 === strlen($variable) || !str_starts_with($variable, '0') || in_array(
-                $variable[1],
-                [
+            $variable[1],
+            [
                     '.',
                     ',',
                 ],
-                true
-            )) {
+            true
+        )) {
             $intRepresentation = filter_var($variable, FILTER_VALIDATE_INT);
 
             if (false !== $intRepresentation) {
@@ -107,7 +109,7 @@ class StringUtility
             [
                 $scope,
                 $member,
-            ] = GeneralUtility::trimExplode('::', $variable, true, 2);
+            ]          = GeneralUtility::trimExplode('::', $variable, true, 2);
             $className = ObjectUtility::getFullQualifiedClassName($scope, $namespaces);
 
             // If $className is false, we have a false positive. It may be CSS, for example.
@@ -147,7 +149,8 @@ class StringUtility
                             __CLASS__ . ': Path "[' . implode(
                                 '][',
                                 $pathSegments
-                            ) . ']" does not exist in array!', 1548170593
+                            ) . ']" does not exist in array!',
+                            1548170593
                         );
                     }
                 }
@@ -172,7 +175,8 @@ class StringUtility
                             'Path "' . implode(
                                 '.',
                                 $pathSegments
-                            ) . '" does not exist in array!', 1589385393
+                            ) . '" does not exist in array!',
+                            1589385393
                         );
                     }
                 }
@@ -202,7 +206,7 @@ class StringUtility
         }
 
         return match ($variable) {
-            'true' => true,
+            'true'  => true,
             'false' => false,
             default => $variable,
         };
@@ -251,10 +255,10 @@ class StringUtility
                 return '###TAG###' . $matches[0] . '###TAG###';
             }, $string);
 
-            $stringParts = array_filter(explode('###TAG###', $preparedString));
-            $openedTags = [];
+            $stringParts    = array_filter(explode('###TAG###', $preparedString));
+            $openedTags     = [];
             $pureTextLength = 0;
-            $outputString = '';
+            $outputString   = '';
 
             foreach ($stringParts as $stringPart) {
                 if ('/>' !== mb_substr($stringPart, -2)) {
@@ -265,7 +269,8 @@ class StringUtility
 
                         if ($lastOpenedTag !== $closedTag) {
                             throw new RuntimeException(
-                                __CLASS__ . ': HTML tags in the input string are not properly nested.', 1565696694
+                                __CLASS__ . ': HTML tags in the input string are not properly nested.',
+                                1565696694
                             );
                         }
                     } elseif (str_starts_with($stringPart, '<')) {
@@ -286,6 +291,7 @@ class StringUtility
 
                 if (empty($openedTags) && $pureTextLength >= $length) {
                     $length = mb_strlen($outputString);
+
                     break;
                 }
             }
