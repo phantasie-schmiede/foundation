@@ -44,15 +44,6 @@ return (new PhpCsFixer\Config())->setRiskyAllowed(true)
                 'while',
             ],
         ],
-        'class_attributes_separation'     => [
-            'elements' => [
-                'case'         => 'none',
-                'const'        => 'only_if_meta',
-                'method'       => 'one',
-                'property'     => 'only_if_meta',
-                'trait_import' => 'only_if_meta',
-            ],
-        ],
         'declare_strict_types'            => true,
         'function_declaration'            => [
             'closure_fn_spacing'       => 'none',
@@ -91,7 +82,15 @@ return (new PhpCsFixer\Config())->setRiskyAllowed(true)
             ],
             'sort_algorithm' => 'alpha',
         ],
-        'PSBits/class_block_separation'   => true,
+        'PSBits/class_block_separation'   => [
+            'elements' => [
+                'case'         => 'none',
+                'const'        => 'only_if_meta',
+                'method'       => 'one',
+                'property'     => 'only_if_meta',
+                'trait_import' => 'only_if_meta',
+            ],
+        ],
         'single_quote'                    => true,
         'single_space_around_construct'   => [
             'constructs_followed_by_a_single_space' => ['named_argument'],

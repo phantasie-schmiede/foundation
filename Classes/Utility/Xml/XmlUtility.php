@@ -53,6 +53,10 @@ class XmlUtility
         $dom->formatOutput = true;
         $formattedXml      = $dom->saveXML();
 
+        // Normalize empty-element tags to include a space before "/>".
+        $formattedXml = preg_replace('/^<\?xml\s+(.*?)\s*\?>/i', '<?xml $1 ?>', $formattedXml) ?? $formattedXml;
+        $formattedXml = preg_replace('/<([^\s>\/]+)([^>]*)\s*\/>/', '<$1$2 />', $formattedXml) ?? $formattedXml;
+
         if ($forceNoWrap) {
             // Replace spaces with non-breaking spaces to enforce correct indentation in frontend.
             $formattedXml = str_replace(' ', "\xc2\xa0", $formattedXml);

@@ -41,6 +41,7 @@ class TypoScriptUtility
         'IMPORT'      => '_import',
         'OBJECT_TYPE' => '_objectType',
     ];
+
     private static string $lineBreakAfterCurlyBracketClose = '';
     private static string $lineBreakBeforeCurlyBracketOpen = '';
     private static string $objectPath                      = '';

@@ -283,6 +283,7 @@ final class ClassBlockSeparationFixer extends AbstractFixer implements Configura
             'trait_import',
             'const',
             'property',
+            'case',
         ];
 
         $currentIsHeader = \in_array($currentType, $headerTypes, true);

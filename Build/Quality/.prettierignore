@@ -3,3 +3,4 @@
 ../../.github
 ../../.idea
 ../../node_modules
+../../Tests/Unit/Utility/Xml/Data/ComplexXml.xml

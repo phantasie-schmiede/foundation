@@ -70,6 +70,7 @@ class TcaService
         'tstamp',
         'uid',
     ];
+
     protected static bool           $allowCaching         = true;
     protected static array          $classTableMapping    = [];
     protected ?ClassesConfiguration $classesConfiguration = null;

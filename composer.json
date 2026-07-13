@@ -69,6 +69,16 @@
         "fix:classes": "npm run fix:classes",
         "fix:htmlxml": "npm run fix:htmlxml",
         "fix:php": "php-cs-fixer fix --config=Build/Quality/.php-cs-fixer.dist.php --verbose",
+        "lint:all": [
+            "@analyze:php",
+            "@audit:composer",
+            "@lint:classes",
+            "@lint:htmlxml",
+            "@lint:php",
+            "@lint:typoscript",
+            "@lint:yaml",
+            "@validate:composer"
+        ],
         "lint:classes": "npm run lint:classes",
         "lint:htmlxml": "npm run lint:htmlxml",
         "lint:php": "php-cs-fixer fix --config=Build/Quality/.php-cs-fixer.dist.php --dry-run --diff --verbose",
@@ -78,15 +88,16 @@
             "npm install",
             "cp Build/GitHooks/pre-commit .git/hooks/pre-commit"
         ],
-        "qa": [
-            "@analyze:php",
-            "@audit:composer",
-            "@lint:classes",
-            "@lint:htmlxml",
-            "@lint:php",
-            "@lint:typoscript",
-            "@lint:yaml",
-            "@validate:composer"
+        "test:all": [
+            "@lint:all",
+            "@test:functional",
+            "@test:unit"
+        ],
+        "test:functional": [
+            "Build/Scripts/runTests.sh -s functional"
+        ],
+        "test:unit": [
+            "Build/Scripts/runTests.sh -s unit"
         ],
         "validate:composer": "composer validate --no-check-publish"
     },

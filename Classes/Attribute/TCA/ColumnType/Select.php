@@ -73,6 +73,7 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
         ],
     ];
     private const string LANGUAGE_LABEL_PREFIX = 'LLL:EXT:foundation/Resources/Private/Language/Backend/Classes/Attribute/TCA/ColumnType/select.xlf:';
+
     protected ExtensionInformationService $extensionInformationService;
     protected TcaService                  $tcaService;
 

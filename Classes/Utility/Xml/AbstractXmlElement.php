@@ -27,6 +27,7 @@ use function is_array;
 class AbstractXmlElement implements XmlElementInterface
 {
     use AutoFillPropertiesTrait;
+
     protected array $_attributes = [];
 
     /**

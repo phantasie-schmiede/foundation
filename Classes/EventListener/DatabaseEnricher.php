@@ -31,6 +31,7 @@ class DatabaseEnricher
         'PRIMARY',
         'UNIQUE',
     ];
+
     protected array $originalFields = [];
 
     public function __invoke(AlterTableDefinitionStatementsEvent $event): void

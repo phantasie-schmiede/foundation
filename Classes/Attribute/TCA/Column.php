@@ -51,7 +51,8 @@ class Column extends AbstractTcaAttribute
     ];
 
     // If you don't want a field to be shown in backend at all, set this value for typeList.
-    public const string TYPE_LIST_NONE            = 'none';
+    public const string TYPE_LIST_NONE = 'none';
+
     protected ?ColumnTypeInterface $configuration = null;
 
     /**
