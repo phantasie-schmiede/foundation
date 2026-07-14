@@ -141,10 +141,18 @@ class ExtensionInformationService
                     'Domain\Model',
                 ], explode('/', substr($fileInfo->getRelativePathname(), 0, -4)));
 
-                $fullQualifiedClassName = implode('\\', $classNameComponents);
+                try {
+                    $fullQualifiedClassName = implode('\\', $classNameComponents);
 
-                if (class_exists($fullQualifiedClassName)) {
-                    $classNames[] = $fullQualifiedClassName;
+                    /*
+                     * class_exists can throw an exception, for example when a custom autoloader depends on TYPO3's
+                     * CacheManager, which is unavailable during TCA generation (see georgringer/news).
+                     */
+                    if (class_exists($fullQualifiedClassName)) {
+                        $classNames[] = $fullQualifiedClassName;
+                    }
+                } catch (\Throwable) {
+                    continue;
                 }
             }
         } catch (InvalidArgumentException) {
