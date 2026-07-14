@@ -11,6 +11,7 @@ Have a look into the `Documentation/` directory for information about upgrading 
 - [What does it do?](#what-does-it-do)
 - [Why should you use it?](#why-should-you-use-it)
 - [Getting started](#getting-started)
+- [Quality checks for contributors](#quality-checks-for-contributors)
 - [TCA generation](#tca-generation)
     - [Tabs and palettes](#tabs-and-palettes)
     - [Database definitions](#database-definitions)
@@ -94,6 +95,19 @@ file `EXT:your_extension/Classes/Data/ExtensionInformation.php` and checks if th
 the `PSBits\Foundation\Data\ExtensionInformationInterface`. All extensions that meet these requirements are taken into
 account during automated configuration processes, e.g. during TCA generation or icon registration.
 
+### Quality checks for contributors
+
+This repository ships with additional quality tooling for PHP, XML/XLF, YAML, TypoScript and static analysis.
+
+- `composer lint:all`: runs all configured lint and validation checks
+- `composer test:all`: runs lint checks, functional tests and unit tests
+- `composer fix:php`: fixes PHP coding style issues
+- `composer fix:classes`: normalizes class attributes
+- `composer fix:htmlxml`: formats XML and XLF files
+
+`composer install` also installs frontend tooling and copies the pre-commit hook from
+`Build/GitHooks/pre-commit` to `.git/hooks/pre-commit`.
+
 ### TCA generation
 
 You don't need to create a special file for your domain model in `Configuration/TCA` anymore!
@@ -101,6 +115,10 @@ foundation will scan your `Classes/Domain/Model`-directory for all classes (skip
 attribute of type `PSBits\Foundation\Attribute\TCA\Ctrl` in their PHPDoc-comment. The script checks if your model
 relates to an existing table in the database and detects if it extends another model from a different extension and
 manipulates the TCA accordingly.
+Class loading errors that can occur during model scanning are logged and skipped to keep TCA generation robust.
+Error example:
+You can't use TCA attributes on a model extending \GeorgRinger\News\Domain\Model\News because news ships with a custom
+autoloader that depends on TYPO3's CacheManager, which is unavailable during TCA generation.
 
 You can provide configuration options via attributes.
 The attribute `PSBits\Foundation\Attribute\TCA\Column` provides general configuration fields for all TCA types, e. g.
@@ -411,7 +429,8 @@ automatically. You can override this default by passing a value for the `flexFor
 `PluginConfiguration`-constructor. You can either provide a filename if your XML-file is located inside the
 `Configuration/FlexForms/`-directory or a full file path beginning with `EXT:`.
 
-FlexForms support runtime marker replacement via `###...###`. Available marker formats:
+FlexForms registered this way support runtime marker replacement via `###...###`.
+Available marker formats:
 
 - `###EAC:path.to.value###`: resolves values from `EarlyAccessConstantsProvider`
 - `###\Full\Qualified\ClassName::CONSTANT###`: resolves PHP class constants
