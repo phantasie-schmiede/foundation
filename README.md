@@ -115,7 +115,10 @@ foundation will scan your `Classes/Domain/Model`-directory for all classes (skip
 attribute of type `PSBits\Foundation\Attribute\TCA\Ctrl` in their PHPDoc-comment. The script checks if your model
 relates to an existing table in the database and detects if it extends another model from a different extension and
 manipulates the TCA accordingly.
-Class loading errors that can occur during model scanning are skipped to keep TCA generation robust.
+Class loading errors that can occur during model scanning are logged and skipped to keep TCA generation robust.
+Error example:
+You can't use TCA attributes on a model extending \GeorgRinger\News\Domain\Model\News because news ships with a custom
+autoloader that depends on TYPO3's CacheManager, which is unavailable during TCA generation.
 
 You can provide configuration options via attributes.
 The attribute `PSBits\Foundation\Attribute\TCA\Column` provides general configuration fields for all TCA types, e. g.
@@ -426,7 +429,8 @@ automatically. You can override this default by passing a value for the `flexFor
 `PluginConfiguration`-constructor. You can either provide a filename if your XML-file is located inside the
 `Configuration/FlexForms/`-directory or a full file path beginning with `EXT:`.
 
-FlexForms support runtime marker replacement via `###...###`. Available marker formats:
+FlexForms registered this way support runtime marker replacement via `###...###`.
+Available marker formats:
 
 - `###EAC:path.to.value###`: resolves values from `EarlyAccessConstantsProvider`
 - `###\Full\Qualified\ClassName::CONSTANT###`: resolves PHP class constants

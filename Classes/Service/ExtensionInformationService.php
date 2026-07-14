@@ -14,8 +14,11 @@ namespace PSBits\Foundation\Service;
 use InvalidArgumentException;
 use PSBits\Foundation\Data\ExtensionInformationInterface;
 use PSBits\Foundation\Exceptions\ImplementationException;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Throwable;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -33,8 +36,10 @@ use function is_array;
  *
  * @package PSBits\Foundation\Service
  */
-class ExtensionInformationService
+class ExtensionInformationService implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * @var ExtensionInformationInterface[]
      */
@@ -141,9 +146,9 @@ class ExtensionInformationService
                     'Domain\Model',
                 ], explode('/', substr($fileInfo->getRelativePathname(), 0, -4)));
 
-                try {
-                    $fullQualifiedClassName = implode('\\', $classNameComponents);
+                $fullQualifiedClassName = implode('\\', $classNameComponents);
 
+                try {
                     /*
                      * class_exists can throw an exception, for example when a custom autoloader depends on TYPO3's
                      * CacheManager, which is unavailable during TCA generation (see georgringer/news).
@@ -151,7 +156,17 @@ class ExtensionInformationService
                     if (class_exists($fullQualifiedClassName)) {
                         $classNames[] = $fullQualifiedClassName;
                     }
-                } catch (\Throwable) {
+                } catch (Throwable $exception) {
+                    $this->logger->warning(
+                        'Could not scan class "{className}" for extension "{extensionKey}": {message}',
+                        [
+                            'className'    => $fullQualifiedClassName,
+                            'extensionKey' => $extensionInformation->getExtensionKey(),
+                            'message'      => $exception->getMessage(),
+                            'exception'    => $exception,
+                        ]
+                    );
+
                     continue;
                 }
             }
