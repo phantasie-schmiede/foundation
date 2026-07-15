@@ -1,0 +1,13 @@
+parameters:
+  level: 6
+  ignoreErrors:
+      - identifier: missingType.iterableValue
+      -
+        identifier: trait.unused
+        path: ../../Classes/Traits/ControllerCacheTrait.php
+  paths:
+    - ../../Classes
+  tmpDir: .phpstan
+
+includes:
+  - ../../.Build/vendor/saschaegerer/phpstan-typo3/extension.neon

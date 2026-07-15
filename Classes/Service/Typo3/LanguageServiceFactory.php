@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -25,7 +26,7 @@ use TYPO3\CMS\Core\Localization\Locale;
  * Overwrites the original class to load custom LanguageService.
  *
  * @package PSBits\Foundation\Service\Typo3
- * @TODO    Check original file on TYPO3 update!
+ * @TODO    Check original file on TYPO3 update (v14)!
  */
 class LanguageServiceFactory extends Typo3LanguageServiceFactory
 {

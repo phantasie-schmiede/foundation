@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -13,8 +14,11 @@ namespace PSBits\Foundation\Service;
 use InvalidArgumentException;
 use PSBits\Foundation\Data\ExtensionInformationInterface;
 use PSBits\Foundation\Exceptions\ImplementationException;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Throwable;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -22,6 +26,7 @@ use TYPO3\CMS\Core\Package\PackageManager;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 use function count;
 use function in_array;
 use function is_array;
@@ -31,8 +36,10 @@ use function is_array;
  *
  * @package PSBits\Foundation\Service
  */
-class ExtensionInformationService
+class ExtensionInformationService implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * @var ExtensionInformationInterface[]
      */
@@ -50,7 +57,8 @@ class ExtensionInformationService
 
         if (2 > count($classNameParts)) {
             throw new InvalidArgumentException(
-                __CLASS__ . ': ' . $className . ' is not a full qualified (namespaced) class name!', 1547120513
+                __CLASS__ . ': ' . $className . ' is not a full qualified (namespaced) class name!',
+                1547120513
             );
         }
 
@@ -70,8 +78,9 @@ class ExtensionInformationService
 
             while ($line = fgets($file)) {
                 if (str_starts_with($line, 'namespace ')) {
-                    $namespace = rtrim(GeneralUtility::trimExplode(' ', $line)[1], ';');
+                    $namespace  = rtrim(GeneralUtility::trimExplode(' ', $line)[1], ';');
                     $vendorName = explode('\\', $namespace)[0];
+
                     break;
                 }
             }
@@ -104,7 +113,7 @@ class ExtensionInformationService
         ExtensionInformationInterface $extensionInformation,
         string                        $path = '',
     ): mixed {
-        $path = str_replace('.', '/', $path);
+        $path                   = str_replace('.', '/', $path);
         $extensionConfiguration = $this->extensionConfiguration->get($extensionInformation->getExtensionKey(), $path);
 
         if (is_array($extensionConfiguration)) {
@@ -139,8 +148,27 @@ class ExtensionInformationService
 
                 $fullQualifiedClassName = implode('\\', $classNameComponents);
 
-                if (class_exists($fullQualifiedClassName)) {
-                    $classNames[] = $fullQualifiedClassName;
+                try {
+                    /*
+                     * class_exists can throw an exception, for example when a custom autoloader depends on TYPO3's
+                     * CacheManager, which is unavailable during TCA generation (e.g. georgringer/news, starting with
+                     * version 14.0.3).
+                     */
+                    if (class_exists($fullQualifiedClassName)) {
+                        $classNames[] = $fullQualifiedClassName;
+                    }
+                } catch (Throwable $exception) {
+                    $this->logger->warning(
+                        'Could not scan class "{className}" for extension "{extensionKey}": {message}',
+                        [
+                            'className'    => $fullQualifiedClassName,
+                            'extensionKey' => $extensionInformation->getExtensionKey(),
+                            'message'      => $exception->getMessage(),
+                            'exception'    => $exception,
+                        ]
+                    );
+
+                    continue;
                 }
             }
         } catch (InvalidArgumentException) {
@@ -158,7 +186,8 @@ class ExtensionInformationService
         $instances = $this->getAllExtensionInformation();
 
         return $instances[$extensionKey] ?? throw new ImplementationException(
-            __CLASS__ . ': There is no ExtensionInformation registered for ' . $extensionKey . '!', 1683560687
+            __CLASS__ . ': There is no ExtensionInformation registered for ' . $extensionKey . '!',
+            1683560687
         );
     }
 
@@ -176,8 +205,8 @@ class ExtensionInformationService
 
         foreach ($activePackages as $package) {
             $extensionKey = $package->getPackageKey();
-            $fileName = $package->getPackagePath() . 'Classes/Data/ExtensionInformation.php';
-            $vendorName = $this->extractVendorNameFromFile($fileName);
+            $fileName     = $package->getPackagePath() . 'Classes/Data/ExtensionInformation.php';
+            $vendorName   = $this->extractVendorNameFromFile($fileName);
 
             if (null !== $vendorName) {
                 $className = implode('\\', [

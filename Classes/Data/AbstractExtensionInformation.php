@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -11,6 +12,7 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Data;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 use function get_class;
 
 /**
@@ -27,7 +29,6 @@ use function get_class;
 abstract class AbstractExtensionInformation implements ExtensionInformationInterface
 {
     private string $extensionKey;
-
     private string $extensionName;
 
     /**
@@ -49,7 +50,6 @@ abstract class AbstractExtensionInformation implements ExtensionInformationInter
      * @var PluginConfiguration[]
      */
     private array $plugins = [];
-
     private string $vendorName;
 
     public function __construct()
@@ -57,7 +57,7 @@ abstract class AbstractExtensionInformation implements ExtensionInformationInter
         [
             $this->vendorName,
             $this->extensionName,
-        ] = explode('\\', get_class($this));
+        ]                   = explode('\\', get_class($this));
         $this->extensionKey = GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName);
     }
 

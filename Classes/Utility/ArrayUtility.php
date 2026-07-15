@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -12,6 +13,7 @@ namespace PSBits\Foundation\Utility;
 
 use TYPO3\CMS\Core\Utility\ArrayUtility as Typo3ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 use function array_slice;
 use function is_array;
 use function is_string;
@@ -78,9 +80,9 @@ class ArrayUtility
             $comparedVariable = $searchKey ? $key : $value;
 
             if ($comparedVariable === $needle || ($searchForSubstring && is_string($comparedVariable) && str_contains(
-                        $comparedVariable,
-                        $needle
-                    ))) {
+                $comparedVariable,
+                $needle
+            ))) {
                 $results[] = $key;
             }
 
@@ -124,7 +126,7 @@ class ArrayUtility
     public static function setValueByPath(array &$array, string $path, mixed $value, string $delimiter = '.'): void
     {
         $pathSegments = GeneralUtility::trimExplode($delimiter, $path);
-        $section = &$array;
+        $section      = &$array;
 
         foreach ($pathSegments as $pathSegment) {
             if (!isset($section[$pathSegment]) || !is_array($section[$pathSegment])) {
@@ -154,7 +156,7 @@ class ArrayUtility
 
         if (Typo3ArrayUtility::isAssociative($array)) {
             $shuffledArray = [];
-            $keys = array_keys($array);
+            $keys          = array_keys($array);
             shuffle($keys);
 
             foreach ($keys as $key) {

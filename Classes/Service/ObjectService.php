@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -28,6 +29,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\Repository;
+
 use function get_class;
 
 /**
@@ -61,15 +63,16 @@ class ObjectService
         string         $property,
         array          $preferredModels = [],
     ): array {
-        $columnName = $this->tcaService->convertPropertyNameToColumnName($property, $domainModel::class);
-        $tableName = $this->tcaService->convertClassNameToTableName($domainModel::class);
+        $columnName         = $this->tcaService->convertPropertyNameToColumnName($property, $domainModel::class);
+        $tableName          = $this->tcaService->convertClassNameToTableName($domainModel::class);
         $fieldConfiguration = $GLOBALS['TCA'][$tableName]['columns'][$columnName]['config'];
 
         if ('group' !== $fieldConfiguration['type']) {
             throw new RuntimeException(
                 __CLASS__ . ': The property "' . $property . '" of object "' . get_class(
                     $domainModel
-                ) . '" is not of TCA type group!', 1721396926
+                ) . '" is not of TCA type group!',
+                1721396926
             );
         }
 
@@ -85,26 +88,27 @@ class ObjectService
 
         $relationHandler->processDeletePlaceholder();
 
-        $result = [];
+        $result       = [];
         $repositories = [];
 
         foreach ($relationHandler->itemArray as $item) {
             $classNames = $this->tcaService->convertTableNameToClassNames($item['table']);
 
             if (!empty($classNames)) {
-                $classNames = (array_intersect($classNames, $preferredModels) ?: $classNames);
-                $className = array_shift($classNames);
+                $classNames          = (array_intersect($classNames, $preferredModels) ?: $classNames);
+                $className           = array_shift($classNames);
                 $repositoryClassName = ObjectUtility::getRepositoryClassName($className);
 
                 if (isset($repositories[$repositoryClassName])) {
                     $repository = $repositories[$repositoryClassName];
                 } elseif (class_exists($repositoryClassName)) {
-                    $repository = GeneralUtility::makeInstance($repositoryClassName);
+                    $repository                         = GeneralUtility::makeInstance($repositoryClassName);
                     $repositories[$repositoryClassName] = $repository;
                 }
 
                 if (isset($repository) && $repository instanceof Repository) {
                     $result[] = $repository->findByUid($item['id']);
+
                     continue;
                 }
             }
@@ -124,7 +128,7 @@ class ObjectService
     public function resolveMultipleMmRelation(AbstractDomainObject $object, string $property): array
     {
         // Store each ObjectStorage element by uid.
-        $reflectionClass = new ReflectionClass($object);
+        $reflectionClass    = new ReflectionClass($object);
         $reflectionProperty = $reflectionClass->getProperty($property);
 
         $selectConfiguration = ReflectionUtility::getAttributeInstance(Select::class, $reflectionProperty);
@@ -133,7 +137,8 @@ class ObjectService
             throw new RuntimeException(
                 __CLASS__ . ': The property "' . $property . '" of object "' . get_class(
                     $object
-                ) . '" is not of TCA type select!', 1584867595
+                ) . '" is not of TCA type select!',
+                1584867595
             );
         }
 
@@ -141,11 +146,12 @@ class ObjectService
             throw new RuntimeException(
                 __CLASS__ . ': The select attribute of the property "' . $property . '" of object "' . get_class(
                     $object
-                ) . '" does not define a mm-table!', 1687382027
+                ) . '" does not define a mm-table!',
+                1687382027
             );
         }
 
-        $objectStorageElements = $reflectionProperty->getValue($object);
+        $objectStorageElements      = $reflectionProperty->getValue($object);
         $objectStorageElementsByUid = [];
 
         /** @var AbstractDomainObject $element */
@@ -155,7 +161,7 @@ class ObjectService
 
         // Get all mm-relation entries.
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable($selectConfiguration->getMm());
-        $statement = $queryBuilder->select('uid_foreign')
+        $statement    = $queryBuilder->select('uid_foreign')
             ->from($selectConfiguration->getMm())
             ->where(
                 $queryBuilder->expr()

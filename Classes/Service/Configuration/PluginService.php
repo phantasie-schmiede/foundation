@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -30,6 +31,7 @@ use TYPO3\CMS\Core\Imaging\IconRegistry;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
+
 use function in_array;
 use function is_int;
 
@@ -74,22 +76,22 @@ class PluginService
         ExtensionInformationInterface $extensionInformation,
         PluginConfiguration           $pluginConfiguration,
     ): void {
-        $group = $pluginConfiguration->getGroup() ?: mb_strtolower($extensionInformation->getVendorName());
+        $group          = $pluginConfiguration->getGroup() ?: mb_strtolower($extensionInformation->getVendorName());
         $iconIdentifier = $pluginConfiguration->getIconIdentifier() ?: $extensionInformation->getExtensionKey(
-            ) . '-' . str_replace(
-                '_',
-                '-',
-                GeneralUtility::camelCaseToLowerCaseUnderscored($pluginConfiguration->getName())
-            );
+        ) . '-' . str_replace(
+            '_',
+            '-',
+            GeneralUtility::camelCaseToLowerCaseUnderscored($pluginConfiguration->getName())
+        );
         $ll = 'LLL:EXT:' . $extensionInformation->getExtensionKey(
-            ) . '/Resources/Private/Language/Backend/Configuration/TsConfig/Page/Mod/Wizards/newContentElement.xlf:' . $group . '.elements.' . lcfirst(
-                $pluginConfiguration->getName()
-            );
+        ) . '/Resources/Private/Language/Backend/Configuration/TsConfig/Page/Mod/Wizards/newContentElement.xlf:' . $group . '.elements.' . lcfirst(
+            $pluginConfiguration->getName()
+        );
         $description = $ll . '.description';
-        $title = $ll . '.title';
-        $listType = str_replace('_', '', $extensionInformation->getExtensionKey()) . '_' . mb_strtolower(
-                $pluginConfiguration->getName()
-            );
+        $title       = $ll . '.title';
+        $listType    = str_replace('_', '', $extensionInformation->getExtensionKey()) . '_' . mb_strtolower(
+            $pluginConfiguration->getName()
+        );
 
         if (false === LocalizationUtility::translationExists($description)) {
             $description = '';
@@ -176,10 +178,10 @@ class PluginService
             }
 
             $iconIdentifier = $extensionInformation->getExtensionKey() . '-' . str_replace(
-                    '_',
-                    '-',
-                    GeneralUtility::camelCaseToLowerCaseUnderscored($configuration->getName())
-                );
+                '_',
+                '-',
+                GeneralUtility::camelCaseToLowerCaseUnderscored($configuration->getName())
+            );
 
             $pluginSignature = ExtensionUtility::registerPlugin(
                 $extensionInformation->getExtensionName(),
@@ -241,7 +243,7 @@ class PluginService
     private function collectActionsAndConfiguration(
         PluginConfiguration $configuration,
     ): array {
-        $controllersAndCachedActions = [];
+        $controllersAndCachedActions   = [];
         $controllersAndUncachedActions = [];
 
         foreach ($configuration->getControllers() as $key => $value) {
@@ -249,13 +251,13 @@ class PluginService
                 $controllerClassName = $value;
             } else {
                 $controllerClassName = $key;
-                $specifiedActions = $value;
+                $specifiedActions    = $value;
             }
 
-            $controller = new ReflectionClass($controllerClassName);
-            $controllersAndCachedActions[$controllerClassName] = [];
+            $controller                                          = new ReflectionClass($controllerClassName);
+            $controllersAndCachedActions[$controllerClassName]   = [];
             $controllersAndUncachedActions[$controllerClassName] = [];
-            $methods = $controller->getMethods();
+            $methods                                             = $controller->getMethods();
 
             foreach ($methods as $method) {
                 $pluginAction = ReflectionUtility::getAttributeInstance(PluginAction::class, $method);
@@ -308,9 +310,9 @@ class PluginService
         string                        $pluginName,
     ): string {
         return 'LLL:EXT:' . $extensionInformation->getExtensionKey(
-            ) . '/Resources/Private/Language/Backend/Configuration/TCA/Overrides/tt_content.xlf:plugin.' . lcfirst(
-                $pluginName
-            ) . '.title';
+        ) . '/Resources/Private/Language/Backend/Configuration/TCA/Overrides/tt_content.xlf:plugin.' . lcfirst(
+            $pluginName
+        ) . '.title';
     }
 
     private function registerFlexFormForPlugin(
@@ -328,7 +330,7 @@ class PluginService
 
         if (isset($fileName)) {
             $flexFormFilePath = FilePathUtility::EXTENSION_DIRECTORY_PREFIX . $extensionInformation->getExtensionKey(
-                ) . '/Configuration/FlexForms/' . $fileName . '.xml';
+            ) . '/Configuration/FlexForms/' . $fileName . '.xml';
         } else {
             $flexFormFilePath = $configuration->getFlexForm();
         }

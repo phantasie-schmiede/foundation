@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -17,7 +18,6 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use function is_array;
 
 /**
  * Class Group

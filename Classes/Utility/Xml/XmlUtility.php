@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -19,6 +20,7 @@ use RuntimeException;
 use SimpleXMLElement;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 use function is_array;
 use function is_string;
 
@@ -35,23 +37,25 @@ class XmlUtility
         'NODE_VALUE' => '@nodeValue',
         'POSITION'   => '@position',
     ];
-
     public const array SPECIAL_XML_KEYS = [
         '_attributes',
         '_namespaces',
         '_nodeValue',
         '_position',
     ];
-
     public const string XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>';
 
     public static function beautifyXml(string $xml, bool $forceNoWrap = false): string
     {
-        $dom = new DOMDocument();
+        $dom                     = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->loadXML($xml, LIBXML_PARSEHUGE | LIBXML_NOCDATA);
         $dom->formatOutput = true;
-        $formattedXml = $dom->saveXML();
+        $formattedXml      = $dom->saveXML();
+
+        // Normalize empty-element tags to include a space before "/>".
+        $formattedXml = preg_replace('/^<\?xml\s+(.*?)\s*\?>/i', '<?xml $1 ?>', $formattedXml) ?? $formattedXml;
+        $formattedXml = preg_replace('/<([^\s>\/]+)([^>]*)\s*\/>/', '<$1$2 />', $formattedXml) ?? $formattedXml;
 
         if ($forceNoWrap) {
             // Replace spaces with non-breaking spaces to enforce correct indentation in frontend.
@@ -64,9 +68,9 @@ class XmlUtility
     /**
      * @param SimpleXMLElement|string $xml
      * @param bool                    $sortAlphabetically Sort tags on same level alphabetically by tag name.
-     * @param array                   $mapping
+     * @param array<string, class-string<XmlElementInterface>> $mapping
      *
-     * @return object|array|string
+     * @return array|object
      * @throws ContainerExceptionInterface
      * @throws JsonException
      * @throws NotFoundExceptionInterface
@@ -75,7 +79,7 @@ class XmlUtility
         SimpleXMLElement|string $xml,
         bool                    $sortAlphabetically = false,
         array                   $mapping = [],
-    ): object|array|string {
+    ): array|object {
         if (is_string($xml)) {
             /** @noinspection CallableParameterUseCaseInTypeContextInspection */
             $xml = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_PARSEHUGE | LIBXML_NOCDATA);
@@ -144,11 +148,11 @@ class XmlUtility
     /**
      * @param bool             $sortAlphabetically
      * @param SimpleXMLElement $xml
-     * @param array            $mapping
+     * @param array<string, class-string<XmlElementInterface>> $mapping
      * @param array            $namespaces
      * @param bool             $rootLevel This is an internal parameter only to be set from within this function.
      *
-     * @return array|object|string
+     * @return array|object
      * @throws ContainerExceptionInterface
      * @throws JsonException
      * @throws NotFoundExceptionInterface
@@ -159,7 +163,7 @@ class XmlUtility
         array            $mapping,
         array            $namespaces = [],
         bool             $rootLevel = true,
-    ): array|object|string {
+    ): array|object {
         $array = [];
 
         foreach ($xml->getDocNamespaces(false, false) as $prefix => $namespace) {
@@ -191,10 +195,12 @@ class XmlUtility
 
             foreach ($xml->children($prefix, true) as $childTagName => $child) {
                 $childTagName = $prependPrefix . $childTagName;
-                $parsedChild = self::buildFromXml($sortAlphabetically, $child, $mapping, $namespaces, false);
+                $parsedChild  = self::buildFromXml($sortAlphabetically, $child, $mapping, $namespaces, false);
 
                 if (isset($mapping[$childTagName])) {
-                    $parsedChild = GeneralUtility::makeInstance($mapping[$childTagName], $parsedChild);
+                    /** @var class-string<XmlElementInterface> $mappedClass */
+                    $mappedClass = $mapping[$childTagName];
+                    $parsedChild = GeneralUtility::makeInstance($mappedClass, $parsedChild);
                 }
 
                 if ($parsedChild instanceof XmlElementInterface) {
@@ -230,7 +236,10 @@ class XmlUtility
             $rootName = $xml->getName();
 
             if (isset($mapping[$rootName])) {
-                return GeneralUtility::makeInstance($mapping[$rootName], $array);
+                /** @var class-string<XmlElementInterface> $mappedClass */
+                $mappedClass = $mapping[$rootName];
+
+                return GeneralUtility::makeInstance($mappedClass, $array);
             }
 
             return [$xml->getName() => $array];
@@ -244,8 +253,8 @@ class XmlUtility
         $xml = '<' . $key;
 
         if (is_array($value) && isset($value[self::SPECIAL_ARRAY_KEYS['NAMESPACES']]) && is_array(
-                $value[self::SPECIAL_ARRAY_KEYS['NAMESPACES']]
-            )) {
+            $value[self::SPECIAL_ARRAY_KEYS['NAMESPACES']]
+        )) {
             foreach ($value[self::SPECIAL_ARRAY_KEYS['NAMESPACES']] as $prefix => $namespace) {
                 $xml .= ' xmlns' . ($prefix ? (':' . $prefix) : '') . '="' . $namespace . '"';
             }
@@ -254,8 +263,8 @@ class XmlUtility
         }
 
         if (is_array($value) && isset($value[self::SPECIAL_ARRAY_KEYS['ATTRIBUTES']]) && is_array(
-                $value[self::SPECIAL_ARRAY_KEYS['ATTRIBUTES']]
-            )) {
+            $value[self::SPECIAL_ARRAY_KEYS['ATTRIBUTES']]
+        )) {
             foreach ($value[self::SPECIAL_ARRAY_KEYS['ATTRIBUTES']] as $attributeName => $attributeValue) {
                 $xml .= ' ' . $attributeName . '="' . $attributeValue . '"';
             }
@@ -285,9 +294,9 @@ class XmlUtility
         return $xml;
     }
 
-    private static function buildXml(array|XmlElementInterface $data)
+    private static function buildXml(array|XmlElementInterface $data): string
     {
-        $xml = '';
+        $xml      = '';
         $siblings = [];
 
         if ($data instanceof XmlElementInterface) {

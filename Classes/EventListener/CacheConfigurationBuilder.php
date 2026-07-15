@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -12,7 +13,6 @@ namespace PSBits\Foundation\EventListener;
 
 use Doctrine\DBAL\Exception as DbalException;
 use Exception;
-use JetBrains\PhpStorm\NoReturn;
 use PSBits\Foundation\Service\Configuration\PageCacheService;
 use PSBits\Foundation\Utility\FileUtility;
 use TYPO3\CMS\Core\Cache\Event\CacheFlushEvent;
@@ -39,7 +39,6 @@ final readonly class CacheConfigurationBuilder
      * @throws DbalException
      * @throws Exception
      */
-    #[NoReturn]
     public function __invoke(CacheFlushEvent $event): void
     {
         $basePath = Environment::getVarPath();

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -68,8 +69,8 @@ class ObjectUtility
     public static function toArray(object $object): array
     {
         $arrayRepresentation = [];
-        $reflectionClass = new ReflectionClass($object);
-        $properties = $reflectionClass->getProperties();
+        $reflectionClass     = new ReflectionClass($object);
+        $properties          = $reflectionClass->getProperties();
 
         foreach ($properties as $property) {
             $getterMethodName = 'get' . GeneralUtility::underscoredToUpperCamelCase($property->getName());
@@ -80,7 +81,7 @@ class ObjectUtility
 
             if ($reflectionClass->hasMethod($getterMethodName)) {
                 $reflectionMethod = GeneralUtility::makeInstance(ReflectionMethod::class, $object, $getterMethodName);
-                $value = $reflectionMethod->invoke($object);
+                $value            = $reflectionMethod->invoke($object);
 
                 if (null !== $value) {
                     $arrayRepresentation[$property->getName()] = $value;

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -13,6 +14,7 @@ namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 use Attribute;
 use PSBits\Foundation\Enum\DateType;
 use PSBits\Foundation\Utility\StringUtility;
+
 use function is_string;
 
 /**

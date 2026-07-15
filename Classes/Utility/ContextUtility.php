@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -26,7 +27,8 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Mvc\Request;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
+
 use function is_array;
 
 /**
@@ -60,7 +62,7 @@ class ContextUtility
 
         /** @var Site $siteConfiguration */
         $siteConfiguration = GlobalVariableService::get(SiteConfigurationProvider::class);
-        $context = GeneralUtility::makeInstance(Context::class);
+        $context           = GeneralUtility::makeInstance(Context::class);
 
         return $siteConfiguration->getLanguageById($context->getPropertyFromAspect('language', 'id'));
     }
@@ -83,7 +85,7 @@ class ContextUtility
         return self::DEFAULT_LANGUAGE_KEY;
     }
 
-    public static function getPluginSignatureFromRequest(Request $request): string
+    public static function getPluginSignatureFromRequest(RequestInterface $request): string
     {
         return strtolower('tx_' . $request->getControllerExtensionName() . '_' . $request->getPluginName());
     }
