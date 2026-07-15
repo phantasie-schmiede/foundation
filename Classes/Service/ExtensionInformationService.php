@@ -151,7 +151,8 @@ class ExtensionInformationService implements LoggerAwareInterface
                 try {
                     /*
                      * class_exists can throw an exception, for example when a custom autoloader depends on TYPO3's
-                     * CacheManager, which is unavailable during TCA generation (see georgringer/news).
+                     * CacheManager, which is unavailable during TCA generation (e.g. georgringer/news, starting with
+                     * version 14.0.3).
                      */
                     if (class_exists($fullQualifiedClassName)) {
                         $classNames[] = $fullQualifiedClassName;

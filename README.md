@@ -118,7 +118,7 @@ manipulates the TCA accordingly.
 Class loading errors that can occur during model scanning are logged and skipped to keep TCA generation robust.
 Error example:
 You can't use TCA attributes on a model extending \GeorgRinger\News\Domain\Model\News because news ships with a custom
-autoloader that depends on TYPO3's CacheManager, which is unavailable during TCA generation.
+autoloader that depends on TYPO3's CacheManager in version 14.0.3 and later, which is unavailable during TCA generation.
 
 You can provide configuration options via attributes.
 The attribute `PSBits\Foundation\Attribute\TCA\Column` provides general configuration fields for all TCA types, e. g.
