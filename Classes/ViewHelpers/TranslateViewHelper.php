@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\ViewHelpers;
 
-use Closure;
 use InvalidArgumentException;
 use JsonException;
 use PSBits\Foundation\Utility\Configuration\FilePathUtility;
@@ -20,16 +19,14 @@ use PSBits\Foundation\Utility\LocalizationUtility;
 use PSBits\Foundation\ViewHelpers\Translation\RegisterLanguageFileViewHelper;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
-use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
+use Psr\Http\Message\ServerRequestInterface;
+use ReflectionException;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Exception;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 use function count;
 use function in_array;
@@ -71,96 +68,12 @@ use function is_array;
  */
 class TranslateViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * Output is escaped already. We must not escape children, to avoid double encoding.
      *
      * @var bool
      */
     protected $escapeChildren = false;
-
-    /**
-     * Return array element by key.
-     *
-     * @throws AspectNotFoundException
-     * @throws ContainerExceptionInterface
-     * @throws ExtensionConfigurationExtensionNotConfiguredException
-     * @throws ExtensionConfigurationPathDoesNotExistException
-     * @throws JsonException
-     * @throws NotFoundExceptionInterface
-     */
-    public static function renderStatic(
-        array                     $arguments,
-        Closure                   $renderChildrenClosure,
-        RenderingContextInterface $renderingContext,
-    ): ?string {
-        [
-            'arguments'         => $translateArguments,
-            'default'           => $default,
-            'excludedLanguages' => $excludedLanguages,
-            'extensionName'     => $extensionName,
-            'id'                => $id,
-            'key'               => $key,
-            'languageKey'       => $languageKey,
-        ] = $arguments;
-
-        // Use key if id is empty.
-        if (null === $id) {
-            $id = $key;
-        }
-
-        if ('' === (string)$id) {
-            throw new Exception('An argument "key" or "id" has to be provided', 1682312266);
-        }
-
-        $request = null;
-
-        if ($renderingContext instanceof RenderingContext) {
-            $request = $renderingContext->getRequest();
-
-            if (is_array($excludedLanguages)) {
-                $locale = $request?->getAttribute('language')
-                    ->getLocale()
-                    ->getName();
-
-                array_walk($excludedLanguages, static function(&$languageKey) {
-                    $languageKey = str_replace('_', '-', $languageKey);
-                });
-
-                if (in_array($locale, $excludedLanguages, true)) {
-                    return null;
-                }
-            }
-        }
-
-        if (!str_starts_with($id, FilePathUtility::LANGUAGE_LABEL_PREFIX)) {
-            $result = self::checkRegisteredLanguageFiles($id, $renderingContext);
-
-            if (false !== $result) {
-                $id = $result;
-            } elseif (null === $extensionName && $request instanceof RequestInterface) {
-                $extensionName = $request->getControllerExtensionName();
-                $id            = self::buildIdFromRequest($id, $request);
-            }
-        }
-
-        try {
-            $value = static::translate($id, $extensionName, $translateArguments, $languageKey);
-        } catch (InvalidArgumentException) {
-            $value = null;
-        }
-
-        if (null === $value) {
-            $value = $default ?? $renderChildrenClosure() ?? '';
-
-            if (!empty($translateArguments)) {
-                $value = vsprintf((string)$value, $translateArguments);
-            }
-        }
-
-        return $value;
-    }
 
     /**
      * @param string      $id            Translation Key
@@ -173,6 +86,7 @@ class TranslateViewHelper extends AbstractViewHelper
      * @throws ContainerExceptionInterface
      * @throws JsonException
      * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
      */
     protected static function translate(
         string $id,
@@ -264,5 +178,96 @@ class TranslateViewHelper extends AbstractViewHelper
             'string',
             'Language key ("dk" for example) or "default" to use. If empty, use current language. Ignored in non-extbase context.'
         );
+    }
+
+    /**
+     * @throws AspectNotFoundException
+     * @throws ContainerExceptionInterface
+     * @throws JsonException
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+     */
+    public function render(): mixed
+    {
+        $translateArguments = $this->arguments['arguments'];
+        $default            = $this->arguments['default'];
+        $excludedLanguages  = $this->arguments['excludedLanguages'];
+        $extensionName      = $this->arguments['extensionName'];
+        $id                 = $this->arguments['id'];
+        $key                = $this->arguments['key'];
+        $languageKey        = $this->arguments['languageKey'];
+
+        // Use key if id is empty.
+        if (null === $id) {
+            $id = $key;
+        }
+
+        if ('' === (string)$id) {
+            throw new Exception('An argument "key" or "id" has to be provided', 1682312266);
+        }
+
+        $request = $this->resolveRequest();
+
+        if (is_array($excludedLanguages)) {
+            $locale = $request?->getAttribute('language')
+                ->getLocale()
+                ->getName();
+
+            array_walk($excludedLanguages, static function(&$languageKey) {
+                $languageKey = str_replace('_', '-', $languageKey);
+            });
+
+            if (in_array($locale, $excludedLanguages, true)) {
+                return null;
+            }
+        }
+
+        if (!str_starts_with($id, FilePathUtility::LANGUAGE_LABEL_PREFIX)) {
+            $result = self::checkRegisteredLanguageFiles($id, $this->renderingContext);
+
+            if (false !== $result) {
+                $id = $result;
+            } elseif (null === $extensionName && $request instanceof RequestInterface) {
+                $extensionName = $request->getControllerExtensionName();
+                $id            = self::buildIdFromRequest($id, $request);
+            }
+        }
+
+        try {
+            $value = static::translate($id, $extensionName, $translateArguments, $languageKey);
+        } catch (InvalidArgumentException) {
+            $value = null;
+        }
+
+        if (null === $value) {
+            $value = $default ?? $this->renderChildren() ?? '';
+
+            if (!empty($translateArguments)) {
+                $value = vsprintf((string)$value, $translateArguments);
+            }
+        }
+
+        return $value;
+    }
+
+    /**
+     * Resolves the current request across core versions.
+     *
+     * v13 stores it as a rendering context attribute, v12 still only has the
+     * deprecated-in-v13 getRequest() and never sets the attribute. Reading the
+     * attribute first means getRequest() is only reached on v12, where it is
+     * not yet deprecated.
+     */
+    private function resolveRequest(): ?ServerRequestInterface
+    {
+        if ($this->renderingContext->hasAttribute(ServerRequestInterface::class)) {
+            return $this->renderingContext->getAttribute(ServerRequestInterface::class);
+        }
+
+        if (method_exists($this->renderingContext, 'getRequest')) {
+            return $this->renderingContext->getRequest();
+        }
+
+        return null;
     }
 }

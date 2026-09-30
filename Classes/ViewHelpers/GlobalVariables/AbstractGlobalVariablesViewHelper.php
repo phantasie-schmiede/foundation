@@ -23,6 +23,19 @@ use PSBits\Foundation\ViewHelpers\GlobalVariablesViewHelper;
 abstract class AbstractGlobalVariablesViewHelper extends GlobalVariablesViewHelper
 {
     /**
+     * The top level key the extending ViewHelper reads from, normally the class name of its provider.
+     */
+    abstract protected function getBaseKey(): string;
+
+    /**
+     * @throws Exception
+     */
+    public function render(): mixed
+    {
+        return self::getVariable($this->getBaseKey(), $this->arguments);
+    }
+
+    /**
      * @throws Exception
      */
     protected static function getVariable(string $baseKey, array $arguments): mixed
@@ -39,6 +52,6 @@ abstract class AbstractGlobalVariablesViewHelper extends GlobalVariablesViewHelp
         parent::initializeArguments();
 
         // Override this argument to make it optional as the extending ViewHelpers define a base path.
-        $this->overrideArgument('path', 'string', 'path segments must be separated by dots');
+        $this->registerArgument('path', 'string', 'path segments must be separated by dots');
     }
 }

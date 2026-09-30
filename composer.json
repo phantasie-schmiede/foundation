@@ -13,8 +13,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "PSBits\\Foundation\\Tests\\": "Tests",
-            "TYPO3\\CMS\\Core\\Tests\\": ".Build/vendor/typo3/cms-core/Tests"
+            "PSBits\\Foundation\\Tests\\": "Tests"
         }
     },
     "config": {
@@ -23,10 +22,6 @@
             "typo3/cms-composer-installers": true
         },
         "bin-dir": ".Build/bin",
-        "preferred-install": {
-            "typo3/cms-core": "source",
-            "*": "dist"
-        },
         "sort-packages": true,
         "vendor-dir": ".Build/vendor"
     },
@@ -57,8 +52,7 @@
         "friendsofphp/php-cs-fixer": "^3.95",
         "helmich/typo3-typoscript-lint": "^3.3",
         "phpstan/phpstan": "^2.2",
-        "phpunit/phpunit": "^11",
-        "roave/security-advisories": "dev-latest",
+        "phpunit/phpunit": "^11.2.5",
         "saschaegerer/phpstan-typo3": "^2.1",
         "typo3/coding-standards": "^0.5.3",
         "typo3/testing-framework": "^8.2"
@@ -88,7 +82,7 @@
         "lint:htmlxml": "npm run lint:htmlxml",
         "lint:php": "php-cs-fixer fix --config=Build/Quality/.php-cs-fixer.dist.php --dry-run --diff --verbose",
         "lint:typoscript": "typoscript-lint --config=Build/Quality/typoscript-lint.yml --ansi Configuration/TypoScript",
-        "lint:yaml": "bash -lc 'command -v yamllint >/dev/null 2>&1 || sudo apt install -y yamllint; yamllint -c Build/Quality/.yamllint.yml Build/Quality Configuration'",
+        "lint:yaml": "yamllint -c Build/Quality/.yamllint.yml Build/Quality Configuration",
         "post-install-cmd": [
             "npm install",
             "cp Build/GitHooks/pre-commit .git/hooks/pre-commit"
@@ -96,19 +90,17 @@
         "qa": [
             "@fix:all",
             "@lint:all",
-            "@test:all"
+            "@test"
         ],
-        "test:all": [
-            "@lint:all",
-            "@test:functional",
-            "@test:unit"
+        "test": [
+            "@test:unit",
+            "@test:functional"
         ],
-        "test:functional": [
-            "Build/Scripts/runTests.sh -s functional"
-        ],
-        "test:unit": [
-            "Build/Scripts/runTests.sh -s unit"
-        ],
+        "test:12": "sh Build/Scripts/runTests.sh 12.4",
+        "test:13": "sh Build/Scripts/runTests.sh 13.4",
+        "test:13:lowest": "sh Build/Scripts/runTests.sh 13.4 --lowest",
+        "test:functional": "php .Build/bin/phpunit -c Build/phpunit/FunctionalTests.xml",
+        "test:unit": "php .Build/bin/phpunit -c Build/phpunit/UnitTests.xml",
         "validate:composer": "composer validate --no-check-publish"
     },
     "type": "typo3-cms-extension"

@@ -100,7 +100,11 @@ account during automated configuration processes, e.g. during TCA generation or 
 This repository ships with additional quality tooling for PHP, XML/XLF, YAML, TypoScript and static analysis.
 
 - `composer lint:all`: runs all configured lint and validation checks
-- `composer test:all`: runs lint checks, functional tests and unit tests
+- `composer test`: runs unit and functional tests against the installed TYPO3 core
+- `composer test:12` / `composer test:13`: runs the full matrix against the given core version. The
+  `Build/Scripts/runTests.sh` runner installs the core temporarily and restores `composer.json` and
+  `composer.lock` when it finishes
+- `composer qa`: runs all fixes, all lint checks and the test suite
 - `composer fix:php`: fixes PHP coding style issues
 - `composer fix:classes`: normalizes class attributes
 - `composer fix:htmlxml`: formats XML and XLF files

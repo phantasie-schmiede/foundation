@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Utility;
 
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -41,10 +43,8 @@ class VariableUtilityTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider getValueByPathArrayDataProvider
-     */
+    #[Test]
+    #[DataProvider('getValueByPathArrayDataProvider')]
     public function getValueByPathOnArray(array $variable, string $path, mixed $expectedResult): void
     {
         self::assertEquals(
@@ -53,18 +53,14 @@ class VariableUtilityTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getValueByPathThrowsForMissingPathInStrictMode(): void
     {
         $this->expectException(RuntimeException::class);
         VariableUtility::getValueByPath(['foo' => 'bar'], 'missing');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getValueByPathReturnsNullForMissingPathInNonStrictMode(): void
     {
         self::assertNull(
@@ -72,9 +68,7 @@ class VariableUtilityTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getValueByPathOnObject(): void
     {
         $object = new class () {
@@ -87,9 +81,7 @@ class VariableUtilityTest extends UnitTestCase
         self::assertEquals('test', VariableUtility::getValueByPath($object, 'name'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getValueByPathOnNestedObjectAndArray(): void
     {
         $inner = new class () {

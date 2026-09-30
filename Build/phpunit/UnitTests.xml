@@ -1,39 +1,39 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
     Unit test suite setup.
 
-    Unit tests should extend \TYPO3\TestingFramework\Core\Tests\UnitTestCase,
-    take a look at this class for further documentation on how to run the suite.
+    The bootstrap file is intentionally not copied into this repository. It is
+    provided by typo3/testing-framework and tracked there, so upgrading the
+    framework keeps the bootstrap in sync automatically.
 
-    TYPO3 CMS unit test suite also needs phpunit bootstrap code, the
-    file is located next to this .xml as UnitTestsBootstrap.php
+    beStrictAboutChangesToGlobalState is off on purpose. backupGlobals is on, so
+    $GLOBALS is already snapshotted and restored around every test and cannot leak
+    into the next one. The strictness flag would additionally report any test that
+    writes to $GLOBALS as risky, which makes it impossible to test methods that
+    legitimately do - ExtensionManagementUtility::addUserTSConfig() on v12/v13 for
+    instance, which is the only way to register page types in the page tree drag
+    area on those versions.
 -->
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.3/phpunit.xsd"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
     backupGlobals="true"
-    beStrictAboutTestsThatDoNotTestAnything="true"
-    bootstrap="UnitTestsBootstrap.php"
+    beStrictAboutChangesToGlobalState="false"
+    beStrictAboutOutputDuringTests="true"
+    bootstrap="../../.Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTestsBootstrap.php"
     cacheDirectory=".phpunit.cache"
     cacheResult="false"
     colors="true"
+    displayDetailsOnTestsThatTriggerDeprecations="true"
+    displayDetailsOnTestsThatTriggerErrors="true"
+    displayDetailsOnTestsThatTriggerNotices="true"
+    displayDetailsOnTestsThatTriggerWarnings="true"
+    failOnDeprecation="true"
+    failOnEmptyTestSuite="true"
+    failOnNotice="true"
     failOnRisky="true"
     failOnWarning="true"
-    processIsolation="false"
-    requireCoverageMetadata="false"
-    stopOnError="false"
-    stopOnFailure="false"
-    stopOnIncomplete="false"
-    stopOnSkipped="false">
-    <testsuites>
-        <testsuite name="Unit tests">
-            <!--
-              This path either needs an adaption in extensions, or an extension's
-              test location path needs to be given to phpunit.
-            -->
-            <directory>../../Tests/Unit/</directory>
-        </testsuite>
-    </testsuites>
+    requireCoverageMetadata="false">
     <php>
         <ini
             name="display_errors"
@@ -42,4 +42,23 @@
             name="TYPO3_CONTEXT"
             value="Testing" />
     </php>
+    <!--
+        Restrict notices, warnings and deprecations to code owned by this
+        extension. Deprecations raised inside TYPO3 core itself stay out of the
+        way, but an API this extension calls that becomes deprecated in the next
+        TYPO3 major fails the build right here.
+    -->
+    <source
+        ignoreIndirectDeprecations="true"
+        restrictNotices="true"
+        restrictWarnings="true">
+        <include>
+            <directory>../../Classes</directory>
+        </include>
+    </source>
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>../../Tests/Unit</directory>
+        </testsuite>
+    </testsuites>
 </phpunit>

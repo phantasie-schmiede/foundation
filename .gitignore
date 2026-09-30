@@ -5,10 +5,9 @@
 !.idea/inspectionProfiles/
 .php-cs-fixer.cache
 /Build/phpunit/.phpunit.cache/
-/Build/phpunit/UnitTests.xml.bak
 /Build/Quality/.phpstan/
-/Build/testing-docker/.env
-/composer.json.testing
 /composer.lock
 /node_modules/
 /package-lock.json
+/var/
+*.zip

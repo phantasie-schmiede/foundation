@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file
+        datatype="plaintext"
+        date="2024-01-01T00:00:00+00:00"
+        original="fixture"
+        product-name="foundation"
+        source-language="en">
+        <header />
+        <body>
+            <trans-unit id="message">
+                <source>Test message</source>
+            </trans-unit>
+            <trans-unit id="withArgument">
+                <source>Hello {name}!</source>
+            </trans-unit>
+            <group
+                id="day"
+                restype="x-gettext-plurals">
+                <trans-unit id="day[0]">
+                    <source>%s day</source>
+                </trans-unit>
+                <trans-unit id="day[1]">
+                    <source>%s days</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>

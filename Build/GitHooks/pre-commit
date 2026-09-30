@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
 
-echo "Running composer qa ..."
-composer qa
+# Fast checks only.
+
+echo "Running composer lint:all ..."
+composer lint:all

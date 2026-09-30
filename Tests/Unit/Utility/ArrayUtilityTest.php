@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Utility;
 
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -57,14 +59,13 @@ class ArrayUtilityTest extends UnitTestCase
     }
 
     /**
-     * @test
-     * @dataProvider countRecursiveDataProvider
-     *
      * @param array $array
      * @param int   $expectedResult
      *
      * @return void
      */
+    #[Test]
+    #[DataProvider('countRecursiveDataProvider')]
     public function countRecursive(array $array, int $expectedResult): void
     {
         self::assertEquals(
@@ -97,10 +98,8 @@ class ArrayUtilityTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider findLastOccurrenceDataProvider
-     */
+    #[Test]
+    #[DataProvider('findLastOccurrenceDataProvider')]
     public function findLastOccurrence(mixed $needle, array $array, bool|int|string $expectedResult): void
     {
         self::assertSame(
@@ -143,10 +142,8 @@ class ArrayUtilityTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider guaranteeArrayTypeDataProvider
-     */
+    #[Test]
+    #[DataProvider('guaranteeArrayTypeDataProvider')]
     public function guaranteeArrayType(mixed $variable, ?string $explodeOnCharacter, array $expectedResult): void
     {
         self::assertEquals(
@@ -194,10 +191,8 @@ class ArrayUtilityTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider inArrayRecursiveDataProvider
-     */
+    #[Test]
+    #[DataProvider('inArrayRecursiveDataProvider')]
     public function inArrayRecursive(
         array  $haystack,
         mixed  $needle,
@@ -233,10 +228,8 @@ class ArrayUtilityTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider insertIntoArrayDataProvider
-     */
+    #[Test]
+    #[DataProvider('insertIntoArrayDataProvider')]
     public function insertIntoArray(array $array, array $elements, int $index, array $expectedResult): void
     {
         self::assertEquals(
@@ -265,10 +258,8 @@ class ArrayUtilityTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider isMultiDimensionalArrayDataProvider
-     */
+    #[Test]
+    #[DataProvider('isMultiDimensionalArrayDataProvider')]
     public function isMultiDimensionalArray(array $array, bool $expectedResult): void
     {
         self::assertSame(
@@ -302,10 +293,8 @@ class ArrayUtilityTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider setValueByPathDataProvider
-     */
+    #[Test]
+    #[DataProvider('setValueByPathDataProvider')]
     public function setValueByPath(
         array  $array,
         string $path,

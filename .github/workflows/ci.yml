@@ -1,0 +1,121 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '*'
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: TYPO3 ${{ matrix.typo3 }} / PHP ${{ matrix.php }}${{ matrix.lowest && ' (lowest)' || '' }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # TYPO3 v12 caps PHP at < 8.5, so 8.5 is deliberately absent there.
+          - typo3: '12.4'
+            php: '8.3'
+            lowest: false
+          - typo3: '12.4'
+            php: '8.4'
+            lowest: false
+          - typo3: '13.4'
+            php: '8.3'
+            lowest: false
+          - typo3: '13.4'
+            php: '8.4'
+            lowest: false
+          - typo3: '13.4'
+            php: '8.5'
+            lowest: false
+          # Oldest still-supported dependency set, to catch accidental use of
+          # APIs that only exist later in the branch.
+          - typo3: '13.4'
+            php: '8.3'
+            lowest: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: intl, mbstring, pdo_sqlite, sqlite3, zip
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: .Build/vendor
+          key: vendor-${{ runner.os }}-t3${{ matrix.typo3 }}-p${{ matrix.php }}-${{ matrix.lowest }}-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            vendor-${{ runner.os }}-t3${{ matrix.typo3 }}-p${{ matrix.php }}-${{ matrix.lowest }}-
+            vendor-${{ runner.os }}-
+
+      - name: Run test matrix
+        # Builds the environment and runs both suites in one place, shared with
+        # the local composer test:12 / test:13 aliases. The script drops
+        # saschaegerer/phpstan-typo3 for the run (it hard-pins typo3/cms-core
+        # to ^13.4.3 and only the qa job needs it), exports
+        # COMPOSER_NO_SECURITY_BLOCKING (every supported core major currently
+        # carries an open Packagist advisory; reporting happens in the qa job)
+        # and restores composer.json and composer.lock on exit.
+        run: sh Build/Scripts/runTests.sh ${{ matrix.typo3 }} ${{ matrix.lowest && '--lowest' || '' }}
+
+  qa:
+    name: 'Static analysis & linters'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: intl, mbstring, zip
+          coverage: none
+          tools: composer:v2
+
+      - name: Install dependencies
+        # Pinned on purpose: saschaegerer/phpstan-typo3 only ever supports one core
+        # major at a time, and PHPStan behaviour differs between them. Linting on
+        # the same core the maintainers develop against keeps results stable.
+        env:
+          COMPOSER_NO_SECURITY_BLOCKING: '1'
+        run: composer update --with "typo3/cms-core:^13.4" -W --prefer-dist --no-interaction --no-progress
+
+      - name: Lint and analyse
+        run: >-
+          composer analyze:php
+          && composer lint:classes
+          && composer lint:htmlxml
+          && composer lint:php
+          && composer lint:typoscript
+          && composer lint:yaml
+          && composer validate:composer
+
+      - name: Report dependency advisories
+        # Reported, not enforced: every TYPO3 major in the support window still
+        # carries open Packagist advisories, so gating on this would leave the
+        # build permanently red and people would stop reading it. Surfaces as a
+        # GitHub warning annotation instead.
+        run: >-
+          composer audit --abandoned=report
+          || echo "::warning::composer audit reported findings - see the job log"

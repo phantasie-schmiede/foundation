@@ -14,17 +14,16 @@ namespace PSBits\Foundation\Tests\Functional;
 use JsonException;
 use PHPUnit\Framework\Attributes\Test;
 use PSBits\Foundation\Service\TypoScriptProviderService;
+use PSBits\Foundation\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;
-use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\TypoScript\AST\Node\RootNode;
 use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -122,20 +121,10 @@ class TypoScriptProviderServiceTest extends FunctionalTestCase
             ->withAttribute('frontend.typoscript', $frontendTypoScript);
 
         $this->mockSiteConfiguration();
-        $this->mockTsfe();
     }
 
     private function mockSiteConfiguration(): void
     {
         $this->writeSiteConfiguration('tree_page_layout_test', $this->buildSiteConfiguration(self::ROOT_PAGE_ID, '/'));
-    }
-
-    private function mockTsfe(): void
-    {
-        $GLOBALS['TSFE'] = $this->getMockBuilder(TypoScriptFrontendController::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods([])
-            ->getMock();
-        $GLOBALS['TSFE']->id = self::ROOT_PAGE_ID;
     }
 }

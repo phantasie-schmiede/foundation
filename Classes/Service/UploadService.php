@@ -17,6 +17,7 @@ use PSBits\Foundation\Utility\ArrayUtility;
 use PSBits\Foundation\Utility\ContextUtility;
 use PSBits\Foundation\Utility\FileUtility;
 use PSBits\Foundation\Utility\StringUtility;
+use PSBits\Foundation\Utility\Typo3VersionUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
@@ -25,7 +26,7 @@ use RuntimeException;
 use Symfony\Component\HttpFoundation\File\Exception\IniSizeFileException;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Http\UploadedFile;
-use TYPO3\CMS\Core\Resource\DuplicationBehavior;
+use TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\ResourceStorageInterface;
 use TYPO3\CMS\Core\Resource\StorageRepository;
@@ -234,6 +235,16 @@ class UploadService
         return $uploadConfiguration;
     }
 
+    /**
+     * TYPO3 v13 turned DuplicationBehavior into a native enum, but
+     * ResourceStorage::addUploadedFile() only accepts the enum from v13 onwards and expected the plain
+     * string value before that. So the default has to be version dependent.
+     */
+    private function getDefaultDuplicationBehaviour(): DuplicationBehavior|string
+    {
+        return Typo3VersionUtility::isAtLeast('13.0') ? DuplicationBehavior::RENAME : 'rename';
+    }
+
     private function getFileExtensionByMimeType(UploadedFile $uploadedFile): string
     {
         $mimeType = FileUtility::getMimeType($uploadedFile->getTemporaryFileName());
@@ -251,7 +262,7 @@ class UploadService
             $uploadedFile,
             $uploadConfiguration[$property]['targetFolder'],
             $targetFileName,
-            $uploadConfiguration[$property]['duplicationBehaviour'] ?? DuplicationBehavior::RENAME
+            $uploadConfiguration[$property]['duplicationBehaviour'] ?? $this->getDefaultDuplicationBehaviour()
         );
     }
 

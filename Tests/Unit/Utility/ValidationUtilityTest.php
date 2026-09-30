@@ -13,6 +13,8 @@ namespace PSBits\Foundation\Utility;
 
 use Generator;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -33,19 +35,15 @@ class ValidationUtilityTest extends UnitTestCase
         yield 'existing key BAR' => ['BAR'];
     }
 
-    /**
-     * @test
-     * @dataProvider checkKeyAgainstConstantValidDataProvider
-     */
+    #[Test]
+    #[DataProvider('checkKeyAgainstConstantValidDataProvider')]
     public function checkKeyAgainstConstantDoesNotThrowForExistingKey(string $key): void
     {
+        self::assertArrayHasKey($key, self::CONSTANT);
         ValidationUtility::checkKeyAgainstConstant(self::CONSTANT, $key);
-        self::assertTrue(true);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function checkKeyAgainstConstantThrowsForMissingKey(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -58,55 +56,49 @@ class ValidationUtilityTest extends UnitTestCase
         yield 'existing value bar' => ['bar'];
     }
 
-    /**
-     * @test
-     * @dataProvider checkValueAgainstConstantValidDataProvider
-     */
+    #[Test]
+    #[DataProvider('checkValueAgainstConstantValidDataProvider')]
     public function checkValueAgainstConstantDoesNotThrowForExistingValue(string $value): void
     {
+        self::assertContains($value, self::CONSTANT);
         ValidationUtility::checkValueAgainstConstant(self::CONSTANT, $value);
-        self::assertTrue(true);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function checkValueAgainstConstantThrowsForMissingValue(): void
     {
         $this->expectException(InvalidArgumentException::class);
         ValidationUtility::checkValueAgainstConstant(self::CONSTANT, 'missing');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function checkArrayAgainstConstantKeysDoesNotThrowForAllValidKeys(): void
     {
+        foreach (['FOO', 'BAR'] as $key) {
+            self::assertArrayHasKey($key, self::CONSTANT);
+        }
+
         ValidationUtility::checkArrayAgainstConstantKeys(self::CONSTANT, ['FOO', 'BAR']);
-        self::assertTrue(true);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function checkArrayAgainstConstantKeysThrowsForInvalidKey(): void
     {
         $this->expectException(InvalidArgumentException::class);
         ValidationUtility::checkArrayAgainstConstantKeys(self::CONSTANT, ['FOO', 'INVALID']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function checkArrayAgainstConstantValuesDoesNotThrowForAllValidValues(): void
     {
+        foreach (['foo', 'bar'] as $value) {
+            self::assertContains($value, self::CONSTANT);
+        }
+
         ValidationUtility::checkArrayAgainstConstantValues(self::CONSTANT, ['foo', 'bar']);
-        self::assertTrue(true);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function checkArrayAgainstConstantValuesThrowsForInvalidValue(): void
     {
         $this->expectException(InvalidArgumentException::class);
