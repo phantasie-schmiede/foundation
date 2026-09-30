@@ -12,6 +12,7 @@ Have a look into the `Documentation/` directory for information about upgrading 
 - [Why should you use it?](#why-should-you-use-it)
 - [Getting started](#getting-started)
 - [Quality checks for contributors](#quality-checks-for-contributors)
+    - [Testing with Docker](#testing-with-docker)
 - [TCA generation](#tca-generation)
     - [Tabs and palettes](#tabs-and-palettes)
     - [Database definitions](#database-definitions)
@@ -101,9 +102,14 @@ This repository ships with additional quality tooling for PHP, XML/XLF, YAML, Ty
 
 - `composer lint:all`: runs all configured lint and validation checks
 - `composer test`: runs unit and functional tests against the installed TYPO3 core
-- `composer test:12` / `composer test:13`: runs the full matrix against the given core version. The
-  `Build/Scripts/runTests.sh` runner installs the core temporarily and restores `composer.json` and
-  `composer.lock` when it finishes
+- `composer test:local`: runs the local (non-Docker) matrix. Without arguments it runs all local
+  legs (12.4, 13.4, 13.4 lowest); with arguments it runs a single leg, e.g.
+  `composer test:local -- 13.4` or `composer test:local -- 13.4 --lowest`. The
+  `Build/Scripts/runTests.sh` runner pins the requested core in a generated `composer-matrix.json`
+  (tracked files are never modified) and leaves `.Build` on the tested core afterwards
+- `composer test:docker`: runs the Docker matrix (see "Testing with Docker" below)
+- `composer test:all`: runs the local matrix plus the full Docker matrix, i.e. all supported PHP,
+  TYPO3 and database combinations
 - `composer qa`: runs all fixes, all lint checks and the test suite
 - `composer fix:php`: fixes PHP coding style issues
 - `composer fix:classes`: normalizes class attributes
@@ -111,6 +117,28 @@ This repository ships with additional quality tooling for PHP, XML/XLF, YAML, Ty
 
 `composer install` also installs frontend tooling and copies the pre-commit hook from
 `Build/GitHooks/pre-commit` to `.git/hooks/pre-commit`.
+
+#### Testing with Docker
+
+To run the test matrix on PHP versions that are not installed locally, or against a real database,
+use the Docker setup in `Build/testing-docker/`:
+
+1. Build the test images once (one per supported PHP version): `composer docker:images`
+2. Run the whole Docker matrix: `composer test:docker` (7 legs: sqlite 12.4 / 13.4 / 13.4 lowest,
+   plus MariaDB and PostgreSQL on both core versions)
+3. Run a single leg: `composer test:docker -- <core-version> [--lowest] [--db sqlite|mysql|postgres]`,
+   e.g. `composer test:docker -- 13.4 --db postgres`. The `--db` flag selects the compose service
+   that carries the database connection settings.
+4. Switch the PHP version with `PHP_VERSION=8.3 composer test:docker -- 12.4` (default is 8.4;
+   TYPO3 v12 caps PHP at < 8.5, so run the v12 leg on 8.3 or 8.4).
+
+The equivalent raw `docker compose run` commands are documented in
+`Build/testing-docker/docker-compose.yml`, which is what to use when overriding `PHP_VERSION` or
+`ROOT_DIR` explicitly. `composer test:all` additionally includes the local (non-Docker) legs.
+
+Without Docker, `runTests.sh` also accepts `--db mysql|postgres` and reads the connection settings
+from the `typo3Database*` environment variables (host, port, username, password, name) - see the
+script header for the defaults.
 
 ### TCA generation
 

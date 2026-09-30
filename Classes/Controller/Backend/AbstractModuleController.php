@@ -57,7 +57,7 @@ abstract class AbstractModuleController extends ActionController
     /**
      * Returns a response object with the rendered module template.
      */
-    protected function htmlResponse(string $html = null): ResponseInterface
+    protected function htmlResponse(?string $html = null): ResponseInterface
     {
         return $this->moduleTemplate->renderResponse($html ?? $this->buildTemplateFileName());
     }

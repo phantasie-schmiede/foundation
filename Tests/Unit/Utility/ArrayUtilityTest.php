@@ -224,7 +224,7 @@ class ArrayUtilityTest extends UnitTestCase
             ['first' => 1, 'third' => 3],
             ['second' => 2],
             1,
-            ['first' => 1, 'second' => 2, 'third' => 3],
+            ['first'  => 1, 'second' => 2, 'third' => 3],
         ];
     }
 
@@ -282,7 +282,7 @@ class ArrayUtilityTest extends UnitTestCase
             'foo.bar',
             42,
             '.',
-            ['foo' => ['bar' => 42]],
+            ['foo'                       => ['bar' => 42]],
         ];
         yield 'overwrite existing value' => [
             ['foo' => ['bar' => 'old']],

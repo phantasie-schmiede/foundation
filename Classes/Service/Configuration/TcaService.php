@@ -232,7 +232,7 @@ class TcaService
      * @throws NotFoundExceptionInterface
      * @throws ReflectionException
      */
-    public function convertPropertyNameToColumnName(string $propertyName, string $className = null): string
+    public function convertPropertyNameToColumnName(string $propertyName, ?string $className = null): string
     {
         if (!empty($className)) {
             $this->checkClassesConfiguration();

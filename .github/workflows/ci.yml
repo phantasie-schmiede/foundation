@@ -70,13 +70,128 @@ jobs:
 
       - name: Run test matrix
         # Builds the environment and runs both suites in one place, shared with
-        # the local composer test:12 / test:13 aliases. The script drops
-        # saschaegerer/phpstan-typo3 for the run (it hard-pins typo3/cms-core
-        # to ^13.4.3 and only the qa job needs it), exports
-        # COMPOSER_NO_SECURITY_BLOCKING (every supported core major currently
-        # carries an open Packagist advisory; reporting happens in the qa job)
-        # and restores composer.json and composer.lock on exit.
+        # the local composer test:local alias. The script pins the
+        # core and drops saschaegerer/phpstan-typo3 (it hard-pins
+        # typo3/cms-core to ^13.4.3 and only the qa job needs it) in a
+        # generated composer-matrix.json, so tracked files stay unmodified,
+        # and exports COMPOSER_NO_SECURITY_BLOCKING (every supported core
+        # major currently carries an open Packagist advisory; reporting
+        # happens in the qa job).
         run: sh Build/Scripts/runTests.sh ${{ matrix.typo3 }} ${{ matrix.lowest && '--lowest' || '' }}
+
+  tests-mariadb:
+    name: 'TYPO3 ${{ matrix.typo3 }} / PHP 8.4 / MariaDB'
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        typo3:
+          - '12.4'
+          - '13.4'
+
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MYSQL_ROOT_PASSWORD: funcp
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      typo3DatabaseHost: mariadb
+      typo3DatabaseUsername: root
+      typo3DatabasePassword: funcp
+      typo3DatabasePort: '3306'
+      typo3DatabaseName: typo3
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl, mbstring, pdo_mysql, pdo_sqlite, sqlite3, zip
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: .Build/vendor
+          key: vendor-${{ runner.os }}-mariadb-t3${{ matrix.typo3 }}-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            vendor-${{ runner.os }}-mariadb-t3${{ matrix.typo3 }}-
+            vendor-${{ runner.os }}-
+
+      - name: Run test matrix
+        # The functional suite runs against the service container; the
+        # connection settings come from the job environment (see
+        # Build/Scripts/runTests.sh for the variable names).
+        run: sh Build/Scripts/runTests.sh ${{ matrix.typo3 }} --db mysql
+
+  tests-postgres:
+    name: 'TYPO3 ${{ matrix.typo3 }} / PHP 8.4 / PostgreSQL'
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        typo3:
+          - '12.4'
+          - '13.4'
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: typo3
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: funcp
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      typo3DatabaseHost: postgres
+      typo3DatabaseUsername: postgres
+      typo3DatabasePassword: funcp
+      typo3DatabasePort: '5432'
+      typo3DatabaseName: typo3
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl, mbstring, pdo_pgsql, pdo_sqlite, sqlite3, zip
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: .Build/vendor
+          key: vendor-${{ runner.os }}-postgres-t3${{ matrix.typo3 }}-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            vendor-${{ runner.os }}-postgres-t3${{ matrix.typo3 }}-
+            vendor-${{ runner.os }}-
+
+      - name: Run test matrix
+        # The functional suite runs against the service container; the
+        # connection settings come from the job environment (see
+        # Build/Scripts/runTests.sh for the variable names).
+        run: sh Build/Scripts/runTests.sh ${{ matrix.typo3 }} --db postgres
 
   qa:
     name: 'Static analysis & linters'

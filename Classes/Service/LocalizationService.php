@@ -43,10 +43,10 @@ class LocalizationService
      * @throws NotFoundExceptionInterface
      */
     public function translate(
-        string $key,
-        string $extensionName = null,
-        array  $arguments = null,
-        string $languageKey = null,
+        string  $key,
+        ?string $extensionName = null,
+        ?array  $arguments = null,
+        ?string $languageKey = null,
     ): ?string {
         return LocalizationUtility::translate(
             $key,
@@ -69,9 +69,9 @@ class LocalizationService
      * @throws NotFoundExceptionInterface
      */
     public function translateConcatenatingNewLines(
-        string $key,
-        string $extension = null,
-        string $newLineMarker = '||',
+        string  $key,
+        ?string $extension = null,
+        string  $newLineMarker = '||',
     ): string {
         return LocalizationUtility::translateConcatenatingNewLines(
             key          : $key,
@@ -86,7 +86,7 @@ class LocalizationService
      * @throws JsonException
      * @throws NotFoundExceptionInterface
      */
-    public function translatePreservingNewLines(string $key, string $extension = null): string
+    public function translatePreservingNewLines(string $key, ?string $extension = null): string
     {
         return LocalizationUtility::translatePreservingNewLines($key, $extension);
     }

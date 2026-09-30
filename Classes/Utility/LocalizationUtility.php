@@ -64,10 +64,10 @@ class LocalizationUtility
      * @see ExtbaseLocalizationUtility
      */
     public static function translate(
-        string $key,
-        string $extensionName = null,
-        array  $arguments = null,
-        string $languageKey = null,
+        string  $key,
+        ?string $extensionName = null,
+        ?array  $arguments = null,
+        ?string $languageKey = null,
     ): ?string {
         if (isset($arguments[self::QUANTITY_ARGUMENT]) && is_numeric($arguments[self::QUANTITY_ARGUMENT])) {
             if (is_string($arguments[self::QUANTITY_ARGUMENT])) {
@@ -124,9 +124,9 @@ class LocalizationUtility
      */
     public static function translateConcatenatingNewLines(
         string $key,
-        string $extensionName = null,
-        array  $arguments = null,
-        string $languageKey = null,
+        ?string $extensionName = null,
+        ?array  $arguments = null,
+        ?string $languageKey = null,
         string $newLineMarker = '||',
     ): string {
         $translation = self::translate($key, $extensionName, $arguments, $languageKey);
@@ -147,9 +147,9 @@ class LocalizationUtility
      */
     public static function translatePreservingNewLines(
         string $key,
-        string $extensionName = null,
-        array  $arguments = null,
-        string $languageKey = null,
+        ?string $extensionName = null,
+        ?array  $arguments = null,
+        ?string $languageKey = null,
     ): string {
         $translation = self::translate($key, $extensionName, $arguments, $languageKey);
 

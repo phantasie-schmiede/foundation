@@ -6,7 +6,10 @@
 .php-cs-fixer.cache
 /Build/phpunit/.phpunit.cache/
 /Build/Quality/.phpstan/
+/Build/testing-docker/build-ca/
 /composer.lock
+/composer-matrix.json
+/composer-matrix.lock
 /node_modules/
 /package-lock.json
 /var/

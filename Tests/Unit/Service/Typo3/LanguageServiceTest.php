@@ -105,7 +105,6 @@ class LanguageServiceTest extends UnitTestCase
     private function invokeGetLLL(string $index, array $localLanguage): string
     {
         $method = new ReflectionMethod(LanguageService::class, 'getLLL');
-        $method->setAccessible(true);
 
         return $method->invoke($this->createSubject(), $index, $localLanguage);
     }

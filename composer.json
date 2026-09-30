@@ -60,6 +60,7 @@
     "scripts": {
         "analyze:php": "phpstan analyse --configuration=Build/Quality/phpstan.neon.dist --no-progress",
         "audit:composer": "composer audit --abandoned=report",
+        "docker:images": "COMPOSER_PROCESS_TIMEOUT=0 sh Build/Scripts/buildTestImages.sh",
         "fix:all": [
             "@fix:classes",
             "@fix:htmlxml",
@@ -96,9 +97,12 @@
             "@test:unit",
             "@test:functional"
         ],
-        "test:12": "sh Build/Scripts/runTests.sh 12.4",
-        "test:13": "sh Build/Scripts/runTests.sh 13.4",
-        "test:13:lowest": "sh Build/Scripts/runTests.sh 13.4 --lowest",
+        "test:all": [
+            "@test:local",
+            "@test:docker"
+        ],
+        "test:docker": "sh Build/Scripts/runDockerTests.sh @additional_args",
+        "test:local": "sh Build/Scripts/runLocalTests.sh @additional_args",
         "test:functional": "php .Build/bin/phpunit -c Build/phpunit/FunctionalTests.xml",
         "test:unit": "php .Build/bin/phpunit -c Build/phpunit/UnitTests.xml",
         "validate:composer": "composer validate --no-check-publish"

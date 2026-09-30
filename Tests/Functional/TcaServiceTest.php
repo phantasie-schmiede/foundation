@@ -50,7 +50,6 @@ class TcaServiceTest extends FunctionalTestCase
         $tcaService->setTableName($tableName);
 
         $buildFromAttributesMethod = new ReflectionMethod(TcaService::class, 'buildFromAttributes');
-        $buildFromAttributesMethod->setAccessible(true);
         $buildFromAttributesMethod->invoke($tcaService, AllTcaAttributesModel::class, false);
 
         $actualTca   = $GLOBALS['TCA'][self::TABLE_NAME] ?? [];

@@ -63,7 +63,7 @@ class FileUtility
      */
     public static function formatFileSize(
         int|string $input,
-        int        $unit = null,
+        ?int       $unit = null,
         int        $decimals = 2,
     ): string {
         if (is_int($input)) {
@@ -111,11 +111,11 @@ class FileUtility
      * If you pass $content, you must also set a $downloadName.
      */
     public static function initiateDownload(
-        string $contentType,
-        string $content = null,
-        string $downloadName = null,
-        string $filename = null,
-        bool   $showInline = false,
+        string  $contentType,
+        ?string $content = null,
+        ?string $downloadName = null,
+        ?string $filename = null,
+        bool    $showInline = false,
     ): void {
         if (null === $content && null === $filename) {
             throw new RuntimeException(

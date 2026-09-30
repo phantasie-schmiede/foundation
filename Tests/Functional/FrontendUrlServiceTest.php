@@ -92,7 +92,7 @@ class FrontendUrlServiceTest extends FunctionalTestCase
 
         yield 'absolute path with query and fragment' => [
             self::TARGET_PAGE_ID,
-            ['foo' => 'bar'],
+            ['foo'                                       => 'bar'],
             'details',
             null,
             false,

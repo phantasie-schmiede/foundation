@@ -89,10 +89,10 @@ class TranslateViewHelper extends AbstractViewHelper
      * @throws ReflectionException
      */
     protected static function translate(
-        string $id,
-        string $extensionName = null,
-        array  $arguments = null,
-        string $languageKey = null,
+        string  $id,
+        ?string $extensionName = null,
+        ?array  $arguments = null,
+        ?string $languageKey = null,
     ): ?string {
         return LocalizationUtility::translate($id, $extensionName, $arguments, $languageKey);
     }

@@ -180,7 +180,7 @@ class TranslateViewHelperTest extends FunctionalTestCase
         // A string locale on purpose: v12 only accepts a string, v13 both.
         return new SiteLanguage(
             $languageId,
-            [0 => 'en', 1 => 'de', 2 => 'da'][$languageId],
+            [0       => 'en', 1 => 'de', 2 => 'da'][$languageId],
             new Uri('/'),
             ['title' => 'Test language']
         );
