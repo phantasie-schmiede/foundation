@@ -132,6 +132,11 @@ use the Docker setup in `Build/testing-docker/`:
 4. Switch the PHP version with `PHP_VERSION=8.3 composer test:docker -- 12.4` (default is 8.4;
    TYPO3 v12 caps PHP at < 8.5, so run the v12 leg on 8.3 or 8.4).
 
+Every matrix run announces each leg and each step (matrix environment, composer update, unit
+tests, functional tests) with a prominent banner - colored green/red for pass/fail when run in
+a terminal - keeps running after a failed leg, and ends with a summary table of all legs; the
+exit code is non-zero if any leg failed.
+
 The equivalent raw `docker compose run` commands are documented in
 `Build/testing-docker/docker-compose.yml`, which is what to use when overriding `PHP_VERSION` or
 `ROOT_DIR` explicitly. `composer test:all` additionally includes the local (non-Docker) legs.

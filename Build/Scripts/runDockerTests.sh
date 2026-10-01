@@ -15,6 +15,12 @@
 # the database container. All remaining arguments are forwarded to
 # runTests.sh inside the container.
 #
+# A failed leg does not stop the matrix; every leg is announced and concluded
+# with a banner, a summary table is printed at the end, and the script exits
+# non-zero if any leg failed. Afterwards the compose project is torn down
+# again, so no database container keeps running (the trap also covers
+# interrupted runs; the named composer-home volume is kept).
+#
 set -eu
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -22,21 +28,87 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 cd "$REPO_ROOT"
 
+. "$SCRIPT_DIR/console.sh"
+
+compose() {
+    docker compose -f Build/testing-docker/docker-compose.yml "$@"
+}
+
+LEG_NO=0
+LEG_TOTAL=7
+RESULTS=''
+FAILED=0
+
+record_result() {
+    case "$1" in
+        PASSED) COLOR="$_C_GREEN" ;;
+        *)      COLOR="$_C_RED" ;;
+    esac
+    RESULTS="${RESULTS}  ${COLOR}$1${_C_RESET}  $2
+"
+}
+
+# "compose run --rm" removes the test container but leaves the database
+# services running. Stop them (and the project network) after the run; the
+# data lives on tmpfs, so nothing is lost.
+cleanup() {
+    if ! compose down > /dev/null 2>&1; then
+        echo "Warning: could not stop the database containers (docker compose down failed)." >&2
+    fi
+}
+
+print_summary() {
+    [ -n "$RESULTS" ] || return 0
+    banner "Matrix summary (docker)"
+    printf '%s' "$RESULTS"
+    if [ "$FAILED" -eq 0 ]; then
+        printf '%sAll %s legs passed.%s\n' "$_C_GREEN" "$LEG_TOTAL" "$_C_RESET"
+    else
+        printf '%s%s of %s legs failed.%s\n' "$_C_RED" "$FAILED" "$LEG_TOTAL" "$_C_RESET"
+    fi
+}
+
+on_exit() {
+    cleanup
+    print_summary
+}
+trap on_exit EXIT
+
 run_leg() {
     SERVICE="$1"
     shift
-    docker compose -f Build/testing-docker/docker-compose.yml run --rm "$SERVICE" sh Build/Scripts/runTests.sh "$@"
+    compose run --rm "$SERVICE" sh Build/Scripts/runTests.sh "$@"
 }
 
 if [ $# -eq 0 ]; then
-    run_leg tests          12.4
-    run_leg tests          13.4
-    run_leg tests          13.4 --lowest
-    run_leg tests-mysql    12.4 --db mysql
-    run_leg tests-mysql    13.4 --db mysql
-    run_leg tests-postgres 12.4 --db postgres
-    run_leg tests-postgres 13.4 --db postgres
-    exit 0
+    PHP_TAG="${PHP_VERSION:-8.4}"
+    banner "Test matrix (docker) — PHP ${PHP_TAG} (image psbits/foundation-test:${PHP_TAG})"
+    banner "Legs: 12.4/sqlite, 13.4/sqlite, 13.4-lowest/sqlite, 12.4/mysql, 13.4/mysql, 12.4/postgres, 13.4/postgres"
+
+    run_matrix_leg() {
+        SERVICE="$1"
+        DESC="$2"
+        shift 2
+        LEG_NO=$((LEG_NO + 1))
+        banner "Leg ${LEG_NO}/${LEG_TOTAL} — ${DESC}"
+        if compose run --rm "$SERVICE" sh Build/Scripts/runTests.sh "$@"; then
+            record_result "PASSED" "Leg ${LEG_NO}/${LEG_TOTAL} — ${DESC}"
+            banner green "Leg ${LEG_NO}/${LEG_TOTAL} — PASSED"
+        else
+            record_result "FAILED" "Leg ${LEG_NO}/${LEG_TOTAL} — ${DESC}"
+            FAILED=$((FAILED + 1))
+            banner red "Leg ${LEG_NO}/${LEG_TOTAL} — FAILED"
+        fi
+    }
+
+    run_matrix_leg tests          "TYPO3 12.4 / sqlite"           12.4
+    run_matrix_leg tests          "TYPO3 13.4 / sqlite"           13.4
+    run_matrix_leg tests          "TYPO3 13.4 (lowest) / sqlite"  13.4 --lowest
+    run_matrix_leg tests-mysql    "TYPO3 12.4 / mysql"            12.4 --db mysql
+    run_matrix_leg tests-mysql    "TYPO3 13.4 / mysql"            13.4 --db mysql
+    run_matrix_leg tests-postgres "TYPO3 12.4 / postgres"         12.4 --db postgres
+    run_matrix_leg tests-postgres "TYPO3 13.4 / postgres"         13.4 --db postgres
+    exit "$FAILED"
 fi
 
 # Preserve the original arguments (space-joined; the accepted flags and
@@ -71,4 +143,7 @@ case "$DB" in
     *)        SERVICE='tests' ;;
 esac
 
-exec docker compose -f Build/testing-docker/docker-compose.yml run --rm "$SERVICE" sh Build/Scripts/runTests.sh $ARGS
+# No exec here, so the EXIT trap (cleanup) still runs. The tokens are safe
+# for word splitting (see above).
+set -f
+run_leg "$SERVICE" $ARGS

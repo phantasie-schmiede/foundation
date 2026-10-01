@@ -32,6 +32,8 @@ set -eu
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
+. "$SCRIPT_DIR/console.sh"
+
 CORE_VERSION=''
 LOWEST=''
 DB='sqlite'
@@ -83,12 +85,20 @@ if [ ! -f composer.json ]; then
     exit 1
 fi
 
+PHP_FULL="$(php -r 'echo PHP_VERSION;')"
+LOWEST_NOTE=''
+if [ -n "$LOWEST" ]; then
+    LOWEST_NOTE=' (lowest)'
+fi
+banner "runTests — TYPO3 ${CORE_VERSION} / ${DB} / PHP ${PHP_FULL}${LOWEST_NOTE}"
+
 # ---------------------------------------------------------------------------
-# Matrix environment.
+# Step 1/4 - matrix environment.
 # composer >= 2.10 blocks installs that hit a Packagist advisory; every supported
 # core major currently carries one. Reporting is not dropped - the qa job runs
 # `composer audit` separately.
 # ---------------------------------------------------------------------------
+banner "step 1/4 — matrix environment (composer-matrix.json)"
 export COMPOSER=composer-matrix.json
 export COMPOSER_NO_SECURITY_BLOCKING=1
 
@@ -108,8 +118,12 @@ if [ -n "$LOWEST" ]; then
     composer require --dev --no-update --no-interaction composer/class-map-generator:^1.3.4
 fi
 
+# ---------------------------------------------------------------------------
+# Step 2/4 - install the pinned core.
 # --no-scripts: post-install-cmd only runs npm install and copies a git hook,
 # neither of which the test suites need.
+# ---------------------------------------------------------------------------
+banner "step 2/4 — composer update (typo3/cms-core:^${CORE_VERSION}${LOWEST_NOTE})"
 composer update \
     --with "typo3/cms-core:^${CORE_VERSION}" \
     -W \
@@ -144,5 +158,14 @@ case "$DB" in
         ;;
 esac
 
+# ---------------------------------------------------------------------------
+# Step 3/4 - unit suite.
+# ---------------------------------------------------------------------------
+banner "step 3/4 — unit tests"
 php .Build/bin/phpunit -c Build/phpunit/UnitTests.xml
+
+# ---------------------------------------------------------------------------
+# Step 4/4 - functional suite.
+# ---------------------------------------------------------------------------
+banner "step 4/4 — functional tests (${DB})"
 php .Build/bin/phpunit -c Build/phpunit/FunctionalTests.xml
