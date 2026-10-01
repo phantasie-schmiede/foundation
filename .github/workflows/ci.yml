@@ -95,6 +95,9 @@ jobs:
         image: mariadb:10.11
         env:
           MYSQL_ROOT_PASSWORD: funcp
+          MYSQL_DATABASE: typo3
+        ports:
+          - 3306:3306
         options: >-
           --health-cmd="healthcheck.sh --connect --innodb_initialized"
           --health-interval=10s
@@ -102,7 +105,9 @@ jobs:
           --health-retries=5
 
     env:
-      typo3DatabaseHost: mariadb
+      # The job runs on the runner (not in a container), so the service is
+      # reached via the port published to the host - see services.mariadb.
+      typo3DatabaseHost: 127.0.0.1
       typo3DatabaseUsername: root
       typo3DatabasePassword: funcp
       typo3DatabasePort: '3306'
@@ -130,9 +135,9 @@ jobs:
             vendor-${{ runner.os }}-
 
       - name: Run test matrix
-        # The functional suite runs against the service container; the
-        # connection settings come from the job environment (see
-        # Build/Scripts/runTests.sh for the variable names).
+        # The functional suite runs against the service container, reached via
+        # the port published to the runner (see services.mariadb.ports and the
+        # typo3Database* variables in Build/Scripts/runTests.sh).
         run: sh Build/Scripts/runTests.sh ${{ matrix.typo3 }} --db mysql
 
   tests-postgres:
@@ -153,6 +158,8 @@ jobs:
           POSTGRES_DB: typo3
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: funcp
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd="pg_isready -U postgres"
           --health-interval=10s
@@ -160,7 +167,9 @@ jobs:
           --health-retries=5
 
     env:
-      typo3DatabaseHost: postgres
+      # The job runs on the runner (not in a container), so the service is
+      # reached via the port published to the host - see services.postgres.
+      typo3DatabaseHost: 127.0.0.1
       typo3DatabaseUsername: postgres
       typo3DatabasePassword: funcp
       typo3DatabasePort: '5432'
@@ -188,9 +197,9 @@ jobs:
             vendor-${{ runner.os }}-
 
       - name: Run test matrix
-        # The functional suite runs against the service container; the
-        # connection settings come from the job environment (see
-        # Build/Scripts/runTests.sh for the variable names).
+        # The functional suite runs against the service container, reached via
+        # the port published to the runner (see services.postgres.ports and the
+        # typo3Database* variables in Build/Scripts/runTests.sh).
         run: sh Build/Scripts/runTests.sh ${{ matrix.typo3 }} --db postgres
 
   qa:
