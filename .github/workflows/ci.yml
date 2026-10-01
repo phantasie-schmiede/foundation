@@ -200,6 +200,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -208,6 +213,14 @@ jobs:
           coverage: none
           tools: composer:v2
 
+      - name: Cache Node modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json', '**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install dependencies
         # Pinned on purpose: saschaegerer/phpstan-typo3 only ever supports one core
         # major at a time, and PHPStan behaviour differs between them. Linting on
@@ -215,6 +228,9 @@ jobs:
         env:
           COMPOSER_NO_SECURITY_BLOCKING: '1'
         run: composer update --with "typo3/cms-core:^13.4" -W --prefer-dist --no-interaction --no-progress
+
+      - name: Install Node dependencies
+        run: npm install
 
       - name: Lint and analyse
         run: >-
