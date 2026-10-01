@@ -234,3 +234,65 @@ jobs:
         run: >-
           composer audit --abandoned=report
           || echo "::warning::composer audit reported findings - see the job log"
+
+  publish-to-ter:
+    name: Publish to TER
+    # Only runs after every CI job succeeded AND a semver tag was pushed.
+    needs: [tests, tests-mariadb, tests-postgres, qa]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    env:
+      TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+
+      - name: Check tag pattern
+        run: |
+          if ! [[ "${GITHUB_REF}" =~ ^refs/tags/[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Not a semver tag, aborting." >&2
+            exit 1
+          fi
+
+      - name: Get version
+        run: echo "version=${GITHUB_REF#refs/tags/}" >> "$GITHUB_ENV"
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: intl, mbstring, zip, curl
+          coverage: none
+          tools: composer:v2
+
+      - name: Ensure ext_emconf.php matches tag
+        run: |
+          emconf="$(php -r '$_EXTKEY="foundation"; include "ext_emconf.php"; echo $EM_CONF["foundation"]["version"];')"
+          if [[ "$emconf" != "$version" ]]; then
+            echo "ext_emconf.php ($emconf) does not match tag ($version), aborting." >&2
+            exit 1
+          fi
+
+      - name: Get tag description (TER comment)
+        run: |
+          comment="$(git tag -l "$version" --format '%(contents)')"
+          if [[ -z "${comment// }" ]]; then
+            echo "comment=Released version $version" >> "$GITHUB_ENV"
+          else
+            {
+              echo 'comment<<EOF'
+              echo "$comment"
+              echo 'EOF'
+            } >> "$GITHUB_ENV"
+          fi
+
+      - name: Install tailor
+        run: |
+          composer global require typo3/tailor --prefer-dist --no-progress --no-suggest
+          echo "tailor_bin=$(composer config -g home)/vendor/bin/tailor" >> "$GITHUB_ENV"
+
+      - name: Publish to TER
+        run: php "$tailor_bin" ter:publish "$version" --comment "$comment"
