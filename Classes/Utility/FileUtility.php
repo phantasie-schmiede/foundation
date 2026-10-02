@@ -101,7 +101,6 @@ class FileUtility
         $fileName        = self::resolveFileName($fileName);
         $fileInformation = finfo_open(FILEINFO_MIME_TYPE);
         $mimeType        = $fileInformation->file($fileName);
-        finfo_close($fileInformation);
 
         return $mimeType;
     }
