@@ -11,14 +11,38 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  is-push-for-open-pr:
+    name: Check for open PR
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')
+    runs-on: ubuntu-latest
+    outputs:
+      is-pr: ${{ steps.check.outputs.is-pr }}
+    steps:
+      - name: Check open pull requests for branch
+        id: check
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branch = context.ref.replace('refs/heads/', '');
+            const { data: pulls } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `${context.payload.repository.owner.login}:${branch}`,
+              state: 'open',
+            });
+            core.setOutput('is-pr', pulls.length > 0 ? 'true' : 'false');
+
   tests:
     name: TYPO3 ${{ matrix.typo3 }} / PHP ${{ matrix.php }}${{ matrix.lowest && ' (lowest)' || '' }}
+    needs: is-push-for-open-pr
+    if: github.event_name != 'push' || needs.is-push-for-open-pr.outputs.is-pr != 'true'
     runs-on: ubuntu-latest
 
     strategy:
@@ -81,6 +105,8 @@ jobs:
 
   tests-mariadb:
     name: 'TYPO3 ${{ matrix.typo3 }} / PHP 8.4 / MariaDB'
+    needs: is-push-for-open-pr
+    if: github.event_name != 'push' || needs.is-push-for-open-pr.outputs.is-pr != 'true'
     runs-on: ubuntu-latest
 
     strategy:
@@ -142,6 +168,8 @@ jobs:
 
   tests-postgres:
     name: 'TYPO3 ${{ matrix.typo3 }} / PHP 8.4 / PostgreSQL'
+    needs: is-push-for-open-pr
+    if: github.event_name != 'push' || needs.is-push-for-open-pr.outputs.is-pr != 'true'
     runs-on: ubuntu-latest
 
     strategy:
@@ -204,6 +232,8 @@ jobs:
 
   qa:
     name: 'Static analysis & linters'
+    needs: is-push-for-open-pr
+    if: github.event_name != 'push' || needs.is-push-for-open-pr.outputs.is-pr != 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
