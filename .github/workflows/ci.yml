@@ -42,7 +42,7 @@ jobs:
   tests:
     name: TYPO3 ${{ matrix.typo3 }} / PHP ${{ matrix.php }}${{ matrix.lowest && ' (lowest)' || '' }}
     needs: is-push-for-open-pr
-    if: github.event_name != 'push' || needs.is-push-for-open-pr.outputs.is-pr != 'true'
+    if: always() && (github.event_name != 'push' || needs.is-push-for-open-pr.outputs.is-pr != 'true')
     runs-on: ubuntu-latest
 
     strategy:
@@ -106,7 +106,7 @@ jobs:
   tests-mariadb:
     name: 'TYPO3 ${{ matrix.typo3 }} / PHP 8.4 / MariaDB'
     needs: is-push-for-open-pr
-    if: github.event_name != 'push' || needs.is-push-for-open-pr.outputs.is-pr != 'true'
+    if: always() && (github.event_name != 'push' || needs.is-push-for-open-pr.outputs.is-pr != 'true')
     runs-on: ubuntu-latest
 
     strategy:
@@ -169,7 +169,7 @@ jobs:
   tests-postgres:
     name: 'TYPO3 ${{ matrix.typo3 }} / PHP 8.4 / PostgreSQL'
     needs: is-push-for-open-pr
-    if: github.event_name != 'push' || needs.is-push-for-open-pr.outputs.is-pr != 'true'
+    if: always() && (github.event_name != 'push' || needs.is-push-for-open-pr.outputs.is-pr != 'true')
     runs-on: ubuntu-latest
 
     strategy:
@@ -233,7 +233,7 @@ jobs:
   qa:
     name: 'Static analysis & linters'
     needs: is-push-for-open-pr
-    if: github.event_name != 'push' || needs.is-push-for-open-pr.outputs.is-pr != 'true'
+    if: always() && (github.event_name != 'push' || needs.is-push-for-open-pr.outputs.is-pr != 'true')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
