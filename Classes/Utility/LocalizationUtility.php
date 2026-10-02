@@ -18,6 +18,7 @@ use PSBits\Foundation\Utility\Localization\PluralFormUtility;
 use PSBits\Foundation\Utility\Xml\XmlUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use ReflectionException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
@@ -59,13 +60,14 @@ class LocalizationUtility
      * @throws ContainerExceptionInterface
      * @throws JsonException
      * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
      * @see ExtbaseLocalizationUtility
      */
     public static function translate(
-        string $key,
-        string $extensionName = null,
-        array  $arguments = null,
-        string $languageKey = null,
+        string  $key,
+        ?string $extensionName = null,
+        ?array  $arguments = null,
+        ?string $languageKey = null,
     ): ?string {
         if (isset($arguments[self::QUANTITY_ARGUMENT]) && is_numeric($arguments[self::QUANTITY_ARGUMENT])) {
             if (is_string($arguments[self::QUANTITY_ARGUMENT])) {
@@ -122,9 +124,9 @@ class LocalizationUtility
      */
     public static function translateConcatenatingNewLines(
         string $key,
-        string $extensionName = null,
-        array  $arguments = null,
-        string $languageKey = null,
+        ?string $extensionName = null,
+        ?array  $arguments = null,
+        ?string $languageKey = null,
         string $newLineMarker = '||',
     ): string {
         $translation = self::translate($key, $extensionName, $arguments, $languageKey);
@@ -145,9 +147,9 @@ class LocalizationUtility
      */
     public static function translatePreservingNewLines(
         string $key,
-        string $extensionName = null,
-        array  $arguments = null,
-        string $languageKey = null,
+        ?string $extensionName = null,
+        ?array  $arguments = null,
+        ?string $languageKey = null,
     ): string {
         $translation = self::translate($key, $extensionName, $arguments, $languageKey);
 

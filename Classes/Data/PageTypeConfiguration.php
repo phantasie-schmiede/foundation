@@ -26,7 +26,7 @@ class PageTypeConfiguration
      * @param string|null $label          Defaults to
      *                                    EXT:[your_extension]/Resources/Private/Language/Backend/Configuration/TCA/Overrides/page.xlf:pageType.[yourPageTypeName]
      *                                    if not set. If that key doesn't exist, "name" will be transformed from
-     *                                    "yourPageTypeName" to "Your page type name".
+     *                                    "yourPageTypeName" to "Your Page Type Name".
      */
     public function __construct(
         protected int     $doktype,

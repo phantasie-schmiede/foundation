@@ -13,6 +13,7 @@ namespace PSBits\Foundation\Service\Configuration;
 
 use JsonException;
 use PSBits\Foundation\Data\ExtensionInformationInterface;
+use PSBits\Foundation\Utility\Configuration\IconUtility;
 use PSBits\Foundation\Utility\LocalizationUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -87,17 +88,24 @@ class PageTypeService
 
         foreach ($extensionInformation->getPageTypes() as $configuration) {
             $doktype = $configuration->getDoktype();
-            $label   = $configuration['label'] ?? 'LLL:EXT:' . $extensionInformation->getExtensionKey(
-            ) . '/Resources/Private/Language/Backend/Configuration/TCA/Overrides/page.xlf:pageType.' . $doktype;
-            LocalizationUtility::translationExists($label);
+            $name    = $configuration->getName();
+            $label   = $configuration->getLabel() ?? 'LLL:EXT:' . $extensionInformation->getExtensionKey(
+            ) . '/Resources/Private/Language/Backend/Configuration/TCA/Overrides/page.xlf:pageType.' . $name;
+
+            if (!LocalizationUtility::translationExists($label)) {
+                $label = ucfirst(trim(implode(' ', preg_split('/(?=[A-Z])/', $name))));
+            }
 
             ExtensionManagementUtility::addTcaSelectItem($table, 'doktype', [
                 $label,
                 $doktype,
             ], '1', 'after');
 
-            $iconIdentifier = $configuration['iconIdentifier'] ?? 'page-type-' . $doktype;
-            $icons          = [
+            $iconIdentifier = $configuration->getIconIdentifier() ?? IconUtility::getDefaultIdentifier(
+                $extensionInformation,
+                'pageType' . ucfirst($name)
+            );
+            $icons = [
                 $doktype => $iconIdentifier,
             ];
 

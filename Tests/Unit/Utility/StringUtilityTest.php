@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -12,6 +13,8 @@ namespace PSBits\Foundation\Utility;
 
 use Generator;
 use JsonException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PSBits\Foundation\Service\TypoScriptProviderService;
 use PSBits\Foundation\Tests\Examples\BackedEnum;
 use PSBits\Foundation\Tests\Examples\Enum;
@@ -276,28 +279,22 @@ class StringUtilityTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider cleanUrlDataProvider
-     */
+    #[Test]
+    #[DataProvider('cleanUrlDataProvider')]
     public function cleanUrl(string $url, string $expectedResult): void
     {
         self::assertEquals($expectedResult, StringUtility::cleanUrl($url));
     }
 
     /**
-     * @test
-     * @dataProvider convertStringDataProvider
-     *
-     * @param string $string
-     * @param        $expectedResult
-     *
-     * @return void
+     * @param mixed $expectedResult
      * @throws ContainerExceptionInterface
      * @throws JsonException
      * @throws NotFoundExceptionInterface
      * @throws ReflectionException
      */
+    #[Test]
+    #[DataProvider('convertStringDataProvider')]
     public function convertString(string $string, $expectedResult): void
     {
         self::assertEquals(
@@ -307,11 +304,12 @@ class StringUtilityTest extends UnitTestCase
     }
 
     /**
-     * @test
      * @throws ContainerExceptionInterface
      * @throws JsonException
      * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
      */
+    #[Test]
     public function convertStringResolvesTypoScriptPathWithTypoScriptContext(): void
     {
         $typoScriptProviderServiceMock = $this->getMockBuilder(TypoScriptProviderService::class)
@@ -352,19 +350,15 @@ class StringUtilityTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     * @dataProvider convertToFloatDataProvider
-     */
+    #[Test]
+    #[DataProvider('convertToFloatDataProvider')]
     public function convertToFloat(string $variable, float $expectedResult): void
     {
         self::assertEquals($expectedResult, StringUtility::convertToFloat($variable));
     }
 
-    /**
-     * @test
-     * @dataProvider cropDataProvider
-     */
+    #[Test]
+    #[DataProvider('cropDataProvider')]
     public function crop(
         string $string,
         int    $length,
@@ -379,28 +373,22 @@ class StringUtilityTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     * @dataProvider getFirstWordDataProvider
-     */
+    #[Test]
+    #[DataProvider('getFirstWordDataProvider')]
     public function getFirstWord(string $sentence, string $expectedResult): void
     {
         self::assertEquals($expectedResult, StringUtility::getFirstWord($sentence));
     }
 
-    /**
-     * @test
-     * @dataProvider sanitizePropertyNameDataProvider
-     */
+    #[Test]
+    #[DataProvider('sanitizePropertyNameDataProvider')]
     public function sanitizePropertyName(string $propertyName, string $expectedResult): void
     {
         self::assertEquals($expectedResult, StringUtility::sanitizePropertyName($propertyName));
     }
 
-    /**
-     * @test
-     * @dataProvider isEmptyDataProvider
-     */
+    #[Test]
+    #[DataProvider('isEmptyDataProvider')]
     public function stringIsEmpty(string $string, bool $expectedResult): void
     {
         self::assertSame($expectedResult, StringUtility::isEmpty($string));

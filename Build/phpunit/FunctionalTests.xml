@@ -1,31 +1,60 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Functional test suite setup.
+
+    The bootstrap file is intentionally not copied into this repository. It is
+    provided by typo3/testing-framework and tracked there, so upgrading the
+    framework keeps the bootstrap in sync automatically.
+
+    backupGlobals stays on, but beStrictAboutChangesToGlobalState is off: a
+    functional test boots a complete TYPO3 instance, which legitimately populates
+    $GLOBALS['TYPO3_CONF_VARS'], the container and $_SERVER. The testing-framework
+    default configuration does not enable the flag either.
+-->
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.4/phpunit.xsd"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
     backupGlobals="true"
-    beStrictAboutTestsThatDoNotTestAnything="false"
-    bootstrap="FunctionalTestsBootstrap.php"
+    beStrictAboutChangesToGlobalState="false"
+    beStrictAboutOutputDuringTests="true"
+    bootstrap="../../.Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTestsBootstrap.php"
     cacheDirectory=".phpunit.cache"
     cacheResult="false"
     colors="true"
+    displayDetailsOnTestsThatTriggerDeprecations="true"
+    displayDetailsOnTestsThatTriggerErrors="true"
+    displayDetailsOnTestsThatTriggerNotices="true"
+    displayDetailsOnTestsThatTriggerWarnings="true"
+    failOnDeprecation="true"
+    failOnEmptyTestSuite="true"
+    failOnNotice="true"
+    failOnRisky="true"
     failOnWarning="true"
-    processIsolation="false"
-    requireCoverageMetadata="false"
-    stopOnError="false"
-    stopOnFailure="false"
-    stopOnIncomplete="false"
-    stopOnSkipped="false">
+    requireCoverageMetadata="false">
     <php>
-        <const
-            name="TYPO3_MODE"
-            value="FE" />
-        <env
-            name="TYPO3_CONTEXT"
-            value="Testing" />
         <ini
             name="display_errors"
             value="1" />
+        <env
+            name="TYPO3_CONTEXT"
+            value="Testing" />
+        <!--
+            PHPUnit only calls putenv() for <env> when the variable is not
+            already set. Setting typo3DatabaseDriver in the shell therefore wins,
+            e.g. typo3DatabaseDriver=pdo_mysql composer test:functional
+        -->
+        <env
+            name="typo3DatabaseDriver"
+            value="pdo_sqlite" />
     </php>
+    <source
+        ignoreIndirectDeprecations="true"
+        restrictNotices="true"
+        restrictWarnings="true">
+        <include>
+            <directory>../../Classes</directory>
+        </include>
+    </source>
     <testsuites>
         <testsuite name="Functional">
             <directory>../../Tests/Functional</directory>

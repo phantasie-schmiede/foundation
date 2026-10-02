@@ -11,10 +11,8 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\ViewHelpers;
 
-use Closure;
 use Exception;
 use PSBits\Foundation\Service\GlobalVariableService;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -24,17 +22,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class GlobalVariablesViewHelper extends AbstractViewHelper
 {
-    /**
-     * @throws Exception
-     */
-    public static function renderStatic(
-        array                     $arguments,
-        Closure                   $renderChildrenClosure,
-        RenderingContextInterface $renderingContext,
-    ): mixed {
-        return GlobalVariableService::get($arguments['path'], $arguments['strict'], $arguments['fallback']);
-    }
-
     public function initializeArguments(): void
     {
         parent::initializeArguments();
@@ -50,6 +37,18 @@ class GlobalVariablesViewHelper extends AbstractViewHelper
             'invalid path throws an exception on true or returns a fallback value on false',
             false,
             true
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function render(): mixed
+    {
+        return GlobalVariableService::get(
+            $this->arguments['path'],
+            $this->arguments['strict'],
+            $this->arguments['fallback']
         );
     }
 }

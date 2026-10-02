@@ -1,6 +1,6 @@
 {
   "name": "foundation",
-  "version": "1.0.0",
+  "version": "3.3.0",
   "description": "Configuration framework for TYPO3 extension development",
   "scripts": {
     "fix:classes": "node Build/Quality/lint-class-attributes.mjs",

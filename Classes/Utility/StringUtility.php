@@ -350,7 +350,14 @@ class StringUtility
      */
     public static function getNumberFormatter(int $style = NumberFormatter::DEFAULT_STYLE): NumberFormatter
     {
-        return NumberFormatter::create(ContextUtility::getCurrentLocale(), $style);
+        $locale = ContextUtility::getCurrentLocale();
+
+        // 'default' is a TYPO3 language key, not a valid BCP-47 locale.
+        if (ContextUtility::DEFAULT_LANGUAGE_KEY === $locale) {
+            $locale = 'en';
+        }
+
+        return NumberFormatter::create($locale, $style);
     }
 
     public static function isEmpty(string $string): bool

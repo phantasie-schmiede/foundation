@@ -1,0 +1,399 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '*'
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  is-push-for-open-pr:
+    name: Check for open PR
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')
+    runs-on: ubuntu-latest
+    outputs:
+      is-pr: ${{ steps.check.outputs.is-pr }}
+    steps:
+      - name: Check open pull requests for branch
+        id: check
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const branch = context.ref.replace('refs/heads/', '');
+            const { data: pulls } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `${context.payload.repository.owner.login}:${branch}`,
+              state: 'open',
+            });
+            core.setOutput('is-pr', pulls.length > 0 ? 'true' : 'false');
+
+  tests:
+    name: TYPO3 ${{ matrix.typo3 }} / PHP ${{ matrix.php }}${{ matrix.lowest && ' (lowest)' || '' }}
+    needs: is-push-for-open-pr
+    if: always() && (github.event_name != 'push' || needs.is-push-for-open-pr.outputs.is-pr != 'true')
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # TYPO3 v12 caps PHP at < 8.5, so 8.5 is deliberately absent there.
+          - typo3: '12.4'
+            php: '8.3'
+            lowest: false
+          - typo3: '12.4'
+            php: '8.4'
+            lowest: false
+          - typo3: '13.4'
+            php: '8.3'
+            lowest: false
+          - typo3: '13.4'
+            php: '8.4'
+            lowest: false
+          - typo3: '13.4'
+            php: '8.5'
+            lowest: false
+          # Oldest still-supported dependency set, to catch accidental use of
+          # APIs that only exist later in the branch.
+          - typo3: '13.4'
+            php: '8.3'
+            lowest: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: intl, mbstring, pdo_sqlite, sqlite3, zip
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: .Build/vendor
+          key: vendor-${{ runner.os }}-t3${{ matrix.typo3 }}-p${{ matrix.php }}-${{ matrix.lowest }}-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            vendor-${{ runner.os }}-t3${{ matrix.typo3 }}-p${{ matrix.php }}-${{ matrix.lowest }}-
+            vendor-${{ runner.os }}-
+
+      - name: Run test matrix
+        # Builds the environment and runs both suites in one place, shared with
+        # the local composer test:local alias. The script pins the
+        # core and drops saschaegerer/phpstan-typo3 (it hard-pins
+        # typo3/cms-core to ^13.4.3 and only the qa job needs it) in a
+        # generated composer-matrix.json, so tracked files stay unmodified,
+        # and exports COMPOSER_NO_SECURITY_BLOCKING (every supported core
+        # major currently carries an open Packagist advisory; reporting
+        # happens in the qa job).
+        run: sh Build/Scripts/runTests.sh ${{ matrix.typo3 }} ${{ matrix.lowest && '--lowest' || '' }}
+
+  tests-mariadb:
+    name: 'TYPO3 ${{ matrix.typo3 }} / PHP 8.4 / MariaDB'
+    needs: is-push-for-open-pr
+    if: always() && (github.event_name != 'push' || needs.is-push-for-open-pr.outputs.is-pr != 'true')
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        typo3:
+          - '12.4'
+          - '13.4'
+
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MYSQL_ROOT_PASSWORD: funcp
+          MYSQL_DATABASE: typo3
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      # The job runs on the runner (not in a container), so the service is
+      # reached via the port published to the host - see services.mariadb.
+      typo3DatabaseHost: 127.0.0.1
+      typo3DatabaseUsername: root
+      typo3DatabasePassword: funcp
+      typo3DatabasePort: '3306'
+      typo3DatabaseName: typo3
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl, mbstring, pdo_mysql, pdo_sqlite, sqlite3, zip
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: .Build/vendor
+          key: vendor-${{ runner.os }}-mariadb-t3${{ matrix.typo3 }}-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            vendor-${{ runner.os }}-mariadb-t3${{ matrix.typo3 }}-
+            vendor-${{ runner.os }}-
+
+      - name: Run test matrix
+        # The functional suite runs against the service container, reached via
+        # the port published to the runner (see services.mariadb.ports and the
+        # typo3Database* variables in Build/Scripts/runTests.sh).
+        run: sh Build/Scripts/runTests.sh ${{ matrix.typo3 }} --db mysql
+
+  tests-postgres:
+    name: 'TYPO3 ${{ matrix.typo3 }} / PHP 8.4 / PostgreSQL'
+    needs: is-push-for-open-pr
+    if: always() && (github.event_name != 'push' || needs.is-push-for-open-pr.outputs.is-pr != 'true')
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        typo3:
+          - '12.4'
+          - '13.4'
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: typo3
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: funcp
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      # The job runs on the runner (not in a container), so the service is
+      # reached via the port published to the host - see services.postgres.
+      typo3DatabaseHost: 127.0.0.1
+      typo3DatabaseUsername: postgres
+      typo3DatabasePassword: funcp
+      typo3DatabasePort: '5432'
+      typo3DatabaseName: typo3
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl, mbstring, pdo_pgsql, pdo_sqlite, sqlite3, zip
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: .Build/vendor
+          key: vendor-${{ runner.os }}-postgres-t3${{ matrix.typo3 }}-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            vendor-${{ runner.os }}-postgres-t3${{ matrix.typo3 }}-
+            vendor-${{ runner.os }}-
+
+      - name: Run test matrix
+        # The functional suite runs against the service container, reached via
+        # the port published to the runner (see services.postgres.ports and the
+        # typo3Database* variables in Build/Scripts/runTests.sh).
+        run: sh Build/Scripts/runTests.sh ${{ matrix.typo3 }} --db postgres
+
+  coverage:
+    name: 'Code coverage (TYPO3 13.4 / PHP 8.4)'
+    needs: is-push-for-open-pr
+    if: always() && (github.event_name != 'push' || needs.is-push-for-open-pr.outputs.is-pr != 'true')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl, mbstring, pdo_sqlite, sqlite3, zip
+          coverage: pcov
+          tools: composer:v2
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: .Build/vendor
+          key: vendor-${{ runner.os }}-coverage-t313.4-p8.4-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            vendor-${{ runner.os }}-coverage-
+            vendor-${{ runner.os }}-
+
+      - name: Install dependencies
+        # Same approach as the qa job: composer.lock is git-ignored, so the
+        # core pin is applied through composer update instead of install.
+        env:
+          COMPOSER_NO_SECURITY_BLOCKING: '1'
+        run: composer update --with "typo3/cms-core:^13.4" -W --prefer-dist --no-interaction --no-progress
+
+      - name: Run coverage
+        # Enforces the per-suite baseline from Build/Quality/coverage-baseline.json
+        # and writes clover/cobertura/html reports to .Build/coverage/.
+        run: sh Build/Scripts/runCoverage.sh
+
+      - name: Upload coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: .Build/coverage/
+          if-no-files-found: warn
+
+  qa:
+    name: 'Static analysis & linters'
+    needs: is-push-for-open-pr
+    if: always() && (github.event_name != 'push' || needs.is-push-for-open-pr.outputs.is-pr != 'true')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: intl, mbstring, zip
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Node modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json', '**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        # Pinned on purpose: saschaegerer/phpstan-typo3 only ever supports one core
+        # major at a time, and PHPStan behaviour differs between them. Linting on
+        # the same core the maintainers develop against keeps results stable.
+        env:
+          COMPOSER_NO_SECURITY_BLOCKING: '1'
+        run: composer update --with "typo3/cms-core:^13.4" -W --prefer-dist --no-interaction --no-progress
+
+      - name: Install Node dependencies
+        run: npm install
+
+      - name: Lint and analyse
+        run: >-
+          composer analyze:php
+          && composer lint:classes
+          && composer lint:htmlxml
+          && composer lint:php
+          && composer lint:typoscript
+          && composer lint:yaml
+          && composer validate:composer
+
+      - name: Report dependency advisories
+        # Reported, not enforced: every TYPO3 major in the support window still
+        # carries open Packagist advisories, so gating on this would leave the
+        # build permanently red and people would stop reading it. Surfaces as a
+        # GitHub warning annotation instead.
+        run: >-
+          composer audit --abandoned=report
+          || echo "::warning::composer audit reported findings - see the job log"
+
+  publish-to-ter:
+    name: Publish to TER
+    # Only runs after every CI job succeeded AND a semver tag was pushed.
+    needs: [tests, tests-mariadb, tests-postgres, qa, coverage]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    env:
+      TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+
+      - name: Check tag pattern
+        run: |
+          if ! [[ "${GITHUB_REF}" =~ ^refs/tags/[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Not a semver tag, aborting." >&2
+            exit 1
+          fi
+
+      - name: Get version
+        run: echo "version=${GITHUB_REF#refs/tags/}" >> "$GITHUB_ENV"
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: intl, mbstring, zip, curl
+          coverage: none
+          tools: composer:v2
+
+      - name: Ensure ext_emconf.php matches tag
+        run: |
+          emconf="$(php -r '$_EXTKEY="foundation"; include "ext_emconf.php"; echo $EM_CONF["foundation"]["version"];')"
+          if [[ "$emconf" != "$version" ]]; then
+            echo "ext_emconf.php ($emconf) does not match tag ($version), aborting." >&2
+            exit 1
+          fi
+
+      - name: Get tag description (TER comment)
+        run: |
+          comment="$(git tag -l "$version" --format '%(contents)')"
+          if [[ -z "${comment// }" ]]; then
+            echo "comment=Released version $version" >> "$GITHUB_ENV"
+          else
+            {
+              echo 'comment<<EOF'
+              echo "$comment"
+              echo 'EOF'
+            } >> "$GITHUB_ENV"
+          fi
+
+      - name: Install tailor
+        run: |
+          composer global require typo3/tailor --prefer-dist --no-progress --no-suggest
+          echo "tailor_bin=$(composer config -g home)/vendor/bin/tailor" >> "$GITHUB_ENV"
+
+      - name: Publish to TER
+        run: php "$tailor_bin" ter:publish "$version" --comment "$comment"

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use PSBits\Foundation\Service\ExtensionInformationService;
 use PSBits\Foundation\Utility\Configuration\FilePathUtility;
+use PSBits\Foundation\Utility\Configuration\IconUtility;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
@@ -46,14 +47,9 @@ return call_user_func(
 
             /** @var SplFileInfo $fileInfo */
             foreach ($finder as $fileInfo) {
-                $iconIdentifier = str_replace(
-                    '_',
-                    '-',
-                    $extensionInformation->getExtensionKey()
-                ) . '-' . str_replace(
-                    '_',
-                    '-',
-                    GeneralUtility::camelCaseToLowerCaseUnderscored($fileInfo->getFilenameWithoutExtension())
+                $iconIdentifier = IconUtility::getDefaultIdentifier(
+                    $extensionInformation,
+                    $fileInfo->getFilenameWithoutExtension()
                 );
 
                 // Absolute icon paths do not work in every context inside TYPO3. Therefore we need to use EXT: prefix.

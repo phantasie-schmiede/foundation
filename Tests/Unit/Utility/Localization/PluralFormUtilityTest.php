@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -11,6 +12,8 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Utility\Localization;
 
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -61,10 +64,8 @@ class PluralFormUtilityTest extends UnitTestCase
         yield 'German Swiss plural fallback' => ['de_CH', 5, 1];
     }
 
-    /**
-     * @test
-     * @dataProvider getPluralFormDataProvider
-     */
+    #[Test]
+    #[DataProvider('getPluralFormDataProvider')]
     public function getPluralForm(string $languageKey, int|float $quantity, int $expectedResult): void
     {
         self::assertSame(

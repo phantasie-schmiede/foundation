@@ -51,7 +51,7 @@ class ArrayUtility
         return array_search($needle, array_reverse($array, true), true);
     }
 
-    public static function guaranteeArrayType(mixed $variable, string $explodeOnCharacter = null): array
+    public static function guaranteeArrayType(mixed $variable, ?string $explodeOnCharacter = null): array
     {
         if (is_array($variable)) {
             return $variable;

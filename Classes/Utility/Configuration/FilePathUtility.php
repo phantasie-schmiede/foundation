@@ -51,7 +51,7 @@ class FilePathUtility
      */
     public static function getLanguageFilePathForCurrentFile(
         ExtensionInformationInterface $extensionInformation,
-        string                        $filename = null,
+        ?string                       $filename = null,
     ): string {
         $trace                   = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
         $callingFilePathElements = explode('/', $trace[0]['file']);
