@@ -241,7 +241,7 @@ class FileUtility
             $changePermissions = true;
         }
 
-        $success = (bool)file_put_contents($fileName, $content, $append ? FILE_APPEND : 0);
+        $success = false !== file_put_contents($fileName, $content, $append ? FILE_APPEND : 0);
 
         if ($success && ($changePermissions ?? false)) {
             GeneralUtility::fixPermissions($fileName);
