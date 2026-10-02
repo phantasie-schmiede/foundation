@@ -230,6 +230,52 @@ jobs:
         # typo3Database* variables in Build/Scripts/runTests.sh).
         run: sh Build/Scripts/runTests.sh ${{ matrix.typo3 }} --db postgres
 
+  coverage:
+    name: 'Code coverage (TYPO3 13.4 / PHP 8.4)'
+    needs: is-push-for-open-pr
+    if: always() && (github.event_name != 'push' || needs.is-push-for-open-pr.outputs.is-pr != 'true')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl, mbstring, pdo_sqlite, sqlite3, zip
+          coverage: pcov
+          tools: composer:v2
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: .Build/vendor
+          key: vendor-${{ runner.os }}-coverage-t313.4-p8.4-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            vendor-${{ runner.os }}-coverage-
+            vendor-${{ runner.os }}-
+
+      - name: Install dependencies
+        # Same approach as the qa job: composer.lock is git-ignored, so the
+        # core pin is applied through composer update instead of install.
+        env:
+          COMPOSER_NO_SECURITY_BLOCKING: '1'
+        run: composer update --with "typo3/cms-core:^13.4" -W --prefer-dist --no-interaction --no-progress
+
+      - name: Run coverage
+        # Enforces the per-suite baseline from Build/Quality/coverage-baseline.json
+        # and writes clover/cobertura/html reports to .Build/coverage/.
+        run: sh Build/Scripts/runCoverage.sh
+
+      - name: Upload coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: .Build/coverage/
+          if-no-files-found: warn
+
   qa:
     name: 'Static analysis & linters'
     needs: is-push-for-open-pr
@@ -293,7 +339,7 @@ jobs:
   publish-to-ter:
     name: Publish to TER
     # Only runs after every CI job succeeded AND a semver tag was pushed.
-    needs: [tests, tests-mariadb, tests-postgres, qa]
+    needs: [tests, tests-mariadb, tests-postgres, qa, coverage]
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     env:

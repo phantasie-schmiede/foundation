@@ -101,6 +101,8 @@
             "@test:local",
             "@test:docker"
         ],
+        "test:coverage": "sh Build/Scripts/runCoverage.sh @additional_args",
+        "test:coverage:update-baseline": "sh Build/Scripts/runCoverage.sh --update-baseline @additional_args",
         "test:docker": "sh Build/Scripts/runDockerTests.sh @additional_args",
         "test:local": "sh Build/Scripts/runLocalTests.sh @additional_args",
         "test:functional": "php .Build/bin/phpunit -c Build/phpunit/FunctionalTests.xml",

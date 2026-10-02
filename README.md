@@ -118,6 +118,19 @@ This repository ships with additional quality tooling for PHP, XML/XLF, YAML, Ty
 `composer install` also installs frontend tooling and copies the pre-commit hook from
 `Build/GitHooks/pre-commit` to `.git/hooks/pre-commit`.
 
+#### Code coverage
+
+CI measures the line coverage of the unit and functional suites once per run (job
+"Code coverage", TYPO3 13.4 / PHP 8.4 with pcov) and uploads the clover/cobertura/html
+reports as the `coverage` artifact. Each suite's coverage must not drop below the
+baseline in `Build/Quality/coverage-baseline.json` (tolerance: 0.5 points to absorb
+small drift between PHP versions); the job fails when it does.
+
+- `composer test:coverage`: runs both suites with coverage and checks the baseline
+  (requires the pcov or xdebug PHP extension; without one the suites run without coverage)
+- `composer test:coverage:update-baseline`: runs both suites and rewrites
+  `Build/Quality/coverage-baseline.json` with the measured values (requires a coverage driver)
+
 #### Testing with Docker
 
 To run the test matrix on PHP versions that are not installed locally, or against a real database,
