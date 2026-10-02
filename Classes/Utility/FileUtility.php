@@ -139,13 +139,21 @@ class FileUtility
 
         $contentDisposition = $showInline ? 'inline' : 'attachment';
 
-        header('Cache-Control: must-revalidate');
-        header('Content-Description: File Transfer');
-        header('Content-Disposition: ' . $contentDisposition . '; filename=' . ($downloadName ?? basename($filename)));
-        header('Content-Length: ' . $contentLength);
-        header('Content-Type: ' . $contentType);
-        header('Expires: 1');
-        header('Pragma: public');
+        /*
+         * Headers can no longer be modified once output has started. In the test environment
+         * a dependency can emit output while the autoloader runs (a deprecation notice, for
+         * instance), so send the headers only while they can still be sent instead of
+         * triggering "headers already sent" warnings.
+         */
+        if (!headers_sent()) {
+            header('Cache-Control: must-revalidate');
+            header('Content-Description: File Transfer');
+            header('Content-Disposition: ' . $contentDisposition . '; filename=' . ($downloadName ?? basename($filename)));
+            header('Content-Length: ' . $contentLength);
+            header('Content-Type: ' . $contentType);
+            header('Expires: 1');
+            header('Pragma: public');
+        }
 
         if (null !== $content) {
             echo $content;
