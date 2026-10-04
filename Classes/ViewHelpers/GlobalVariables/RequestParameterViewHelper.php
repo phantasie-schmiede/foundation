@@ -11,10 +11,7 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\ViewHelpers\GlobalVariables;
 
-use Closure;
-use Exception;
 use PSBits\Foundation\Service\GlobalVariableProviders\RequestParameterProvider;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
  * Class RequestParameterViewHelper
@@ -23,14 +20,8 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 class RequestParameterViewHelper extends AbstractGlobalVariablesViewHelper
 {
-    /**
-     * @throws Exception
-     */
-    public static function renderStatic(
-        array                     $arguments,
-        Closure                   $renderChildrenClosure,
-        RenderingContextInterface $renderingContext,
-    ): mixed {
-        return parent::getVariable(RequestParameterProvider::class, $arguments);
+    protected function getBaseKey(): string
+    {
+        return RequestParameterProvider::class;
     }
 }

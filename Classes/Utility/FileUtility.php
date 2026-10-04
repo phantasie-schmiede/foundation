@@ -63,7 +63,7 @@ class FileUtility
      */
     public static function formatFileSize(
         int|string $input,
-        int        $unit = null,
+        ?int       $unit = null,
         int        $decimals = 2,
     ): string {
         if (is_int($input)) {
@@ -101,7 +101,6 @@ class FileUtility
         $fileName        = self::resolveFileName($fileName);
         $fileInformation = finfo_open(FILEINFO_MIME_TYPE);
         $mimeType        = $fileInformation->file($fileName);
-        finfo_close($fileInformation);
 
         return $mimeType;
     }
@@ -111,11 +110,11 @@ class FileUtility
      * If you pass $content, you must also set a $downloadName.
      */
     public static function initiateDownload(
-        string $contentType,
-        string $content = null,
-        string $downloadName = null,
-        string $filename = null,
-        bool   $showInline = false,
+        string  $contentType,
+        ?string $content = null,
+        ?string $downloadName = null,
+        ?string $filename = null,
+        bool    $showInline = false,
     ): void {
         if (null === $content && null === $filename) {
             throw new RuntimeException(
@@ -139,13 +138,21 @@ class FileUtility
 
         $contentDisposition = $showInline ? 'inline' : 'attachment';
 
-        header('Cache-Control: must-revalidate');
-        header('Content-Description: File Transfer');
-        header('Content-Disposition: ' . $contentDisposition . '; filename=' . ($downloadName ?? basename($filename)));
-        header('Content-Length: ' . $contentLength);
-        header('Content-Type: ' . $contentType);
-        header('Expires: 1');
-        header('Pragma: public');
+        /*
+         * Headers can no longer be modified once output has started. In the test environment
+         * a dependency can emit output while the autoloader runs (a deprecation notice, for
+         * instance), so send the headers only while they can still be sent instead of
+         * triggering "headers already sent" warnings.
+         */
+        if (!headers_sent()) {
+            header('Cache-Control: must-revalidate');
+            header('Content-Description: File Transfer');
+            header('Content-Disposition: ' . $contentDisposition . '; filename=' . ($downloadName ?? basename($filename)));
+            header('Content-Length: ' . $contentLength);
+            header('Content-Type: ' . $contentType);
+            header('Expires: 1');
+            header('Pragma: public');
+        }
 
         if (null !== $content) {
             echo $content;
@@ -241,7 +248,7 @@ class FileUtility
             $changePermissions = true;
         }
 
-        $success = (bool)file_put_contents($fileName, $content, $append ? FILE_APPEND : 0);
+        $success = false !== file_put_contents($fileName, $content, $append ? FILE_APPEND : 0);
 
         if ($success && ($changePermissions ?? false)) {
             GeneralUtility::fixPermissions($fileName);

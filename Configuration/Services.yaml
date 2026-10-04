@@ -32,6 +32,9 @@ services:
   PSBits\Foundation\Service\ExtensionInformationService:
     public: true
 
+  PSBits\Foundation\Service\FrontendUrlService:
+    public: true
+
   PSBits\Foundation\Service\GlobalVariableProviders\SiteConfigurationProvider:
     public: true
 

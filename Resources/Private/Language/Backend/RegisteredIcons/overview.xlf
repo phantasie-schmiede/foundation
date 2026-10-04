@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file
+        datatype="plaintext"
+        date="2026-08-19T00:00:00+00:00"
+        original="messages"
+        product-name="foundation"
+        source-language="en">
+        <header />
+        <body>
+            <trans-unit id="filter.label">
+                <source>Filter icons</source>
+            </trans-unit>
+            <trans-unit id="filter.placeholder">
+                <source>Type identifier or source path</source>
+            </trans-unit>
+            <trans-unit id="filter.result">
+                <source>{visible} of {total} icons shown</source>
+            </trans-unit>
+            <trans-unit id="header">
+                <source>Registered icons</source>
+            </trans-unit>
+            <trans-unit id="noIcons">
+                <source>No registered icons were found.</source>
+            </trans-unit>
+            <trans-unit id="table.preview">
+                <source>Preview</source>
+            </trans-unit>
+            <trans-unit id="table.identifier">
+                <source>Identifier</source>
+            </trans-unit>
+            <trans-unit id="table.source">
+                <source>Source</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

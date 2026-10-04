@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -12,6 +13,8 @@ namespace PSBits\Foundation\Utility\Xml;
 
 use Generator;
 use JsonException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
@@ -58,13 +61,12 @@ class XmlUtilityTest extends UnitTestCase
     }
 
     /**
-     * @test
-     * @dataProvider convertFromAndToXmlDataProvider
-     *
      * @throws ContainerExceptionInterface
      * @throws JsonException
      * @throws NotFoundExceptionInterface
      */
+    #[Test]
+    #[DataProvider('convertFromAndToXmlDataProvider')]
     public function convertFromAndToXml(string $xml): void
     {
         $array = XmlUtility::convertFromXml($xml);
@@ -75,13 +77,12 @@ class XmlUtilityTest extends UnitTestCase
     }
 
     /**
-     * @test
-     * @dataProvider convertFromXmlDataProvider
-     *
      * @throws ContainerExceptionInterface
      * @throws JsonException
      * @throws NotFoundExceptionInterface
      */
+    #[Test]
+    #[DataProvider('convertFromXmlDataProvider')]
     public function convertFromXml(array $expectedResult, string $xml): void
     {
         self::assertEquals(
@@ -90,10 +91,8 @@ class XmlUtilityTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     * @dataProvider convertToXmlDataProvider
-     */
+    #[Test]
+    #[DataProvider('convertToXmlDataProvider')]
     public function convertToXml(array $array, string $expectedResult): void
     {
         self::assertEquals(

@@ -1,3 +1,4 @@
 pages
-,uid,pid,title
-,1,0,RootPage
+,uid,pid,title,slug
+,1,0,RootPage,/
+,2,1,Target Page,/target-page

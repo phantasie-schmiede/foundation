@@ -5,8 +5,25 @@ parameters:
       -
         identifier: trait.unused
         path: ../../Classes/Traits/ControllerCacheTrait.php
+      # LanguageServiceFactoryTest compares our factory with the core factory by
+      # design; the analyser resolves the string constants and would report the
+      # comparison as always true.
+      -
+        identifier: function.alreadyNarrowedType
+        path: ../../Tests/Unit/Service/Typo3/LanguageServiceFactoryTest.php
+        reportUnmatched: false
+      -
+        identifier: staticMethod.alreadyNarrowedType
+        path: ../../Tests/Unit/Service/Typo3/LanguageServiceFactoryTest.php
+        reportUnmatched: false
   paths:
     - ../../Classes
+    - ../../Tests/Unit
+  excludePaths:
+    # Static analysis covers the shipped code and the unit tests. The functional tests need a booted
+    # testing framework instance (database, instance path, container) and are verified by the
+    # test:functional matrix jobs instead, so they are deliberately out of the analyser's scope.
+    - ../../Tests/Functional
   tmpDir: .phpstan
 
 includes:

@@ -56,10 +56,10 @@ class TypoScriptProviderService
      * @throws NotFoundExceptionInterface
      */
     public function get(
-        string $path = null,
-        string $configurationType = ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT,
-        string $extensionName = null,
-        string $pluginName = null,
+        ?string $path = null,
+        string  $configurationType = ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT,
+        ?string $extensionName = null,
+        ?string $pluginName = null,
     ): mixed {
         $typoScript = $this->configurationManager->getConfiguration($configurationType, $extensionName, $pluginName);
         $typoScript = $this->typoScriptService->convertTypoScriptArrayToPlainArray($typoScript);
@@ -85,8 +85,8 @@ class TypoScriptProviderService
     public function has(
         string $path,
         string $configurationType = ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT,
-        string $extensionName = null,
-        string $pluginName = null,
+        ?string $extensionName = null,
+        ?string $pluginName = null,
     ): bool {
         try {
             $this->get($path, $configurationType, $extensionName, $pluginName);
@@ -97,7 +97,7 @@ class TypoScriptProviderService
         }
     }
 
-    private function getDemandedTypoScript(array $typoScript, string $path = null): mixed
+    private function getDemandedTypoScript(array $typoScript, ?string $path = null): mixed
     {
         if (null !== $path) {
             try {

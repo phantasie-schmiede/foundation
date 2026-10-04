@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Data;
 
 use PSBits\Foundation\Controller\Backend\AnalyzeLocalLangController;
+use PSBits\Foundation\Controller\Backend\RegisteredIconsController;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -40,6 +41,14 @@ class ExtensionInformation extends AbstractExtensionInformation
                 ModuleConfiguration::class,
                 controllers : [AnalyzeLocalLangController::class],
                 key         : $this->buildModuleKeyPrefix() . 'analyzelocallang',
+                parentModule: $mainModuleKey
+            )
+        );
+        $this->addModule(
+            GeneralUtility::makeInstance(
+                ModuleConfiguration::class,
+                controllers : [RegisteredIconsController::class],
+                key         : $this->buildModuleKeyPrefix() . 'registeredicons',
                 parentModule: $mainModuleKey
             )
         );

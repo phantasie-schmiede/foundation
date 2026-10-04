@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -11,6 +12,8 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Service\Configuration;
 
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PSBits\Foundation\Service\GlobalVariableProviders\EarlyAccessConstantsProvider;
 use PSBits\Foundation\Service\GlobalVariableService;
 use PSBits\Foundation\Tests\Examples\BackedEnum;
@@ -27,6 +30,7 @@ class FlexFormServiceTest extends UnitTestCase
 {
     public const int    TEST_INT_CONSTANT    = 42;
     public const string TEST_STRING_CONSTANT = 'test_constant_value';
+
     private FlexFormService $subject;
 
     public static function processDataProvider(): Generator
@@ -92,10 +96,8 @@ class FlexFormServiceTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider processDataProvider
-     */
+    #[Test]
+    #[DataProvider('processDataProvider')]
     public function process(string $xml, string $expectedResult): void
     {
         self::assertEquals($expectedResult, $this->subject->processMarkers($xml));

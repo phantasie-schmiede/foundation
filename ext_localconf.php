@@ -11,6 +11,7 @@ use PSBits\Foundation\Service\GlobalVariableProviders\SiteConfigurationProvider;
 use PSBits\Foundation\Service\GlobalVariableService;
 use PSBits\Foundation\Service\Typo3\LanguageServiceFactory;
 use PSBits\Foundation\Utility\Configuration\FilePathUtility;
+use PSBits\Foundation\Utility\Typo3VersionUtility;
 use PSBits\Foundation\Utility\FileUtility;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory as Typo3LanguageServiceFactory;
@@ -35,8 +36,18 @@ defined('TYPO3') or die();
     $pluginService = GeneralUtility::makeInstance(PluginService::class);
 
     foreach ($extensionInformationService->getAllExtensionInformation() as $extensionInformation) {
+        $pageTypeService->addToRegistry($extensionInformation);
         $pageTypeService->addToDragArea($extensionInformation);
         $pluginService->configurePlugins($extensionInformation);
+
+        /*
+         * Since TYPO3 v13 the core includes Configuration/user.tsconfig of every extension automatically, so the
+         * explicit import is only needed for v12. Note that ExtensionManagementUtility::addUserTSConfig() is
+         * deprecated since v13.
+         */
+        if (Typo3VersionUtility::isAtLeast('13.0')) {
+            continue;
+        }
 
         foreach ([
                      'user',
@@ -57,9 +68,7 @@ defined('TYPO3') or die();
         );
 
         if (!empty(trim($fileContents))) {
-            $GLOBALS['TYPO3_CONF_VARS']['BE']['defaultPageTSconfig'] .= LF . file_get_contents(
-                    Environment::getVarPath() . CacheConfigurationBuilder::FILE_PATHS['TSCONFIG']
-                );
+            $GLOBALS['TYPO3_CONF_VARS']['BE']['defaultPageTSconfig'] .= LF . $fileContents;
         }
     }
 

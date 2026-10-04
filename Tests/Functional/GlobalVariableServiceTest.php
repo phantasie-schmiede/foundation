@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -15,13 +16,12 @@ use PSBits\Foundation\Service\GlobalVariableProviders\EarlyAccessConstantsProvid
 use PSBits\Foundation\Service\GlobalVariableProviders\RequestParameterProvider;
 use PSBits\Foundation\Service\GlobalVariableProviders\SiteConfigurationProvider;
 use PSBits\Foundation\Service\GlobalVariableService;
+use PSBits\Foundation\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;
-use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\TypoScript\AST\Node\RootNode;
 use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -34,6 +34,7 @@ class GlobalVariableServiceTest extends FunctionalTestCase
     use SiteBasedTestTrait;
 
     public const int ROOT_PAGE_ID = 1;
+
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/psbits/foundation',
     ];
@@ -100,7 +101,11 @@ class GlobalVariableServiceTest extends FunctionalTestCase
         $frontendTypoScript = new FrontendTypoScript(new RootNode(), [], [], []);
         $frontendTypoScript->setSetupArray([]);
         $request = new ServerRequest(
-            'http://example.com/en/', 'GET', null, [], [
+            'http://example.com/en/',
+            'GET',
+            null,
+            [],
+            [
                 'HTTP_HOST'   => 'example.com',
                 'REQUEST_URI' => '/en/',
             ]
@@ -120,12 +125,15 @@ class GlobalVariableServiceTest extends FunctionalTestCase
         $this->writeSiteConfiguration('tree_page_layout_test', $this->buildSiteConfiguration(self::ROOT_PAGE_ID, '/'));
     }
 
+    /**
+     * SiteConfigurationProvider reads the page id from $GLOBALS['TSFE'], which is only populated
+     * when TypoScriptFrontendController is booted, so the test sets up a minimal stub.
+     */
     private function mockTsfe(): void
     {
-        $GLOBALS['TSFE'] = $this->getMockBuilder(TypoScriptFrontendController::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods([])
-            ->getMock();
+        $GLOBALS['TSFE'] = new class () {
+            public int $id = 1;
+        };
         $GLOBALS['TSFE']->id = self::ROOT_PAGE_ID;
     }
 }

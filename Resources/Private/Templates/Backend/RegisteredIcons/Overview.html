@@ -1,0 +1,155 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:foundation="http://typo3.org/ns/PSBits/Foundation/ViewHelpers">
+<f:layout name="Module" />
+
+<f:section name="Content">
+    <div class="row">
+        <div class="col">
+            <h1>
+                <foundation:translate id="header" />
+            </h1>
+
+            <f:if condition="{registeredIcons}">
+                <f:then>
+                    <f:comment>
+                        <!-- This adds a white background to the icon preview so that it is visible in dark mode. -->
+                    </f:comment>
+                    <style>
+                        @media (prefers-color-scheme: dark) {
+                            #icon-list-table tbody tr:hover td.icon-preview-cell img {
+                                background-color: rgba(255, 255, 255, 0.95);
+                                border-radius: 4px;
+                                box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4);
+                                padding: 2px;
+                            }
+                        }
+                    </style>
+
+                    <div class="form-group mb-3">
+                        <label
+                            class="form-label"
+                            for="icon-list-filter">
+                            <foundation:translate id="filter.label" />
+                        </label>
+                        <input
+                            class="form-control"
+                            id="icon-list-filter"
+                            placeholder="{foundation:translate(id: 'filter.placeholder')}"
+                            type="search" />
+                        <p
+                            aria-live="polite"
+                            class="form-text"
+                            data-count-template="{foundation:translate(id: 'filter.result')}"
+                            id="icon-filter-count"></p>
+                    </div>
+
+                    <div class="table-fit">
+                        <table
+                            class="table table-hover table-striped"
+                            id="icon-list-table">
+                            <thead>
+                            <tr>
+                                <th>
+                                    <foundation:translate id="table.preview" />
+                                </th>
+                                <th>
+                                    <foundation:translate id="table.identifier" />
+                                </th>
+                                <th>
+                                    <foundation:translate id="table.source" />
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <f:for
+                                as="icon"
+                                each="{registeredIcons}"
+                                key="iconIdentifier">
+                                <tr
+                                    data-filter-text="{iconIdentifier} {icon.sourcePath}"
+                                    data-icon-row>
+                                    <td class="icon-preview-cell">
+                                        <img
+                                            alt="{iconIdentifier}"
+                                            height="32"
+                                            loading="lazy"
+                                            src="{icon.publicWebPath}"
+                                            width="32" />
+                                    </td>
+                                    <td>
+                                        <code>{iconIdentifier}</code>
+                                    </td>
+                                    <td>
+                                        <code>{icon.sourcePath}</code>
+                                    </td>
+                                </tr>
+                            </f:for>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <script>
+                        (function() {
+                            const filterCount = document.getElementById('icon-filter-count');
+                            const filterInput = document.getElementById('icon-list-filter');
+                            const iconTable   = document.getElementById('icon-list-table');
+
+                            if (!filterInput || !iconTable) {
+                                return;
+                            }
+
+                            const rows = iconTable.querySelectorAll('tbody tr[data-icon-row]');
+                            const totalCount = rows.length;
+                            let debounceTimeoutId = null;
+
+                            const applyFilter = function() {
+                                const query = (filterInput.value || '').toLowerCase().trim();
+                                let visibleCount = 0;
+
+                                rows.forEach(function(row) {
+                                    const filterText = (row.getAttribute('data-filter-text') || '').toLowerCase();
+                                    const isMatch = '' === query || -1 !== filterText.indexOf(query);
+
+                                    row.style.display = isMatch ? '' : 'none';
+
+                                    if (isMatch) {
+                                        visibleCount++;
+                                    }
+                                });
+
+                                if (filterCount) {
+                                    const countTemplate = filterCount.getAttribute('data-count-template') || '{visible} of {total} icons shown';
+
+                                    filterCount.textContent = countTemplate
+                                        .replace('{visible}', String(visibleCount))
+                                        .replace('{total}', String(totalCount));
+                                }
+                            };
+
+                            filterInput.addEventListener('input', function() {
+                                if (null !== debounceTimeoutId) {
+                                    window.clearTimeout(debounceTimeoutId);
+                                }
+
+                                debounceTimeoutId = window.setTimeout(function() {
+                                    applyFilter();
+                                    debounceTimeoutId = null;
+                                }, 300);
+                            });
+
+                            applyFilter();
+                        })();
+                    </script>
+                </f:then>
+                <f:else>
+                    <div class="alert alert-info">
+                        <foundation:translate id="noIcons" />
+                    </div>
+                </f:else>
+            </f:if>
+        </div>
+    </div>
+</f:section>
+</html>
