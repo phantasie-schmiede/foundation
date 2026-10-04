@@ -17,7 +17,6 @@ use PSBits\Foundation\Utility\ArrayUtility;
 use PSBits\Foundation\Utility\ContextUtility;
 use PSBits\Foundation\Utility\FileUtility;
 use PSBits\Foundation\Utility\StringUtility;
-use PSBits\Foundation\Utility\Typo3VersionUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
@@ -236,13 +235,11 @@ class UploadService
     }
 
     /**
-     * TYPO3 v13 turned DuplicationBehavior into a native enum, but
-     * ResourceStorage::addUploadedFile() only accepts the enum from v13 onwards and expected the plain
-     * string value before that. So the default has to be version dependent.
+     * ResourceStorage::addUploadedFile() expects the native DuplicationBehavior enum.
      */
-    private function getDefaultDuplicationBehaviour(): DuplicationBehavior|string
+    private function getDefaultDuplicationBehaviour(): DuplicationBehavior
     {
-        return Typo3VersionUtility::isAtLeast('13.0') ? DuplicationBehavior::RENAME : 'rename';
+        return DuplicationBehavior::RENAME;
     }
 
     private function getFileExtensionByMimeType(UploadedFile $uploadedFile): string

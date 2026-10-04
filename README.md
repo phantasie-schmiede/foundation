@@ -1,6 +1,6 @@
 # PSBits Foundation
 
-## Enhanced extension programming in Extbase (supports TYPO3 v12 and v13)
+## Enhanced extension programming in Extbase (supports TYPO3 v13)
 
 ---
 **IMPORTANT:**
@@ -103,7 +103,7 @@ This repository ships with additional quality tooling for PHP, XML/XLF, YAML, Ty
 - `composer lint:all`: runs all configured lint and validation checks
 - `composer test`: runs unit and functional tests against the installed TYPO3 core
 - `composer test:local`: runs the local (non-Docker) matrix. Without arguments it runs all local
-  legs (12.4, 13.4, 13.4 lowest); with arguments it runs a single leg, e.g.
+  legs (13.4, 13.4 lowest); with arguments it runs a single leg, e.g.
   `composer test:local -- 13.4` or `composer test:local -- 13.4 --lowest`. The
   `Build/Scripts/runTests.sh` runner pins the requested core in a generated `composer-matrix.json`
   (tracked files are never modified) and leaves `.Build` on the tested core afterwards
@@ -137,13 +137,12 @@ To run the test matrix on PHP versions that are not installed locally, or agains
 use the Docker setup in `Build/testing-docker/`:
 
 1. Build the test images once (one per supported PHP version): `composer docker:images`
-2. Run the whole Docker matrix: `composer test:docker` (7 legs: sqlite 12.4 / 13.4 / 13.4 lowest,
-   plus MariaDB and PostgreSQL on both core versions)
+2. Run the whole Docker matrix: `composer test:docker` (4 legs: sqlite 13.4 / 13.4 lowest,
+   plus MariaDB and PostgreSQL)
 3. Run a single leg: `composer test:docker -- <core-version> [--lowest] [--db sqlite|mysql|postgres]`,
    e.g. `composer test:docker -- 13.4 --db postgres`. The `--db` flag selects the compose service
    that carries the database connection settings.
-4. Switch the PHP version with `PHP_VERSION=8.3 composer test:docker -- 12.4` (default is 8.4;
-   TYPO3 v12 caps PHP at < 8.5, so run the v12 leg on 8.3 or 8.4).
+4. Switch the PHP version with `PHP_VERSION=8.3 composer test:docker -- 13.4` (default is 8.4).
 
 Every matrix run announces each leg and each step (matrix environment, composer update, unit
 tests, functional tests) with a prominent banner - colored green/red for pass/fail when run in

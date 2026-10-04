@@ -32,8 +32,8 @@ class PageTypeServiceTest extends UnitTestCase
 
     /**
      * The TSconfig call is the only way to get the doktype into the drag area, so the page types
-     * have to be read. That core call emits a deprecation in v13, which is expected: core keeps
-     * the old way alive for extensions that still support v12.
+     * have to be read. That core call emits a deprecation in v13, which is expected for the
+     * page tree drag area registration on that major.
      */
     #[Test]
     #[IgnoreDeprecations]

@@ -93,8 +93,8 @@ class ExtensionBootstrapTest extends FunctionalTestCase
     public function extTablesSqlIsStillSupportedByCore(): void
     {
         self::assertTrue(
-            Typo3VersionUtility::isAtLeast('12.0'),
-            'Unexpected core version, this test only knows about the v12+ support window.'
+            Typo3VersionUtility::isAtLeast('13.0'),
+            'Unexpected core version, this test only knows about the v13+ support window.'
         );
         self::assertFileExists(
             \dirname(__DIR__, 2) . '/ext_tables.sql',

@@ -51,8 +51,8 @@ class Typo3VersionUtilityTest extends UnitTestCase
     public function everyVersionWithinTheSupportWindowIsAtLeastTheFloor(): void
     {
         self::assertTrue(
-            Typo3VersionUtility::isAtLeast('12.0'),
-            'The extension supports v12 upwards, so all supported majors must satisfy the floor.'
+            Typo3VersionUtility::isAtLeast('13.0'),
+            'The extension supports v13 upwards, so all supported majors must satisfy the floor.'
         );
     }
 

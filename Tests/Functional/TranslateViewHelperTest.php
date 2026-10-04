@@ -177,7 +177,7 @@ class TranslateViewHelperTest extends FunctionalTestCase
 
     private function createSiteLanguage(int $languageId): SiteLanguage
     {
-        // A string locale on purpose: v12 only accepts a string, v13 both.
+        // A string locale on purpose: the supported majors accept a string (v13 also a Locale).
         return new SiteLanguage(
             $languageId,
             [0       => 'en', 1 => 'de', 2 => 'da'][$languageId],
@@ -204,8 +204,8 @@ class TranslateViewHelperTest extends FunctionalTestCase
         $context = GeneralUtility::makeInstance(RenderingContextFactory::class)->create();
 
         /*
-         * v13 stores the request as a rendering context attribute, v12 only fills
-         * the deprecated internal request slot, so the attribute is set on both.
+         * The request is exposed as a rendering context attribute; older Fluid versions
+         * set it via setAttribute(), newer ones via set().
          */
         if (method_exists($context, 'set')) {
             $context->set(ServerRequestInterface::class, $this->request);

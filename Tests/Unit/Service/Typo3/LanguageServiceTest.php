@@ -93,7 +93,7 @@ class LanguageServiceTest extends UnitTestCase
         /*
          * getLLL() itself only reads $lang and the passed array, so the three
          * constructor dependencies are never touched - mocks keep this a unit
-         * test. The signature is identical in v12 and v13.
+         * test. The signature is identical across the supported majors.
          */
         return new LanguageService(
             $this->createStub(Locales::class),

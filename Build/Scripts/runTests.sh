@@ -5,14 +5,14 @@
 # Usage:
 #   sh Build/Scripts/runTests.sh <core-version> [--lowest] [--db sqlite|mysql|postgres]
 #
-#   <core-version>   Core constraint to test against: 12.4 or 13.4.
+#   <core-version>   Core constraint to test against: 13.4.
 #   --lowest         Resolve the lowest allowed dependency versions
 #                    (--prefer-lowest --prefer-stable).
 #   --db             Database for the functional suite (default: sqlite).
 #
 # Tracked files are never modified. The core pin and the removal of
 # saschaegerer/phpstan-typo3 (which hard-pins typo3/cms-core and cannot
-# coexist with the v12 leg) are applied to a generated composer-matrix.json
+# coexist with the matrix legs) are applied to a generated composer-matrix.json
 # that composer addresses through the COMPOSER environment variable. The
 # generated composer-matrix.json / composer-matrix.lock pair stays on disk
 # between runs (both are git-ignored) so repeat runs can reuse the lock.
@@ -51,7 +51,7 @@ while [ $# -gt 0 ]; do
             DB="$2"
             shift
             ;;
-        12.4|13.4)
+        13.4)
             CORE_VERSION="$1"
             ;;
         *)
@@ -65,7 +65,7 @@ done
 
 if [ -z "$CORE_VERSION" ]; then
     echo "Usage: $0 <core-version> [--lowest] [--db sqlite|mysql|postgres]" >&2
-    echo "  <core-version>   12.4 | 13.4" >&2
+    echo "  <core-version>   13.4" >&2
     exit 1
 fi
 

@@ -49,13 +49,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # TYPO3 v12 caps PHP at < 8.5, so 8.5 is deliberately absent there.
-          - typo3: '12.4'
-            php: '8.3'
-            lowest: false
-          - typo3: '12.4'
-            php: '8.4'
-            lowest: false
           - typo3: '13.4'
             php: '8.3'
             lowest: false
@@ -113,7 +106,6 @@ jobs:
       fail-fast: false
       matrix:
         typo3:
-          - '12.4'
           - '13.4'
 
     services:
@@ -176,7 +168,6 @@ jobs:
       fail-fast: false
       matrix:
         typo3:
-          - '12.4'
           - '13.4'
 
     services:

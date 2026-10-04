@@ -24,9 +24,8 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Exception as ViewHelperException;
  *
  * The view helper used to be a renderStatic() implementation. These tests lock in the parts of
  * render() that only work as an instance method and need no running instance: the argument
- * wiring, which Fluid v5 changed, and the request resolution, which differs between v12
- * (deprecated getRequest()) and v13 (rendering context attribute). Label resolution against
- * the real language stack is covered by the functional test in
+ * wiring, which Fluid v5 changed, and the request resolution (rendering context attribute).
+ * Label resolution against the real language stack is covered by the functional test in
  * Tests/Functional/TranslateViewHelperTest.php.
  *
  * @package PSBits\Foundation\Tests\Unit\ViewHelpers
@@ -77,8 +76,7 @@ class TranslateViewHelperTest extends UnitTestCase
     }
 
     /**
-     * v13 stores the request as a rendering context attribute, v12 only has the deprecated
-     * getRequest(), so the attribute has to be read first and the method only used as a fallback.
+     * The core exposes the request as a rendering context attribute, which resolveRequest() reads.
      */
     #[Test]
     public function theRequestIsReadFromTheRenderingContextAttribute(): void
@@ -93,43 +91,6 @@ class TranslateViewHelperTest extends UnitTestCase
             ->willReturn($request);
 
         $reflection = new \ReflectionMethod($this->subject, 'resolveRequest');
-        self::assertSame($request, $reflection->invoke($this->subject));
-    }
-
-    /**
-     * v12 still only has the deprecated RenderingContext::getRequest() and never sets the
-     * attribute, so the fallback has to be covered.
-     */
-    #[Test]
-    public function theRequestIsReadFromTheDeprecatedGetterIfTheAttributeIsMissing(): void
-    {
-        $request = $this->createRequest('da');
-
-        $context = new class ($request) {
-            public function __construct(private ServerRequestInterface $request)
-            {
-            }
-
-            public function hasAttribute(string $className): bool
-            {
-                return false;
-            }
-
-            public function getAttribute(string $className): object
-            {
-                throw new \RuntimeException('Not reached, hasAttribute() returned false.');
-            }
-
-            public function getRequest(): ServerRequestInterface
-            {
-                return $this->request;
-            }
-        };
-
-        $reflection = new \ReflectionMethod($this->subject, 'resolveRequest');
-        $property   = new \ReflectionProperty($this->subject, 'renderingContext');
-        $property->setValue($this->subject, $context);
-
         self::assertSame($request, $reflection->invoke($this->subject));
     }
 
