@@ -17,29 +17,52 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service\Typo3;
 
+use PSBits\Foundation\Utility\Typo3VersionUtility;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory as Typo3LanguageServiceFactory;
 use TYPO3\CMS\Core\Localization\Locale;
 
 /**
  * Class LanguageServiceFactory
  *
- * Overwrites the original class to load custom LanguageService.
+ * Overwrites the core factory so that it produces our {@see LanguageService}, which respects
+ * plural forms and logs label access.
+ *
+ * The core factory is a `readonly class` on v14 but a plain class on v13, and PHP requires a child
+ * to carry the same readonly status as its parent. The class is therefore declared conditionally
+ * so that it matches the running core on every supported major.
  *
  * @package PSBits\Foundation\Service\Typo3
- * @TODO    Check original file on TYPO3 update (v14)!
  */
-class LanguageServiceFactory extends Typo3LanguageServiceFactory
-{
-    /**
-     * Factory method to create a language service object.
-     *
-     * @param Locale|string $locale the locale
-     */
-    public function create(Locale|string $locale): LanguageService
+if (Typo3VersionUtility::isAtLeast('14.0')) {
+    readonly class LanguageServiceFactory extends Typo3LanguageServiceFactory
     {
-        $obj = new LanguageService($this->locales, $this->localizationFactory, $this->runtimeCache);
-        $obj->init($locale instanceof Locale ? $locale : $this->locales->createLocale($locale));
+        /**
+         * Factory method to create a language service object.
+         *
+         * @param Locale|string $locale the locale
+         */
+        public function create(Locale|string $locale): LanguageService
+        {
+            $obj = new LanguageService($this->locales, $this->localizationFactory, $this->runtimeCache);
+            $obj->init($locale instanceof Locale ? $locale : $this->locales->createLocale($locale));
 
-        return $obj;
+            return $obj;
+        }
+    }
+} else {
+    class LanguageServiceFactory extends Typo3LanguageServiceFactory
+    {
+        /**
+         * Factory method to create a language service object.
+         *
+         * @param Locale|string $locale the locale
+         */
+        public function create(Locale|string $locale): LanguageService
+        {
+            $obj = new LanguageService($this->locales, $this->localizationFactory, $this->runtimeCache);
+            $obj->init($locale instanceof Locale ? $locale : $this->locales->createLocale($locale));
+
+            return $obj;
+        }
     }
 }

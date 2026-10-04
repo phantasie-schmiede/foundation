@@ -5,7 +5,7 @@
 # Usage:
 #   sh Build/Scripts/runTests.sh <core-version> [--lowest] [--db sqlite|mysql|postgres]
 #
-#   <core-version>   Core constraint to test against: 13.4.
+#   <core-version>   Core constraint to test against: 13.4 or 14.3.
 #   --lowest         Resolve the lowest allowed dependency versions
 #                    (--prefer-lowest --prefer-stable).
 #   --db             Database for the functional suite (default: sqlite).
@@ -51,7 +51,7 @@ while [ $# -gt 0 ]; do
             DB="$2"
             shift
             ;;
-        13.4)
+        13.4|14.3)
             CORE_VERSION="$1"
             ;;
         *)
@@ -65,7 +65,7 @@ done
 
 if [ -z "$CORE_VERSION" ]; then
     echo "Usage: $0 <core-version> [--lowest] [--db sqlite|mysql|postgres]" >&2
-    echo "  <core-version>   13.4" >&2
+    echo "  <core-version>   13.4 | 14.3" >&2
     exit 1
 fi
 

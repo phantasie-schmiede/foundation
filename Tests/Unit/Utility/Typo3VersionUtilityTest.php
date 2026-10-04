@@ -72,17 +72,19 @@ class Typo3VersionUtilityTest extends UnitTestCase
     }
 
     /**
-     * The trap this utility exists for: getNumericTypo3Version() returns a dotted string, so an
-     * integer comparison silently yields false on every supported major.
+     * The trap this utility exists for: getNumericTypo3Version() returns a dotted string, so
+     * casting it to an int only yields the major version - any integer-style gate built on the
+     * raw value is unreliable.
      */
     #[Test]
     public function theCoreVersionIsADottedStringAndNotAnInteger(): void
     {
         self::assertMatchesRegularExpression('/^\d+\.\d+\.\d+$/', $this->coreVersion);
-        self::assertFalse(
-            130000 <= $this->coreVersion,
-            'An integer style version gate must silently fail against the dotted core version; '
-            . 'if it does not, revisit Typo3VersionUtility and the branches using it.'
+        self::assertSame(
+            (int)explode('.', $this->coreVersion)[0],
+            (int)$this->coreVersion,
+            'Casting the dotted core version to an int must drop the minor/patch, proving it is a '
+            . 'string, not a numeric version.'
         );
     }
 

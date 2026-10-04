@@ -18,6 +18,7 @@ use PSBits\Foundation\Data\PluginConfiguration;
 use PSBits\Foundation\Utility\Configuration\FilePathUtility;
 use PSBits\Foundation\Utility\LocalizationUtility;
 use PSBits\Foundation\Utility\ReflectionUtility;
+use PSBits\Foundation\Utility\Typo3VersionUtility;
 use PSBits\Foundation\Utility\TypoScript\PageObjectConfiguration;
 use PSBits\Foundation\Utility\TypoScript\TypoScriptUtility;
 use Psr\Container\ContainerExceptionInterface;
@@ -58,7 +59,6 @@ class PluginService
 
     public function __construct(
         protected FlexFormService     $flexFormService,
-        protected IconRegistry        $iconRegistry,
         protected PageDoktypeRegistry $pageDoktypeRegistry,
     ) {
     }
@@ -105,9 +105,13 @@ class PluginService
             }
         }
 
+        // The IconRegistry is only available once the boot is complete, so it is resolved on demand
+        // instead of being injected.
+        $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
+
         $configuration = [
             'description'          => $description,
-            'iconIdentifier'       => $this->iconRegistry->isRegistered(
+            'iconIdentifier'       => $iconRegistry->isRegistered(
                 $iconIdentifier
             ) ? $iconIdentifier : 'content-plugin',
             'title'                => $title,
@@ -183,11 +187,15 @@ class PluginService
                 GeneralUtility::camelCaseToLowerCaseUnderscored($configuration->getName())
             );
 
+            // The IconRegistry is only available once the boot is complete, so it is resolved on demand
+            // instead of being injected.
+            $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
+
             $pluginSignature = ExtensionUtility::registerPlugin(
                 $extensionInformation->getExtensionName(),
                 $configuration->getName(),
                 $title,
-                $this->iconRegistry->isRegistered($iconIdentifier) ? $iconIdentifier : 'content-plugin'
+                $iconRegistry->isRegistered($iconIdentifier) ? $iconIdentifier : 'content-plugin'
             );
             $this->registerFlexFormForPlugin($extensionInformation, $configuration, $pluginSignature);
         }
@@ -209,7 +217,11 @@ class PluginService
             'show'   => '*',
         ];
 
-        ExtensionManagementUtility::addPageTSConfig(TypoScriptUtility::convertArrayToTypoScript($pageTS));
+        // addPageTSConfig() was removed in v14; the content element wizard is derived from the plugin
+        // registration on that major, so the TSconfig is only registered up to v13.
+        if (!Typo3VersionUtility::isAtLeast('14.0')) {
+            ExtensionManagementUtility::addPageTSConfig(TypoScriptUtility::convertArrayToTypoScript($pageTS));
+        }
         $this->contentElementWizardGroups[] = $key;
     }
 
@@ -231,7 +243,12 @@ class PluginService
         }
 
         $newPageTS['mod']['wizards']['newContentElement']['wizardItems'][$group]['elements'][$key] = $configuration;
-        ExtensionManagementUtility::addPageTSConfig(TypoScriptUtility::convertArrayToTypoScript($newPageTS));
+
+        // addPageTSConfig() was removed in v14; the content element wizard is derived from the plugin
+        // registration on that major, so the TSconfig is only registered up to v13.
+        if (!Typo3VersionUtility::isAtLeast('14.0')) {
+            ExtensionManagementUtility::addPageTSConfig(TypoScriptUtility::convertArrayToTypoScript($newPageTS));
+        }
     }
 
     /**

@@ -83,10 +83,14 @@ class LocalizationUtility
             $key .= self::PLURAL_FORM_MARKERS['BEGIN'] . $pluralForm . self::PLURAL_FORM_MARKERS['END'];
         }
 
+        // The core fills %s placeholders via vsprintf for positional arguments and via ICU MessageFormat
+        // for named ones. This extension relies on vsprintf, so the arguments are handed over positionally.
+        $coreArguments = is_array($arguments) ? array_values($arguments) : $arguments;
+
         $translation = ExtbaseLocalizationUtility::translate(
             $key,
             $extensionName,
-            $arguments,
+            $coreArguments,
             $languageKey
         );
 
@@ -103,6 +107,11 @@ class LocalizationUtility
                 array_values($placeholderReplacements),
                 $translation
             );
+        }
+
+        // v14 returns an empty string for missing labels instead of null; normalize it so defaults apply.
+        if ('' === $translation) {
+            return null;
         }
 
         return $translation;

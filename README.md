@@ -1,6 +1,6 @@
 # PSBits Foundation
 
-## Enhanced extension programming in Extbase (supports TYPO3 v13)
+## Enhanced extension programming in Extbase (supports TYPO3 v13 & v14)
 
 ---
 **IMPORTANT:**
@@ -103,8 +103,8 @@ This repository ships with additional quality tooling for PHP, XML/XLF, YAML, Ty
 - `composer lint:all`: runs all configured lint and validation checks
 - `composer test`: runs unit and functional tests against the installed TYPO3 core
 - `composer test:local`: runs the local (non-Docker) matrix. Without arguments it runs all local
-  legs (13.4, 13.4 lowest); with arguments it runs a single leg, e.g.
-  `composer test:local -- 13.4` or `composer test:local -- 13.4 --lowest`. The
+  legs (13.4 and 14.3, each plus its lowest dependency set); with arguments it runs a single leg, e.g.
+  `composer test:local -- 13.4` or `composer test:local -- 14.3 --lowest`. The
   `Build/Scripts/runTests.sh` runner pins the requested core in a generated `composer-matrix.json`
   (tracked files are never modified) and leaves `.Build` on the tested core afterwards
 - `composer test:docker`: runs the Docker matrix (see "Testing with Docker" below)
@@ -137,8 +137,8 @@ To run the test matrix on PHP versions that are not installed locally, or agains
 use the Docker setup in `Build/testing-docker/`:
 
 1. Build the test images once (one per supported PHP version): `composer docker:images`
-2. Run the whole Docker matrix: `composer test:docker` (4 legs: sqlite 13.4 / 13.4 lowest,
-   plus MariaDB and PostgreSQL)
+2. Run the whole Docker matrix: `composer test:docker` (8 legs: for 13.4 and 14.3 each -
+   sqlite, sqlite-lowest, MariaDB and PostgreSQL)
 3. Run a single leg: `composer test:docker -- <core-version> [--lowest] [--db sqlite|mysql|postgres]`,
    e.g. `composer test:docker -- 13.4 --db postgres`. The `--db` flag selects the compose service
    that carries the database connection settings.

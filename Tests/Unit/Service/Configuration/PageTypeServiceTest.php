@@ -15,6 +15,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PSBits\Foundation\Data\ExtensionInformation;
 use PSBits\Foundation\Data\PageTypeConfiguration;
 use PSBits\Foundation\Service\Configuration\PageTypeService;
+use PSBits\Foundation\Utility\Typo3VersionUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -31,18 +32,24 @@ class PageTypeServiceTest extends UnitTestCase
     private PageTypeService $subject;
 
     /**
-     * The TSconfig call is the only way to get the doktype into the drag area, so the page types
-     * have to be read. That core call emits a deprecation in v13, which is expected for the
-     * page tree drag area registration on that major.
+     * On v13 the TSconfig call is the only way to get the doktype into the drag area, so the page
+     * types have to be read (that core call emits a deprecation in v13). On v14 the core determines
+     * the drag area automatically, so nothing is read.
      */
     #[Test]
     #[IgnoreDeprecations]
     public function addToDragAreaReadsThePageTypes(): void
     {
         $extensionInformation = $this->createMock(ExtensionInformation::class);
-        $extensionInformation->expects(self::once())
-            ->method('getPageTypes')
-            ->willReturn([new PageTypeConfiguration(doktype: 4444, name: 'dragArea')]);
+
+        if (Typo3VersionUtility::isAtLeast('14.0')) {
+            $extensionInformation->expects(self::never())
+                ->method('getPageTypes');
+        } else {
+            $extensionInformation->expects(self::once())
+                ->method('getPageTypes')
+                ->willReturn([new PageTypeConfiguration(doktype: 4444, name: 'dragArea')]);
+        }
 
         $this->subject->addToDragArea($extensionInformation);
     }
@@ -62,7 +69,6 @@ class PageTypeServiceTest extends UnitTestCase
             ->willReturn([new PageTypeConfiguration(doktype: 4343, name: 'unrestricted')]);
 
         (new PageTypeService(
-            $this->createMock(\TYPO3\CMS\Core\Imaging\IconRegistry::class),
             $pageDoktypeRegistry
         ))->addToRegistry($extensionInformation);
     }
@@ -96,7 +102,6 @@ class PageTypeServiceTest extends UnitTestCase
             );
 
         (new PageTypeService(
-            $this->createMock(\TYPO3\CMS\Core\Imaging\IconRegistry::class),
             $pageDoktypeRegistry
         ))->addToRegistry($extensionInformation);
     }
@@ -106,7 +111,6 @@ class PageTypeServiceTest extends UnitTestCase
         parent::setUp();
 
         $this->subject = new PageTypeService(
-            $this->createMock(\TYPO3\CMS\Core\Imaging\IconRegistry::class),
             $this->createMock(\TYPO3\CMS\Core\DataHandling\PageDoktypeRegistry::class)
         );
     }

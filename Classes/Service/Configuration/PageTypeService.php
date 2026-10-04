@@ -15,6 +15,7 @@ use JsonException;
 use PSBits\Foundation\Data\ExtensionInformationInterface;
 use PSBits\Foundation\Utility\Configuration\IconUtility;
 use PSBits\Foundation\Utility\LocalizationUtility;
+use PSBits\Foundation\Utility\Typo3VersionUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
@@ -24,6 +25,7 @@ use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
 use TYPO3\CMS\Core\Utility\ArrayUtility as Typo3CoreArrayUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class PageTypeService
@@ -43,7 +45,6 @@ class PageTypeService
     ];
 
     public function __construct(
-        protected IconRegistry        $iconRegistry,
         protected PageDoktypeRegistry $pageDoktypeRegistry,
     ) {
     }
@@ -53,6 +54,13 @@ class PageTypeService
      */
     public function addToDragArea(ExtensionInformationInterface $extensionInformation): void
     {
+        // v14 determines the drag area doktypes automatically from the PageDoktypeRegistry and the
+        // user's group permissions; the doktypesToShowInNewPageDragArea TSconfig option it used to
+        // rely on is deprecated since v14.2, so there is nothing to register on that major.
+        if (Typo3VersionUtility::isAtLeast('14.0')) {
+            return;
+        }
+
         foreach ($extensionInformation->getPageTypes() as $configuration) {
             ExtensionManagementUtility::addUserTSConfig(
                 'options.pageTree.doktypesToShowInNewPageDragArea := addToList(' . $configuration->getDoktype() . ')'
@@ -105,12 +113,15 @@ class PageTypeService
                 $extensionInformation,
                 'pageType' . ucfirst($name)
             );
-            $icons = [
+            // The IconRegistry is only available once the boot is complete, so it is resolved on demand
+            // instead of being injected: pages.php runs in that late phase.
+            $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
+            $icons        = [
                 $doktype => $iconIdentifier,
             ];
 
             foreach (self::ICON_SUFFIXES as $suffix) {
-                if ($this->iconRegistry->isRegistered($iconIdentifier . $suffix)) {
+                if ($iconRegistry->isRegistered($iconIdentifier . $suffix)) {
                     $icons[$doktype . $suffix] = $iconIdentifier . $suffix;
                 }
             }
