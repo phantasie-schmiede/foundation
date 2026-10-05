@@ -20,7 +20,7 @@ use Attribute;
  * extending another model.
  *
  * @package PSBits\Foundation\Attribute\TCA\Mapping
- * @see     https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ExtensionArchitecture/Extbase/Reference/Domain/Persistence.html#use-arbitrary-database-tables-with-an-extbase-model
+ * @see     https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ExtensionArchitecture/Extbase/Domain/Model.html#table-and-field-mapping
  */
 #[Attribute(Attribute::TARGET_CLASS)]
 class Table

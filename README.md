@@ -680,7 +680,7 @@ If this file exists, it will be included automatically:
 The core already handles the inclusion of
 
 - `EXT:your_extension/Configuration/Page.tsconfig` (You can use 'Page' or 'page')
-  https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Feature-96614-AutomaticInclusionOfPageTsConfigOfExtensions.htm
+  https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Feature-96614-AutomaticInclusionOfPageTsConfigOfExtensions.html
 
 ### Auto-registration of icons
 

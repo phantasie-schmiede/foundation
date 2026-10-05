@@ -32,14 +32,13 @@ class Group extends AbstractColumnType
     /**
      * $mmOppositeUsage automatically populates $allowed if it's empty.
      *
-     * @param string|null $allowed                         https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Group/Properties/Allowed.html
-     * @param array|null  $elementBrowserEntryPoints       https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Group/Properties/ElementBrowserEntryPoints.html
-     * @param string|null $foreignTable                    https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Group/Properties/ForeignTable.html
+     * @param string|null $allowed                         https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Group/Index.html#confval-group-allowed
+     * @param array|null  $elementBrowserEntryPoints       https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Group/Index.html#confval-group-elementbrowserentrypoints
      * @param string      $linkedModel                     Instead of directly specifying a foreign table, it is
      *                                                     possible to specify a domain model class.
      * @param int|null    $maxItems                        https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Group/Index.html#confval-group-maxitems
-     * @param string|null $mm                              https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Group/Properties/Mm.html
-     * @param array|null  $mmOppositeUsage                 https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Group/Properties/Mm.html#confval-group-mm-opposite-usage
+     * @param string|null $mm                              https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Group/Index.html#confval-group-mm
+     * @param array|null  $mmOppositeUsage                 https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Group/Index.html#confval-group-mm-opposite-usage
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -48,7 +47,6 @@ class Group extends AbstractColumnType
     public function __construct(
         protected ?string $allowed = null,
         protected ?array  $elementBrowserEntryPoints = null,
-        protected ?string $foreignTable = null,
         protected string  $linkedModel = '',
         protected ?int    $maxItems = null,
         protected ?string $mm = null,
@@ -57,7 +55,7 @@ class Group extends AbstractColumnType
         $this->tcaService = GeneralUtility::makeInstance(TcaService::class);
 
         if (class_exists($linkedModel)) {
-            $this->foreignTable = $this->tcaService->convertClassNameToTableName($linkedModel);
+            $this->allowed = $this->tcaService->convertClassNameToTableName($linkedModel);
         }
 
         if (!empty($mmOppositeUsage)) {
@@ -95,11 +93,6 @@ class Group extends AbstractColumnType
     public function getElementBrowserEntryPoints(): ?array
     {
         return $this->elementBrowserEntryPoints;
-    }
-
-    public function getForeignTable(): ?string
-    {
-        return $this->foreignTable;
     }
 
     public function getMaxItems(): ?int

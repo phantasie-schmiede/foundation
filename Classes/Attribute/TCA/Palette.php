@@ -37,9 +37,9 @@ class Palette extends AbstractTcaAttribute
     ];
 
     /**
-     * @param string $description https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Palettes/Properties/Description.html
+     * @param string $description https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Palettes/Index.html#confval-palettes-description
      * @param string $identifier
-     * @param string $label       https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Palettes/Properties/Label.html
+     * @param string $label       https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Palettes/Index.html#confval-palettes-label
      * @param string $position
      */
     public function __construct(

@@ -32,7 +32,7 @@ use function count;
  *
  * If your constants are neither needed that early during TYPO3's bootstrap process nor are they context-specific, you
  * may consider placing them in the config.yaml of your SiteConfiguration:
- * https://docs.typo3.org/c/typo3/cms-core/master/en-us/Changelog/10.4/Feature-91080-SiteSettingsAsTsConstantsAndInTsConfig.html
+ * https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/10.4/Feature-91080-SiteSettingsAsTsConstantsAndInTsConfig.html
  *
  * To provide a simple configuration that is valid for all stages, just create the file
  * /Configuration/EarlyAccessConstants/constants.yaml inside your extension directory.

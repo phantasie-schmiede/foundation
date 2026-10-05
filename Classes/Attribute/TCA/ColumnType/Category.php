@@ -31,9 +31,9 @@ class Category extends AbstractColumnType
     protected TcaService $tcaService;
 
     /**
-     * @param array        $exclusiveKeys           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Category/Properties/ExclusiveKeys.html|null
-     * @param Relationship $relationship            https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Category/Properties/Relationship.html
-     * @param array|null   $treeConfig              https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Category/Properties/TreeConfig.html
+     * @param array        $exclusiveKeys           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-exclusivekeys
+     * @param Relationship $relationship            https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-relationship
+     * @param array|null   $treeConfig              https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-treeconfig
      * @param string|null  $treeConfigChildrenField You can use the property name. It will be converted to the column
      *                                              name automatically.
      * @param string|null  $treeConfigDataProvider

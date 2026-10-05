@@ -24,15 +24,15 @@ use PSBits\Foundation\Utility\Database\DefinitionUtility;
 class Number extends AbstractColumnType
 {
     /**
-     * @param bool|null    $autocomplete https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Number/Properties/Autocomplete.html
-     * @param NumberFormat $format       https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Number/Properties/Format.html
+     * @param bool|null    $autocomplete https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-autocomplete
+     * @param NumberFormat $format       https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-format
      * @param int          $precision    used internally for database definition only (when format=decimal)
-     * @param int|null     $rangeLower   https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Input/Properties/Range.html
-     * @param int|null     $rangeUpper   https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Input/Properties/Range.html
+     * @param int|null     $rangeLower   https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-range
+     * @param int|null     $rangeUpper   https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-range
      * @param int          $scale        used internally for database definition only (when format=decimal)
-     * @param int|null     $sliderStep   https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Input/Properties/Slider.html
-     * @param int|null     $sliderWidth  https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Input/Properties/Slider.html
-     * @param array|null   $valuePicker  https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Number/Properties/ValuePicker.html
+     * @param int|null     $sliderStep   https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-slider
+     * @param int|null     $sliderWidth  https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-slider
+     * @param array|null   $valuePicker  https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-valuepicker
      */
     public function __construct(
         protected ?bool        $autocomplete = null,

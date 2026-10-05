@@ -23,10 +23,10 @@ use PSBits\Foundation\Utility\Database\DefinitionUtility;
 class File extends AbstractColumnType
 {
     /**
-     * @param array|string $allowed                              https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/File/Properties/Allowed.html
-     * @param int|null     $maxItems                             https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/File/Properties/Maxitems.html
-     * @param int|null     $minItems                             https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/File/Properties/Minitems.html
-     * @param array|null   $overrideChildTca                     https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/File/Properties/OverrideChildTCa.html
+     * @param array|string $allowed                              https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/File/Index.html#confval-file-allowed
+     * @param int|null     $maxItems                             https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/File/Index.html#confval-file-maxitems
+     * @param int|null     $minItems                             https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/File/Index.html#confval-file-minitems
+     * @param array|null   $overrideChildTca                     https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/File/Index.html#confval-file-overridechildtca
      * @param array|null   $upload
      * @param string|null  $uploadDuplicationBehaviour           Defines how duplicates in the file system should be
      *                                                           handled (default is renaming the new file).

@@ -32,8 +32,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Color extends AbstractColumnType implements ColumnTypeWithItemsInterface
 {
     /**
-     * @param array $items       https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Check/Properties/Items.html
-     * @param array $valuePicker https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Color/Properties/ValuePicker.html
+     * @param array $items       https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-items
+     * @param array $valuePicker https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-valuepicker
      */
     public function __construct(
         protected array $items = [],

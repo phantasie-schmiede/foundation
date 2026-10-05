@@ -30,18 +30,18 @@ class Inline extends AbstractColumnType
     protected TcaService $tcaService;
 
     /**
-     * @param array|null  $appearance           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Inline/Properties/Appearance.html
+     * @param array|null  $appearance           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-appearance
      * @param string|null $foreignDefaultSortBy https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-foreign-default-sortby
-     * @param string|null $foreignField         https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Inline/Properties/ForeignField.html
-     * @param array|null  $foreignMatchFields   https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Inline/Properties/ForeignMatchFields.html
-     * @param string|null $foreignSortBy        https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Inline/Properties/ForeignSortby.html#confval-foreign_sortby
-     * @param string|null $foreignTable         https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Inline/Properties/ForeignTable.html
+     * @param string|null $foreignField         https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-foreign-field
+     * @param array|null  $foreignMatchFields   https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-foreign-match-fields
+     * @param string|null $foreignSortBy        https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-foreign-sortby
+     * @param string|null $foreignTable         https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-properties-foreign-table
      * @param string      $linkedModel          Instead of directly specifying a foreign table, it is possible to
      *                                          specify a domain model class.
-     * @param int|null    $maxItems             https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/CommonProperties/Maxitems.html
-     * @param string|null $mm                   https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Inline/Properties/Mm.html
+     * @param int|null    $maxItems             https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-maxitems
+     * @param string|null $mm                   https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-mm
      * @param array|null  $mmMatchFields
-     * @param string|null $mmOppositeField      https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Inline/Properties/Mm.html#confval-MM_opposite_field-type-inline
+     * @param string|null $mmOppositeField      https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-mm-opposite-field
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface

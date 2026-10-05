@@ -23,10 +23,10 @@ use PSBits\Foundation\Utility\Database\DefinitionUtility;
 class Text extends AbstractColumnType
 {
     /**
-     * @param int       $cols           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Text/Properties/Cols.html
-     * @param bool|null $enableRichText https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Text/Properties/EnableRichtext.html
-     * @param string    $eval           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Text/Properties/Eval.html
-     * @param int       $rows           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Text/Properties/Rows.html
+     * @param int       $cols           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Text/Default/Index.html#confval-text-cols
+     * @param bool|null $enableRichText https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Text/Default/Index.html#confval-text-enablerichtext
+     * @param string    $eval           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Text/Default/Index.html#confval-text-eval
+     * @param int       $rows           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Text/Default/Index.html#confval-text-rows
      */
     public function __construct(
         protected int    $cols = 32,
