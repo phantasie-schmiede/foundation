@@ -26,20 +26,24 @@ use function is_string;
 class Datetime extends AbstractColumnType
 {
     /**
-     * @param DateType|null         $dbType            https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-dbtype
-     * @param bool|null             $disableAgeDisplay https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-disableagedisplay
-     * @param DateType              $format            https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-format
-     * @param array                 $range             https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-range
-     * @param \DateTime|string|null $rangeLower
-     * @param \DateTime|string|null $rangeUpper
+     * @param DateType|null         $dbType            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-dbtype
+     * @param bool|null             $disableAgeDisplay https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-disableagedisplay
+     * @param DateType              $format            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-format
+     * @param string|null           $placeholder       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-placeholder
+     * @param array                 $range             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-range
+     * @param \DateTime|string|null $rangeLower        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-range
+     * @param \DateTime|string|null $rangeUpper        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-range
+     * @param string|null           $softref           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-softref
      */
     public function __construct(
         protected ?DateType             $dbType = DateType::datetime,
         protected ?bool                 $disableAgeDisplay = null,
         protected DateType              $format = DateType::datetime,
+        protected ?string               $placeholder = null,
         protected array                 $range = [],
         protected \DateTime|string|null $rangeLower = null,
         protected \DateTime|string|null $rangeUpper = null,
+        protected ?string               $softref = null,
     ) {
         if (is_string($rangeLower)) {
             $this->rangeLower = StringUtility::convertToDateTime($this->rangeLower);
@@ -73,6 +77,11 @@ class Datetime extends AbstractColumnType
         return $this->format->value;
     }
 
+    public function getPlaceholder(): ?string
+    {
+        return $this->placeholder;
+    }
+
     public function getRange(): ?array
     {
         if (null !== $this->rangeLower) {
@@ -84,5 +93,10 @@ class Datetime extends AbstractColumnType
         }
 
         return $range ?? null;
+    }
+
+    public function getSoftref(): ?string
+    {
+        return $this->softref;
     }
 }

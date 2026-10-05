@@ -58,29 +58,38 @@ class Column extends AbstractTcaAttribute
     /**
      * @param bool              $addDatabaseKey     Set to true to add this field as simple key like
      *                                              "KEY my_field (my_field)".
+     * @param bool|null         $allowLanguageSynchronization https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-behaviour-allowlanguagesynchronization
      * @param string|null       $databaseDefinition Use this property to override the automatically generated
      *                                              definition.
-     * @param mixed             $default            https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Input/Index.html#tca-property-default
-     * @param string|null       $description        https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Columns/Index.html#columns-properties-description
-     * @param string|array|null $displayCond        https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Columns/Index.html#confval-columns-displaycond
-     * @param bool|null         $exclude            https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Columns/Index.html#confval-columns-exclude
-     * @param string|null       $l10nDisplay        https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Columns/Index.html#confval-columns-l10n-display
-     * @param string|null       $l10nMode           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Columns/Index.html#confval-columns-l10n-mode
-     * @param string            $label              https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Columns/Index.html#confval-columns-label
-     * @param bool|null         $nullable           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-nullable
-     * @param string|null       $onChange           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Columns/Index.html#confval-columns-onchange
+     * @param mixed             $default            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-default
+     * @param string|null       $description        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-description
+     * @param string|array|null $displayCond        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-displaycond
+     * @param bool|null         $exclude            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-exclude
+     * @param array|null        $fieldControl       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/FieldControl/Index.html#confval-fieldcontrol
+     * @param array|null        $fieldInformation   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/FieldInformation/Index.html#confval-fieldinformation
+     * @param array|null        $fieldWizard        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/FieldWizard/Index.html#confval-fieldwizard
+     * @param string|null       $l10nDisplay        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-l10n-display
+     * @param string|null       $l10nMode           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-l10n-mode
+     * @param string            $label              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-label
+     * @param bool|null         $nullable           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-nullable
+     * @param string|null       $onChange           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-onchange
      * @param string            $position
-     * @param bool|null         $readOnly           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Input/Index.html#tca-property-readonly
-     * @param bool|null         $required           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Input/Index.html#tca-property-required
-     * @param string            $typeList
+     * @param bool|null         $readOnly           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-readonly
+     * @param bool|null         $required           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-required
+     * @param string            $typeList           Comma separated list of record types (values of the TCA
+     *                                              type field) for which the field is added to showitem.
      */
     public function __construct(
         protected bool              $addDatabaseKey = false,
+        protected ?bool             $allowLanguageSynchronization = null,
         protected ?string           $databaseDefinition = null,
         protected mixed             $default = null,
         protected ?string           $description = null,
         protected string|array|null $displayCond = null,
         protected ?bool             $exclude = null,
+        protected ?array            $fieldControl = null,
+        protected ?array            $fieldInformation = null,
+        protected ?array            $fieldWizard = null,
         protected ?string           $l10nDisplay = null,
         protected ?string           $l10nMode = null,
         protected string            $label = '',
@@ -98,6 +107,11 @@ class Column extends AbstractTcaAttribute
         protected string            $typeList = '',
     ) {
         parent::__construct();
+    }
+
+    public function getAllowLanguageSynchronization(): ?bool
+    {
+        return $this->allowLanguageSynchronization;
     }
 
     public function getConfiguration(): ColumnTypeInterface
@@ -118,6 +132,21 @@ class Column extends AbstractTcaAttribute
     public function getDisplayCond(): array|string|null
     {
         return $this->displayCond;
+    }
+
+    public function getFieldControl(): ?array
+    {
+        return $this->fieldControl;
+    }
+
+    public function getFieldInformation(): ?array
+    {
+        return $this->fieldInformation;
+    }
+
+    public function getFieldWizard(): ?array
+    {
+        return $this->fieldWizard;
     }
 
     public function getL10nDisplay(): ?string
@@ -227,8 +256,24 @@ class Column extends AbstractTcaAttribute
             $configuration['config'][TcaUtility::convertKey($key)] = $value;
         }
 
+        if (null !== $this->allowLanguageSynchronization) {
+            $configuration['config']['behaviour']['allowLanguageSynchronization'] = $this->allowLanguageSynchronization;
+        }
+
         if (null !== $this->default) {
             $configuration['config']['default'] = $this->default;
+        }
+
+        if (null !== $this->fieldControl) {
+            $configuration['config']['fieldControl'] = $this->fieldControl;
+        }
+
+        if (null !== $this->fieldInformation) {
+            $configuration['config']['fieldInformation'] = $this->fieldInformation;
+        }
+
+        if (null !== $this->fieldWizard) {
+            $configuration['config']['fieldWizard'] = $this->fieldWizard;
         }
 
         if (null !== $this->nullable) {

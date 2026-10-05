@@ -16,23 +16,33 @@ use PSBits\Foundation\Attribute\TCA\ColumnType\Category;
 use PSBits\Foundation\Attribute\TCA\ColumnType\Check;
 use PSBits\Foundation\Attribute\TCA\ColumnType\Color;
 use PSBits\Foundation\Attribute\TCA\ColumnType\Datetime;
+use PSBits\Foundation\Attribute\TCA\ColumnType\Email;
 use PSBits\Foundation\Attribute\TCA\ColumnType\Enum;
 use PSBits\Foundation\Attribute\TCA\ColumnType\File;
+use PSBits\Foundation\Attribute\TCA\ColumnType\Flex;
+use PSBits\Foundation\Attribute\TCA\ColumnType\Folder;
 use PSBits\Foundation\Attribute\TCA\ColumnType\Group;
+use PSBits\Foundation\Attribute\TCA\ColumnType\ImageManipulation;
 use PSBits\Foundation\Attribute\TCA\ColumnType\Inline;
 use PSBits\Foundation\Attribute\TCA\ColumnType\Input;
+use PSBits\Foundation\Attribute\TCA\ColumnType\Json;
 use PSBits\Foundation\Attribute\TCA\ColumnType\Link;
+use PSBits\Foundation\Attribute\TCA\ColumnType\None;
 use PSBits\Foundation\Attribute\TCA\ColumnType\Number;
 use PSBits\Foundation\Attribute\TCA\ColumnType\PassThrough;
+use PSBits\Foundation\Attribute\TCA\ColumnType\Password;
+use PSBits\Foundation\Attribute\TCA\ColumnType\Radio;
 use PSBits\Foundation\Attribute\TCA\ColumnType\Select;
 use PSBits\Foundation\Attribute\TCA\ColumnType\Slug;
 use PSBits\Foundation\Attribute\TCA\ColumnType\Text;
 use PSBits\Foundation\Attribute\TCA\ColumnType\User;
+use PSBits\Foundation\Attribute\TCA\ColumnType\Uuid;
 use PSBits\Foundation\Attribute\TCA\Ctrl;
 use PSBits\Foundation\Attribute\TCA\Mapping\Field;
 use PSBits\Foundation\Attribute\TCA\Mapping\Table;
 use PSBits\Foundation\Attribute\TCA\Palette;
 use PSBits\Foundation\Attribute\TCA\Tab;
+use PSBits\Foundation\Enum\Relationship;
 use PSBits\Foundation\Tests\Examples\BackedEnum;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
@@ -54,67 +64,148 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
     translationSource: null,
     tstamp: null,
     crdate: null,
+    previewRenderer: 'PSBits\\Foundation\\Tests\\Examples\\Utility\\DummyPreviewRenderer',
 )]
 #[Palette(identifier: 'main_palette')]
 #[Palette(identifier: 'labelled_palette', label: 'PaletteLabel')]
+#[Palette(identifier: 'hidden_palette', label: 'HiddenPalette', isHiddenPalette: true)]
 #[Tab(identifier: 'extra_tab', label: 'Extra Tab')]
 class AllTcaAttributesModel extends AbstractEntity
 {
-    #[Column(position: 'palette:main_palette')]
+    #[Column(
+        position: 'palette:main_palette',
+        allowLanguageSynchronization: true,
+        fieldControl: [
+            'addRecord' => [
+                'disabled' => true,
+            ],
+        ],
+    )]
     #[Field('mapped_field')]
-    #[Input]
+    #[Input(autocomplete: 'off', placeholder: 'Please enter...')]
     protected string $mappedField = '';
 
     #[Column(position: 'tab:extra_tab')]
-    #[Text]
+    #[Text(enableTabulator: true, placeholder: 'Please write...')]
     protected string $textField = '';
 
     #[Column(position: 'after:checkField')]
-    #[Number]
+    #[Number(size: 10)]
     protected int $numberField = 0;
 
     #[Check]
     #[Column(position: 'palette:labelled_palette')]
     protected bool $checkField = false;
 
-    #[Select(items: [
-        [
-            'label' => 'One',
-            'value' => 1,
+    #[Select(
+        items: [
+            [
+                'label' => 'One',
+                'value' => 1,
+            ],
+            [
+                'label' => 'Two',
+                'value' => 2,
+            ],
         ],
-        [
-            'label' => 'Two',
-            'value' => 2,
-        ],
-    ])]
+        authMode: 'strict',
+        dbFieldLength: 255,
+        disableNoMatchingValueElement: true,
+        sortItems: 'value ASC',
+    )]
     protected int $selectField = 0;
 
-    #[Group(foreignTable: 'sys_category')]
+    #[Group(
+        allowed: 'sys_category',
+        autoSizeMax: 5,
+        size: 5,
+        minItems: 1,
+        multiple: true,
+        mmTableWhere: 'AND 1=1',
+        hideDeleteIcon: true,
+        prependTname: '1',
+        relationship: Relationship::oneToMany,
+    )]
     protected string $groupField = '';
 
-    #[Inline(foreignTable: 'sys_category')]
+    #[Inline(
+        foreignTable: 'sys_category',
+        minItems: 1,
+        size: 10,
+        foreignLabel: 'title',
+        foreignUnique: 'uid',
+        customControls: [
+            'preview',
+        ],
+        enableCascadingDelete: true,
+        disableMovingChildrenWithParent: true,
+    )]
     protected int $inlineField = 0;
 
-    #[Category]
+    #[Category(
+        foreignTableWhere: 'AND deleted = 0',
+        itemGroups: [
+            [
+                'label' => 'Group A',
+                'items' => [
+                    1,
+                    2,
+                ],
+            ],
+        ],
+        maxItems: 10,
+        minItems: 1,
+        size: 5,
+    )]
     protected int $categoryField = 0;
 
-    #[File]
+    #[File(
+        disallowed: 'jpg',
+        appearance: [
+            'showRecalculateLink' => false,
+        ],
+        enableCascadingDelete: true,
+    )]
     protected int $fileField = 0;
 
-    #[Datetime]
+    #[Datetime(placeholder: 'Please pick a date')]
     protected ?\DateTime $datetimeField = null;
 
-    #[Link]
+    #[Link(
+        appearance: [
+            'enableBrowser' => true,
+        ],
+        placeholder: 'Please enter URL',
+        size: 50,
+    )]
     protected string $linkField = '';
 
-    #[Slug(generatorOptions: [
-        'fields' => [
+    #[Slug(
+        appearance: [
+            'prefix' => 'test/',
+        ],
+        fields: [
             'mapped_field',
         ],
-    ])]
+        fieldSeparator: '/',
+        prefixParentPageSlug: true,
+        postModifiers: [
+            [
+                'name'      => 'substr',
+                'arguments' => [
+                    0,
+                    1,
+                ],
+            ],
+        ],
+        prependSlash: true,
+        replacements: [
+            '/' => '',
+        ],
+    )]
     protected string $slugField = '';
 
-    #[Color]
+    #[Color(mode: 'rgb', opacity: '0.5', placeholder: '#000', size: 20)]
     protected string $colorField = '';
 
     #[Enum(BackedEnum::class)]
@@ -127,4 +218,39 @@ class AllTcaAttributesModel extends AbstractEntity
     #[Column(databaseDefinition: 'varchar(255) DEFAULT \'\'')]
     #[User(renderType: 'testUserRenderType')]
     protected string $userField = '';
+
+    #[Email]
+    protected string $emailField = '';
+
+    #[Json(enableCodeEditor: true)]
+    protected string $jsonField = '';
+
+    #[Radio(items: [
+        [
+            'label' => 'One',
+            'value' => 1,
+        ],
+    ])]
+    protected string $radioField = '';
+
+    #[Password(hashed: true)]
+    protected string $passwordField = '';
+
+    #[Uuid(version: 4)]
+    protected string $uuidField = '';
+
+    #[Column(databaseDefinition: 'int DEFAULT 0 NOT NULL')]
+    #[None]
+    protected int $noneField = 0;
+
+    #[Folder]
+    protected string $folderField = '';
+
+    #[Flex(ds: [
+        'default' => 'FILE:EXT:core/Configuration/FlexForms/FlexForm.xml',
+    ])]
+    protected string $flexField = '';
+
+    #[ImageManipulation(fileField: 'fileField')]
+    protected int $imageManipulationField = 0;
 }

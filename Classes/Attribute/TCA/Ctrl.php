@@ -21,9 +21,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use function is_string;
 
 /**
- * Class TcaConfig
+ * Class Ctrl
  *
- * @link    https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html
+ * @link    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html
  * @package PSBits\Foundation\Attribute\TCA
  */
 #[Attribute(Attribute::TARGET_CLASS)]
@@ -42,51 +42,54 @@ class Ctrl extends AbstractTcaAttribute
     ];
 
     /**
-     * @param array|null        $EXT                              https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-ext
-     * @param bool|null         $adminOnly                        https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-adminonly
-     * @param array|null        $container                        https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-container
-     * @param string|null       $copyAfterDuplFields              https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-copyafterduplfields
-     * @param string|null       $crdate                           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-crdate
-     * @param string|null       $defaultSortBy                    https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-default-sortby
-     * @param string|null       $delete                           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-delete
-     * @param string|null       $descriptionColumn                https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-descriptioncolumn
-     * @param string|null       $editLock                         https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-editlock
-     * @param array|null        $enableColumns                    https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-enablecolumns
-     * @param string|null       $formattedLabelUserFunc           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-formattedlabel-userfunc
-     * @param array|null        $formattedLabelUserFuncOptions    https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-formattedlabel-userfunc-options
-     * @param string|null       $groupName                        https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-groupname
-     * @param bool|null         $hideAtCopy                       https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-hideatcopy
-     * @param bool|null         $hideTable                        https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-hidetable
-     * @param string|null       $iconFile                         https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-iconfile
-     * @param bool|null         $ignorePageTypeRestriction        https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-security
-     * @param bool|null         $ignoreRootLevelRestriction       https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-security
-     * @param bool|null         $ignoreWebMountRestriction        https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-security
-     * @param bool|null         $isStatic
-     * @param string|null       $label                            https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-label
-     * @param array|string|null $labelAlt                         https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-label
-     * @param bool|null         $labelAltForce                    https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-label
-     * @param string|null       $labelUserFunc                    https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-label-userfunc
-     * @param string|null       $languageField                    https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-languagefield
-     * @param string|null       $origUid                          https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-origuid
-     * @param string|null       $prependAtCopy                    https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-prependatcopy
-     * @param bool|null         $readOnly                         https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-readonly
-     * @param int|null          $rootLevel                        https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-rootlevel
-     * @param array|null        $searchFields                     https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-searchfields
-     * @param array|null        $security                         https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-security
-     * @param string|null       $selIconField                     https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-selicon-field
-     * @param string|null       $shadowColumnsForNewPlaceholders
-     * @param string|null       $sortBy                           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-sortby
-     * @param string|null       $title                            https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-title
-     * @param string|null       $transOrigDiffSourceField         https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-transorigdiffsourcefield
-     * @param string|null       $transOrigPointerField            https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-transorigpointerfield
-     * @param string|null       $translationSource                https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-translationsource
-     * @param string|null       $tstamp                           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-tstamp
-     * @param string|null       $type                             https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-type
-     * @param array|null        $typeIconClasses                  https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-typeicon-classes
-     * @param string|null       $typeIconColumn                   https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-typeicon-column
-     * @param string|null       $useColumnsForDefaultValues       https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-usecolumnsfordefaultvalues
-     * @param bool|null         $versioningWS                     https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-versioningws
-     * @param bool|null         $versioningWS_alwaysAllowLiveEdit https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Ctrl/Index.html#confval-ctrl-versioningws-alwaysallowliveedit
+     * @param array|null        $EXT                              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-ext
+     * @param bool|null         $adminOnly                        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-adminonly
+     * @param array|null        $container                        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-container
+     * @param string|null       $copyAfterDuplFields              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-copyafterduplfields
+     * @param string|null       $crdate                           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-crdate
+     * @param string|null       $defaultSortBy                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-default-sortby
+     * @param string|null       $delete                           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-delete
+     * @param string|null       $descriptionColumn                https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-descriptioncolumn
+     * @param string|null       $editLock                         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-editlock
+     * @param array|null        $enableColumns                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-enablecolumns
+     * @param string|null       $formattedLabelUserFunc           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-formattedlabel-userfunc
+     * @param array|null        $formattedLabelUserFuncOptions    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-formattedlabel-userfunc-options
+     * @param string|null       $groupName                        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-groupname
+     * @param bool|null         $hideAtCopy                       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-hideatcopy
+     * @param bool|null         $hideTable                        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-hidetable
+     * @param string|null       $iconFile                         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-iconfile
+     * @param bool|null         $ignorePageTypeRestriction        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-security
+     * @param bool|null         $ignoreRootLevelRestriction       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-security
+     * @param bool|null         $ignoreWebMountRestriction        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-security
+     * @param bool|null         $isStatic                         https://docs.typo3.org/m/typo3/reference-tca/13.4/en-us/Ctrl/Index.html#confval-ctrl-is-static
+     *                                                            Removed in TYPO3 v14: the core strips the option at runtime
+     *                                                            (TcaMigration). Use readOnly or editlock instead.
+     * @param string|null       $label                            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-label
+     * @param array|string|null $labelAlt                         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-label-alt
+     * @param bool|null         $labelAltForce                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-label-alt-force
+     * @param string|null       $labelUserFunc                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-label-userfunc
+     * @param array|null        $labelUserFuncOptions             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-label-userfunc-options
+     * @param string|null       $languageField                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-languagefield
+     * @param string|null       $origUid                          https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-origuid
+     * @param string|null       $prependAtCopy                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-prependatcopy
+     * @param string|null       $previewRenderer                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-previewrenderer
+     * @param bool|null         $readOnly                         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-readonly
+     * @param int|null          $rootLevel                        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-rootlevel
+     * @param array|null        $searchFields                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-searchfields
+     * @param array|null        $security                         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-security
+     * @param string|null       $selIconField                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-selicon-field
+     * @param string|null       $sortBy                           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-sortby
+     * @param string|null       $title                            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-title
+     * @param string|null       $transOrigDiffSourceField         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-transorigdiffsourcefield
+     * @param string|null       $transOrigPointerField            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-transorigpointerfield
+     * @param string|null       $translationSource                https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-translationsource
+     * @param string|null       $tstamp                           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-tstamp
+     * @param string|null       $type                             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-type
+     * @param array|null        $typeIconClasses                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-typeicon-classes
+     * @param string|null       $typeIconColumn                   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-typeicon-column
+     * @param string|null       $useColumnsForDefaultValues       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-usecolumnsfordefaultvalues
+     * @param bool|null         $versioningWS                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-versioningws
+     * @param bool|null         $versioningWS_alwaysAllowLiveEdit https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-versioningws-alwaysallowliveedit
      */
     public function __construct(
         protected ?array            $EXT = null,
@@ -115,15 +118,16 @@ class Ctrl extends AbstractTcaAttribute
         protected array|string|null $labelAlt = null,
         protected ?bool             $labelAltForce = null,
         protected ?string           $labelUserFunc = null,
+        protected ?array            $labelUserFuncOptions = null,
         protected ?string           $languageField = 'sys_language_uid',
         protected ?string           $origUid = 't3_origuid',
         protected ?string           $prependAtCopy = null,
+        protected ?string           $previewRenderer = null,
         protected ?bool             $readOnly = null,
         protected ?int              $rootLevel = null,
         protected ?array            $searchFields = null,
         protected ?array            $security = null,
         protected ?string           $selIconField = null,
-        protected ?string           $shadowColumnsForNewPlaceholders = null,
         protected ?string           $sortBy = null,
         protected ?string           $title = null,
         protected ?string           $transOrigDiffSourceField = 'l10n_diffsource',
@@ -273,6 +277,11 @@ class Ctrl extends AbstractTcaAttribute
         return $this->labelUserFunc;
     }
 
+    public function getLabelUserFuncOptions(): ?array
+    {
+        return $this->labelUserFuncOptions;
+    }
+
     public function getLanguageField(): ?string
     {
         return $this->languageField;
@@ -286,6 +295,11 @@ class Ctrl extends AbstractTcaAttribute
     public function getPrependAtCopy(): ?string
     {
         return $this->prependAtCopy;
+    }
+
+    public function getPreviewRenderer(): ?string
+    {
+        return $this->previewRenderer;
     }
 
     public function getReadOnly(): ?bool
@@ -337,11 +351,6 @@ class Ctrl extends AbstractTcaAttribute
     public function getSelIconField(): ?string
     {
         return $this->selIconField;
-    }
-
-    public function getShadowColumnsForNewPlaceholders(): ?string
-    {
-        return $this->shadowColumnsForNewPlaceholders;
     }
 
     public function getSortBy(): ?string

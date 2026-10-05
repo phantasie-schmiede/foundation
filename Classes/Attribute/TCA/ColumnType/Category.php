@@ -31,23 +31,39 @@ class Category extends AbstractColumnType
     protected TcaService $tcaService;
 
     /**
-     * @param array        $exclusiveKeys           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-exclusivekeys
-     * @param Relationship $relationship            https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-relationship
-     * @param array|null   $treeConfig              https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-treeconfig
-     * @param string|null  $treeConfigChildrenField You can use the property name. It will be converted to the column
-     *                                              name automatically.
-     * @param string|null  $treeConfigDataProvider
-     * @param bool|null    $treeConfigExpandAll
-     * @param int|null     $treeConfigMaxLevels
-     * @param string|null  $treeConfigNonSelectableLevels
-     * @param string|null  $treeConfigParentField   You can use the property name. It will be converted to the column
-     *                                              name automatically.
-     * @param bool|null    $treeConfigShowHeader
-     * @param array        $treeConfigStartingPoints
+     * @param array        $exclusiveKeys           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-exclusivekeys
+     * @param string|null  $foreignTableItemGroup   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-foreign-table-item-group
+     * @param string|null  $foreignTablePrefix      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-foreign-table-prefix
+     * @param string|null  $foreignTableWhere       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-foreign-table-where
+     * @param array|null   $itemGroups              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-item-groups
+     * @param int|null     $maxItems                https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-maxitems
+     * @param int|null     $minItems                https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-minitems
+     * @param Relationship $relationship            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-relationship
+     * @param int|null     $size                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-size
+     * @param array|null   $treeConfig              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-treeconfig
+     * @param string|null  $treeConfigChildrenField https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-childrenfield
+     *                                                You can use the property name. It will be converted to the column
+     *                                                name automatically.
+     * @param string|null  $treeConfigDataProvider  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-dataprovider
+     * @param bool|null    $treeConfigExpandAll     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-expandall
+     * @param int|null     $treeConfigMaxLevels     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-maxlevels
+     * @param string|null  $treeConfigNonSelectableLevels https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-nonselectablelevels
+     * @param string|null  $treeConfigParentField   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-parentfield
+     *                                                You can use the property name. It will be converted to the column
+     *                                                name automatically.
+     * @param bool|null    $treeConfigShowHeader    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-showheader
+     * @param array        $treeConfigStartingPoints https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-startingpoints
      */
     public function __construct(
         protected array        $exclusiveKeys = [],
+        protected ?string      $foreignTableItemGroup = null,
+        protected ?string      $foreignTablePrefix = null,
+        protected ?string      $foreignTableWhere = null,
+        protected ?array       $itemGroups = null,
+        protected ?int         $maxItems = null,
+        protected ?int         $minItems = null,
         protected Relationship $relationship = Relationship::manyToMany,
+        protected ?int         $size = null,
         protected ?array       $treeConfig = null,
         protected ?string      $treeConfigChildrenField = null,
         protected ?string      $treeConfigDataProvider = null,
@@ -71,9 +87,44 @@ class Category extends AbstractColumnType
         return $this->exclusiveKeys ? implode(', ', $this->exclusiveKeys) : null;
     }
 
+    public function getForeignTableItemGroup(): ?string
+    {
+        return $this->foreignTableItemGroup;
+    }
+
+    public function getForeignTablePrefix(): ?string
+    {
+        return $this->foreignTablePrefix;
+    }
+
+    public function getForeignTableWhere(): ?string
+    {
+        return $this->foreignTableWhere;
+    }
+
+    public function getItemGroups(): ?array
+    {
+        return $this->itemGroups;
+    }
+
+    public function getMaxItems(): ?int
+    {
+        return $this->maxItems;
+    }
+
+    public function getMinItems(): ?int
+    {
+        return $this->minItems;
+    }
+
     public function getRelationship(): string
     {
         return $this->relationship->value;
+    }
+
+    public function getSize(): ?int
+    {
+        return $this->size;
     }
 
     /**

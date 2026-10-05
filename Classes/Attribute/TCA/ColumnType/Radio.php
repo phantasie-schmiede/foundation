@@ -24,60 +24,36 @@ use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExis
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class Color
+ * Class Radio
  *
  * @package PSBits\Foundation\Attribute\TCA\ColumnType
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-class Color extends AbstractColumnType implements ColumnTypeWithItemsInterface
+class Radio extends AbstractColumnType implements ColumnTypeWithItemsInterface
 {
     /**
-     * @param array $items       The items are not a TCA option by themselves, they are passed to valuePicker.
-     *                           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-valuepicker
-     * @param string $mode       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-mode
-     * @param string $opacity    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-opacity
-     * @param string $placeholder https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-placeholder
-     * @param int    $size       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-size
-     * @param array  $valuePicker https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-valuepicker
+     * @param array      $items         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Radio/Index.html#confval-radio-items
+     * @param string|null $itemsProcFunc https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/ItemsProcFunc.html
      */
     public function __construct(
-        protected array $items = [],
-        protected ?string $mode = null,
-        protected ?string $opacity = null,
-        protected ?string $placeholder = null,
-        protected ?int   $size = null,
-        protected array $valuePicker = [],
+        protected array   $items = [],
+        protected ?string $itemsProcFunc = null,
     ) {
     }
 
     public function getDatabaseDefinition(): string
     {
-        return DefinitionUtility::char(7);
+        return DefinitionUtility::varchar(255);
     }
 
-    public function getMode(): ?string
+    public function getItems(): array
     {
-        return $this->mode;
+        return $this->items;
     }
 
-    public function getOpacity(): ?string
+    public function getItemsProcFunc(): ?string
     {
-        return $this->opacity;
-    }
-
-    public function getPlaceholder(): ?string
-    {
-        return $this->placeholder;
-    }
-
-    public function getSize(): ?int
-    {
-        return $this->size;
-    }
-
-    public function getValuePicker(): array
-    {
-        return array_merge($this->valuePicker, ['items' => $this->items]);
+        return $this->itemsProcFunc;
     }
 
     /**
@@ -92,6 +68,8 @@ class Color extends AbstractColumnType implements ColumnTypeWithItemsInterface
         // $items already has TCA format
         if (ArrayUtility::isMultiDimensionalArray($this->items)) {
             $this->processTcaFormat();
+
+            return;
         }
 
         // $items has to be transformed into TCA format
@@ -107,7 +85,7 @@ class Color extends AbstractColumnType implements ColumnTypeWithItemsInterface
      */
     private function processSimpleFormat(string $labelPath = ''): void
     {
-        $selectItems = [];
+        $items = [];
 
         foreach ($this->items as $key => $value) {
             if (!is_string($key) && (is_string($value) || is_numeric($value))) {
@@ -124,13 +102,13 @@ class Color extends AbstractColumnType implements ColumnTypeWithItemsInterface
                 LocalizationUtility::translationExists($label);
             }
 
-            $selectItems[] = [
-                $label,
-                $value,
+            $items[] = [
+                'label' => $label,
+                'value' => $value,
             ];
         }
 
-        $this->items = $selectItems;
+        $this->items = $items;
     }
 
     /**
@@ -143,10 +121,8 @@ class Color extends AbstractColumnType implements ColumnTypeWithItemsInterface
     private function processTcaFormat(): void
     {
         foreach ($this->items as $item) {
-            $label = $item[0];
-
-            if (str_starts_with($label, FilePathUtility::LANGUAGE_LABEL_PREFIX)) {
-                LocalizationUtility::translationExists($label);
+            if (!empty($item['label']) && str_starts_with($item['label'], FilePathUtility::LANGUAGE_LABEL_PREFIX)) {
+                LocalizationUtility::translationExists($item['label']);
             }
         }
     }

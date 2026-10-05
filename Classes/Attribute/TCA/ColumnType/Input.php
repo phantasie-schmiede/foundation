@@ -23,19 +23,32 @@ use PSBits\Foundation\Utility\Database\DefinitionUtility;
 class Input extends AbstractColumnType
 {
     /**
-     * @param string     $eval        https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-eval
-     * @param int        $max         https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-max
-     * @param int|null   $min         https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-min
-     * @param int        $size        https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-size
-     * @param array|null $valuePicker https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-valuepicker
+     * @param string|null $autocomplete https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-autocomplete
+     * @param string      $eval         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-eval
+     * @param bool        $isIn         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-is-in
+     * @param int         $max          https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-max
+     * @param int|null    $min          https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-min
+     * @param string|null $placeholder  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-placeholder
+     * @param int         $size         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-size
+     * @param string|null $softref      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-softref
+     * @param array|null  $valuePicker  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-valuepicker
      */
     public function __construct(
-        protected string $eval = 'trim',
-        protected int    $max = 255,
-        protected ?int   $min = null,
-        protected int    $size = 20,
-        protected ?array $valuePicker = null,
+        protected ?string $autocomplete = null,
+        protected string  $eval = 'trim',
+        protected ?bool   $isIn = null,
+        protected int     $max = 255,
+        protected ?int    $min = null,
+        protected ?string $placeholder = null,
+        protected int     $size = 20,
+        protected ?string $softref = null,
+        protected ?array  $valuePicker = null,
     ) {
+    }
+
+    public function getAutocomplete(): ?string
+    {
+        return $this->autocomplete;
     }
 
     public function getDatabaseDefinition(): string
@@ -48,6 +61,11 @@ class Input extends AbstractColumnType
         return $this->eval;
     }
 
+    public function getIsIn(): ?bool
+    {
+        return $this->isIn;
+    }
+
     public function getMax(): int
     {
         return $this->max;
@@ -58,9 +76,19 @@ class Input extends AbstractColumnType
         return $this->min;
     }
 
+    public function getPlaceholder(): ?string
+    {
+        return $this->placeholder;
+    }
+
     public function getSize(): int
     {
         return $this->size;
+    }
+
+    public function getSoftref(): ?string
+    {
+        return $this->softref;
     }
 
     public function getValuePicker(): ?array

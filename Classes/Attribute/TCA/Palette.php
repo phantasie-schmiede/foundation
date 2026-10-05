@@ -20,7 +20,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Class Palette
  *
- * @link    https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Palettes/Index.html
+ * @link    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Palettes/Index.html
  * @package PSBits\Foundation\Attribute\TCA
  */
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS)]
@@ -37,14 +37,16 @@ class Palette extends AbstractTcaAttribute
     ];
 
     /**
-     * @param string $description https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Palettes/Index.html#confval-palettes-description
-     * @param string $identifier
-     * @param string $label       https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Palettes/Index.html#confval-palettes-label
-     * @param string $position
+     * @param string  $description     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Palettes/Index.html#confval-palettes-description
+     * @param string  $identifier      Key of the palette and part of the showitem reference (--palette--;;identifier).
+     * @param bool    $isHiddenPalette https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Palettes/Index.html#confval-palettes-ishiddenpalette
+     * @param string  $label           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Palettes/Index.html#confval-palettes-label
+     * @param string  $position
      */
     public function __construct(
         protected string $description = '',
         protected string $identifier = '',
+        protected bool   $isHiddenPalette = false,
         protected string $label = '',
         /**
          * Usage: 'key:propertyName'
@@ -68,6 +70,11 @@ class Palette extends AbstractTcaAttribute
     public function getLabel(): ?string
     {
         return $this->label;
+    }
+
+    public function isHiddenPalette(): bool
+    {
+        return $this->isHiddenPalette;
     }
 
     /**

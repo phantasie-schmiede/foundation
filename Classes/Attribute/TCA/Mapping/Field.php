@@ -20,7 +20,7 @@ use Attribute;
  * convention, e. g. when extending another model.
  *
  * @package PSBits\Foundation\Attribute\TCA\Mapping
- * @see     https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ExtensionArchitecture/Extbase/Domain/Model.html#table-and-field-mapping
+ * @see     https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Domain/Model.html#table-and-field-mapping
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Field

@@ -294,10 +294,18 @@ class TcaService
      * @throws JsonException
      * @throws NotFoundExceptionInterface
      */
-    public function createPalette(string $identifier, string $label = '', string $description = ''): void
-    {
+    public function createPalette(
+        string $identifier,
+        string $label = '',
+        string $description = '',
+        bool $isHiddenPalette = false
+    ): void {
         $this->checkIfTableNameIsSet();
         $paletteConfiguration = ['showitem' => ''];
+
+        if (true === $isHiddenPalette) {
+            $paletteConfiguration['isHiddenPalette'] = true;
+        }
 
         if ('' !== $label) {
             if (true === LocalizationUtility::validateLabel($label)) {
@@ -532,7 +540,12 @@ class TcaService
 
         /** @var Palette $palette */
         foreach ($this->palettes as $palette) {
-            $this->createPalette($palette->getIdentifier(), $palette->getLabel(), $palette->getDescription());
+            $this->createPalette(
+                $palette->getIdentifier(),
+                $palette->getLabel(),
+                $palette->getDescription(),
+                $palette->isHiddenPalette()
+            );
         }
 
         $this->tabs = [];

@@ -14,25 +14,25 @@ namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 use Attribute;
 
 /**
- * Class User
+ * Class None
  *
- * @link    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/User/Index.html#confval-user-rendertype
  * @package PSBits\Foundation\Attribute\TCA\ColumnType
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-class User extends AbstractColumnType
+class None extends AbstractColumnType
 {
     /**
-     * @param array $parameters Additional options for the renderType.
-     * @param string $renderType https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/User/Index.html#confval-user-rendertype
+     * @param string|array|null $format https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/None/Index.html#confval-none-format
+     * @param int               $size   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/None/Index.html#confval-none-size
      */
     public function __construct(
-        protected ?array $parameters = null,
-        protected string $renderType = '',
+        protected string|array|null $format = null,
+        protected int               $size = 1,
     ) {
     }
 
     /**
+     * The type none is a virtual type.
      * Database definition has to be provided by extension author! Either in ext_tables.sql or the property
      * "databaseDefinition" of the attribute PSBits\Foundation\Attribute\TCA\Column.
      */
@@ -41,13 +41,13 @@ class User extends AbstractColumnType
         return '';
     }
 
-    public function getParameters(): ?array
+    public function getFormat(): string|array|null
     {
-        return $this->parameters;
+        return $this->format;
     }
 
-    public function getRenderType(): string
+    public function getSize(): int
     {
-        return $this->renderType;
+        return $this->size;
     }
 }

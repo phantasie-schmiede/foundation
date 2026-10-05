@@ -25,8 +25,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS)]
 class Tab extends AbstractTcaAttribute
 {
+    /**
+     * @param string $identifier The tab identifier has to be written in snake_case.
+     *                           There is no TCA option for tabs, they are rendered as "--div--" entries in showitem.
+     * @param string $label
+     * @param string $position
+     */
     public function __construct(
-        // The identifier has to be written in snake_case!
         protected string $identifier = '',
         protected string $label = '',
         /**
