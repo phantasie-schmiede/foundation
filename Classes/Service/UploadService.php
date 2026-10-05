@@ -234,14 +234,6 @@ class UploadService
         return $uploadConfiguration;
     }
 
-    /**
-     * ResourceStorage::addUploadedFile() expects the native DuplicationBehavior enum.
-     */
-    private function getDefaultDuplicationBehaviour(): DuplicationBehavior
-    {
-        return DuplicationBehavior::RENAME;
-    }
-
     private function getFileExtensionByMimeType(UploadedFile $uploadedFile): string
     {
         $mimeType = FileUtility::getMimeType($uploadedFile->getTemporaryFileName());
@@ -259,7 +251,7 @@ class UploadService
             $uploadedFile,
             $uploadConfiguration[$property]['targetFolder'],
             $targetFileName,
-            $uploadConfiguration[$property]['duplicationBehaviour'] ?? $this->getDefaultDuplicationBehaviour()
+            $uploadConfiguration[$property]['duplicationBehaviour'] ?? DuplicationBehavior::RENAME
         );
     }
 

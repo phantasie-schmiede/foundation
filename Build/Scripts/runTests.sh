@@ -13,11 +13,14 @@
 # Tracked files are never modified. The core pin and the removal of
 # saschaegerer/phpstan-typo3 (which hard-pins typo3/cms-core and cannot
 # coexist with the matrix legs) are applied to a generated composer-matrix.json
-# that composer addresses through the COMPOSER environment variable. The
-# generated composer-matrix.json / composer-matrix.lock pair stays on disk
-# between runs (both are git-ignored) so repeat runs can reuse the lock.
-# The installed core (.Build/vendor) is intentionally left on the tested
-# version.
+# that composer addresses through the COMPOSER environment variable.
+#
+# .Build/vendor and composer-matrix.lock are wiped before every run. Core
+# 13.4 requires typo3/class-alias-loader ^1.2 and core 14.3 requires
+# ^2.0.1, and composer loads composer plugins from the pre-update vendor
+# state - reusing a vendor dir across legs whose loader major differs
+# crashes the class-alias-loader plugin mid-update (missing
+# CaseSensitiveToken/SuffixToken class).
 #
 # mysql and postgres read their connection settings from environment
 # variables with these defaults:
@@ -108,22 +111,26 @@ if grep -q '"saschaegerer/phpstan-typo3"' composer.json; then
     composer remove --dev --no-update --no-interaction saschaegerer/phpstan-typo3
 fi
 
-# Core 13.4.0's ClassLoadingInformationGenerator already uses
-# Composer\ClassMapGenerator\ClassMapGenerator, but no package in its lowest
-# dependency set (testing-framework 8.2.0, class-alias-loader 1.2.0) pulls
-# composer/class-map-generator in - an upstream omission. Require the library
-# in the generated composer file on lowest runs so the functional bootstrap
-# works.
+# The functional bootstrap needs Composer\ClassMapGenerator\ClassMapGenerator,
+# so on lowest runs (which resolve the oldest set, e.g. testing-framework
+# 9.5.0 and class-alias-loader 1.2.2) the library is required explicitly in
+# the generated composer file.
 if [ -n "$LOWEST" ]; then
     composer require --dev --no-update --no-interaction composer/class-map-generator:^1.3.4
 fi
 
 # ---------------------------------------------------------------------------
 # Step 2/4 - install the pinned core.
+# Fresh vendor state per leg (see header note on class-alias-loader): a
+# reused vendor dir with a different loader major crashes the plugin in
+# composer. The lock of the previous leg is dropped with it, so the pin
+# below always resolves from scratch.
 # --no-scripts: post-install-cmd only runs npm install and copies a git hook,
 # neither of which the test suites need.
 # ---------------------------------------------------------------------------
 banner "step 2/4 — composer update (typo3/cms-core:^${CORE_VERSION}${LOWEST_NOTE})"
+rm -rf .Build/vendor
+rm -f composer-matrix.lock
 composer update \
     --with "typo3/cms-core:^${CORE_VERSION}" \
     -W \
@@ -160,12 +167,16 @@ esac
 
 # ---------------------------------------------------------------------------
 # Step 3/4 - unit suite.
+# memory_limit=1G: the functional suite boots a full TYPO3 14 instance per
+# test, whose TcaSchemaFactory var_exports the complete TCA into the cache.
+# The 128 MB default of the php-cli images (esp. on mysql/postgres) is
+# exhausted there - same setting as runCoverage.sh.
 # ---------------------------------------------------------------------------
 banner "step 3/4 — unit tests"
-php .Build/bin/phpunit -c Build/phpunit/UnitTests.xml
+php -d memory_limit=1G .Build/bin/phpunit -c Build/phpunit/UnitTests.xml
 
 # ---------------------------------------------------------------------------
 # Step 4/4 - functional suite.
 # ---------------------------------------------------------------------------
 banner "step 4/4 — functional tests (${DB})"
-php .Build/bin/phpunit -c Build/phpunit/FunctionalTests.xml
+php -d memory_limit=1G .Build/bin/phpunit -c Build/phpunit/FunctionalTests.xml

@@ -54,9 +54,11 @@ class PageTypeService
      */
     public function addToDragArea(ExtensionInformationInterface $extensionInformation): void
     {
-        // v14 determines the drag area doktypes automatically from the PageDoktypeRegistry and the
-        // user's group permissions; the doktypesToShowInNewPageDragArea TSconfig option it used to
-        // rely on is deprecated since v14.2, so there is nothing to register on that major.
+        /*
+         * v14 determines the drag area doktypes automatically from the PageDoktypeRegistry and the
+         * user's group permissions; the doktypesToShowInNewPageDragArea TSconfig option it used to
+         * rely on is deprecated since v14.2, so there is nothing to register on that major.
+         */
         if (Typo3VersionUtility::isAtLeast('14.0')) {
             return;
         }
@@ -113,8 +115,10 @@ class PageTypeService
                 $extensionInformation,
                 'pageType' . ucfirst($name)
             );
-            // The IconRegistry is only available once the boot is complete, so it is resolved on demand
-            // instead of being injected: pages.php runs in that late phase.
+            /*
+             * The IconRegistry is only available once the boot is complete, so it is resolved on demand
+             * instead of being injected: pages.php runs in that late phase.
+             */
             $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
             $icons        = [
                 $doktype => $iconIdentifier,

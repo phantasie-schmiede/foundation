@@ -105,8 +105,10 @@ class PluginService
             }
         }
 
-        // The IconRegistry is only available once the boot is complete, so it is resolved on demand
-        // instead of being injected.
+        /*
+         * The IconRegistry is only available once the boot is complete, so it is resolved on demand
+         * instead of being injected.
+         */
         $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
 
         $configuration = [
@@ -187,8 +189,10 @@ class PluginService
                 GeneralUtility::camelCaseToLowerCaseUnderscored($configuration->getName())
             );
 
-            // The IconRegistry is only available once the boot is complete, so it is resolved on demand
-            // instead of being injected.
+            /*
+             * The IconRegistry is only available once the boot is complete, so it is resolved on demand
+             * instead of being injected.
+             */
             $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
 
             $pluginSignature = ExtensionUtility::registerPlugin(
@@ -217,8 +221,10 @@ class PluginService
             'show'   => '*',
         ];
 
-        // addPageTSConfig() was removed in v14; the content element wizard is derived from the plugin
-        // registration on that major, so the TSconfig is only registered up to v13.
+        /*
+         * addPageTSConfig() was removed in v14; the content element wizard is derived from the plugin
+         * registration on that major, so the TSconfig is only registered up to v13.
+         */
         if (!Typo3VersionUtility::isAtLeast('14.0')) {
             ExtensionManagementUtility::addPageTSConfig(TypoScriptUtility::convertArrayToTypoScript($pageTS));
         }
@@ -244,8 +250,10 @@ class PluginService
 
         $newPageTS['mod']['wizards']['newContentElement']['wizardItems'][$group]['elements'][$key] = $configuration;
 
-        // addPageTSConfig() was removed in v14; the content element wizard is derived from the plugin
-        // registration on that major, so the TSconfig is only registered up to v13.
+        /*
+         * addPageTSConfig() was removed in v14; the content element wizard is derived from the plugin
+         * registration on that major, so the TSconfig is only registered up to v13.
+         */
         if (!Typo3VersionUtility::isAtLeast('14.0')) {
             ExtensionManagementUtility::addPageTSConfig(TypoScriptUtility::convertArrayToTypoScript($newPageTS));
         }

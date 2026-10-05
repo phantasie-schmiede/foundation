@@ -93,8 +93,8 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
      * @param string|null      $itemsProcFunc           https://docs.typo3.org/m/typo3/reference-tca/11.5/en-us/ColumnsConfig/CommonProperties/ItemsProcFunc.html
      * @param string           $linkedModel             Instead of directly specifying a foreign table, it is possible
      *                                                  to specify a domain model class.
-     * @param int|null         $maxItems                https://docs.typo3.org/m/typo3/reference-tca/13.4/en-us/ColumnsConfig/CommonProperties/Maxitems.html
-     * @param int|null         $minItems                https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/CommonProperties/Minitems.html#tca-property-minitems
+     * @param int|null         $maxItems                https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-maxitems
+     * @param int|null         $minItems                https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-minitems
      * @param string|null      $mm                      https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Select/Properties/Mm.html
      * @param bool|null        $mmHasUidField           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Select/Properties/Mm.html#confval-MM_hasUidField
      * @param array|null       $mmInsertFields          https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Select/Properties/Mm.html#confval-MM_insert_fields

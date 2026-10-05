@@ -93,9 +93,11 @@ jobs:
         with:
           path: .Build/vendor
           key: vendor-${{ runner.os }}-t3${{ matrix.typo3 }}-p${{ matrix.php }}-${{ matrix.lowest }}-${{ hashFiles('composer.json') }}
+          # No catch-all key: 13.4 and 14.3 carry different class-alias-loader
+          # majors (1.x/2.x) and a cross-core restore crashes composer (see
+          # runTests.sh header).
           restore-keys: |
             vendor-${{ runner.os }}-t3${{ matrix.typo3 }}-p${{ matrix.php }}-${{ matrix.lowest }}-
-            vendor-${{ runner.os }}-
 
       - name: Run test matrix
         # Builds the environment and runs both suites in one place, shared with
@@ -163,7 +165,6 @@ jobs:
           key: vendor-${{ runner.os }}-mariadb-t3${{ matrix.typo3 }}-${{ hashFiles('composer.json') }}
           restore-keys: |
             vendor-${{ runner.os }}-mariadb-t3${{ matrix.typo3 }}-
-            vendor-${{ runner.os }}-
 
       - name: Run test matrix
         # The functional suite runs against the service container, reached via
@@ -227,7 +228,6 @@ jobs:
           key: vendor-${{ runner.os }}-postgres-t3${{ matrix.typo3 }}-${{ hashFiles('composer.json') }}
           restore-keys: |
             vendor-${{ runner.os }}-postgres-t3${{ matrix.typo3 }}-
-            vendor-${{ runner.os }}-
 
       - name: Run test matrix
         # The functional suite runs against the service container, reached via
@@ -259,7 +259,6 @@ jobs:
           key: vendor-${{ runner.os }}-coverage-t313.4-p8.4-${{ hashFiles('composer.json') }}
           restore-keys: |
             vendor-${{ runner.os }}-coverage-
-            vendor-${{ runner.os }}-
 
       - name: Install dependencies
         # Same approach as the qa job: composer.lock is git-ignored, so the
