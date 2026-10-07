@@ -5,7 +5,7 @@ on:
     branches:
       - '*'
     tags:
-      - '[0-9]+.[0-9]+.[0-9]+'
+      - '*'
   pull_request:
   workflow_dispatch:
 
@@ -335,6 +335,36 @@ jobs:
         run: >-
           composer audit --abandoned=report
           || echo "::warning::composer audit reported findings - see the job log"
+
+  debug-context:
+    name: Debug GitHub context
+    runs-on: ubuntu-latest
+    needs: [ tests, tests-mariadb, tests-postgres, qa, coverage ]
+    if: always()
+    steps:
+      - name: Show context
+        run: |
+          echo "event_name = ${{ github.event_name }}"
+          echo "ref        = ${{ github.ref }}"
+          echo "ref_name   = ${{ github.ref_name }}"
+          echo "ref_type   = ${{ github.ref_type }}"
+          echo "sha        = ${{ github.sha }}"
+
+          echo "--- dependencies ---"
+          echo "tests          = ${{ needs.tests.result }}"
+          echo "tests-mariadb  = ${{ needs.tests-mariadb.result }}"
+          echo "tests-postgres = ${{ needs.tests-postgres.result }}"
+          echo "qa             = ${{ needs.qa.result }}"
+          echo "coverage       = ${{ needs.coverage.result }}"
+
+      - name: Evaluate publish condition
+        run: |
+          if [[ "${{ github.event_name }}" == "push" && \
+                "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "Publish condition: TRUE"
+          else
+            echo "Publish condition: FALSE"
+          fi
 
   publish-to-ter:
     name: Publish to TER
