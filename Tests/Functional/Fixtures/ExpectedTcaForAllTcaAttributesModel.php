@@ -460,6 +460,7 @@ return [
         'previewRenderer' => 'PSBits\\Foundation\\Tests\\Examples\\Utility\\DummyPreviewRenderer',
         'searchFields'    => 'mapped_field, text_field',
         'title'           => $baseLL . 'ctrl.title',
+        'type'            => 'record_type',
     ],
     'palettes' => [
         'labelled_palette' => [
@@ -478,6 +479,23 @@ return [
     'types'    => [
         '0' => [
             'showitem' => '--palette--;;main_palette, --div--;Extra Tab, text_field, --palette--;;labelled_palette, number_field, select_field, group_field, inline_field, category_field, file_field, datetime_field, link_field, slug_field, color_field, enum_field, pass_through_field, user_field, email_field, json_field, radio_field, password_field, uuid_field, none_field, folder_field, flex_field, image_manipulation_field',
+        ],
+        '1' => [
+            'showitem'         => '--palette--;;main_palette, --div--;Extra Tab, text_field, --palette--;;labelled_palette, number_field, select_field, group_field, inline_field, category_field, file_field, datetime_field, link_field, slug_field, color_field, enum_field, pass_through_field, user_field, email_field, json_field, radio_field, password_field, uuid_field, none_field, folder_field, flex_field, image_manipulation_field',
+            'previewRenderer'  => 'PSBits\\Foundation\\Tests\\Examples\\Utility\\DummyPreviewRenderer',
+            'columnsOverrides' => [
+                'text_field' => [
+                    'config' => [
+                        'max' => 100,
+                    ],
+                ],
+            ],
+            'creationOptions'  => [
+                'defaultValues' => [
+                    'hidden' => 1,
+                ],
+                'saveAndClose'  => true,
+            ],
         ],
     ],
 ];

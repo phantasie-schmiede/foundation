@@ -60,7 +60,10 @@
     "scripts": {
         "analyze:php": "phpstan analyse --configuration=Build/Quality/phpstan.neon.dist --no-progress",
         "audit:composer": "composer audit --abandoned=report",
-        "docker:images": "COMPOSER_PROCESS_TIMEOUT=0 sh Build/Scripts/buildTestImages.sh",
+        "docker:images": [
+            "Composer\\Config::disableProcessTimeout",
+            "sh Build/Scripts/buildTestImages.sh"
+        ],
         "fix:all": [
             "@fix:classes",
             "@fix:htmlxml",
@@ -103,8 +106,14 @@
         ],
         "test:coverage": "sh Build/Scripts/runCoverage.sh @additional_args",
         "test:coverage:update-baseline": "sh Build/Scripts/runCoverage.sh --update-baseline @additional_args",
-        "test:docker": "sh Build/Scripts/runDockerTests.sh @additional_args",
-        "test:local": "sh Build/Scripts/runLocalTests.sh @additional_args",
+        "test:docker": [
+            "Composer\\Config::disableProcessTimeout",
+            "sh Build/Scripts/runDockerTests.sh @additional_args"
+        ],
+        "test:local": [
+            "Composer\\Config::disableProcessTimeout",
+            "sh Build/Scripts/runLocalTests.sh @additional_args"
+        ],
         "test:functional": "php -d memory_limit=1G .Build/bin/phpunit -c Build/phpunit/FunctionalTests.xml",
         "test:unit": "php -d memory_limit=1G .Build/bin/phpunit -c Build/phpunit/UnitTests.xml",
         "validate:composer": "composer validate --no-check-publish"

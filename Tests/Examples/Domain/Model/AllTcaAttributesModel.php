@@ -42,44 +42,67 @@ use PSBits\Foundation\Attribute\TCA\Mapping\Field;
 use PSBits\Foundation\Attribute\TCA\Mapping\Table;
 use PSBits\Foundation\Attribute\TCA\Palette;
 use PSBits\Foundation\Attribute\TCA\Tab;
+use PSBits\Foundation\Attribute\TCA\Type;
 use PSBits\Foundation\Enum\Relationship;
 use PSBits\Foundation\Tests\Examples\BackedEnum;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 #[Table('tx_foundation_all_tca_attributes')]
 #[Ctrl(
-    label: 'mappedField',
-    searchFields: [
-        'mappedField',
-        'textField',
-    ],
+    crdate: null,
     defaultSortBy: null,
     delete: null,
     enableColumns: null,
     iconFile: null,
+    label: 'mappedField',
     languageField: null,
     origUid: null,
+    previewRenderer: 'PSBits\\Foundation\\Tests\\Examples\\Utility\\DummyPreviewRenderer',
+    searchFields: [
+        'mappedField',
+        'textField',
+    ],
     transOrigDiffSourceField: null,
     transOrigPointerField: null,
     translationSource: null,
     tstamp: null,
-    crdate: null,
-    previewRenderer: 'PSBits\\Foundation\\Tests\\Examples\\Utility\\DummyPreviewRenderer',
+    type: 'record_type',
 )]
-#[Palette(identifier: 'main_palette')]
+#[Palette(identifier: 'hidden_palette', isHiddenPalette: true, label: 'HiddenPalette')]
 #[Palette(identifier: 'labelled_palette', label: 'PaletteLabel')]
-#[Palette(identifier: 'hidden_palette', label: 'HiddenPalette', isHiddenPalette: true)]
+#[Palette(identifier: 'main_palette')]
 #[Tab(identifier: 'extra_tab', label: 'Extra Tab')]
+#[Type(recordType: 0, showitem: '')]
+#[Type(
+    columnsOverrides: [
+        'text_field' => [
+            'config' => [
+                'max' => 100,
+            ],
+        ],
+    ],
+    creationOptions: [
+        'defaultValues' => [
+            'raw_value' => 'raw',
+        ],
+    ],
+    defaultValues: [
+        'hidden' => 1,
+    ],
+    previewRenderer: 'PSBits\\Foundation\\Tests\\Examples\\Utility\\DummyPreviewRenderer',
+    recordType: 1,
+    saveAndClose: true,
+)]
 class AllTcaAttributesModel extends AbstractEntity
 {
     #[Column(
-        position: 'palette:main_palette',
         allowLanguageSynchronization: true,
         fieldControl: [
             'addRecord' => [
                 'disabled' => true,
             ],
         ],
+        position: 'palette:main_palette',
     )]
     #[Field('mapped_field')]
     #[Input(autocomplete: 'off', placeholder: 'Please enter...')]
@@ -98,6 +121,9 @@ class AllTcaAttributesModel extends AbstractEntity
     protected bool $checkField = false;
 
     #[Select(
+        authMode: 'strict',
+        dbFieldLength: 255,
+        disableNoMatchingValueElement: true,
         items: [
             [
                 'label' => 'One',
@@ -108,9 +134,6 @@ class AllTcaAttributesModel extends AbstractEntity
                 'value' => 2,
             ],
         ],
-        authMode: 'strict',
-        dbFieldLength: 255,
-        disableNoMatchingValueElement: true,
         sortItems: 'value ASC',
     )]
     protected int $selectField = 0;
@@ -118,27 +141,27 @@ class AllTcaAttributesModel extends AbstractEntity
     #[Group(
         allowed: 'sys_category',
         autoSizeMax: 5,
-        size: 5,
-        minItems: 1,
-        multiple: true,
-        mmTableWhere: 'AND 1=1',
         hideDeleteIcon: true,
+        minItems: 1,
+        mmTableWhere: 'AND 1=1',
+        multiple: true,
         prependTname: '1',
         relationship: Relationship::oneToMany,
+        size: 5,
     )]
     protected string $groupField = '';
 
     #[Inline(
-        foreignTable: 'sys_category',
-        minItems: 1,
-        size: 10,
-        foreignLabel: 'title',
-        foreignUnique: 'uid',
         customControls: [
             'preview',
         ],
-        enableCascadingDelete: true,
         disableMovingChildrenWithParent: true,
+        enableCascadingDelete: true,
+        foreignLabel: 'title',
+        foreignTable: 'sys_category',
+        foreignUnique: 'uid',
+        minItems: 1,
+        size: 10,
     )]
     protected int $inlineField = 0;
 
@@ -160,10 +183,10 @@ class AllTcaAttributesModel extends AbstractEntity
     protected int $categoryField = 0;
 
     #[File(
-        disallowed: 'jpg',
         appearance: [
             'showRecalculateLink' => false,
         ],
+        disallowed: 'jpg',
         enableCascadingDelete: true,
     )]
     protected int $fileField = 0;

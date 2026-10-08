@@ -20,6 +20,7 @@ use PSBits\Foundation\Attribute\TCA\Mapping\Field;
 use PSBits\Foundation\Attribute\TCA\Mapping\Table;
 use PSBits\Foundation\Attribute\TCA\Palette;
 use PSBits\Foundation\Attribute\TCA\Tab;
+use PSBits\Foundation\Attribute\TCA\Type;
 use PSBits\Foundation\Exceptions\ImplementationException;
 use PSBits\Foundation\Exceptions\MisconfiguredTcaException;
 use PSBits\Foundation\Service\ExtensionInformationService;
@@ -43,6 +44,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\DomainObject\AbstractValueObject;
 use TYPO3\CMS\Extbase\Persistence\ClassesConfiguration;
 
+use function array_replace_recursive;
 use function array_slice;
 use function get_class;
 use function in_array;
@@ -555,6 +557,13 @@ class TcaService
             $this->tabs[$tabConfiguration->getIdentifier()] = $tabConfiguration;
         }
 
+        foreach ($reflection->getAttributes(Type::class) as $typeAttribute) {
+            /** @var Type $typeConfiguration */
+            $typeConfiguration = $typeAttribute->newInstance();
+
+            $this->createType($typeConfiguration, $overrideMode);
+        }
+
         $this->initializeTypes($columnConfigurations);
 
         while (!empty($columnConfigurations)) {
@@ -1010,6 +1019,38 @@ class TcaService
                 TcaUtility::getDefaultConfigurationForTranslationSourceField()
             );
         }
+    }
+
+    private function createType(Type $typeConfiguration, bool $overrideMode): void
+    {
+        $typeConfigurationArray = [
+            'showitem' => $typeConfiguration->getShowitem(),
+        ];
+
+        if (null !== $typeConfiguration->getColumnsOverrides()) {
+            $typeConfigurationArray['columnsOverrides'] = $typeConfiguration->getColumnsOverrides();
+        }
+
+        if ([] !== $typeConfiguration->getCreationOptions()) {
+            $typeConfigurationArray['creationOptions'] = $typeConfiguration->getCreationOptions();
+        }
+
+        if (null !== $typeConfiguration->getPreviewRenderer()) {
+            $typeConfigurationArray['previewRenderer'] = $typeConfiguration->getPreviewRenderer();
+        }
+
+        $recordType = $typeConfiguration->getRecordType();
+
+        if ($overrideMode && isset($GLOBALS['TCA'][$this->tableName]['types'][$recordType])) {
+            $GLOBALS['TCA'][$this->tableName]['types'][$recordType] = array_replace_recursive(
+                $GLOBALS['TCA'][$this->tableName]['types'][$recordType],
+                $typeConfigurationArray
+            );
+
+            return;
+        }
+
+        $GLOBALS['TCA'][$this->tableName]['types'][$recordType] = $typeConfigurationArray;
     }
 
     private function initializeTypes(array $columnConfigurations): void
