@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Tests\Functional;
 
+use JsonException;
 use PHPUnit\Framework\Attributes\Test;
 use PSBits\Foundation\Exceptions\MisconfiguredTcaException;
+use PSBits\Foundation\Service\Configuration\Tca\Builder;
 use PSBits\Foundation\Service\Configuration\TcaService;
 use PSBits\Foundation\Tests\Examples\Domain\Model\AllTcaAttributesModel;
 use PSBits\Foundation\Tests\Examples\Domain\Model\ExtendedTcaChildModel;
@@ -23,8 +25,9 @@ use PSBits\Foundation\Tests\Examples\Domain\Model\SortConflictModel;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
-use ReflectionMethod;
 use RuntimeException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -58,10 +61,7 @@ class TcaServiceTest extends FunctionalTestCase
         $tcaService = GeneralUtility::makeInstance(TcaService::class);
         $tableName  = $tcaService->convertClassNameToTableName(AllTcaAttributesModel::class);
         self::assertSame(self::TABLE_NAME_ALL_ATTRIBUTES, $tableName);
-        $tcaService->setTableName($tableName);
-
-        $buildFromAttributesMethod = new ReflectionMethod(TcaService::class, 'buildFromAttributes');
-        $buildFromAttributesMethod->invoke($tcaService, AllTcaAttributesModel::class, false);
+        $this->buildFromAttributes(AllTcaAttributesModel::class, $tableName, false);
 
         $actualTca   = $GLOBALS['TCA'][self::TABLE_NAME_ALL_ATTRIBUTES] ?? [];
         $expectedTca = require __DIR__ . '/Fixtures/ExpectedTcaForAllTcaAttributesModel.php';
@@ -78,11 +78,7 @@ class TcaServiceTest extends FunctionalTestCase
     {
         unset($GLOBALS['TCA'][self::TABLE_NAME_EXTENDED_TCA]);
 
-        $tcaService = GeneralUtility::makeInstance(TcaService::class);
-        $tcaService->setTableName(self::TABLE_NAME_EXTENDED_TCA);
-
-        $buildFromAttributesMethod = new ReflectionMethod(TcaService::class, 'buildFromAttributes');
-        $buildFromAttributesMethod->invoke($tcaService, ExtendedTcaParentModel::class, false);
+        $this->buildFromAttributes(ExtendedTcaParentModel::class, self::TABLE_NAME_EXTENDED_TCA, false);
 
         $actualTca   = $GLOBALS['TCA'][self::TABLE_NAME_EXTENDED_TCA] ?? [];
         $expectedTca = require __DIR__ . '/Fixtures/ExpectedTcaForExtendedTcaParentModel.php';
@@ -99,12 +95,8 @@ class TcaServiceTest extends FunctionalTestCase
     {
         unset($GLOBALS['TCA'][self::TABLE_NAME_EXTENDED_TCA]);
 
-        $tcaService = GeneralUtility::makeInstance(TcaService::class);
-        $tcaService->setTableName(self::TABLE_NAME_EXTENDED_TCA);
-
-        $buildFromAttributesMethod = new ReflectionMethod(TcaService::class, 'buildFromAttributes');
-        $buildFromAttributesMethod->invoke($tcaService, ExtendedTcaParentModel::class, false);
-        $buildFromAttributesMethod->invoke($tcaService, ExtendedTcaChildModel::class, true);
+        $this->buildFromAttributes(ExtendedTcaParentModel::class, self::TABLE_NAME_EXTENDED_TCA, false);
+        $this->buildFromAttributes(ExtendedTcaChildModel::class, self::TABLE_NAME_EXTENDED_TCA, true);
 
         $actualTca   = $GLOBALS['TCA'][self::TABLE_NAME_EXTENDED_TCA] ?? [];
         $expectedTca = require __DIR__ . '/Fixtures/ExpectedTcaForExtendedTcaChildModel.php';
@@ -125,11 +117,7 @@ class TcaServiceTest extends FunctionalTestCase
         $this->expectExceptionCode(1646995607);
         $this->expectExceptionMessageMatches('/Position relations create a loop/');
 
-        $tcaService = GeneralUtility::makeInstance(TcaService::class);
-        $tcaService->setTableName(self::TABLE_NAME_POSITION_LOOP);
-
-        $buildFromAttributesMethod = new ReflectionMethod(TcaService::class, 'buildFromAttributes');
-        $buildFromAttributesMethod->invoke($tcaService, PositionLoopModel::class, false);
+        $this->buildFromAttributes(PositionLoopModel::class, self::TABLE_NAME_POSITION_LOOP, false);
     }
 
     /**
@@ -146,11 +134,7 @@ class TcaServiceTest extends FunctionalTestCase
         $this->expectExceptionCode(1541107594);
         $this->expectExceptionMessageMatches('/You have to decide whether to use sortby or default_sortby/');
 
-        $tcaService = GeneralUtility::makeInstance(TcaService::class);
-        $tcaService->setTableName(self::TABLE_NAME_SORT_CONFLICT);
-
-        $buildFromAttributesMethod = new ReflectionMethod(TcaService::class, 'buildFromAttributes');
-        $buildFromAttributesMethod->invoke($tcaService, SortConflictModel::class, false);
+        $this->buildFromAttributes(SortConflictModel::class, self::TABLE_NAME_SORT_CONFLICT, false);
     }
 
     /**
@@ -167,11 +151,22 @@ class TcaServiceTest extends FunctionalTestCase
         $this->expectExceptionCode(1541107601);
         $this->expectExceptionMessageMatches('/would overwrite a reserved system column with sorting values/');
 
-        $tcaService = GeneralUtility::makeInstance(TcaService::class);
-        $tcaService->setTableName(self::TABLE_NAME_PROTECTED_SORT);
+        $this->buildFromAttributes(ProtectedSortModel::class, self::TABLE_NAME_PROTECTED_SORT, false);
+    }
 
-        $buildFromAttributesMethod = new ReflectionMethod(TcaService::class, 'buildFromAttributes');
-        $buildFromAttributesMethod->invoke($tcaService, ProtectedSortModel::class, false);
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws MisconfiguredTcaException
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+     */
+    private function buildFromAttributes(string $className, string $tableName, bool $overrideMode): void
+    {
+        $builder = GeneralUtility::makeInstance(Builder::class);
+        $builder->buildFromAttributes($className, $tableName, $overrideMode);
     }
 
     protected function tearDown(): void

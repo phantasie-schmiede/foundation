@@ -13,13 +13,11 @@ namespace PSBits\Foundation\Attribute\TCA;
 
 use Attribute;
 use PSBits\Foundation\Attribute\TCA\ColumnType\ColumnTypeInterface;
+use PSBits\Foundation\Service\Configuration\Tca\Position;
 use PSBits\Foundation\Utility\Configuration\TcaUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
-use function str_contains;
 
 /**
  * Class Column
@@ -106,7 +104,6 @@ class Column extends AbstractTcaAttribute
         protected ?bool             $required = null,
         protected string            $typeList = '',
     ) {
-        parent::__construct();
     }
 
     public function getAllowLanguageSynchronization(): ?bool
@@ -176,21 +173,11 @@ class Column extends AbstractTcaAttribute
      */
     public function getPosition(): string
     {
-        if (empty($this->position)) {
-            return '';
-        }
-
-        [
-            $key,
-            $location,
-        ] = GeneralUtility::trimExplode(':', $this->position, false, 2);
-
-        // Check if $location is NOT a palette name.
-        if (!str_contains($location, '-')) {
-            $location = $this->tcaService->convertPropertyNameToColumnName($location);
-        }
-
-        return $key . ':' . $location;
+        return Position::normalize(
+            $this->position,
+            fn(string $name): string => $this->tcaService()
+                ->convertPropertyNameToColumnName($name)
+        );
     }
 
     public function getTypeList(): string

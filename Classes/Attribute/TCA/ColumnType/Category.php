@@ -13,12 +13,10 @@ namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
 use Attribute;
 use PSBits\Foundation\Enum\Relationship;
-use PSBits\Foundation\Service\Configuration\TcaService;
 use PSBits\Foundation\Utility\Database\DefinitionUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Category
@@ -28,8 +26,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Category extends AbstractColumnType
 {
-    protected TcaService $tcaService;
-
     /**
      * @param array        $exclusiveKeys           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-exclusivekeys
      * @param string|null  $foreignTableItemGroup   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-foreign-table-item-group
@@ -74,7 +70,6 @@ class Category extends AbstractColumnType
         protected ?bool        $treeConfigShowHeader = null,
         protected array        $treeConfigStartingPoints = [],
     ) {
-        $this->tcaService = GeneralUtility::makeInstance(TcaService::class);
     }
 
     public function getDatabaseDefinition(): string
@@ -151,7 +146,7 @@ class Category extends AbstractColumnType
         }
 
         if (null !== $this->treeConfigChildrenField) {
-            $configuration['childrenField'] = $this->tcaService->convertPropertyNameToColumnName(
+            $configuration['childrenField'] = $this->tcaService()->convertPropertyNameToColumnName(
                 $this->treeConfigChildrenField
             );
         }
@@ -161,7 +156,7 @@ class Category extends AbstractColumnType
         }
 
         if (null !== $this->treeConfigParentField) {
-            $configuration['parentField'] = $this->tcaService->convertPropertyNameToColumnName(
+            $configuration['parentField'] = $this->tcaService()->convertPropertyNameToColumnName(
                 $this->treeConfigParentField
             );
         }

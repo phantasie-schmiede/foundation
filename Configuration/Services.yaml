@@ -26,6 +26,9 @@ services:
   PSBits\Foundation\Service\Configuration\PluginService:
     public: true
 
+  PSBits\Foundation\Service\Configuration\Tca\Builder:
+    public: true
+
   PSBits\Foundation\Service\Configuration\TcaService:
     public: true
 

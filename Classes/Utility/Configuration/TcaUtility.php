@@ -25,6 +25,10 @@ class TcaUtility
         'LANGUAGE'    => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
         'START_TIME'  => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
     ];
+    public const array CORE_PALETTE_IDENTIFIERS = [
+        'LANGUAGE'         => 'language',
+        'TIME_RESTRICTION' => 'timeRestriction',
+    ];
     public const array CORE_TAB_IDENTIFIERS = [
         'ACCESS'   => 'access',
         'LANGUAGE' => 'language',

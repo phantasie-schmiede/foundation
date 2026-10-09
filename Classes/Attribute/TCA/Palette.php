@@ -12,10 +12,10 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Attribute\TCA;
 
 use Attribute;
+use PSBits\Foundation\Service\Configuration\Tca\Position;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Palette
@@ -54,7 +54,6 @@ class Palette extends AbstractTcaAttribute
          */
         protected string $position = '',
     ) {
-        parent::__construct();
     }
 
     public function getDescription(): ?string
@@ -84,20 +83,10 @@ class Palette extends AbstractTcaAttribute
      */
     public function getPosition(): string
     {
-        if (empty($this->position)) {
-            return '';
-        }
-
-        [
-            $key,
-            $location,
-        ] = GeneralUtility::trimExplode(':', $this->position, false, 2);
-
-        // Check if $location is NOT a palette name.
-        if (!str_contains($location, '-')) {
-            $location = $this->tcaService->convertPropertyNameToColumnName($location);
-        }
-
-        return $key . ':' . $location;
+        return Position::normalize(
+            $this->position,
+            fn(string $name): string => $this->tcaService()
+                ->convertPropertyNameToColumnName($name)
+        );
     }
 }

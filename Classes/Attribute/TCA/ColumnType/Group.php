@@ -13,12 +13,10 @@ namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
 use Attribute;
 use PSBits\Foundation\Enum\Relationship;
-use PSBits\Foundation\Service\Configuration\TcaService;
 use PSBits\Foundation\Utility\Database\DefinitionUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Group
@@ -28,8 +26,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Group extends AbstractColumnType
 {
-    protected TcaService $tcaService;
-
     /**
      * $mmOppositeUsage automatically populates $allowed if it's empty.
      *
@@ -81,18 +77,16 @@ class Group extends AbstractColumnType
         protected Relationship $relationship = Relationship::manyToMany,
         protected ?int         $size = null,
     ) {
-        $this->tcaService = GeneralUtility::makeInstance(TcaService::class);
-
         if (class_exists($linkedModel)) {
-            $this->allowed = $this->tcaService->convertClassNameToTableName($linkedModel);
+            $this->allowed = $this->tcaService()->convertClassNameToTableName($linkedModel);
         }
 
         if (!empty($mmOppositeUsage)) {
             $this->mmOppositeUsage = [];
 
             foreach ($mmOppositeUsage as $modelOrTableName => $fieldOrPropertyNames) {
-                $this->mmOppositeUsage[$this->tcaService->convertClassNameToTableName($modelOrTableName)] = array_map(
-                    fn(string $fieldOrPropertyName) => $this->tcaService->convertPropertyNameToColumnName(
+                $this->mmOppositeUsage[$this->tcaService()->convertClassNameToTableName($modelOrTableName)] = array_map(
+                    fn(string $fieldOrPropertyName) => $this->tcaService()->convertPropertyNameToColumnName(
                         $fieldOrPropertyName
                     ),
                     $fieldOrPropertyNames

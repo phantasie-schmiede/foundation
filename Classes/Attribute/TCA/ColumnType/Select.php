@@ -16,7 +16,6 @@ use JsonException;
 use PSBits\Foundation\Enum\Relationship;
 use PSBits\Foundation\Enum\SelectRenderType;
 use PSBits\Foundation\Exceptions\MisconfiguredTcaException;
-use PSBits\Foundation\Service\Configuration\TcaService;
 use PSBits\Foundation\Service\ExtensionInformationService;
 use PSBits\Foundation\Utility\ArrayUtility;
 use PSBits\Foundation\Utility\Configuration\FilePathUtility;
@@ -76,7 +75,6 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
     private const string LANGUAGE_LABEL_PREFIX = 'LLL:EXT:foundation/Resources/Private/Language/Backend/Classes/Attribute/TCA/ColumnType/select.xlf:';
 
     protected ExtensionInformationService $extensionInformationService;
-    protected TcaService                  $tcaService;
 
     /**
      * @param bool|null        $allowNonIdValues              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-allownonidvalues
@@ -176,10 +174,9 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
         protected array            $treeConfigStartingPoints = [],
     ) {
         $this->extensionInformationService = GeneralUtility::makeInstance(ExtensionInformationService::class);
-        $this->tcaService                  = GeneralUtility::makeInstance(TcaService::class);
 
         if (class_exists($linkedModel)) {
-            $this->foreignTable = $this->tcaService->convertClassNameToTableName($linkedModel);
+            $this->foreignTable = $this->tcaService()->convertClassNameToTableName($linkedModel);
         }
 
         if (SelectRenderType::selectSingle === $renderType) {
@@ -356,7 +353,7 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
             return null;
         }
 
-        return $this->tcaService->convertPropertyNameToColumnName($this->mmOppositeField);
+        return $this->tcaService()->convertPropertyNameToColumnName($this->mmOppositeField);
     }
 
     public function getMmOppositeUsage(): ?array
@@ -427,7 +424,7 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
         }
 
         if (null !== $this->treeConfigChildrenField) {
-            $configuration['childrenField'] = $this->tcaService->convertPropertyNameToColumnName(
+            $configuration['childrenField'] = $this->tcaService()->convertPropertyNameToColumnName(
                 $this->treeConfigChildrenField,
             );
         }
@@ -437,7 +434,7 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
         }
 
         if (null !== $this->treeConfigParentField) {
-            $configuration['parentField'] = $this->tcaService->convertPropertyNameToColumnName(
+            $configuration['parentField'] = $this->tcaService()->convertPropertyNameToColumnName(
                 $this->treeConfigParentField,
             );
         }

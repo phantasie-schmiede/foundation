@@ -13,12 +13,10 @@ namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
 use Attribute;
 use PSBits\Foundation\Enum\Relationship;
-use PSBits\Foundation\Service\Configuration\TcaService;
 use PSBits\Foundation\Utility\Database\DefinitionUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Inline
@@ -28,8 +26,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Inline extends AbstractColumnType
 {
-    protected TcaService $tcaService;
-
     /**
      * @param array|null   $appearance                        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-appearance
      * @param int|null     $autoSizeMax                       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-autosizemax
@@ -102,10 +98,8 @@ class Inline extends AbstractColumnType
         protected Relationship $relationship = Relationship::oneToMany,
         protected ?int     $size = null,
     ) {
-        $this->tcaService = GeneralUtility::makeInstance(TcaService::class);
-
         if (class_exists($linkedModel)) {
-            $this->foreignTable = $this->tcaService->convertClassNameToTableName($linkedModel);
+            $this->foreignTable = $this->tcaService()->convertClassNameToTableName($linkedModel);
         }
     }
 
@@ -145,7 +139,7 @@ class Inline extends AbstractColumnType
             return null;
         }
 
-        return $this->tcaService->convertPropertyNameToColumnName($this->foreignField, $this->linkedModel);
+        return $this->tcaService()->convertPropertyNameToColumnName($this->foreignField, $this->linkedModel);
     }
 
     public function getForeignLabel(): ?string

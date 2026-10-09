@@ -46,7 +46,6 @@ class Type extends AbstractTcaAttribute
         protected ?bool      $saveAndClose = null,
         protected string     $showitem = '',
     ) {
-        parent::__construct();
     }
 
     public function getColumnsOverrides(): ?array

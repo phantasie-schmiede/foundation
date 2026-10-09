@@ -22,10 +22,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AbstractTcaAttribute extends AbstractAttribute
 {
-    protected TcaService $tcaService;
+    protected ?TcaService $tcaService = null;
 
-    public function __construct()
+    /**
+     * Returns the TcaService, instantiating it lazily on first use.
+     */
+    protected function tcaService(): TcaService
     {
-        $this->tcaService = GeneralUtility::makeInstance(TcaService::class);
+        if (null === $this->tcaService) {
+            $this->tcaService = GeneralUtility::makeInstance(TcaService::class);
+        }
+
+        return $this->tcaService;
     }
 }

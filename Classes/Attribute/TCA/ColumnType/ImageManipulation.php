@@ -12,12 +12,10 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
 use Attribute;
-use PSBits\Foundation\Service\Configuration\TcaService;
 use PSBits\Foundation\Utility\Database\DefinitionUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class ImageManipulation
@@ -27,8 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class ImageManipulation extends AbstractColumnType
 {
-    protected TcaService $tcaService;
-
     /**
      * @param string|null $allowedExtensions https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/ImageManipulation/Index.html#confval-imagemanipulation-allowedextensions
      * @param array|null  $cropVariants      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/ImageManipulation/Index.html#confval-imagemanipulation-cropvariants
@@ -45,7 +41,6 @@ class ImageManipulation extends AbstractColumnType
         protected ?array  $cropVariants = null,
         protected string  $fileField = '',
     ) {
-        $this->tcaService = GeneralUtility::makeInstance(TcaService::class);
     }
 
     public function getAllowedExtensions(): ?string
@@ -74,6 +69,6 @@ class ImageManipulation extends AbstractColumnType
             return null;
         }
 
-        return $this->tcaService->convertPropertyNameToColumnName($this->fileField);
+        return $this->tcaService()->convertPropertyNameToColumnName($this->fileField);
     }
 }

@@ -141,7 +141,6 @@ class Ctrl extends AbstractTcaAttribute
         protected ?bool             $versioningWS = null,
         protected ?bool             $versioningWS_alwaysAllowLiveEdit = null,
     ) {
-        parent::__construct();
     }
 
     public function getAdminOnly(): ?bool
@@ -240,7 +239,7 @@ class Ctrl extends AbstractTcaAttribute
      */
     public function getLabel(): string
     {
-        return $this->tcaService->convertPropertyNameToColumnName($this->label);
+        return $this->tcaService()->convertPropertyNameToColumnName($this->label);
     }
 
     /**
@@ -261,7 +260,7 @@ class Ctrl extends AbstractTcaAttribute
         }
 
         array_walk($altLabels, function(&$item) {
-            $item = $this->tcaService->convertPropertyNameToColumnName($item);
+            $item = $this->tcaService()->convertPropertyNameToColumnName($item);
         });
 
         return implode(', ', $altLabels);
@@ -325,7 +324,7 @@ class Ctrl extends AbstractTcaAttribute
 
         $searchFields = $this->searchFields;
         array_walk($searchFields, function(&$item) {
-            $item = $this->tcaService->convertPropertyNameToColumnName($item);
+            $item = $this->tcaService()->convertPropertyNameToColumnName($item);
         });
 
         return implode(', ', $searchFields);
@@ -404,7 +403,7 @@ class Ctrl extends AbstractTcaAttribute
             return null;
         }
 
-        return $this->tcaService->convertPropertyNameToColumnName($this->typeIconColumn);
+        return $this->tcaService()->convertPropertyNameToColumnName($this->typeIconColumn);
     }
 
     public function getUseColumnsForDefaultValues(): ?string
