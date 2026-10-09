@@ -39,10 +39,11 @@ readonly class PositionResolver
      * @param Tab[]     $tabs
      */
     public function __construct(
-        private TcaTable $table,
-        private string   $defaultLabelPath,
-        private array    $palettes,
-        private array    $tabs,
+        private TcaTable             $table,
+        private string               $defaultLabelPath,
+        private array                $palettes,
+        private array                $tabs,
+        private DefaultFieldRegistry $defaultFields,
     ) {
     }
 
@@ -171,6 +172,19 @@ readonly class PositionResolver
                     }
                 }
             }
+
+            /*
+             * If the reference still can't be resolved as a column, check the showitem items that are not columns:
+             * the default fields (which are added after this loop), the user-defined palettes and tabs.
+             */
+            if (false === $fieldCanBeAdded) {
+                $resolvedPosition = $this->resolveShowItemReference($parsedPosition);
+
+                if (null !== $resolvedPosition) {
+                    $position = $resolvedPosition;
+                    $fieldCanBeAdded = true;
+                }
+            }
         }
 
         if (true === $fieldCanBeAdded) {
@@ -199,6 +213,9 @@ readonly class PositionResolver
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
      * @throws NotFoundExceptionInterface
      * @throws ReflectionException
      */
@@ -211,7 +228,7 @@ readonly class PositionResolver
         $this->table->addFieldsToAllTypes(
             '--palette--;;' . $paletteIdentifier,
             $typeList,
-            $palettePosition ?? ''
+            $this->normalizeShowItemPosition($palettePosition ?? '')
         );
     }
 
@@ -237,8 +254,102 @@ readonly class PositionResolver
         );
 
         $tabDefinition = '--div--;' . $label;
-        $this->table->addFieldsToAllTypes($tabDefinition, $typeList, $tabPosition ?? '');
+        $this->table->addFieldsToAllTypes(
+            $tabDefinition,
+            $typeList,
+            $this->normalizeShowItemPosition($tabPosition ?? '')
+        );
 
         return $tabDefinition;
+    }
+
+    /**
+     * Resolves the given position against the showitem items that are not columns: the default field anchors (which
+     * are added to the showitems after the position-dependencies of the columns have been resolved) and the
+     * user-defined palettes and tabs.
+     *
+     * If the position is "after" a default field, the block of the default field is materialized first, so the
+     * position reference exists. If the position is "before" a not yet materialized default field, the field is
+     * appended at the end of the current showitems and the default field block is added after it.
+     *
+     * Returns the position normalized to a form the core can match, or null if the reference can't be resolved.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws NotFoundExceptionInterface
+     */
+    private function resolveShowItemReference(Position $parsedPosition): ?string
+    {
+        if (!in_array(
+            $parsedPosition->getKeyword(),
+            [Column::POSITIONS['BEFORE'], Column::POSITIONS['AFTER']],
+            true
+        )) {
+            return null;
+        }
+
+        $reference  = $parsedPosition->getReference();
+        $definition = $this->defaultFields->findByReference($reference);
+
+        if (null !== $definition) {
+            if (Column::POSITIONS['AFTER'] === $parsedPosition->getKeyword()) {
+                $this->defaultFields->materializeBlock($definition->getBlock());
+            }
+
+            return $parsedPosition->withReference($definition->getItem())
+                                  ->toString();
+        }
+
+        if (isset($this->palettes[$reference])) {
+            foreach ($this->table->getTypes() as $typeConfiguration) {
+                if (ShowItemList::fromString($typeConfiguration['showitem'] ?? '')
+                                ->containsPaletteReference($reference)) {
+                    return $parsedPosition->withReference('--palette--;;' . $reference)
+                                          ->toString();
+                }
+            }
+        }
+
+        if (isset($this->tabs[$reference])) {
+            $tabItem = '--div--;' . LabelResolver::resolveLabel(
+                $this->tabs[$reference]->getLabel(),
+                $this->defaultLabelPath . 'tab.' . $reference . '.label',
+                $reference
+            );
+
+            foreach ($this->table->getTypes() as $typeConfiguration) {
+                if (in_array(
+                    $tabItem,
+                    ShowItemList::fromString($typeConfiguration['showitem'] ?? '')->getItems(),
+                    true
+                )) {
+                    return $parsedPosition->withReference($tabItem)
+                                          ->toString();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Normalizes the position of a palette or tab against the showitem items that are not columns (see
+     * resolveShowItemReference).
+     *
+     * @throws ContainerExceptionInterface
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws NotFoundExceptionInterface
+     */
+    private function normalizeShowItemPosition(string $position): string
+    {
+        if ('' === $position) {
+            return $position;
+        }
+
+        return $this->resolveShowItemReference(Position::fromString($position)) ?? $position;
     }
 }

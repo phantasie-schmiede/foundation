@@ -94,8 +94,12 @@ class Column extends AbstractTcaAttribute
         protected ?bool             $nullable = null,
         protected ?string           $onChange = null,
         /**
-         * Usage: 'key:propertyName'
+         * Usage: 'key:reference'
          * You can use the keys 'after', 'before', 'palette', 'replace' and 'tab'.
+         * The reference can be a column, a palette identifier or a tab identifier. The default fields, which are
+         * added to the end of the showitems, can be referenced as well: 'language' (language tab),
+         * 'languagePalette' (language palette), 'access' (access tab), 'timeRestriction' (time restriction palette)
+         * and the disabled column (default: 'hidden').
          * If the referenced field belongs to a palette, there are also the options 'newLineAfter' and 'newLineBefore',
          * which will create a line break between this field and the referenced one.
          */

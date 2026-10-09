@@ -177,7 +177,17 @@ readonly class Builder
          */
         $this->initializeTypes($table, $columnConfigurations);
 
-        $positionResolver = new PositionResolver($table, $defaultLabelPath, $palettes, $tabs);
+        $disabledColumn = null;
+
+        if (null !== $ctrl && is_array($ctrl->getEnableColumns())) {
+            $disabledColumn = $ctrl->getEnableColumns()[Ctrl::ENABLE_COLUMN_IDENTIFIERS['DISABLED']] ?? null;
+        }
+
+        $defaultFields = new DefaultFieldRegistry(
+            $table,
+            $this->createDefaultFieldDefinitions($table, $disabledColumn, $defaultLabelPath)
+        );
+        $positionResolver = new PositionResolver($table, $defaultLabelPath, $palettes, $tabs, $defaultFields);
 
         while (!empty($columnConfigurations)) {
             $newColumnAddedToTypes = false;
@@ -208,39 +218,88 @@ readonly class Builder
         }
 
         /*
-         * Add default fields at the end of showitems for all types.
-         * Drawback: These fields can't be used as position reference.
+         * Add the remaining default fields at the end of the showitems of all types.
          */
+        $defaultFields->materializeBlock(DefaultFieldDefinition::BLOCK_LANGUAGE);
+        $defaultFields->materializeBlock(DefaultFieldDefinition::BLOCK_ACCESS);
+
+        (new Validator())->validate($tableName);
+    }
+
+    /**
+     * Creates the definitions of the default fields that are added to the showitems of all types after the
+     * position-dependencies of the columns have been resolved. The definitions can be used as position references.
+     *
+     * @return list<DefaultFieldDefinition>
+     *
+     * @throws ContainerExceptionInterface
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws NotFoundExceptionInterface
+     */
+    private function createDefaultFieldDefinitions(
+        TcaTable $table,
+        ?string  $disabledColumn,
+        string   $defaultLabelPath,
+    ): array {
+        $definitions = [];
+
         if (true === $table->hasPalette(TcaUtility::CORE_PALETTE_IDENTIFIERS['LANGUAGE'])) {
-            $positionResolver->addTabToShowItems(
+            $definitions[] = new DefaultFieldDefinition(
                 TcaUtility::CORE_TAB_IDENTIFIERS['LANGUAGE'],
-                TcaUtility::CORE_TAB_LABELS['LANGUAGE']
+                DefaultFieldDefinition::BLOCK_LANGUAGE,
+                DefaultFieldDefinition::TYPE_TAB,
+                TcaUtility::CORE_TAB_IDENTIFIERS['LANGUAGE'],
+                LabelResolver::resolveLabel(
+                    TcaUtility::CORE_TAB_LABELS['LANGUAGE'],
+                    $defaultLabelPath . 'tab.' . TcaUtility::CORE_TAB_IDENTIFIERS['LANGUAGE'] . '.label',
+                    TcaUtility::CORE_TAB_IDENTIFIERS['LANGUAGE']
+                )
             );
-            $positionResolver->addPaletteToShowItems(TcaUtility::CORE_PALETTE_IDENTIFIERS['LANGUAGE']);
+            $definitions[] = new DefaultFieldDefinition(
+                DefaultFieldDefinition::REFERENCE_LANGUAGE_PALETTE,
+                DefaultFieldDefinition::BLOCK_LANGUAGE,
+                DefaultFieldDefinition::TYPE_PALETTE,
+                TcaUtility::CORE_PALETTE_IDENTIFIERS['LANGUAGE']
+            );
         }
 
-        if (null !== $ctrl && is_array($ctrl->getEnableColumns())) {
-            $disabledColumn = $ctrl->getEnableColumns()[Ctrl::ENABLE_COLUMN_IDENTIFIERS['DISABLED']];
-        }
-
-        if (isset($disabledColumn) || true === $table->hasPalette(
+        if (null !== $disabledColumn || true === $table->hasPalette(
             TcaUtility::CORE_PALETTE_IDENTIFIERS['TIME_RESTRICTION']
         )) {
-            $positionResolver->addTabToShowItems(
+            $definitions[] = new DefaultFieldDefinition(
                 TcaUtility::CORE_TAB_IDENTIFIERS['ACCESS'],
-                TcaUtility::CORE_TAB_LABELS['ACCESS']
+                DefaultFieldDefinition::BLOCK_ACCESS,
+                DefaultFieldDefinition::TYPE_TAB,
+                TcaUtility::CORE_TAB_IDENTIFIERS['ACCESS'],
+                LabelResolver::resolveLabel(
+                    TcaUtility::CORE_TAB_LABELS['ACCESS'],
+                    $defaultLabelPath . 'tab.' . TcaUtility::CORE_TAB_IDENTIFIERS['ACCESS'] . '.label',
+                    TcaUtility::CORE_TAB_IDENTIFIERS['ACCESS']
+                )
             );
         }
 
-        if (isset($disabledColumn)) {
-            $table->addFieldsToAllTypes($disabledColumn);
+        if (null !== $disabledColumn) {
+            $definitions[] = new DefaultFieldDefinition(
+                $disabledColumn,
+                DefaultFieldDefinition::BLOCK_ACCESS,
+                DefaultFieldDefinition::TYPE_FIELD,
+                $disabledColumn
+            );
         }
 
         if (true === $table->hasPalette(TcaUtility::CORE_PALETTE_IDENTIFIERS['TIME_RESTRICTION'])) {
-            $positionResolver->addPaletteToShowItems(TcaUtility::CORE_PALETTE_IDENTIFIERS['TIME_RESTRICTION']);
+            $definitions[] = new DefaultFieldDefinition(
+                TcaUtility::CORE_PALETTE_IDENTIFIERS['TIME_RESTRICTION'],
+                DefaultFieldDefinition::BLOCK_ACCESS,
+                DefaultFieldDefinition::TYPE_PALETTE,
+                TcaUtility::CORE_PALETTE_IDENTIFIERS['TIME_RESTRICTION']
+            );
         }
 
-        (new Validator())->validate($tableName);
+        return $definitions;
     }
 
     /**

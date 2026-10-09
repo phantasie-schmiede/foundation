@@ -144,7 +144,10 @@ final readonly class Position
         return new self($keyword, $this->reference);
     }
 
-    private function withReference(string $reference): self
+    /**
+     * Returns a new position with the given reference and the same keyword.
+     */
+    public function withReference(string $reference): self
     {
         return new self($this->keyword, $reference);
     }

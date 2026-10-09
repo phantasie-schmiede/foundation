@@ -17,10 +17,12 @@ use PSBits\Foundation\Exceptions\MisconfiguredTcaException;
 use PSBits\Foundation\Service\Configuration\Tca\Builder;
 use PSBits\Foundation\Service\Configuration\TcaService;
 use PSBits\Foundation\Tests\Examples\Domain\Model\AllTcaAttributesModel;
+use PSBits\Foundation\Tests\Examples\Domain\Model\CoreFieldPositionModel;
 use PSBits\Foundation\Tests\Examples\Domain\Model\DataObjectModel;
 use PSBits\Foundation\Tests\Examples\Domain\Model\ExtendedTcaChildModel;
 use PSBits\Foundation\Tests\Examples\Domain\Model\ExtendedTcaParentModel;
 use PSBits\Foundation\Tests\Examples\Domain\Model\PositionLoopModel;
+use PSBits\Foundation\Tests\Examples\Domain\Model\PositionReferenceModel;
 use PSBits\Foundation\Tests\Examples\Domain\Model\ProtectedSortModel;
 use PSBits\Foundation\Tests\Examples\Domain\Model\SortConflictModel;
 use Psr\Container\ContainerExceptionInterface;
@@ -39,12 +41,14 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class TcaServiceTest extends FunctionalTestCase
 {
-    private const string TABLE_NAME_ALL_ATTRIBUTES = 'tx_foundation_all_tca_attributes';
-    private const string TABLE_NAME_DATA_OBJECT    = 'tx_foundation_data_object';
-    private const string TABLE_NAME_EXTENDED_TCA   = 'tx_foundation_extended_tca';
-    private const string TABLE_NAME_POSITION_LOOP  = 'tx_foundation_position_loop';
-    private const string TABLE_NAME_PROTECTED_SORT = 'tx_foundation_protected_sort';
-    private const string TABLE_NAME_SORT_CONFLICT  = 'tx_foundation_sort_conflict';
+    private const string TABLE_NAME_ALL_ATTRIBUTES      = 'tx_foundation_all_tca_attributes';
+    private const string TABLE_NAME_CORE_FIELD_POSITION = 'tx_foundation_core_field_position';
+    private const string TABLE_NAME_DATA_OBJECT         = 'tx_foundation_data_object';
+    private const string TABLE_NAME_EXTENDED_TCA        = 'tx_foundation_extended_tca';
+    private const string TABLE_NAME_POSITION_LOOP       = 'tx_foundation_position_loop';
+    private const string TABLE_NAME_POSITION_REFERENCE  = 'tx_foundation_position_reference';
+    private const string TABLE_NAME_PROTECTED_SORT      = 'tx_foundation_protected_sort';
+    private const string TABLE_NAME_SORT_CONFLICT       = 'tx_foundation_sort_conflict';
 
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/psbits/foundation',
@@ -73,6 +77,56 @@ class TcaServiceTest extends FunctionalTestCase
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws MisconfiguredTcaException
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+     */
+    #[Test]
+    public function buildFromAttributesAllowsDefaultFieldsAsPositionReference(): void
+    {
+        unset($GLOBALS['TCA'][self::TABLE_NAME_CORE_FIELD_POSITION]);
+
+        $this->buildFromAttributes(
+            CoreFieldPositionModel::class,
+            self::TABLE_NAME_CORE_FIELD_POSITION,
+            false
+        );
+
+        $actualTca   = $GLOBALS['TCA'][self::TABLE_NAME_CORE_FIELD_POSITION] ?? [];
+        $expectedTca = require __DIR__ . '/Fixtures/ExpectedTcaForCoreFieldPositionModel.php';
+        self::assertEquals($expectedTca, $actualTca);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws MisconfiguredTcaException
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+     */
+    #[Test]
+    public function buildFromAttributesAllowsUserPalettesAndTabsAsPositionReference(): void
+    {
+        unset($GLOBALS['TCA'][self::TABLE_NAME_POSITION_REFERENCE]);
+
+        $this->buildFromAttributes(PositionReferenceModel::class, self::TABLE_NAME_POSITION_REFERENCE, false);
+
+        $actualTca   = $GLOBALS['TCA'][self::TABLE_NAME_POSITION_REFERENCE] ?? [];
+        $expectedTca = require __DIR__ . '/Fixtures/ExpectedTcaForPositionReferenceModel.php';
+        self::assertEquals($expectedTca, $actualTca);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws MisconfiguredTcaException
      * @throws NotFoundExceptionInterface
      * @throws ReflectionException
      */
@@ -200,7 +254,14 @@ class TcaServiceTest extends FunctionalTestCase
     protected function tearDown(): void
     {
         unset(
-            $GLOBALS['TCA'][self::TABLE_NAME_ALL_ATTRIBUTES], $GLOBALS['TCA'][self::TABLE_NAME_DATA_OBJECT], $GLOBALS['TCA'][self::TABLE_NAME_EXTENDED_TCA], $GLOBALS['TCA'][self::TABLE_NAME_POSITION_LOOP], $GLOBALS['TCA'][self::TABLE_NAME_SORT_CONFLICT], $GLOBALS['TCA'][self::TABLE_NAME_PROTECTED_SORT]
+            $GLOBALS['TCA'][self::TABLE_NAME_ALL_ATTRIBUTES],
+            $GLOBALS['TCA'][self::TABLE_NAME_CORE_FIELD_POSITION],
+            $GLOBALS['TCA'][self::TABLE_NAME_DATA_OBJECT],
+            $GLOBALS['TCA'][self::TABLE_NAME_EXTENDED_TCA],
+            $GLOBALS['TCA'][self::TABLE_NAME_POSITION_LOOP],
+            $GLOBALS['TCA'][self::TABLE_NAME_POSITION_REFERENCE],
+            $GLOBALS['TCA'][self::TABLE_NAME_PROTECTED_SORT],
+            $GLOBALS['TCA'][self::TABLE_NAME_SORT_CONFLICT]
         );
         parent::tearDown();
     }
