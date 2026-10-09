@@ -17,6 +17,7 @@ use PSBits\Foundation\Exceptions\MisconfiguredTcaException;
 use PSBits\Foundation\Service\Configuration\Tca\Builder;
 use PSBits\Foundation\Service\Configuration\TcaService;
 use PSBits\Foundation\Tests\Examples\Domain\Model\AllTcaAttributesModel;
+use PSBits\Foundation\Tests\Examples\Domain\Model\DataObjectModel;
 use PSBits\Foundation\Tests\Examples\Domain\Model\ExtendedTcaChildModel;
 use PSBits\Foundation\Tests\Examples\Domain\Model\ExtendedTcaParentModel;
 use PSBits\Foundation\Tests\Examples\Domain\Model\PositionLoopModel;
@@ -39,14 +40,36 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 class TcaServiceTest extends FunctionalTestCase
 {
     private const string TABLE_NAME_ALL_ATTRIBUTES = 'tx_foundation_all_tca_attributes';
+    private const string TABLE_NAME_DATA_OBJECT    = 'tx_foundation_data_object';
     private const string TABLE_NAME_EXTENDED_TCA   = 'tx_foundation_extended_tca';
     private const string TABLE_NAME_POSITION_LOOP  = 'tx_foundation_position_loop';
-    private const string TABLE_NAME_SORT_CONFLICT  = 'tx_foundation_sort_conflict';
     private const string TABLE_NAME_PROTECTED_SORT = 'tx_foundation_protected_sort';
+    private const string TABLE_NAME_SORT_CONFLICT  = 'tx_foundation_sort_conflict';
 
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/psbits/foundation',
     ];
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws MisconfiguredTcaException
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+     */
+    #[Test]
+    public function buildFromAttributesCreatesExpectedTcaForDataObjectModel(): void
+    {
+        unset($GLOBALS['TCA'][self::TABLE_NAME_DATA_OBJECT]);
+
+        $this->buildFromAttributes(DataObjectModel::class, self::TABLE_NAME_DATA_OBJECT, false);
+
+        $actualTca   = $GLOBALS['TCA'][self::TABLE_NAME_DATA_OBJECT] ?? [];
+        $expectedTca = require __DIR__ . '/Fixtures/ExpectedTcaForDataObjectModel.php';
+        self::assertEquals($expectedTca, $actualTca);
+    }
 
     /**
      * @throws ContainerExceptionInterface
@@ -70,6 +93,10 @@ class TcaServiceTest extends FunctionalTestCase
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws MisconfiguredTcaException
      * @throws NotFoundExceptionInterface
      * @throws ReflectionException
      */
@@ -87,6 +114,10 @@ class TcaServiceTest extends FunctionalTestCase
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws MisconfiguredTcaException
      * @throws NotFoundExceptionInterface
      * @throws ReflectionException
      */
@@ -105,6 +136,10 @@ class TcaServiceTest extends FunctionalTestCase
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws MisconfiguredTcaException
      * @throws NotFoundExceptionInterface
      * @throws ReflectionException
      */
@@ -122,6 +157,10 @@ class TcaServiceTest extends FunctionalTestCase
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws MisconfiguredTcaException
      * @throws NotFoundExceptionInterface
      * @throws ReflectionException
      */
@@ -139,6 +178,10 @@ class TcaServiceTest extends FunctionalTestCase
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws MisconfiguredTcaException
      * @throws NotFoundExceptionInterface
      * @throws ReflectionException
      */
@@ -154,6 +197,14 @@ class TcaServiceTest extends FunctionalTestCase
         $this->buildFromAttributes(ProtectedSortModel::class, self::TABLE_NAME_PROTECTED_SORT, false);
     }
 
+    protected function tearDown(): void
+    {
+        unset(
+            $GLOBALS['TCA'][self::TABLE_NAME_ALL_ATTRIBUTES], $GLOBALS['TCA'][self::TABLE_NAME_DATA_OBJECT], $GLOBALS['TCA'][self::TABLE_NAME_EXTENDED_TCA], $GLOBALS['TCA'][self::TABLE_NAME_POSITION_LOOP], $GLOBALS['TCA'][self::TABLE_NAME_SORT_CONFLICT], $GLOBALS['TCA'][self::TABLE_NAME_PROTECTED_SORT]
+        );
+        parent::tearDown();
+    }
+
     /**
      * @throws ContainerExceptionInterface
      * @throws ExtensionConfigurationExtensionNotConfiguredException
@@ -167,17 +218,5 @@ class TcaServiceTest extends FunctionalTestCase
     {
         $builder = GeneralUtility::makeInstance(Builder::class);
         $builder->buildFromAttributes($className, $tableName, $overrideMode);
-    }
-
-    protected function tearDown(): void
-    {
-        unset(
-            $GLOBALS['TCA'][self::TABLE_NAME_ALL_ATTRIBUTES],
-            $GLOBALS['TCA'][self::TABLE_NAME_EXTENDED_TCA],
-            $GLOBALS['TCA'][self::TABLE_NAME_POSITION_LOOP],
-            $GLOBALS['TCA'][self::TABLE_NAME_SORT_CONFLICT],
-            $GLOBALS['TCA'][self::TABLE_NAME_PROTECTED_SORT]
-        );
-        parent::tearDown();
     }
 }

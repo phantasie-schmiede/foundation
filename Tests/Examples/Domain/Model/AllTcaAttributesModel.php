@@ -49,23 +49,17 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 #[Table('tx_foundation_all_tca_attributes')]
 #[Ctrl(
-    crdate: null,
+    coreFields: 'none',
     defaultSortBy: null,
     delete: null,
-    enableColumns: null,
     iconFile: null,
     label: 'mappedField',
-    languageField: null,
     origUid: null,
     previewRenderer: 'PSBits\\Foundation\\Tests\\Examples\\Utility\\DummyPreviewRenderer',
     searchFields: [
         'mappedField',
         'textField',
     ],
-    transOrigDiffSourceField: null,
-    transOrigPointerField: null,
-    translationSource: null,
-    tstamp: null,
     type: 'record_type',
 )]
 #[Palette(identifier: 'hidden_palette', isHiddenPalette: true, label: 'HiddenPalette')]

@@ -12,12 +12,19 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Attribute\TCA;
 
 use Attribute;
+use InvalidArgumentException;
 use PSBits\Foundation\Utility\Configuration\TcaUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+use function array_key_exists;
+use function array_keys;
+use function array_unique;
+use function array_values;
+use function get_debug_type;
+use function in_array;
 use function is_string;
 
 /**
@@ -40,12 +47,34 @@ class Ctrl extends AbstractTcaAttribute
         'ENDTIME'   => 'endtime',
         'STARTTIME' => 'starttime',
     ];
+    public const string CORE_FIELDS_ALL       = 'all';
+    public const string CORE_FIELDS_NONE      = 'none';
+    public const string CORE_FIELDS_PARAMETER = 'coreFields';
+    public const array  CORE_FIELD_GROUPS     = [
+        'language'      => [
+            'languageField',
+            'transOrigDiffSourceField',
+            'transOrigPointerField',
+            'translationSource',
+        ],
+        'enableColumns' => [
+            'enableColumns',
+        ],
+        'timestamps'    => [
+            'crdate',
+            'tstamp',
+        ],
+    ];
 
     /**
      * @param array|null        $EXT                              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-ext
      * @param bool|null         $adminOnly                        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-adminonly
      * @param array|null        $container                        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-container
      * @param string|null       $copyAfterDuplFields              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-copyafterduplfields
+     * @param string|array      $coreFields                       Determines which core field groups (language, enableColumns, timestamps) are configured.
+     *                                                            "all" (default) keeps every group, "none" removes all of them; a single group name or
+     *                                                            a list of group names limits the groups. Explicitly passed arguments take precedence
+     *                                                            over the group selection.
      * @param string|null       $crdate                           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-crdate
      * @param string|null       $defaultSortBy                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-default-sortby
      * @param string|null       $delete                           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-delete
@@ -96,6 +125,7 @@ class Ctrl extends AbstractTcaAttribute
         protected ?bool             $adminOnly = null,
         protected ?array            $container = null,
         protected ?string           $copyAfterDuplFields = null,
+        protected string|array      $coreFields = self::CORE_FIELDS_ALL,
         protected ?string           $crdate = 'crdate',
         protected ?string           $defaultSortBy = self::DEFAULT_SORTBY,
         protected ?string           $delete = 'deleted',
@@ -141,6 +171,66 @@ class Ctrl extends AbstractTcaAttribute
         protected ?bool             $versioningWS = null,
         protected ?bool             $versioningWS_alwaysAllowLiveEdit = null,
     ) {
+        $this->applyCoreFieldSelection();
+    }
+
+    /**
+     * Returns the names of the core field properties that are disabled by the given core field group selection.
+     *
+     * @param string|array $coreFields
+     *
+     * @return list<string>
+     * @throws InvalidArgumentException
+     */
+    public static function getDisabledCoreFieldProperties(string|array $coreFields): array
+    {
+        $activeGroups = self::resolveActiveCoreFieldGroups($coreFields);
+        $properties   = [];
+
+        foreach (self::CORE_FIELD_GROUPS as $group => $groupProperties) {
+            if (in_array($group, $activeGroups, true)) {
+                continue;
+            }
+
+            foreach ($groupProperties as $property) {
+                $properties[] = $property;
+            }
+        }
+
+        return $properties;
+    }
+
+    /**
+     * Resolves the active core field groups of the given core field group selection.
+     *
+     * @param string|array $coreFields
+     *
+     * @return list<string>
+     * @throws InvalidArgumentException
+     */
+    public static function resolveActiveCoreFieldGroups(string|array $coreFields): array
+    {
+        if (self::CORE_FIELDS_ALL === $coreFields) {
+            return array_keys(self::CORE_FIELD_GROUPS);
+        }
+
+        if (self::CORE_FIELDS_NONE === $coreFields) {
+            return [];
+        }
+
+        if (is_string($coreFields)) {
+            $coreFields = [$coreFields];
+        }
+
+        foreach ($coreFields as $group) {
+            if (!array_key_exists($group, self::CORE_FIELD_GROUPS)) {
+                throw new InvalidArgumentException(
+                    __CLASS__ . ': Unknown core field group "' . (is_string($group) ? $group : get_debug_type($group)) . '"!'
+                );
+            }
+        }
+
+        return array_values(array_unique($coreFields));
     }
 
     public function getAdminOnly(): ?bool
@@ -434,5 +524,49 @@ class Ctrl extends AbstractTcaAttribute
         }
 
         return $result;
+    }
+
+    /**
+     * Nulls the core field defaults that are not part of the active core field groups. Explicitly passed
+     * arguments take precedence over the group selection; arguments passed with their default value are
+     * indistinguishable and are therefore subject to the group selection, too.
+     */
+    private function applyCoreFieldSelection(): void
+    {
+        $activeGroups = self::resolveActiveCoreFieldGroups($this->coreFields);
+
+        if (!in_array('language', $activeGroups, true)) {
+            if ('sys_language_uid' === $this->languageField) {
+                $this->languageField = null;
+            }
+
+            if ('l10n_diffsource' === $this->transOrigDiffSourceField) {
+                $this->transOrigDiffSourceField = null;
+            }
+
+            if ('l10n_parent' === $this->transOrigPointerField) {
+                $this->transOrigPointerField = null;
+            }
+
+            if ('l10n_source' === $this->translationSource) {
+                $this->translationSource = null;
+            }
+        }
+
+        if (!in_array('enableColumns', $activeGroups, true)) {
+            if (self::ENABLE_COLUMNS === $this->enableColumns) {
+                $this->enableColumns = null;
+            }
+        }
+
+        if (!in_array('timestamps', $activeGroups, true)) {
+            if ('crdate' === $this->crdate) {
+                $this->crdate = null;
+            }
+
+            if ('tstamp' === $this->tstamp) {
+                $this->tstamp = null;
+            }
+        }
     }
 }

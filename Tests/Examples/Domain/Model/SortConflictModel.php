@@ -26,19 +26,13 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 #[Table('tx_foundation_sort_conflict')]
 #[Ctrl(
-    label: 'singleField',
-    sortBy: 'singleField',
+    coreFields: 'none',
     defaultSortBy: 'other_field',
     delete: null,
-    crdate: null,
-    tstamp: null,
-    enableColumns: null,
     iconFile: null,
-    languageField: null,
+    label: 'singleField',
     origUid: null,
-    transOrigDiffSourceField: null,
-    transOrigPointerField: null,
-    translationSource: null,
+    sortBy: 'singleField',
 )]
 class SortConflictModel extends AbstractEntity
 {

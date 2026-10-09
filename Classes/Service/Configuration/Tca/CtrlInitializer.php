@@ -22,6 +22,7 @@ use ReflectionException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 
+use function array_key_exists;
 use function is_array;
 
 /**
@@ -58,7 +59,29 @@ readonly class CtrlInitializer
             $setArguments   = $reflection->getAttributes(Ctrl::class)[0]->getArguments();
 
             foreach ($setArguments as $key => $value) {
+                if (Ctrl::CORE_FIELDS_PARAMETER === $key) {
+                    continue;
+                }
+
                 $ctrlProperties[TcaUtility::convertKey($key)] = $value;
+            }
+
+            if (isset($setArguments[Ctrl::CORE_FIELDS_PARAMETER])) {
+                /*
+                 * The core field group selection disables the core field defaults; explicitly passed arguments
+                 * take precedence.
+                 */
+                $disabledCoreFieldProperties = Ctrl::getDisabledCoreFieldProperties(
+                    $setArguments[Ctrl::CORE_FIELDS_PARAMETER]
+                );
+
+                foreach ($disabledCoreFieldProperties as $property) {
+                    if (array_key_exists($property, $setArguments)) {
+                        continue;
+                    }
+
+                    $ctrlProperties[TcaUtility::convertKey($property)] = null;
+                }
             }
         } else {
             $ctrlProperties = $ctrl->toArray();

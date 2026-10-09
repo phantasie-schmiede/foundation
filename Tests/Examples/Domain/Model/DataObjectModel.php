@@ -11,36 +11,22 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Tests\Examples\Domain\Model;
 
-use PSBits\Foundation\Attribute\TCA\Column;
 use PSBits\Foundation\Attribute\TCA\ColumnType\Input;
 use PSBits\Foundation\Attribute\TCA\Ctrl;
 use PSBits\Foundation\Attribute\TCA\Mapping\Table;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
- * Class PositionLoopModel
+ * Class DataObjectModel
  *
- * The position of both fields references the other field, which creates a
- * loop that TcaService must detect.
+ * A plain data object without core fields (language, enable columns, timestamps).
  *
  * @package PSBits\Foundation\Tests\Examples\Domain\Model
  */
-#[Table('tx_foundation_position_loop')]
-#[Ctrl(
-    coreFields: 'none',
-    defaultSortBy: null,
-    delete: null,
-    iconFile: null,
-    label: 'a',
-    origUid: null,
-)]
-class PositionLoopModel extends AbstractEntity
+#[Table('tx_foundation_data_object')]
+#[Ctrl(coreFields: 'none')]
+class DataObjectModel extends AbstractEntity
 {
-    #[Column(position: 'after:b')]
     #[Input]
-    protected string $a = '';
-
-    #[Column(position: 'after:a')]
-    #[Input]
-    protected string $b = '';
+    protected string $name = '';
 }
