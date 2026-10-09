@@ -28,7 +28,7 @@ class Type extends AbstractTcaAttribute
     /**
      * The individual arguments override the corresponding creationOptions keys.
      *
-     * @param array|null $columnsOverrides  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Types/Index.html#confval-types-columnsoverrides
+     * @param array|null  $columnsOverrides https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Types/Index.html#confval-types-columnsoverrides
      * @param array|null  $creationOptions  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Types/Index.html#confval-types-creationoptions
      * @param array|null  $defaultValues    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Types/Index.html#confval-types-creationoptions-defaultvalues
      * @param string|null $previewRenderer  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Types/Index.html#confval-types-previewrenderer

@@ -37,11 +37,11 @@ class Palette extends AbstractTcaAttribute
     ];
 
     /**
-     * @param string  $description     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Palettes/Index.html#confval-palettes-description
-     * @param string  $identifier      Key of the palette and part of the showitem reference (--palette--;;identifier).
-     * @param bool    $isHiddenPalette https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Palettes/Index.html#confval-palettes-ishiddenpalette
-     * @param string  $label           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Palettes/Index.html#confval-palettes-label
-     * @param string  $position
+     * @param string $description     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Palettes/Index.html#confval-palettes-description
+     * @param string $identifier      Key of the palette and part of the showitem reference (--palette--;;identifier).
+     * @param bool   $isHiddenPalette https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Palettes/Index.html#confval-palettes-ishiddenpalette
+     * @param string $label           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Palettes/Index.html#confval-palettes-label
+     * @param string $position
      */
     public function __construct(
         protected string $description = '',

@@ -78,7 +78,7 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
 
     /**
      * @param bool|null        $allowNonIdValues              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-allownonidvalues
-     * @param string|null      $authMode                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-authmode
+     * @param string|null      $authMode                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-authmode
      * @param int|null         $autoSizeMax                   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-autosizemax
      * @param int|null         $dbFieldLength                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-dbfieldlength
      * @param bool|null        $disableNoMatchingValueElement https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-disablenomatchingvalueelement
@@ -87,13 +87,13 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
      * @param bool|null        $fieldControlDisableAddRecord
      * @param bool|null        $fieldControlDisableEditPopup
      * @param bool|null        $fieldControlDisableListModule
-     * @param array|null       $fileFolderConfig             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-filefolderconfig
+     * @param array|null       $fileFolderConfig              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-filefolderconfig
      * @param string|null      $foreignTable                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-foreign-table
      *                                                        Instead of directly specifying a foreign table, it is possible
      *                                                        to specify a domain model class via linkedModel.
      * @param string|null      $foreignTableItemGroup         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-foreign-table-item-group
-     * @param string|null      $foreignTablePrefix           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-foreign-table-prefix
-     * @param string|null      $foreignTableWhere            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-foreign-table-where
+     * @param string|null      $foreignTablePrefix            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-foreign-table-prefix
+     * @param string|null      $foreignTableWhere             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-foreign-table-where
      * @param array|null       $itemGroups                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-itemgroups
      * @param array|null       $items                         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-items
      * @param string|null      $itemsProcFunc                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/ItemsProcFunc.html

@@ -23,14 +23,14 @@ use PSBits\Foundation\Utility\Database\DefinitionUtility;
 class Uuid extends AbstractColumnType
 {
     /**
-     * @param bool   $enableCopyToClipboard https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Uuid/Index.html#confval-uuid-enablecopytoclipboard
-     * @param int    $size                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Uuid/Index.html#confval-uuid-size
-     * @param int|null $version             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Uuid/Index.html#confval-uuid-version
+     * @param bool     $enableCopyToClipboard https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Uuid/Index.html#confval-uuid-enablecopytoclipboard
+     * @param int      $size                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Uuid/Index.html#confval-uuid-size
+     * @param int|null $version               https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Uuid/Index.html#confval-uuid-version
      */
     public function __construct(
-        protected bool    $enableCopyToClipboard = false,
-        protected int     $size = 36,
-        protected ?int    $version = null,
+        protected bool $enableCopyToClipboard = false,
+        protected int  $size = 36,
+        protected ?int $version = null,
     ) {
     }
 

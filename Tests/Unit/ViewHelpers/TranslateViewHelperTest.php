@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Tests\Unit\ViewHelpers;
 
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\MockObject;
 use PSBits\Foundation\ViewHelpers\TranslateViewHelper;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
@@ -32,8 +33,8 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Exception as ViewHelperException;
  */
 class TranslateViewHelperTest extends UnitTestCase
 {
-    private TranslateViewHelper $subject;
-    private RenderingContext&\PHPUnit\Framework\MockObject\MockObject $renderingContext;
+    private TranslateViewHelper         $subject;
+    private RenderingContext&MockObject $renderingContext;
 
     protected function setUp(): void
     {

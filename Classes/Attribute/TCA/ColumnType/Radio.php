@@ -32,7 +32,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Radio extends AbstractColumnType implements ColumnTypeWithItemsInterface
 {
     /**
-     * @param array      $items         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Radio/Index.html#confval-radio-items
+     * @param array       $items         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Radio/Index.html#confval-radio-items
      * @param string|null $itemsProcFunc https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/ItemsProcFunc.html
      */
     public function __construct(

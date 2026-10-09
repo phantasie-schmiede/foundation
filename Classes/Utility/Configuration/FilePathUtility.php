@@ -45,7 +45,7 @@ class FilePathUtility
      * "LLL:EXT:my_extension/Resources/Private/Language/Backend/Configuration/TCA/Overrides/tt_content.xlf:".
      *
      * @param ExtensionInformationInterface $extensionInformation
-     * @param string|null                   $filename custom filename without extension (.xlf is added automatically)
+     * @param string|null                   $filename             custom filename without extension (.xlf is added automatically)
      *
      * @return string
      */

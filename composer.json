@@ -13,6 +13,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "PSBits\\Foundation\\PhpCsFixer\\Fixer\\": "Build/Quality/php-cs-fixer",
             "PSBits\\Foundation\\Tests\\": "Tests"
         }
     },

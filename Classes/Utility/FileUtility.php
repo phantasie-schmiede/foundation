@@ -54,7 +54,7 @@ class FileUtility
      *
      * To enforce a specific unit use a value of FILE_SIZE_UNITS as second parameter.
      *
-     * @param int|string $input You can pass either the filesize or the filename.
+     * @param int|string $input    You can pass either the filesize or the filename.
      * @param int|null   $unit
      * @param int        $decimals
      *

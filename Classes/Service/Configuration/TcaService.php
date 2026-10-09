@@ -40,11 +40,11 @@ use function get_class;
  */
 class TcaService
 {
-    public const    array  PALETTE_IDENTIFIERS = TcaUtility::CORE_PALETTE_IDENTIFIERS;
-    public const    string UNSET_KEYWORD       = TcaTable::UNSET_KEYWORD;
+    public const array  PALETTE_IDENTIFIERS = TcaUtility::CORE_PALETTE_IDENTIFIERS;
+    public const string UNSET_KEYWORD       = TcaTable::UNSET_KEYWORD;
 
-    protected string $defaultLabelPath = '';
-    protected string $tableName        = '';
+    protected string                $defaultLabelPath = '';
+    protected string                $tableName        = '';
     protected readonly NameResolver $nameResolver;
 
     public function __construct(

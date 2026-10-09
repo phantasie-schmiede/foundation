@@ -23,8 +23,8 @@ use Attribute;
 class User extends AbstractColumnType
 {
     /**
-     * @param array $parameters Additional options for the renderType.
-     * @param string $renderType https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/User/Index.html#confval-user-rendertype
+     * @param array|null $parameters Additional options for the renderType.
+     * @param string     $renderType https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/User/Index.html#confval-user-rendertype
      */
     public function __construct(
         protected ?array $parameters = null,

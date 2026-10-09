@@ -23,14 +23,14 @@ use PSBits\Foundation\Utility\Database\DefinitionUtility;
 class Password extends AbstractColumnType
 {
     /**
-     * @param bool|null   $hashed      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Password/Index.html#confval-password-hashed
-     * @param string      $placeholder https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Password/Index.html#confval-password-placeholder
-     * @param int|null    $size        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Password/Index.html#confval-password-size
+     * @param bool|null $hashed      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Password/Index.html#confval-password-hashed
+     * @param string    $placeholder https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Password/Index.html#confval-password-placeholder
+     * @param int|null  $size        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Password/Index.html#confval-password-size
      */
     public function __construct(
-        protected ?bool   $hashed = null,
-        protected string  $placeholder = '',
-        protected ?int    $size = null,
+        protected ?bool  $hashed = null,
+        protected string $placeholder = '',
+        protected ?int   $size = null,
     ) {
     }
 
