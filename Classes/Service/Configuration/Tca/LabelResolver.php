@@ -12,11 +12,17 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Service\Configuration\Tca;
 
 use JsonException;
+use PSBits\Foundation\Service\ExtensionInformationService;
 use PSBits\Foundation\Utility\LocalizationUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+use function lcfirst;
+use function strrpos;
+use function substr;
 
 /**
  * Class LabelResolver
@@ -25,6 +31,30 @@ use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExis
  */
 class LabelResolver
 {
+    /**
+     * Builds the default LLL label path of the domain model the given class belongs to.
+     *
+     * If the table is already present in the TCA (i.e. the class extends another domain model), the label path
+     * points to the Overrides directory.
+     *
+     * @param string $className Fully qualified class name of the domain model.
+     * @param string $tableName The table name of the domain model.
+     */
+    public static function getDefaultLabelPath(string $className, string $tableName): string
+    {
+        $extensionKey = GeneralUtility::makeInstance(ExtensionInformationService::class)
+                            ->extractExtensionInformationFromClassName($className)['extensionKey'];
+        $defaultLabelPath = 'LLL:EXT:' . $extensionKey . '/Resources/Private/Language/Backend/Configuration/TCA/';
+
+        if (isset($GLOBALS['TCA'][$tableName])) {
+            $defaultLabelPath .= 'Overrides/';
+        }
+
+        $defaultLabelPath .= lcfirst(substr($className, strrpos($className, '\\') + 1)) . '.xlf:';
+
+        return $defaultLabelPath;
+    }
+
     /**
      * Resolves a label against a default label.
      * If the given label is valid (plain text or an existing LLL label), it is returned. Otherwise, the default

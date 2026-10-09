@@ -44,8 +44,8 @@ class TcaService
     public const string UNSET_KEYWORD       = TcaTable::UNSET_KEYWORD;
 
     protected string                $defaultLabelPath = '';
-    protected string                $tableName        = '';
     protected readonly NameResolver $nameResolver;
+    protected string                $tableName = '';
 
     public function __construct(
         protected readonly ExtensionInformationService $extensionInformationService,
@@ -56,12 +56,14 @@ class TcaService
 
     public function addColumnConfiguration(string $columnName, array $columnConfiguration): void
     {
-        $this->getTcaTable()->addColumnConfiguration($columnName, $columnConfiguration);
+        $this->getTcaTable()
+            ->addColumnConfiguration($columnName, $columnConfiguration);
     }
 
     public function addToPalette(string $identifier, array $fieldNames, string $position = ''): void
     {
-        $this->getTcaTable()->addFieldsToPalette($identifier, $fieldNames, $position);
+        $this->getTcaTable()
+            ->addFieldsToPalette($identifier, $fieldNames, $position);
     }
 
     /**
@@ -87,7 +89,7 @@ class TcaService
      */
     public function buildTca(bool $overrideMode): void
     {
-        $builder = new Builder($this->extensionInformationService, $this->nameResolver);
+        $builder = new Builder($this->nameResolver);
         $builder->build($overrideMode);
     }
 
@@ -154,7 +156,7 @@ class TcaService
         string $identifier,
         string $label = '',
         string $description = '',
-        bool $isHiddenPalette = false
+        bool   $isHiddenPalette = false,
     ): void {
         $this->getTcaTable()
             ->createPalette($identifier, $label, $description, $isHiddenPalette, $this->defaultLabelPath);

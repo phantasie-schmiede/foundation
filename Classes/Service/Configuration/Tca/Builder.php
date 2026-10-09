@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service\Configuration\Tca;
 
+use InvalidArgumentException;
 use JsonException;
 use PSBits\Foundation\Attribute\TCA\Column;
 use PSBits\Foundation\Attribute\TCA\ColumnType\ColumnTypeInterface;
@@ -21,7 +22,6 @@ use PSBits\Foundation\Attribute\TCA\Tab;
 use PSBits\Foundation\Attribute\TCA\Type;
 use PSBits\Foundation\Exceptions\ImplementationException;
 use PSBits\Foundation\Exceptions\MisconfiguredTcaException;
-use PSBits\Foundation\Service\ExtensionInformationService;
 use PSBits\Foundation\Utility\Configuration\TcaUtility;
 use PSBits\Foundation\Utility\ReflectionUtility;
 use Psr\Container\ContainerExceptionInterface;
@@ -47,8 +47,7 @@ use function is_array;
 readonly class Builder
 {
     public function __construct(
-        private ExtensionInformationService $extensionInformationService,
-        private NameResolver                $nameResolver,
+        private NameResolver $nameResolver,
     ) {
     }
 
@@ -68,6 +67,7 @@ readonly class Builder
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
      * @throws ImplementationException
+     * @throws InvalidArgumentException
      * @throws JsonException
      * @throws MisconfiguredTcaException
      * @throws NotFoundExceptionInterface
@@ -90,6 +90,7 @@ readonly class Builder
      * @throws ContainerExceptionInterface
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
      * @throws MisconfiguredTcaException
      * @throws NotFoundExceptionInterface
@@ -107,17 +108,8 @@ readonly class Builder
             return;
         }
 
-        $extensionKey = $this->extensionInformationService->extractExtensionInformationFromClassName(
-            $className
-        )['extensionKey'];
-        $defaultLabelPath = 'LLL:EXT:' . $extensionKey . '/Resources/Private/Language/Backend/Configuration/TCA/';
-
-        if (isset($GLOBALS['TCA'][$tableName])) {
-            $defaultLabelPath .= 'Overrides/';
-        }
-
-        $defaultLabelPath .= lcfirst($reflection->getShortName()) . '.xlf:';
-        $properties = $reflection->getProperties();
+        $defaultLabelPath = LabelResolver::getDefaultLabelPath($className, $tableName);
+        $properties       = $reflection->getProperties();
 
         if ($overrideMode) {
             /*
