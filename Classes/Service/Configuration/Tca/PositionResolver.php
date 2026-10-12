@@ -181,7 +181,7 @@ readonly class PositionResolver
                 $resolvedPosition = $this->resolveShowItemReference($parsedPosition);
 
                 if (null !== $resolvedPosition) {
-                    $position = $resolvedPosition;
+                    $position        = $resolvedPosition;
                     $fieldCanBeAdded = true;
                 }
             }

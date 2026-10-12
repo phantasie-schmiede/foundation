@@ -168,7 +168,7 @@ final class PropertyNamesAlignmentFixer extends AbstractFixer
     private function alignConstructorParameters(Tokens $tokens, int $functionIndex): void
     {
         $openParenthesisIndex = $tokens->getNextTokenOfKind($functionIndex, ['(']);
-        $closeParenthesisIndex = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS, $openParenthesisIndex);
+        $closeParenthesisIndex = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $openParenthesisIndex);
 
         $arguments = (new ArgumentsAnalyzer())->getArguments($tokens, $openParenthesisIndex, $closeParenthesisIndex);
 
