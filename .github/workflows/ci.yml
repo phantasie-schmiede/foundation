@@ -411,7 +411,8 @@ jobs:
         needs.tests.result == 'success' &&
         needs.tests-mariadb.result == 'success' &&
         needs.tests-postgres.result == 'success' &&
-        needs.qa.result == 'success' &&
+        needs['qa-v13'].result == 'success' &&
+        needs['qa-v14'].result == 'success' &&
         needs.coverage.result == 'success' &&
         github.event_name == 'push' &&
         startsWith(github.ref, 'refs/tags/')
