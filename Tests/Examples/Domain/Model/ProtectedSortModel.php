@@ -26,19 +26,13 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 #[Table('tx_foundation_protected_sort')]
 #[Ctrl(
-    label: 'singleField',
-    sortBy: 'uid',
-    delete: null,
-    crdate: null,
-    tstamp: null,
+    coreFields: 'none',
     defaultSortBy: null,
-    enableColumns: null,
+    delete: null,
     iconFile: null,
-    languageField: null,
+    label: 'singleField',
     origUid: null,
-    transOrigDiffSourceField: null,
-    transOrigPointerField: null,
-    translationSource: null,
+    sortBy: 'uid',
 )]
 class ProtectedSortModel extends AbstractEntity
 {

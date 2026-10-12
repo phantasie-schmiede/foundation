@@ -31,9 +31,9 @@ use function is_int;
  * request instruction handling and only relevant to tests inside core itself.
  *
  * The configuration is serialised and written directly instead of through SiteWriter, which is not
- * available on every supported major: the class does not exist in v12 and only became a public
- * service later on. SiteConfiguration::load() reads the very same config.yaml format on all
- * supported versions, so writing it here keeps the trait free of version specific wiring.
+ * available as a public service on every supported major. SiteConfiguration::load() reads the
+ * very same config.yaml format on all supported versions, so writing it here keeps the trait
+ * free of version specific wiring.
  *
  * @package PSBits\Foundation\Tests\Functional\SiteHandling
  */

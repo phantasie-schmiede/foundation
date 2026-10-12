@@ -16,6 +16,17 @@ parameters:
         identifier: staticMethod.alreadyNarrowedType
         path: ../../Tests/Unit/Service/Typo3/LanguageServiceFactoryTest.php
         reportUnmatched: false
+      # addPageTSConfig() and addUserTSConfig() were removed from ExtensionManagementUtility in v14.
+      # The calls are version-gated to v13, so on v14 the analyser still reports them as unknown even
+      # though they are never executed. Matching by method name keeps the services fully analysed.
+      -
+        identifier: staticMethod.notFound
+        message: '#addPageTSConfig#'
+        reportUnmatched: false
+      -
+        identifier: staticMethod.notFound
+        message: '#addUserTSConfig#'
+        reportUnmatched: false
   paths:
     - ../../Classes
     - ../../Tests/Unit
@@ -24,6 +35,11 @@ parameters:
     # testing framework instance (database, instance path, container) and are verified by the
     # test:functional matrix jobs instead, so they are deliberately out of the analyser's scope.
     - ../../Tests/Functional
+    # The factory is declared conditionally: the core LanguageServiceFactory is a readonly class on
+    # v14 but a plain class on v13, and a child must carry the same readonly status as its parent.
+    # On each major the branch meant for the other major is an invalid (non-ignorable) extension, so
+    # the file is left to the functional suites, which exercise it on every supported major.
+    - ../../Classes/Service/Typo3/LanguageServiceFactory.php
   tmpDir: .phpstan
 
 includes:

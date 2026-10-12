@@ -27,18 +27,12 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 #[Table('tx_foundation_position_loop')]
 #[Ctrl(
-    label: 'a',
-    delete: null,
-    crdate: null,
-    tstamp: null,
+    coreFields: 'none',
     defaultSortBy: null,
-    enableColumns: null,
+    delete: null,
     iconFile: null,
-    languageField: null,
+    label: 'a',
     origUid: null,
-    transOrigDiffSourceField: null,
-    transOrigPointerField: null,
-    translationSource: null,
 )]
 class PositionLoopModel extends AbstractEntity
 {

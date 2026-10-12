@@ -152,7 +152,7 @@ class TranslateViewHelper extends AbstractViewHelper
     }
 
     /**
-     * Helper method for TYPO3v12 compatibility: backend actions are named like "Controller/Action".
+     * Reduces the controller action name to its last path segment, which is the actual action name.
      */
     private static function getActionName(string $controllerActionName): string
     {
@@ -251,21 +251,12 @@ class TranslateViewHelper extends AbstractViewHelper
     }
 
     /**
-     * Resolves the current request across core versions.
-     *
-     * v13 stores it as a rendering context attribute, v12 still only has the
-     * deprecated-in-v13 getRequest() and never sets the attribute. Reading the
-     * attribute first means getRequest() is only reached on v12, where it is
-     * not yet deprecated.
+     * Resolves the current request, which the core exposes as a rendering context attribute.
      */
     private function resolveRequest(): ?ServerRequestInterface
     {
         if ($this->renderingContext->hasAttribute(ServerRequestInterface::class)) {
             return $this->renderingContext->getAttribute(ServerRequestInterface::class);
-        }
-
-        if (method_exists($this->renderingContext, 'getRequest')) {
-            return $this->renderingContext->getRequest();
         }
 
         return null;

@@ -31,8 +31,8 @@ use function is_string;
 class ReflectionUtility
 {
     /**
-     * @param string $attributeClass
-     * @param ReflectionClass<object>|ReflectionClassConstant|ReflectionFunctionAbstract|ReflectionMethod|ReflectionParameter|ReflectionProperty|string $reflection Can be a reflection or a full qualified class name.
+     * @param string                                                                                                                                    $attributeClass
+     * @param ReflectionClass<object>|ReflectionClassConstant|ReflectionFunctionAbstract|ReflectionMethod|ReflectionParameter|ReflectionProperty|string $reflection     Can be a reflection or a full qualified class name.
      *
      * @return object|null
      * @throws ReflectionException

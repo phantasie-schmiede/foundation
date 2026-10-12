@@ -17,6 +17,7 @@ use PSBits\Foundation\Utility\StringUtility;
 use PSBits\Foundation\Utility\ValidationUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use ReflectionException;
 use RuntimeException;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
@@ -45,7 +46,7 @@ class TypoScriptProviderService
      * replaced with NULL. By default, the whole TypoScript is taken into account. Example:
      * $this->typoScriptProviderService->get('config.headerComment');
      *
-     * @param string|null $path concatenate path segments by '.'
+     * @param string|null $path              concatenate path segments by '.'
      * @param string      $configurationType
      * @param string|null $extensionName
      * @param string|null $pluginName
@@ -54,6 +55,7 @@ class TypoScriptProviderService
      * @throws ContainerExceptionInterface
      * @throws JsonException
      * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
      */
     public function get(
         ?string $path = null,

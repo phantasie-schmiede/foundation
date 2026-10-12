@@ -233,7 +233,7 @@ class StringUtility
      * @param int    $length
      * @param string $appendix
      * @param bool   $respectWordBoundaries
-     * @param bool   $respectHtml Increases length of output string until all opened tags are properly closed
+     * @param bool   $respectHtml           Increases length of output string until all opened tags are properly closed
      *
      * @return string
      */

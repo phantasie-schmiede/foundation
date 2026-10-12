@@ -10,9 +10,9 @@
     $GLOBALS is already snapshotted and restored around every test and cannot leak
     into the next one. The strictness flag would additionally report any test that
     writes to $GLOBALS as risky, which makes it impossible to test methods that
-    legitimately do - ExtensionManagementUtility::addUserTSConfig() on v12/v13 for
+    legitimately do - ExtensionManagementUtility::addUserTSConfig() on v13 for
     instance, which is the only way to register page types in the page tree drag
-    area on those versions.
+    area on that version.
 -->
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

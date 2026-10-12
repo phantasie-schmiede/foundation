@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
-use PSBits\Foundation\Attribute\AbstractAttribute;
+use PSBits\Foundation\Attribute\TCA\AbstractTcaAttribute;
 use ReflectionException;
 
 /**
@@ -19,7 +19,7 @@ use ReflectionException;
  *
  * @package PSBits\Foundation\Attribute\TCA\ColumnType
  */
-abstract class AbstractColumnType extends AbstractAttribute implements ColumnTypeInterface
+abstract class AbstractColumnType extends AbstractTcaAttribute implements ColumnTypeInterface
 {
     /**
      * Returns the short class name (lower case) for ['config']['type'].

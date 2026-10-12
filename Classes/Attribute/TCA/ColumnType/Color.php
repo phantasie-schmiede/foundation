@@ -32,18 +32,47 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Color extends AbstractColumnType implements ColumnTypeWithItemsInterface
 {
     /**
-     * @param array $items       https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Check/Properties/Items.html
-     * @param array $valuePicker https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Color/Properties/ValuePicker.html
+     * @param array       $items       The items are not a TCA option by themselves, they are passed to valuePicker.
+     *                                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-valuepicker
+     * @param string|null $mode        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-mode
+     * @param string|null $opacity     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-opacity
+     * @param string|null $placeholder https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-placeholder
+     * @param int|null    $size        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-size
+     * @param array       $valuePicker https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-valuepicker
      */
     public function __construct(
-        protected array $items = [],
-        protected array $valuePicker = [],
+        protected array   $items = [],
+        protected ?string $mode = null,
+        protected ?string $opacity = null,
+        protected ?string $placeholder = null,
+        protected ?int    $size = null,
+        protected array   $valuePicker = [],
     ) {
     }
 
     public function getDatabaseDefinition(): string
     {
         return DefinitionUtility::char(7);
+    }
+
+    public function getMode(): ?string
+    {
+        return $this->mode;
+    }
+
+    public function getOpacity(): ?string
+    {
+        return $this->opacity;
+    }
+
+    public function getPlaceholder(): ?string
+    {
+        return $this->placeholder;
+    }
+
+    public function getSize(): ?int
+    {
+        return $this->size;
     }
 
     public function getValuePicker(): array

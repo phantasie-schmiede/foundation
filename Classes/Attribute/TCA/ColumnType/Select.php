@@ -13,9 +13,9 @@ namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
 use Attribute;
 use JsonException;
+use PSBits\Foundation\Enum\Relationship;
 use PSBits\Foundation\Enum\SelectRenderType;
 use PSBits\Foundation\Exceptions\MisconfiguredTcaException;
-use PSBits\Foundation\Service\Configuration\TcaService;
 use PSBits\Foundation\Service\ExtensionInformationService;
 use PSBits\Foundation\Utility\ArrayUtility;
 use PSBits\Foundation\Utility\Configuration\FilePathUtility;
@@ -75,46 +75,56 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
     private const string LANGUAGE_LABEL_PREFIX = 'LLL:EXT:foundation/Resources/Private/Language/Backend/Classes/Attribute/TCA/ColumnType/select.xlf:';
 
     protected ExtensionInformationService $extensionInformationService;
-    protected TcaService                  $tcaService;
 
     /**
-     * @param bool|null        $allowNonIdValues        https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Select/Properties/AllowNonIdValues.html
-     * @param int|null         $autoSizeMax             https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/CommonProperties/AutoSizeMax.html
+     * @param bool|null        $allowNonIdValues              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-allownonidvalues
+     * @param string|null      $authMode                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-authmode
+     * @param int|null         $autoSizeMax                   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-autosizemax
+     * @param int|null         $dbFieldLength                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-dbfieldlength
+     * @param bool|null        $disableNoMatchingValueElement https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-disablenomatchingvalueelement
      * @param string|null      $eval
-     * @param array|null       $fieldControl            https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/CommonProperties/FieldControl.html#tca-property-fieldcontrol
+     * @param array|null       $fieldControl                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-fieldcontrol
      * @param bool|null        $fieldControlDisableAddRecord
      * @param bool|null        $fieldControlDisableEditPopup
      * @param bool|null        $fieldControlDisableListModule
-     * @param string|null      $foreignTable            https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Select/Properties/ForeignTable.html
-     *                                                  Instead of directly specifying a foreign table, it is possible
-     *                                                  to specify a domain model class via linkedModel.
-     * @param string|null      $foreignTableWhere       https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Select/Properties/ForeignTableWhere.html
-     * @param array|null       $items                   https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Select/Properties/Items.html
-     * @param string|null      $itemsProcFunc           https://docs.typo3.org/m/typo3/reference-tca/11.5/en-us/ColumnsConfig/CommonProperties/ItemsProcFunc.html
-     * @param string           $linkedModel             Instead of directly specifying a foreign table, it is possible
-     *                                                  to specify a domain model class.
-     * @param int|null         $maxItems                https://docs.typo3.org/m/typo3/reference-tca/12.4/en-us/ColumnsConfig/CommonProperties/Maxitems.html
-     * @param int|null         $minItems                https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/CommonProperties/Minitems.html#tca-property-minitems
-     * @param string|null      $mm                      https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Select/Properties/Mm.html
-     * @param bool|null        $mmHasUidField           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Select/Properties/Mm.html#confval-MM_hasUidField
-     * @param array|null       $mmInsertFields          https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Select/Properties/Mm.html#confval-MM_insert_fields
-     * @param array|null       $mmMatchFields           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Select/Properties/Mm.html#confval-MM_match_fields
-     * @param string|null      $mmOppositeField         https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Select/Properties/Mm.html#confval-MM_opposite_field
-     * @param bool|null        $multiple                https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/CommonProperties/Multiple.html#tca-property-multiple
+     * @param array|null       $fileFolderConfig              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-filefolderconfig
+     * @param string|null      $foreignTable                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-foreign-table
+     *                                                        Instead of directly specifying a foreign table, it is possible
+     *                                                        to specify a domain model class via linkedModel.
+     * @param string|null      $foreignTableItemGroup         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-foreign-table-item-group
+     * @param string|null      $foreignTablePrefix            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-foreign-table-prefix
+     * @param string|null      $foreignTableWhere             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-foreign-table-where
+     * @param array|null       $itemGroups                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-itemgroups
+     * @param array|null       $items                         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-items
+     * @param string|null      $itemsProcFunc                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/ItemsProcFunc.html
+     * @param string           $linkedModel                   Instead of directly specifying a foreign table, it is possible
+     *                                                        to specify a domain model class.
+     * @param int|null         $maxItems                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-maxitems
+     * @param int|null         $minItems                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-minitems
+     * @param string|null      $mm                            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/Mm.html#confval-mm
+     * @param array|null       $mmMatchFields                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/Mm.html#confval-mm-match-fields
+     * @param string|null      $mmOppositeField               https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/Mm.html#confval-mm-opposite-field
+     * @param array|null       $mmOppositeUsage               https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-mm-oppositeusage
+     * @param string|null      $mmTableWhere                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-mm-table-where
+     * @param bool|null        $multiple                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-multiple
      * @param array|null       $prependItem
+     * @param Relationship     $relationship                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-relationship
      * @param SelectRenderType $renderType
-     * @param int|null         $size                    https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/CommonProperties/Size.html#tca-property-size
-     * @param array|null       $treeConfig              https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Select/Properties/SelectTreeConfig.html
-     * @param string|null      $treeConfigChildrenField You can use the property name. It will be converted to the
-     *                                                  column name automatically.
-     * @param string|null      $treeConfigDataProvider
-     * @param bool|null        $treeConfigExpandAll
-     * @param int|null         $treeConfigMaxLevels
-     * @param string|null      $treeConfigNonSelectableLevels
-     * @param string|null      $treeConfigParentField   You can use the property name. It will be converted to the
-     *                                                  column name automatically.
-     * @param bool|null        $treeConfigShowHeader
-     * @param array            $treeConfigStartingPoints
+     * @param int|null         $size                          https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-size
+     * @param string|null      $sortItems                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-sortitems
+     * @param array|null       $treeConfig                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig
+     * @param string|null      $treeConfigChildrenField       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-childrenfield
+     *                                                        You can use the property name. It will be converted to the
+     *                                                        column name automatically.
+     * @param string|null      $treeConfigDataProvider        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-dataprovider
+     * @param bool|null        $treeConfigExpandAll           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-expandall
+     * @param int|null         $treeConfigMaxLevels           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-maxlevels
+     * @param string|null      $treeConfigNonSelectableLevels https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-nonselectablelevels
+     * @param string|null      $treeConfigParentField         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-parentfield
+     *                                                        You can use the property name. It will be converted to the
+     *                                                        column name automatically.
+     * @param bool|null        $treeConfigShowHeader          https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-showheader
+     * @param array            $treeConfigStartingPoints      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-startingpoints
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -122,28 +132,37 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
      */
     public function __construct(
         protected ?bool            $allowNonIdValues = null,
+        protected ?string          $authMode = null,
         protected ?int             $autoSizeMax = null,
+        protected ?int             $dbFieldLength = null,
+        protected ?bool            $disableNoMatchingValueElement = null,
         protected ?string          $eval = null,
         protected ?array           $fieldControl = null,
         protected ?bool            $fieldControlDisableAddRecord = null,
         protected ?bool            $fieldControlDisableEditPopup = null,
         protected ?bool            $fieldControlDisableListModule = null,
+        protected ?array           $fileFolderConfig = null,
         protected ?string          $foreignTable = null,
+        protected ?string          $foreignTableItemGroup = null,
+        protected ?string          $foreignTablePrefix = null,
         protected ?string          $foreignTableWhere = null,
+        protected ?array           $itemGroups = null,
         protected ?array           $items = null,
         protected ?string          $itemsProcFunc = null,
         protected string           $linkedModel = '',
         protected ?int             $maxItems = null,
         protected ?int             $minItems = null,
         protected ?string          $mm = null,
-        protected ?bool            $mmHasUidField = null,
-        protected ?array           $mmInsertFields = null,
         protected ?array           $mmMatchFields = null,
         protected ?string          $mmOppositeField = null,
+        protected ?array           $mmOppositeUsage = null,
+        protected ?string          $mmTableWhere = null,
         protected ?bool            $multiple = null,
         protected ?array           $prependItem = null,
+        protected Relationship     $relationship = Relationship::manyToMany,
         protected SelectRenderType $renderType = SelectRenderType::selectSingle,
         protected ?int             $size = null,
+        protected ?string          $sortItems = null,
         protected ?array           $treeConfig = null,
         protected ?string          $treeConfigChildrenField = null,
         protected ?string          $treeConfigDataProvider = null,
@@ -155,10 +174,9 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
         protected array            $treeConfigStartingPoints = [],
     ) {
         $this->extensionInformationService = GeneralUtility::makeInstance(ExtensionInformationService::class);
-        $this->tcaService                  = GeneralUtility::makeInstance(TcaService::class);
 
         if (class_exists($linkedModel)) {
-            $this->foreignTable = $this->tcaService->convertClassNameToTableName($linkedModel);
+            $this->foreignTable = $this->tcaService()->convertClassNameToTableName($linkedModel);
         }
 
         if (SelectRenderType::selectSingle === $renderType) {
@@ -182,6 +200,11 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
     public function getAutoSizeMax(): ?int
     {
         return $this->autoSizeMax;
+    }
+
+    public function getAuthMode(): ?string
+    {
+        return $this->authMode;
     }
 
     public function getDatabaseDefinition(): string
@@ -223,6 +246,11 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
         return DefinitionUtility::int(unsigned: !$hasNegativeValues);
     }
 
+    public function getDbFieldLength(): ?int
+    {
+        return $this->dbFieldLength;
+    }
+
     public function getEval(): ?string
     {
         return $this->eval;
@@ -247,14 +275,34 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
         return $fieldControl;
     }
 
+    public function getFileFolderConfig(): ?array
+    {
+        return $this->fileFolderConfig;
+    }
+
     public function getForeignTable(): ?string
     {
         return $this->foreignTable;
     }
 
+    public function getForeignTableItemGroup(): ?string
+    {
+        return $this->foreignTableItemGroup;
+    }
+
+    public function getForeignTablePrefix(): ?string
+    {
+        return $this->foreignTablePrefix;
+    }
+
     public function getForeignTableWhere(): ?string
     {
         return $this->foreignTableWhere;
+    }
+
+    public function getItemGroups(): ?array
+    {
+        return $this->itemGroups;
     }
 
     public function getItems(): ?array
@@ -289,16 +337,6 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
         return $this->mm;
     }
 
-    public function getMmHasUidField(): ?bool
-    {
-        return $this->mmHasUidField;
-    }
-
-    public function getMmInsertFields(): ?array
-    {
-        return $this->mmInsertFields;
-    }
-
     public function getMmMatchFields(): ?array
     {
         return $this->mmMatchFields;
@@ -315,7 +353,22 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
             return null;
         }
 
-        return $this->tcaService->convertPropertyNameToColumnName($this->mmOppositeField);
+        return $this->tcaService()->convertPropertyNameToColumnName($this->mmOppositeField);
+    }
+
+    public function getMmOppositeUsage(): ?array
+    {
+        return $this->mmOppositeUsage;
+    }
+
+    public function getMmTableWhere(): ?string
+    {
+        return $this->mmTableWhere;
+    }
+
+    public function getRelationship(): string
+    {
+        return $this->relationship->value;
     }
 
     public function getRenderType(): string
@@ -326,6 +379,11 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
     public function getSize(): ?int
     {
         return $this->size;
+    }
+
+    public function getSortItems(): ?string
+    {
+        return $this->sortItems;
     }
 
     /**
@@ -366,7 +424,7 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
         }
 
         if (null !== $this->treeConfigChildrenField) {
-            $configuration['childrenField'] = $this->tcaService->convertPropertyNameToColumnName(
+            $configuration['childrenField'] = $this->tcaService()->convertPropertyNameToColumnName(
                 $this->treeConfigChildrenField,
             );
         }
@@ -376,7 +434,7 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
         }
 
         if (null !== $this->treeConfigParentField) {
-            $configuration['parentField'] = $this->tcaService->convertPropertyNameToColumnName(
+            $configuration['parentField'] = $this->tcaService()->convertPropertyNameToColumnName(
                 $this->treeConfigParentField,
             );
         }
@@ -391,6 +449,11 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
     public function isAllowNonIdValues(): ?bool
     {
         return $this->allowNonIdValues;
+    }
+
+    public function isDisableNoMatchingValueElement(): ?bool
+    {
+        return $this->disableNoMatchingValueElement;
     }
 
     public function isMultiple(): ?bool

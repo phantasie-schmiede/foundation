@@ -16,6 +16,7 @@ use JsonException;
 use PSBits\Foundation\Utility\StringUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use ReflectionException;
 use RuntimeException;
 use SimpleXMLElement;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
@@ -66,14 +67,16 @@ class XmlUtility
     }
 
     /**
-     * @param SimpleXMLElement|string $xml
-     * @param bool                    $sortAlphabetically Sort tags on same level alphabetically by tag name.
+     * @param SimpleXMLElement|string                          $xml
+     * @param bool                                             $sortAlphabetically Sort tags on same level
+     *                                                                             alphabetically by tag name.
      * @param array<string, class-string<XmlElementInterface>> $mapping
      *
      * @return array|object
      * @throws ContainerExceptionInterface
      * @throws JsonException
      * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
      */
     public static function convertFromXml(
         SimpleXMLElement|string $xml,
@@ -146,16 +149,18 @@ class XmlUtility
     }
 
     /**
-     * @param bool             $sortAlphabetically
-     * @param SimpleXMLElement $xml
+     * @param bool                                             $sortAlphabetically
+     * @param SimpleXMLElement                                 $xml
      * @param array<string, class-string<XmlElementInterface>> $mapping
-     * @param array            $namespaces
-     * @param bool             $rootLevel This is an internal parameter only to be set from within this function.
+     * @param array                                            $namespaces
+     * @param bool                                             $rootLevel          This is an internal parameter only to be set
+     *                                                                             from within this function.
      *
      * @return array|object
      * @throws ContainerExceptionInterface
      * @throws JsonException
      * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
      */
     private static function buildFromXml(
         bool             $sortAlphabetically,

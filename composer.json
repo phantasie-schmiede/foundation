@@ -13,6 +13,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "PSBits\\Foundation\\PhpCsFixer\\Fixer\\": "Build/Quality/php-cs-fixer",
             "PSBits\\Foundation\\Tests\\": "Tests"
         }
     },
@@ -46,21 +47,24 @@
         "ext-mbstring": "*",
         "ext-simplexml": "*",
         "php": "^8.3",
-        "typo3/cms-core": "^12.4 || ^13.4"
+        "typo3/cms-core": "^13.4 || ^14.3"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.95",
         "helmich/typo3-typoscript-lint": "^3.3",
         "phpstan/phpstan": "^2.2",
         "phpunit/phpunit": "^11.2.5",
-        "saschaegerer/phpstan-typo3": "^2.1",
+        "saschaegerer/phpstan-typo3": "^2.1 || ^3.0",
         "typo3/coding-standards": "^0.5.3",
-        "typo3/testing-framework": "^8.2"
+        "typo3/testing-framework": "^9.5"
     },
     "scripts": {
         "analyze:php": "phpstan analyse --configuration=Build/Quality/phpstan.neon.dist --no-progress",
         "audit:composer": "composer audit --abandoned=report",
-        "docker:images": "COMPOSER_PROCESS_TIMEOUT=0 sh Build/Scripts/buildTestImages.sh",
+        "docker:images": [
+            "Composer\\Config::disableProcessTimeout",
+            "sh Build/Scripts/buildTestImages.sh"
+        ],
         "fix:all": [
             "@fix:classes",
             "@fix:htmlxml",
@@ -103,10 +107,16 @@
         ],
         "test:coverage": "sh Build/Scripts/runCoverage.sh @additional_args",
         "test:coverage:update-baseline": "sh Build/Scripts/runCoverage.sh --update-baseline @additional_args",
-        "test:docker": "sh Build/Scripts/runDockerTests.sh @additional_args",
-        "test:local": "sh Build/Scripts/runLocalTests.sh @additional_args",
-        "test:functional": "php .Build/bin/phpunit -c Build/phpunit/FunctionalTests.xml",
-        "test:unit": "php .Build/bin/phpunit -c Build/phpunit/UnitTests.xml",
+        "test:docker": [
+            "Composer\\Config::disableProcessTimeout",
+            "sh Build/Scripts/runDockerTests.sh @additional_args"
+        ],
+        "test:local": [
+            "Composer\\Config::disableProcessTimeout",
+            "sh Build/Scripts/runLocalTests.sh @additional_args"
+        ],
+        "test:functional": "php -d memory_limit=1G .Build/bin/phpunit -c Build/phpunit/FunctionalTests.xml",
+        "test:unit": "php -d memory_limit=1G .Build/bin/phpunit -c Build/phpunit/UnitTests.xml",
         "validate:composer": "composer validate --no-check-publish"
     },
     "type": "typo3-cms-extension"

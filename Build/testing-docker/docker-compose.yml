@@ -6,7 +6,7 @@
 # Usage (run from the repository root):
 #   composer test:docker                                full Docker matrix
 #   composer test:docker -- 13.4 --db postgres          single leg
-#   PHP_VERSION=8.3 composer test:docker -- 12.4        single leg on PHP 8.3
+#   PHP_VERSION=8.3 composer test:docker -- 13.4        single leg on PHP 8.3
 #
 # Equivalent raw compose commands:
 #   docker compose -f Build/testing-docker/docker-compose.yml run --rm tests sh Build/Scripts/runTests.sh 13.4
@@ -23,8 +23,7 @@
 # in the working tree between runs. The composer home lives in a named volume,
 # so package downloads are cached across runs.
 #
-# PHP_VERSION selects the test image (8.3, 8.4 or 8.5). TYPO3 v12 caps PHP at
-# < 8.5, so the v12 leg should run on 8.3 or 8.4.
+# PHP_VERSION selects the test image (8.3, 8.4 or 8.5).
 
 services:
   #---------------------------------------------------------------------------------------------------------------------

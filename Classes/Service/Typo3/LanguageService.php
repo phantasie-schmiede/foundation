@@ -36,7 +36,6 @@ use function strlen;
  * Overwrites the original functions in order to respect plural forms and support logging.
  *
  * @package PSBits\Foundation\Service\Typo3
- * @TODO    Check original file on TYPO3 update (v14)!
  */
 class LanguageService extends Typo3LanguageService
 {
@@ -76,7 +75,7 @@ class LanguageService extends Typo3LanguageService
      *
      * @return string
      */
-    protected function getLLL(string $index, array $localLanguage): string
+    protected function getLLL(string $index, array $localLanguage, bool $returnNullIfNotSet = false): string
     {
         $pluralFormIndex = 0;
 
@@ -99,17 +98,28 @@ class LanguageService extends Typo3LanguageService
         }
 
         if (isset($languageKey)) {
-            if (is_string($localLanguage[$languageKey][$index])) {
-                $value = $localLanguage[$languageKey][$index];
-            } elseif (isset($localLanguage[$languageKey][$index][$pluralFormIndex]['target'])) {
-                $value = $localLanguage[$languageKey][$index][$pluralFormIndex]['target'];
+            $entry = $localLanguage[$languageKey][$index];
+
+            if (is_string($entry)) {
+                $value = $entry;
+            } elseif (isset($entry[$pluralFormIndex])) {
+                $value = self::resolvePluralForm($entry[$pluralFormIndex]);
             } else {
                 // Set static property for logging
                 self::$pluralFormMissing = true;
-                $value                   = $localLanguage[$languageKey][$index][0]['target'];
+                $value                   = self::resolvePluralForm($entry[0]);
             }
         }
 
         return $value ?? '';
+    }
+
+    /**
+     * Resolves a single plural form to its label. v13 stores each form as
+     * ['target' => string], v14 as the plain string.
+     */
+    private static function resolvePluralForm(string|array $form): string
+    {
+        return is_array($form) ? ($form['target'] ?? '') : $form;
     }
 }

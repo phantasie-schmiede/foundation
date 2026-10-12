@@ -49,7 +49,7 @@ abstract class AbstractExtensionInformation implements ExtensionInformationInter
     /**
      * @var PluginConfiguration[]
      */
-    private array $plugins = [];
+    private array  $plugins = [];
     private string $vendorName;
 
     public function __construct()

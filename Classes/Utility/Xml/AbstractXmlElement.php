@@ -35,7 +35,7 @@ class AbstractXmlElement implements XmlElementInterface
      *            workaround.
      */
     protected array $_nodeValue = [];
-    protected ?int $_position   = null;
+    protected ?int  $_position  = null;
 
     /**
      * @throws ReflectionException

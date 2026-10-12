@@ -6,8 +6,8 @@
 #   sh Build/Scripts/runDockerTests.sh                     full Docker matrix
 #   sh Build/Scripts/runDockerTests.sh <core-version> [--lowest] [--db sqlite|mysql|postgres]
 #
-# With no arguments it runs the full Docker matrix - the sqlite legs 12.4,
-# 13.4 and 13.4 --lowest plus mysql and postgres legs on both cores - using
+# With no arguments it runs the full Docker matrix - the sqlite legs for
+# 13.4 and 14.3 (each plus --lowest) plus mysql and postgres legs - using
 # the images built by buildTestImages.sh (select the PHP version via
 # PHP_VERSION before calling). With arguments it runs a single leg: --db
 # mysql/postgres selects the matching compose service (tests-mysql /
@@ -35,7 +35,7 @@ compose() {
 }
 
 LEG_NO=0
-LEG_TOTAL=7
+LEG_TOTAL=8
 RESULTS=''
 FAILED=0
 
@@ -83,7 +83,7 @@ run_leg() {
 if [ $# -eq 0 ]; then
     PHP_TAG="${PHP_VERSION:-8.4}"
     banner "Test matrix (docker) — PHP ${PHP_TAG} (image psbits/foundation-test:${PHP_TAG})"
-    banner "Legs: 12.4/sqlite, 13.4/sqlite, 13.4-lowest/sqlite, 12.4/mysql, 13.4/mysql, 12.4/postgres, 13.4/postgres"
+    banner "Legs: 13.4/sqlite, 13.4-lowest/sqlite, 13.4/mysql, 13.4/postgres, 14.3/sqlite, 14.3-lowest/sqlite, 14.3/mysql, 14.3/postgres"
 
     run_matrix_leg() {
         SERVICE="$1"
@@ -101,13 +101,14 @@ if [ $# -eq 0 ]; then
         fi
     }
 
-    run_matrix_leg tests          "TYPO3 12.4 / sqlite"           12.4
     run_matrix_leg tests          "TYPO3 13.4 / sqlite"           13.4
     run_matrix_leg tests          "TYPO3 13.4 (lowest) / sqlite"  13.4 --lowest
-    run_matrix_leg tests-mysql    "TYPO3 12.4 / mysql"            12.4 --db mysql
     run_matrix_leg tests-mysql    "TYPO3 13.4 / mysql"            13.4 --db mysql
-    run_matrix_leg tests-postgres "TYPO3 12.4 / postgres"         12.4 --db postgres
     run_matrix_leg tests-postgres "TYPO3 13.4 / postgres"         13.4 --db postgres
+    run_matrix_leg tests          "TYPO3 14.3 / sqlite"           14.3
+    run_matrix_leg tests          "TYPO3 14.3 (lowest) / sqlite"  14.3 --lowest
+    run_matrix_leg tests-mysql    "TYPO3 14.3 / mysql"            14.3 --db mysql
+    run_matrix_leg tests-postgres "TYPO3 14.3 / postgres"         14.3 --db postgres
     exit "$FAILED"
 fi
 

@@ -13,13 +13,11 @@ namespace PSBits\Foundation\Attribute\TCA;
 
 use Attribute;
 use PSBits\Foundation\Attribute\TCA\ColumnType\ColumnTypeInterface;
+use PSBits\Foundation\Service\Configuration\Tca\Position;
 use PSBits\Foundation\Utility\Configuration\TcaUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
-use function str_contains;
 
 /**
  * Class Column
@@ -56,48 +54,65 @@ class Column extends AbstractTcaAttribute
     protected ?ColumnTypeInterface $configuration = null;
 
     /**
-     * @param bool              $addDatabaseKey     Set to true to add this field as simple key like
-     *                                              "KEY my_field (my_field)".
-     * @param string|null       $databaseDefinition Use this property to override the automatically generated
-     *                                              definition.
-     * @param mixed             $default            https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/CommonProperties/Default.html
-     * @param string|null       $description        https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Columns/Properties/Description.html#example
-     * @param string|array|null $displayCond        https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Columns/Properties/DisplayCond.html
-     * @param bool|null         $exclude            https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Columns/Properties/Exclude.html
-     * @param string|null       $l10nDisplay        https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Columns/Properties/L10nDisplay.html
-     * @param string|null       $l10nMode           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Columns/Properties/L10nMode.html
-     * @param string            $label              https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Columns/Properties/Label.html
-     * @param bool|null         $nullable           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Datetime/Properties/Nullable.html
-     * @param string|null       $onChange           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/Columns/Properties/OnChange.html
+     * @param bool              $addDatabaseKey               Set to true to add this field as simple key like
+     *                                                        "KEY my_field (my_field)".
+     * @param bool|null         $allowLanguageSynchronization https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-behaviour-allowlanguagesynchronization
+     * @param string|null       $databaseDefinition           Use this property to override the automatically generated
+     *                                                        definition.
+     * @param mixed             $default                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-default
+     * @param string|null       $description                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-description
+     * @param string|array|null $displayCond                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-displaycond
+     * @param bool|null         $exclude                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-exclude
+     * @param array|null        $fieldControl                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/FieldControl/Index.html#confval-fieldcontrol
+     * @param array|null        $fieldInformation             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/FieldInformation/Index.html#confval-fieldinformation
+     * @param array|null        $fieldWizard                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/FieldWizard/Index.html#confval-fieldwizard
+     * @param string|null       $l10nDisplay                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-l10n-display
+     * @param string|null       $l10nMode                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-l10n-mode
+     * @param string            $label                        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-label
+     * @param bool|null         $nullable                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-nullable
+     * @param string|null       $onChange                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-onchange
      * @param string            $position
-     * @param bool|null         $readOnly           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/CommonProperties/ReadOnly.html
-     * @param bool|null         $required           https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/CommonProperties/Required.html
-     * @param string            $typeList
+     * @param bool|null         $readOnly                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-readonly
+     * @param bool|null         $required                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-required
+     * @param string            $typeList                     Comma separated list of record types (values of the TCA
+     *                                                        type field) for which the field is added to showitem.
      */
     public function __construct(
         protected bool              $addDatabaseKey = false,
+        protected ?bool             $allowLanguageSynchronization = null,
         protected ?string           $databaseDefinition = null,
         protected mixed             $default = null,
         protected ?string           $description = null,
         protected string|array|null $displayCond = null,
         protected ?bool             $exclude = null,
+        protected ?array            $fieldControl = null,
+        protected ?array            $fieldInformation = null,
+        protected ?array            $fieldWizard = null,
         protected ?string           $l10nDisplay = null,
         protected ?string           $l10nMode = null,
         protected string            $label = '',
         protected ?bool             $nullable = null,
         protected ?string           $onChange = null,
         /**
-         * Usage: 'key:propertyName'
+         * Usage: 'key:reference'
          * You can use the keys 'after', 'before', 'palette', 'replace' and 'tab'.
+         * The reference can be a column, a palette identifier or a tab identifier. The default fields, which are
+         * added to the end of the showitems, can be referenced as well: 'language' (language tab),
+         * 'languagePalette' (language palette), 'access' (access tab), 'timeRestriction' (time restriction palette)
+         * and the disabled column (default: 'hidden').
          * If the referenced field belongs to a palette, there are also the options 'newLineAfter' and 'newLineBefore',
          * which will create a line break between this field and the referenced one.
          */
-        protected string            $position = '',
-        protected ?bool             $readOnly = null,
-        protected ?bool             $required = null,
-        protected string            $typeList = '',
+        protected string $position = '',
+        protected ?bool  $readOnly = null,
+        protected ?bool  $required = null,
+        protected string $typeList = '',
     ) {
-        parent::__construct();
+    }
+
+    public function getAllowLanguageSynchronization(): ?bool
+    {
+        return $this->allowLanguageSynchronization;
     }
 
     public function getConfiguration(): ColumnTypeInterface
@@ -118,6 +133,21 @@ class Column extends AbstractTcaAttribute
     public function getDisplayCond(): array|string|null
     {
         return $this->displayCond;
+    }
+
+    public function getFieldControl(): ?array
+    {
+        return $this->fieldControl;
+    }
+
+    public function getFieldInformation(): ?array
+    {
+        return $this->fieldInformation;
+    }
+
+    public function getFieldWizard(): ?array
+    {
+        return $this->fieldWizard;
     }
 
     public function getL10nDisplay(): ?string
@@ -147,21 +177,11 @@ class Column extends AbstractTcaAttribute
      */
     public function getPosition(): string
     {
-        if (empty($this->position)) {
-            return '';
-        }
-
-        [
-            $key,
-            $location,
-        ] = GeneralUtility::trimExplode(':', $this->position, false, 2);
-
-        // Check if $location is NOT a palette name.
-        if (!str_contains($location, '-')) {
-            $location = $this->tcaService->convertPropertyNameToColumnName($location);
-        }
-
-        return $key . ':' . $location;
+        return Position::normalize(
+            $this->position,
+            fn(string $name): string => $this->tcaService()
+                ->convertPropertyNameToColumnName($name)
+        );
     }
 
     public function getTypeList(): string
@@ -227,8 +247,24 @@ class Column extends AbstractTcaAttribute
             $configuration['config'][TcaUtility::convertKey($key)] = $value;
         }
 
+        if (null !== $this->allowLanguageSynchronization) {
+            $configuration['config']['behaviour']['allowLanguageSynchronization'] = $this->allowLanguageSynchronization;
+        }
+
         if (null !== $this->default) {
             $configuration['config']['default'] = $this->default;
+        }
+
+        if (null !== $this->fieldControl) {
+            $configuration['config']['fieldControl'] = $this->fieldControl;
+        }
+
+        if (null !== $this->fieldInformation) {
+            $configuration['config']['fieldInformation'] = $this->fieldInformation;
+        }
+
+        if (null !== $this->fieldWizard) {
+            $configuration['config']['fieldWizard'] = $this->fieldWizard;
         }
 
         if (null !== $this->nullable) {

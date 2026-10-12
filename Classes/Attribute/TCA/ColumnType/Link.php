@@ -23,20 +23,31 @@ use PSBits\Foundation\Utility\Database\DefinitionUtility;
 class Link extends AbstractColumnType
 {
     /**
-     * @param array|null $allowedTypes https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Link/Properties/AllowedTypes.html
-     * @param bool       $autocomplete https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Link/Properties/Autocomplete.html
-     * @param array|null $valuePicker  https://docs.typo3.org/m/typo3/reference-tca/main/en-us/ColumnsConfig/Type/Link/Properties/ValuePicker.html
+     * @param array|null  $allowedTypes https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Link/Index.html#confval-link-allowedtypes
+     * @param array|null  $appearance   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Link/Index.html#confval-link-appearance
+     * @param bool        $autocomplete https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Link/Index.html#confval-link-autocomplete
+     * @param string|null $placeholder  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Link/Index.html#confval-link-placeholder
+     * @param int|null    $size         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Link/Index.html#confval-link-size
+     * @param array|null  $valuePicker  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Link/Index.html#confval-link-valuepicker
      */
     public function __construct(
-        protected ?array $allowedTypes = null,
-        protected bool   $autocomplete = false,
-        protected ?array $valuePicker = null,
+        protected ?array  $allowedTypes = null,
+        protected ?array  $appearance = null,
+        protected bool    $autocomplete = false,
+        protected ?string $placeholder = null,
+        protected ?int    $size = null,
+        protected ?array  $valuePicker = null,
     ) {
     }
 
     public function getAllowedTypes(): ?array
     {
         return $this->allowedTypes;
+    }
+
+    public function getAppearance(): ?array
+    {
+        return $this->appearance;
     }
 
     public function getAutocomplete(): bool
@@ -47,6 +58,16 @@ class Link extends AbstractColumnType
     public function getDatabaseDefinition(): string
     {
         return DefinitionUtility::text();
+    }
+
+    public function getPlaceholder(): ?string
+    {
+        return $this->placeholder;
+    }
+
+    public function getSize(): ?int
+    {
+        return $this->size;
     }
 
     public function getValuePicker(): ?array

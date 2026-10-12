@@ -58,6 +58,7 @@ return [
                 ],
                 'foreign_field' => 'parent_uid',
                 'foreign_table' => 'sys_category',
+                'relationship'  => 'oneToMany',
                 'type'          => 'inline',
                 'EXT'           => [
                     'foundation' => [
