@@ -19,6 +19,7 @@ namespace PSBits\Foundation\Enum;
 enum Relationship: string
 {
     case manyToMany = 'manyToMany';
+    case manyToOne  = 'manyToOne';
     case oneToMany  = 'oneToMany';
     case oneToOne   = 'oneToOne';
 }

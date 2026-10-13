@@ -77,54 +77,54 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
     protected ExtensionInformationService $extensionInformationService;
 
     /**
-     * @param bool|null        $allowNonIdValues              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-allownonidvalues
-     * @param string|null      $authMode                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-authmode
-     * @param int|null         $autoSizeMax                   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-autosizemax
-     * @param int|null         $dbFieldLength                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-dbfieldlength
-     * @param bool|null        $disableNoMatchingValueElement https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-disablenomatchingvalueelement
-     * @param string|null      $eval
-     * @param array|null       $fieldControl                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-fieldcontrol
-     * @param bool|null        $fieldControlDisableAddRecord
-     * @param bool|null        $fieldControlDisableEditPopup
-     * @param bool|null        $fieldControlDisableListModule
-     * @param array|null       $fileFolderConfig              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-filefolderconfig
-     * @param string|null      $foreignTable                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-foreign-table
-     *                                                        Instead of directly specifying a foreign table, it is possible
-     *                                                        to specify a domain model class via linkedModel.
-     * @param string|null      $foreignTableItemGroup         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-foreign-table-item-group
-     * @param string|null      $foreignTablePrefix            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-foreign-table-prefix
-     * @param string|null      $foreignTableWhere             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-foreign-table-where
-     * @param array|null       $itemGroups                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-itemgroups
-     * @param array|null       $items                         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-items
-     * @param string|null      $itemsProcFunc                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/ItemsProcFunc.html
-     * @param string           $linkedModel                   Instead of directly specifying a foreign table, it is possible
-     *                                                        to specify a domain model class.
-     * @param int|null         $maxItems                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-maxitems
-     * @param int|null         $minItems                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-minitems
-     * @param string|null      $mm                            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/Mm.html#confval-mm
-     * @param array|null       $mmMatchFields                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/Mm.html#confval-mm-match-fields
-     * @param string|null      $mmOppositeField               https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/Mm.html#confval-mm-opposite-field
-     * @param array|null       $mmOppositeUsage               https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-mm-oppositeusage
-     * @param string|null      $mmTableWhere                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-mm-table-where
-     * @param bool|null        $multiple                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-multiple
-     * @param array|null       $prependItem
-     * @param Relationship     $relationship                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-relationship
-     * @param SelectRenderType $renderType
-     * @param int|null         $size                          https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-size
-     * @param string|null      $sortItems                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-sortitems
-     * @param array|null       $treeConfig                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig
-     * @param string|null      $treeConfigChildrenField       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-childrenfield
-     *                                                        You can use the property name. It will be converted to the
-     *                                                        column name automatically.
-     * @param string|null      $treeConfigDataProvider        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-dataprovider
-     * @param bool|null        $treeConfigExpandAll           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-expandall
-     * @param int|null         $treeConfigMaxLevels           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-maxlevels
-     * @param string|null      $treeConfigNonSelectableLevels https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-nonselectablelevels
-     * @param string|null      $treeConfigParentField         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-parentfield
-     *                                                        You can use the property name. It will be converted to the
-     *                                                        column name automatically.
-     * @param bool|null        $treeConfigShowHeader          https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-showheader
-     * @param array            $treeConfigStartingPoints      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-startingpoints
+     * @param bool|null         $allowNonIdValues              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-allownonidvalues
+     * @param string|null       $authMode                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-authmode
+     * @param int|null          $autoSizeMax                   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-autosizemax
+     * @param int|null          $dbFieldLength                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-dbfieldlength
+     * @param bool|null         $disableNoMatchingValueElement https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-disablenomatchingvalueelement
+     * @param string|null       $eval
+     * @param array|null        $fieldControl                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-fieldcontrol
+     * @param bool|null         $fieldControlDisableAddRecord
+     * @param bool|null         $fieldControlDisableEditPopup
+     * @param bool|null         $fieldControlDisableListModule
+     * @param array|null        $fileFolderConfig              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-filefolderconfig
+     * @param string|null       $foreignTable                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-foreign-table
+     *                                                         Instead of directly specifying a foreign table, it is possible
+     *                                                         to specify a domain model class via linkedModel.
+     * @param string|null       $foreignTableItemGroup         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-foreign-table-item-group
+     * @param string|null       $foreignTablePrefix            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-foreign-table-prefix
+     * @param string|null       $foreignTableWhere             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-foreign-table-where
+     * @param array|null        $itemGroups                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-itemgroups
+     * @param array|null        $items                         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-items
+     * @param string|null       $itemsProcFunc                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/ItemsProcFunc.html
+     * @param string            $linkedModel                   Instead of directly specifying a foreign table, it is possible
+     *                                                         to specify a domain model class.
+     * @param int|null          $maxItems                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-maxitems
+     * @param int|null          $minItems                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-minitems
+     * @param string|null       $mm                            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/Mm.html#confval-mm
+     * @param array|null        $mmMatchFields                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/Mm.html#confval-mm-match-fields
+     * @param string|null       $mmOppositeField               https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/Mm.html#confval-mm-opposite-field
+     * @param array|null        $mmOppositeUsage               https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-mm-oppositeusage
+     * @param string|null       $mmTableWhere                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-mm-table-where
+     * @param bool|null         $multiple                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-multiple
+     * @param array|null        $prependItem
+     * @param Relationship|null $relationship                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-relationship
+     * @param SelectRenderType  $renderType
+     * @param int|null          $size                          https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-size
+     * @param string|null       $sortItems                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-sortitems
+     * @param array|null        $treeConfig                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig
+     * @param string|null       $treeConfigChildrenField       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-childrenfield
+     *                                                         You can use the property name. It will be converted to the
+     *                                                         column name automatically.
+     * @param string|null       $treeConfigDataProvider        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-dataprovider
+     * @param bool|null         $treeConfigExpandAll           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-expandall
+     * @param int|null          $treeConfigMaxLevels           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-maxlevels
+     * @param string|null       $treeConfigNonSelectableLevels https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-nonselectablelevels
+     * @param string|null       $treeConfigParentField         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-parentfield
+     *                                                         You can use the property name. It will be converted to the
+     *                                                         column name automatically.
+     * @param bool|null         $treeConfigShowHeader          https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-showheader
+     * @param array             $treeConfigStartingPoints      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-startingpoints
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -159,7 +159,7 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
         protected ?string          $mmTableWhere = null,
         protected ?bool            $multiple = null,
         protected ?array           $prependItem = null,
-        protected Relationship     $relationship = Relationship::manyToMany,
+        protected ?Relationship    $relationship = null,
         protected SelectRenderType $renderType = SelectRenderType::selectSingle,
         protected ?int             $size = null,
         protected ?string          $sortItems = null,
@@ -366,9 +366,9 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
         return $this->mmTableWhere;
     }
 
-    public function getRelationship(): string
+    public function getRelationship(): ?string
     {
-        return $this->relationship->value;
+        return $this->relationship?->value;
     }
 
     public function getRenderType(): string

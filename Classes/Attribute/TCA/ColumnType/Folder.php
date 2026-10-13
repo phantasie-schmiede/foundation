@@ -24,26 +24,26 @@ use PSBits\Foundation\Utility\Database\DefinitionUtility;
 class Folder extends AbstractColumnType
 {
     /**
-     * @param int|null     $autoSizeMax               https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Folder/Index.html#confval-folder-autosizemax
-     * @param array|null   $elementBrowserEntryPoints https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Folder/Index.html#confval-folder-elementbrowserentrypoints
-     * @param bool         $hideDeleteIcon            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Folder/Index.html#confval-folder-hidedeleteicon
-     * @param bool         $hideMoveIcons             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Folder/Index.html#confval-folder-hidemoveicons
-     * @param int|null     $maxItems                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Folder/Index.html#confval-folder-maxitems
-     * @param int|null     $minItems                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Folder/Index.html#confval-folder-minitems
-     * @param bool         $multiple                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Folder/Index.html#confval-folder-multiple
-     * @param Relationship $relationship              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Folder/Index.html#confval-folder-relationship
-     * @param int|null     $size                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Folder/Index.html#confval-folder-size
+     * @param int|null          $autoSizeMax               https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Folder/Index.html#confval-folder-autosizemax
+     * @param array|null        $elementBrowserEntryPoints https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Folder/Index.html#confval-folder-elementbrowserentrypoints
+     * @param bool              $hideDeleteIcon            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Folder/Index.html#confval-folder-hidedeleteicon
+     * @param bool              $hideMoveIcons             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Folder/Index.html#confval-folder-hidemoveicons
+     * @param int|null          $maxItems                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Folder/Index.html#confval-folder-maxitems
+     * @param int|null          $minItems                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Folder/Index.html#confval-folder-minitems
+     * @param bool              $multiple                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Folder/Index.html#confval-folder-multiple
+     * @param Relationship|null $relationship              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Folder/Index.html#confval-folder-relationship
+     * @param int|null          $size                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Folder/Index.html#confval-folder-size
      */
     public function __construct(
-        protected ?int         $autoSizeMax = null,
-        protected ?array       $elementBrowserEntryPoints = null,
-        protected ?bool        $hideDeleteIcon = null,
-        protected ?bool        $hideMoveIcons = null,
-        protected ?int         $maxItems = null,
-        protected ?int         $minItems = null,
-        protected ?bool        $multiple = null,
-        protected Relationship $relationship = Relationship::manyToMany,
-        protected ?int         $size = null,
+        protected ?int          $autoSizeMax = null,
+        protected ?array        $elementBrowserEntryPoints = null,
+        protected ?bool         $hideDeleteIcon = null,
+        protected ?bool         $hideMoveIcons = null,
+        protected ?int          $maxItems = null,
+        protected ?int          $minItems = null,
+        protected ?bool         $multiple = null,
+        protected ?Relationship $relationship = null,
+        protected ?int          $size = null,
     ) {
     }
 
@@ -72,9 +72,9 @@ class Folder extends AbstractColumnType
         return $this->minItems;
     }
 
-    public function getRelationship(): string
+    public function getRelationship(): ?string
     {
-        return $this->relationship->value;
+        return $this->relationship?->value;
     }
 
     public function getSize(): ?int
