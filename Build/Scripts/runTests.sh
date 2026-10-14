@@ -15,12 +15,15 @@
 # coexist with the matrix legs) are applied to a generated composer-matrix.json
 # that composer addresses through the COMPOSER environment variable.
 #
-# .Build/vendor and composer-matrix.lock are wiped before every run. Core
-# 13.4 requires typo3/class-alias-loader ^1.2 and core 14.3 requires
-# ^2.0.1, and composer loads composer plugins from the pre-update vendor
-# state - reusing a vendor dir across legs whose loader major differs
+# composer-matrix.lock is wiped before every run. .Build/vendor is only
+# wiped when it was built for a different core major: core 13.4 requires
+# typo3/class-alias-loader ^1.2 and core 14.3 requires ^2.0.1, and
+# composer loads composer plugins from the pre-update vendor state -
+# reusing a vendor dir whose loader major differs from the target
 # crashes the class-alias-loader plugin mid-update (missing
-# CaseSensitiveToken/SuffixToken class).
+# CaseSensitiveToken/SuffixToken class). A vendor dir matching the target
+# major (e.g. restored from the CI cache) is reused in place, so composer
+# update only adjusts the packages that actually changed.
 #
 # mysql and postgres read their connection settings from environment
 # variables with these defaults:
@@ -121,15 +124,35 @@ fi
 
 # ---------------------------------------------------------------------------
 # Step 2/4 - install the pinned core.
-# Fresh vendor state per leg (see header note on class-alias-loader): a
-# reused vendor dir with a different loader major crashes the plugin in
-# composer. The lock of the previous leg is dropped with it, so the pin
-# below always resolves from scratch.
+# The vendor dir is only wiped when it belongs to a different core major
+# (see header note on class-alias-loader); a matching one is reused in
+# place, so a vendor dir restored from the CI cache avoids a full rebuild.
+# The lock of the previous leg is always dropped, so the pin below
+# re-resolves from scratch on top of the existing vendor state.
 # --no-scripts: post-install-cmd only runs npm install and copies a git hook,
 # neither of which the test suites need.
 # ---------------------------------------------------------------------------
 banner "step 2/4 — composer update (typo3/cms-core:^${CORE_VERSION}${LOWEST_NOTE})"
-rm -rf .Build/vendor
+INSTALLED_CORE="$(php -r '
+    $file = ".Build/vendor/composer/installed.json";
+    if (is_file($file)) {
+        $data = json_decode(file_get_contents($file), true);
+        $packages = is_array($data) ? ($data["packages"] ?? []) : [];
+        foreach ($packages as $package) {
+            if (($package["name"] ?? null) === "typo3/cms-core") {
+                /*
+                 * Composer records versions with a leading "v" (v13.4.36);
+                 * strip it so the major can be compared with CORE_VERSION.
+                 */
+                echo ltrim($package["version"], "v");
+                break;
+            }
+        }
+    }
+')"
+# A missing or foreign vendor dir is wiped; an empty INSTALLED_CORE never
+# matches the target major, so the wipe is the fallback.
+[ "${INSTALLED_CORE%%.*}" = "${CORE_VERSION%%.*}" ] || rm -rf .Build/vendor
 rm -f composer-matrix.lock
 composer update \
     --with "typo3/cms-core:^${CORE_VERSION}" \

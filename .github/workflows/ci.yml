@@ -91,11 +91,13 @@ jobs:
       - name: Cache Composer
         uses: actions/cache@v4
         with:
-          path: .Build/vendor
+          path: |
+            .Build/vendor
+            .Build/bin
           key: vendor-${{ runner.os }}-t3${{ matrix.typo3 }}-p${{ matrix.php }}-${{ matrix.lowest }}-${{ hashFiles('composer.json') }}
           # No catch-all key: 13.4 and 14.3 carry different class-alias-loader
-          # majors (1.x/2.x) and a cross-core restore crashes composer (see
-          # runTests.sh header).
+          # majors (1.x/2.x) and runTests.sh only reuses a vendor dir whose
+          # core major matches (see its header).
           restore-keys: |
             vendor-${{ runner.os }}-t3${{ matrix.typo3 }}-p${{ matrix.php }}-${{ matrix.lowest }}-
 
@@ -161,7 +163,9 @@ jobs:
       - name: Cache Composer
         uses: actions/cache@v4
         with:
-          path: .Build/vendor
+          path: |
+            .Build/vendor
+            .Build/bin
           key: vendor-${{ runner.os }}-mariadb-t3${{ matrix.typo3 }}-${{ hashFiles('composer.json') }}
           restore-keys: |
             vendor-${{ runner.os }}-mariadb-t3${{ matrix.typo3 }}-
@@ -224,7 +228,9 @@ jobs:
       - name: Cache Composer
         uses: actions/cache@v4
         with:
-          path: .Build/vendor
+          path: |
+            .Build/vendor
+            .Build/bin
           key: vendor-${{ runner.os }}-postgres-t3${{ matrix.typo3 }}-${{ hashFiles('composer.json') }}
           restore-keys: |
             vendor-${{ runner.os }}-postgres-t3${{ matrix.typo3 }}-
@@ -255,7 +261,9 @@ jobs:
       - name: Cache Composer
         uses: actions/cache@v4
         with:
-          path: .Build/vendor
+          path: |
+            .Build/vendor
+            .Build/bin
           key: vendor-${{ runner.os }}-coverage-t313.4-p8.4-${{ hashFiles('composer.json') }}
           restore-keys: |
             vendor-${{ runner.os }}-coverage-
@@ -309,6 +317,16 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package.json', '**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: |
+            .Build/vendor
+            .Build/bin
+          key: vendor-${{ runner.os }}-qa-t313.4-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            vendor-${{ runner.os }}-qa-t313.4-
 
       - name: Install dependencies
         # Pinned on purpose: saschaegerer/phpstan-typo3 only ever supports one core
@@ -369,6 +387,16 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package.json', '**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: |
+            .Build/vendor
+            .Build/bin
+          key: vendor-${{ runner.os }}-qa-t314.3-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            vendor-${{ runner.os }}-qa-t314.3-
 
       - name: Install dependencies
         # Pinned on purpose: saschaegerer/phpstan-typo3 only ever supports one core
