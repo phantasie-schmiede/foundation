@@ -76,7 +76,7 @@ class ValidatorTest extends UnitTestCase
                     'relationship' => 'manyToOne',
                     'type'         => 'category',
                 ],
-                '/The type "category" does not support the relationship "manyToOne"\. Allowed values are: "oneToOne", "oneToMany", "manyToMany"\./',
+                '/The type "category" does not support the relationship "manyToOne"\. Allowed values are: "manyToMany", "oneToMany", "oneToOne"\./',
                 1791849601,
             ],
             'file manyToMany'                           => [
