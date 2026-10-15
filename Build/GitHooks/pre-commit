@@ -1,6 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Fast checks only.
-
-echo "Running composer lint:all ..."
 composer lint:all
