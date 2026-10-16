@@ -36,6 +36,8 @@ abstract class AbstractGlobalVariablesViewHelper extends GlobalVariablesViewHelp
     }
 
     /**
+     * @param array<string, mixed> $arguments
+     *
      * @throws Exception
      */
     protected static function getVariable(string $baseKey, array $arguments): mixed

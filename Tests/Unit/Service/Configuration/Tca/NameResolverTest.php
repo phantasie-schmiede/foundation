@@ -309,6 +309,9 @@ class NameResolverTest extends UnitTestCase
         rmdir($packagePath);
     }
 
+    /**
+     * @param array<string, mixed> $configuration
+     */
     private function injectClassesConfiguration(array $configuration): void
     {
         $classesConfiguration = new ReflectionProperty(NameResolver::class, 'classesConfiguration');

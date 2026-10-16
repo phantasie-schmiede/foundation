@@ -118,6 +118,9 @@ class LabelResolverTest extends UnitTestCase
         $logMissingLanguageLabels->setValue(null, null);
     }
 
+    /**
+     * @param list<string> $labelIds
+     */
     private function writeLanguageFile(array $labelIds): void
     {
         $languageDirectory = rtrim(Environment::getPublicPath(), '/') . '/test_lang';

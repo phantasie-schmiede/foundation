@@ -76,17 +76,13 @@ class TranslateViewHelper extends AbstractViewHelper
     protected $escapeChildren = false;
 
     /**
-     * @param string      $id            Translation Key
-     * @param string|null $extensionName UpperCamelCased extension key (for example BlogExample)
-     * @param array|null  $arguments     Arguments to be replaced in the resulting string
-     * @param string|null $languageKey   Language key to use for this translation
+     * @param string                    $id            Translation Key
+     * @param string|null               $extensionName UpperCamelCased extension key (for example BlogExample)
+     * @param array<string, mixed>|null $arguments     Arguments to be replaced in the resulting string
+     * @param string|null               $languageKey   Language key to use for this translation
      *
      * @return string|null
      * @throws AspectNotFoundException
-     * @throws ContainerExceptionInterface
-     * @throws JsonException
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
      */
     protected static function translate(
         string  $id,

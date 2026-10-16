@@ -59,8 +59,8 @@ class ArrayUtilityTest extends UnitTestCase
     }
 
     /**
-     * @param array $array
-     * @param int   $expectedResult
+     * @param array<int|string, mixed> $array
+     * @param int                      $expectedResult
      *
      * @return void
      */
@@ -98,6 +98,9 @@ class ArrayUtilityTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @param array<int|string, mixed> $array
+     */
     #[Test]
     #[DataProvider('findLastOccurrenceDataProvider')]
     public function findLastOccurrence(mixed $needle, array $array, bool|int|string $expectedResult): void
@@ -142,6 +145,9 @@ class ArrayUtilityTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @param array<int|string, mixed> $expectedResult
+     */
     #[Test]
     #[DataProvider('guaranteeArrayTypeDataProvider')]
     public function guaranteeArrayType(mixed $variable, ?string $explodeOnCharacter, array $expectedResult): void
@@ -191,6 +197,10 @@ class ArrayUtilityTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @param array<int|string, mixed> $haystack
+     * @param list<int|string>         $expectedResult
+     */
     #[Test]
     #[DataProvider('inArrayRecursiveDataProvider')]
     public function inArrayRecursive(
@@ -228,6 +238,11 @@ class ArrayUtilityTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @param array<int|string, mixed> $array
+     * @param array<int|string, mixed> $elements
+     * @param array<int|string, mixed> $expectedResult
+     */
     #[Test]
     #[DataProvider('insertIntoArrayDataProvider')]
     public function insertIntoArray(array $array, array $elements, int $index, array $expectedResult): void
@@ -258,6 +273,9 @@ class ArrayUtilityTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @param array<int|string, mixed> $array
+     */
     #[Test]
     #[DataProvider('isMultiDimensionalArrayDataProvider')]
     public function isMultiDimensionalArray(array $array, bool $expectedResult): void
@@ -293,6 +311,10 @@ class ArrayUtilityTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @param array<string, mixed> $array
+     * @param array<string, mixed> $expectedResult
+     */
     #[Test]
     #[DataProvider('setValueByPathDataProvider')]
     public function setValueByPath(

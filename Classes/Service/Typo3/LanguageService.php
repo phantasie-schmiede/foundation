@@ -27,6 +27,7 @@ use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotCon
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Localization\LanguageService as Typo3LanguageService;
 
+use function is_array;
 use function is_string;
 use function strlen;
 
@@ -70,8 +71,8 @@ class LanguageService extends Typo3LanguageService
      * Returns the label with key $index from the $LOCAL_LANG array used as the second argument respecting possible
      * plural forms (falls back to plural form 0 if other plural form is given but not defined in language file).
      *
-     * @param string $index         Label key
-     * @param array  $localLanguage $LOCAL_LANG array to get label key from
+     * @param string               $index         Label key
+     * @param array<string, mixed> $localLanguage $LOCAL_LANG array to get label key from
      *
      * @return string
      */
@@ -117,9 +118,11 @@ class LanguageService extends Typo3LanguageService
     /**
      * Resolves a single plural form to its label. v13 stores each form as
      * ['target' => string], v14 as the plain string.
+     *
+     * @param string|array{target: string} $form
      */
     private static function resolvePluralForm(string|array $form): string
     {
-        return is_array($form) ? ($form['target'] ?? '') : $form;
+        return is_array($form) ? $form['target'] : $form;
     }
 }

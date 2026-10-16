@@ -46,6 +46,9 @@ class TypoScriptUtility
     private static string $lineBreakBeforeCurlyBracketOpen = '';
     private static string $objectPath                      = '';
 
+    /**
+     * @param array<string, mixed> $array
+     */
     public static function convertArrayToTypoScript(array $array): string
     {
         if (Environment::getContext()
@@ -129,6 +132,9 @@ class TypoScriptUtility
         ExtensionManagementUtility::addStaticFile($extensionInformation->getExtensionKey(), $path, $title);
     }
 
+    /**
+     * @param array<string, mixed> $array
+     */
     private static function buildTypoScriptFromArray(array $array, int $indentationLevel = 0): string
     {
         ksort($array);
@@ -213,6 +219,9 @@ class TypoScriptUtility
         }
     }
 
+    /**
+     * @param array<string, mixed> $value
+     */
     private static function processRemainingArray(int $indentationLevel, int|string $key, array $value): string
     {
         $typoScript = '';

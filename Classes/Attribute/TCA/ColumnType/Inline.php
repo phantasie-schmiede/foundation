@@ -27,33 +27,33 @@ use ReflectionException;
 class Inline extends AbstractColumnType
 {
     /**
-     * @param array|null    $appearance                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-appearance
-     * @param int|null      $autoSizeMax                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-autosizemax
-     * @param string[]|null $customControls                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-customcontrols
-     * @param bool|null     $disableMovingChildrenWithParent https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-behaviour-disablemovingchildrenwithparent
-     * @param bool|null     $enableCascadingDelete           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-behaviour-enablecascadingdelete
-     * @param string|null   $filter                          https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-filter
-     * @param string|null   $foreignDefaultSortBy            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-foreign-default-sortby
-     * @param string|null   $foreignField                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-foreign-field
-     * @param string|null   $foreignLabel                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-foreign-label
-     * @param array|null    $foreignMatchFields              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-foreign-match-fields
-     * @param array|null    $foreignSelector                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-foreign-selector
-     * @param string|null   $foreignSortBy                   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-foreign-sortby
-     * @param string|null   $foreignTable                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-properties-foreign-table
-     * @param string        $linkedModel                     Instead of directly specifying a foreign table, it is
-     *                                                       possible to specify a domain model class.
-     * @param string|null   $foreignTableField               https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-foreign-table-field
-     * @param string|null   $foreignUnique                   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-foreign-unique
-     * @param int|null      $maxItems                        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-maxitems
-     * @param int|null      $minItems                        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-minitems
-     * @param string|null   $mm                              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-mm
-     * @param array|null    $mmMatchFields                   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/Mm.html#confval-mm-match-fields
-     * @param string|null   $mmOppositeField                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-mm-opposite-field
-     * @param array|null    $mmOppositeUsage                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/Mm.html#confval-mm-oppositeusage
-     * @param string|null   $mmTableWhere                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/Mm.html#confval-mm-table-where
-     * @param string|null   $overrideChildTca                https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-overridechildtca
-     * @param Relationship  $relationship                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-relationship
-     * @param int|null      $size                            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-size
+     * @param array<string, mixed>|null $appearance                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-appearance
+     * @param int|null                  $autoSizeMax                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-autosizemax
+     * @param string[]|null             $customControls                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-customcontrols
+     * @param bool|null                 $disableMovingChildrenWithParent https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-behaviour-disablemovingchildrenwithparent
+     * @param bool|null                 $enableCascadingDelete           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-behaviour-enablecascadingdelete
+     * @param string|null               $filter                          https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-filter
+     * @param string|null               $foreignDefaultSortBy            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-foreign-default-sortby
+     * @param string|null               $foreignField                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-foreign-field
+     * @param string|null               $foreignLabel                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-foreign-label
+     * @param array<string, mixed>|null $foreignMatchFields              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-foreign-match-fields
+     * @param array<string, mixed>|null $foreignSelector                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-foreign-selector
+     * @param string|null               $foreignSortBy                   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-foreign-sortby
+     * @param string|null               $foreignTable                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-properties-foreign-table
+     * @param string                    $linkedModel                     Instead of directly specifying a foreign table, it is
+     *                                                                   possible to specify a domain model class.
+     * @param string|null               $foreignTableField               https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-foreign-table-field
+     * @param string|null               $foreignUnique                   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-foreign-unique
+     * @param int|null                  $maxItems                        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-maxitems
+     * @param int|null                  $minItems                        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-minitems
+     * @param string|null               $mm                              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-mm
+     * @param array<string, mixed>|null $mmMatchFields                   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/Mm.html#confval-mm-match-fields
+     * @param string|null               $mmOppositeField                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-mm-opposite-field
+     * @param array<string, mixed>|null $mmOppositeUsage                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/Mm.html#confval-mm-oppositeusage
+     * @param string|null               $mmTableWhere                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/Mm.html#confval-mm-table-where
+     * @param string|null               $overrideChildTca                https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-overridechildtca
+     * @param Relationship              $relationship                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-relationship
+     * @param int|null                  $size                            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-size
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -103,6 +103,9 @@ class Inline extends AbstractColumnType
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getAppearance(): array
     {
         return $this->appearance;
@@ -113,6 +116,9 @@ class Inline extends AbstractColumnType
         return $this->autoSizeMax;
     }
 
+    /**
+     * @return string[]|null
+     */
     public function getCustomControls(): ?array
     {
         return $this->customControls;
@@ -147,11 +153,17 @@ class Inline extends AbstractColumnType
         return $this->foreignLabel;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getForeignMatchFields(): ?array
     {
         return $this->foreignMatchFields;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getForeignSelector(): ?array
     {
         return $this->foreignSelector;
@@ -192,6 +204,9 @@ class Inline extends AbstractColumnType
         return $this->mm;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getMmMatchFields(): ?array
     {
         return $this->mmMatchFields;
@@ -202,6 +217,9 @@ class Inline extends AbstractColumnType
         return $this->mmOppositeField;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getMmOppositeUsage(): ?array
     {
         return $this->mmOppositeUsage;
@@ -227,6 +245,9 @@ class Inline extends AbstractColumnType
         return $this->size;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         $configuration = parent::toArray();

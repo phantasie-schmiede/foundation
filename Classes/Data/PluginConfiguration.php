@@ -20,6 +20,9 @@ use PSBits\Foundation\Enum\ContentType;
  */
 class PluginConfiguration
 {
+    /**
+     * @param array<int|string, string|list<string>> $controllers
+     */
     public function __construct(
         protected string      $name,
         protected bool        $addToElementWizard = true,
@@ -35,6 +38,9 @@ class PluginConfiguration
     ) {
     }
 
+    /**
+     * @return array<int|string, string|list<string>>
+     */
     public function getControllers(): array
     {
         return $this->controllers;

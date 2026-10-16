@@ -30,7 +30,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 class PluginConfigurationTest extends UnitTestCase
 {
     /**
-     * @return array<string, array{string, bool, array, string, string, string, string, int, bool, ContentType, bool}>
+     * @return array<string, array{string, bool, array<int|string, string|list<string>>, string, string, string, string, int, bool, ContentType, bool}>
      */
     public static function pluginConfigurationDataProvider(): array
     {
@@ -64,6 +64,9 @@ class PluginConfigurationTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @param array<int|string, string|list<string>> $controllers
+     */
     #[Test]
     #[DataProvider('pluginConfigurationDataProvider')]
     public function pluginConfigurationReturnsConstructorValues(
@@ -107,7 +110,7 @@ class PluginConfigurationTest extends UnitTestCase
     }
 
     /**
-     * @return array<string, array{string, string|null, string|null, string|null, array|null, bool, string|null}>
+     * @return array<string, array{string, string|null, string|null, string|null, array<string, mixed>|null, bool, string|null}>
      */
     public static function mainModuleConfigurationDataProvider(): array
     {
@@ -133,6 +136,9 @@ class PluginConfigurationTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @param array<string, mixed>|null $position
+     */
     #[Test]
     #[DataProvider('mainModuleConfigurationDataProvider')]
     public function mainModuleConfigurationReturnsConstructorValues(
@@ -164,7 +170,7 @@ class PluginConfigurationTest extends UnitTestCase
     }
 
     /**
-     * @return array<string, array{string, string, array, string|null, string|null, string|null, string, array|null, bool, string|null}>
+     * @return array<string, array{string, string, array<int|string, string|list<string>>, string|null, string|null, string|null, string, array<string, mixed>|null, bool, string|null}>
      */
     public static function moduleConfigurationDataProvider(): array
     {
@@ -196,6 +202,10 @@ class PluginConfigurationTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @param array<int|string, string|list<string>> $controllers
+     * @param array<string, mixed>|null              $position
+     */
     #[Test]
     #[DataProvider('moduleConfigurationDataProvider')]
     public function moduleConfigurationReturnsConstructorValues(
@@ -236,7 +246,7 @@ class PluginConfigurationTest extends UnitTestCase
     }
 
     /**
-     * @return array<string, array{int, string, array, string|null, string|null}>
+     * @return array<string, array{int, string, list<string>, string|null, string|null}>
      */
     public static function pageTypeConfigurationDataProvider(): array
     {
@@ -258,6 +268,9 @@ class PluginConfigurationTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @param list<string> $allowedTables
+     */
     #[Test]
     #[DataProvider('pageTypeConfigurationDataProvider')]
     public function pageTypeConfigurationReturnsConstructorValues(

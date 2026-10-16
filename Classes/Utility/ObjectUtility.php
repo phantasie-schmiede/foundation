@@ -26,6 +26,9 @@ class ObjectUtility
 {
     public const string NAMESPACE_FALLBACK_KEY = '__fallback';
 
+    /**
+     * @param array<string, string> $namespaces
+     */
     public static function getFullQualifiedClassName(string $className, array $namespaces): bool|string
     {
         if (class_exists($className)) {
@@ -64,6 +67,7 @@ class ObjectUtility
     }
 
     /**
+     * @return array<string, mixed>
      * @throws ReflectionException
      */
     public static function toArray(object $object): array

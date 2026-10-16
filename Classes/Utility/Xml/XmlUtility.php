@@ -68,11 +68,10 @@ class XmlUtility
 
     /**
      * @param SimpleXMLElement|string                          $xml
-     * @param bool                                             $sortAlphabetically Sort tags on same level
-     *                                                                             alphabetically by tag name.
+     * @param bool                                             $sortAlphabetically Sort tags on same level alphabetically by tag name.
      * @param array<string, class-string<XmlElementInterface>> $mapping
      *
-     * @return array|object
+     * @return array<string, mixed>|SimpleXMLElement|XmlElementInterface
      * @throws ContainerExceptionInterface
      * @throws JsonException
      * @throws NotFoundExceptionInterface
@@ -103,6 +102,9 @@ class XmlUtility
         return self::buildFromXml($sortAlphabetically, $xml, $mapping, $namespaces);
     }
 
+    /**
+     * @param array<string, mixed>|XmlElementInterface $data
+     */
     public static function convertToXml(
         array|XmlElementInterface $data,
         string                    $xmlHeader = self::XML_HEADER,
@@ -117,6 +119,9 @@ class XmlUtility
         return $xml;
     }
 
+    /**
+     * @param array<string, mixed> $array
+     */
     public static function getNodeValue(array $array, string $path, bool $strict = true): mixed
     {
         $path .= '.' . self::SPECIAL_ARRAY_KEYS['NODE_VALUE'];
@@ -128,6 +133,9 @@ class XmlUtility
         return ArrayUtility::getValueByPath($array, $path, '.');
     }
 
+    /**
+     * @param array<mixed, mixed> $array
+     */
     public static function removeNode(array &$array, string $path, bool $strict = false): void
     {
         if (false === $strict && !ArrayUtility::isValidPath($array, $path, '.')) {
@@ -142,6 +150,9 @@ class XmlUtility
         return str_replace('_', '-', GeneralUtility::camelCaseToLowerCaseUnderscored($tagName));
     }
 
+    /**
+     * @param array<mixed, mixed> $array
+     */
     public static function setNodeValue(array &$array, string $path, mixed $value): void
     {
         $path .= '.' . self::SPECIAL_ARRAY_KEYS['NODE_VALUE'];
@@ -152,11 +163,11 @@ class XmlUtility
      * @param bool                                             $sortAlphabetically
      * @param SimpleXMLElement                                 $xml
      * @param array<string, class-string<XmlElementInterface>> $mapping
-     * @param array                                            $namespaces
+     * @param array<string, string>                            $namespaces
      * @param bool                                             $rootLevel          This is an internal parameter only to be set
      *                                                                             from within this function.
      *
-     * @return array|object
+     * @return array<string, mixed>|SimpleXMLElement|XmlElementInterface
      * @throws ContainerExceptionInterface
      * @throws JsonException
      * @throws NotFoundExceptionInterface
@@ -299,6 +310,9 @@ class XmlUtility
         return $xml;
     }
 
+    /**
+     * @param array<string, mixed>|XmlElementInterface $data
+     */
     private static function buildXml(array|XmlElementInterface $data): string
     {
         $xml      = '';
@@ -349,6 +363,11 @@ class XmlUtility
         return $xml;
     }
 
+    /**
+     * @param list<array{tagName: string, tagValue: mixed}> $siblings
+     *
+     * @return list<array{tagName: string, tagValue: mixed}>
+     */
     private static function sortSiblings(array $siblings): array
     {
         uasort($siblings, static function($a, $b) {

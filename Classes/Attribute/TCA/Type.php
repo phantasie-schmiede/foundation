@@ -28,14 +28,14 @@ class Type extends AbstractTcaAttribute
     /**
      * The individual arguments override the corresponding creationOptions keys.
      *
-     * @param array|null  $columnsOverrides https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Types/Index.html#confval-types-columnsoverrides
-     * @param array|null  $creationOptions  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Types/Index.html#confval-types-creationoptions
-     * @param array|null  $defaultValues    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Types/Index.html#confval-types-creationoptions-defaultvalues
-     * @param string|null $previewRenderer  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Types/Index.html#confval-types-previewrenderer
-     * @param int|string  $recordType       Key of the type entry; value of the record type field configured via
-     *                                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-type
-     * @param bool|null   $saveAndClose     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Types/Index.html#confval-types-creationoptions-saveandclose
-     * @param string      $showitem         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Types/Index.html#confval-types-showitem
+     * @param array<string, mixed>|null $columnsOverrides https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Types/Index.html#confval-types-columnsoverrides
+     * @param array<string, mixed>|null $creationOptions  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Types/Index.html#confval-types-creationoptions
+     * @param array<string, mixed>|null $defaultValues    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Types/Index.html#confval-types-creationoptions-defaultvalues
+     * @param string|null               $previewRenderer  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Types/Index.html#confval-types-previewrenderer
+     * @param int|string                $recordType       Key of the type entry; value of the record type field configured via
+     *                                                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-type
+     * @param bool|null                 $saveAndClose     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Types/Index.html#confval-types-creationoptions-saveandclose
+     * @param string                    $showitem         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Types/Index.html#confval-types-showitem
      */
     public function __construct(
         protected ?array     $columnsOverrides = null,
@@ -48,11 +48,17 @@ class Type extends AbstractTcaAttribute
     ) {
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getColumnsOverrides(): ?array
     {
         return $this->columnsOverrides;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getCreationOptions(): array
     {
         $creationOptions = $this->creationOptions ?? [];
@@ -68,6 +74,9 @@ class Type extends AbstractTcaAttribute
         return $creationOptions;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getDefaultValues(): ?array
     {
         return $this->defaultValues;

@@ -99,6 +99,9 @@ class TypoScriptProviderService
         }
     }
 
+    /**
+     * @param array<string, mixed> $typoScript
+     */
     private function getDemandedTypoScript(array $typoScript, ?string $path = null): mixed
     {
         if (null !== $path) {

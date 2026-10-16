@@ -32,7 +32,7 @@ abstract class AbstractColumnType extends AbstractTcaAttribute implements Column
     }
 
     /**
-     * @throws ReflectionException
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {

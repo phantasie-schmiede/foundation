@@ -26,15 +26,11 @@ use ReflectionException;
 class ImageManipulation extends AbstractColumnType
 {
     /**
-     * @param string|null $allowedExtensions https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/ImageManipulation/Index.html#confval-imagemanipulation-allowedextensions
-     * @param array|null  $cropVariants      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/ImageManipulation/Index.html#confval-imagemanipulation-cropvariants
-     * @param string      $fileField         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/ImageManipulation/Index.html#confval-imagemanipulation-file-field
-     *                                       You can use the property name. It will be converted to the column name
-     *                                       automatically.
-     *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
+     * @param string|null               $allowedExtensions https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/ImageManipulation/Index.html#confval-imagemanipulation-allowedextensions
+     * @param array<string, mixed>|null $cropVariants      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/ImageManipulation/Index.html#confval-imagemanipulation-cropvariants
+     * @param string                    $fileField         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/ImageManipulation/Index.html#confval-imagemanipulation-file-field
+     *                                                     You can use the property name. It will be converted to the column name
+     *                                                     automatically.
      */
     public function __construct(
         protected ?string $allowedExtensions = null,
@@ -48,6 +44,9 @@ class ImageManipulation extends AbstractColumnType
         return $this->allowedExtensions;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getCropVariants(): ?array
     {
         return $this->cropVariants;

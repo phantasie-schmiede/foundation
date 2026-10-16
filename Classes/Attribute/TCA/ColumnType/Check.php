@@ -37,15 +37,15 @@ class Check extends AbstractColumnType implements ColumnTypeWithItemsInterface
      * The parameters $maximumRecordsChecked and $maximumRecordsCheckedInPid are used for the TCA properties eval and
      * validation.
      *
-     * @param int|string         $cols                       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-cols
-     * @param string             $eval                       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-eval
-     * @param false|bool         $invertStateDisplay         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-invertstatedisplay
-     * @param array              $items                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-items
-     * @param string|null        $itemsProcFunc              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/ItemsProcFunc.html
-     * @param int                $maximumRecordsChecked
-     * @param int                $maximumRecordsCheckedInPid
-     * @param CheckboxRenderType $renderType                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-rendertype
-     * @param array|null         $validation                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-validation
+     * @param int|string                $cols                       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-cols
+     * @param string                    $eval                       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-eval
+     * @param false|bool                $invertStateDisplay         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-invertstatedisplay
+     * @param array<int|string, mixed>  $items                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-items
+     * @param string|null               $itemsProcFunc              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/ItemsProcFunc.html
+     * @param int                       $maximumRecordsChecked
+     * @param int                       $maximumRecordsCheckedInPid
+     * @param CheckboxRenderType        $renderType                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-rendertype
+     * @param array<string, mixed>|null $validation                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-validation
      *
      * @throws MisconfiguredTcaException
      */
@@ -94,6 +94,9 @@ class Check extends AbstractColumnType implements ColumnTypeWithItemsInterface
         return $validation ? implode(', ', $validation) : null;
     }
 
+    /**
+     * @return array<int|string, mixed>
+     */
     public function getItems(): array
     {
         return $this->items;
@@ -113,6 +116,9 @@ class Check extends AbstractColumnType implements ColumnTypeWithItemsInterface
         return $this->renderType->value;
     }
 
+    /**
+     * @return array<string, int>|null
+     */
     public function getValidation(): ?array
     {
         $validation = null;

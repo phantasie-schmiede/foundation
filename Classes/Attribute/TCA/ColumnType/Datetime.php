@@ -30,7 +30,7 @@ class Datetime extends AbstractColumnType
      * @param bool|null             $disableAgeDisplay https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-disableagedisplay
      * @param DateType              $format            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-format
      * @param string|null           $placeholder       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-placeholder
-     * @param array                 $range             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-range
+     * @param array<string, mixed>  $range             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-range
      * @param \DateTime|string|null $rangeLower        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-range
      * @param \DateTime|string|null $rangeUpper        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-range
      * @param string|null           $softref           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-softref
@@ -82,6 +82,9 @@ class Datetime extends AbstractColumnType
         return $this->placeholder;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getRange(): ?array
     {
         if (null !== $this->rangeLower) {

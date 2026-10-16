@@ -27,28 +27,28 @@ use ReflectionException;
 class Category extends AbstractColumnType
 {
     /**
-     * @param array        $exclusiveKeys                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-exclusivekeys
-     * @param string|null  $foreignTableItemGroup         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-foreign-table-item-group
-     * @param string|null  $foreignTablePrefix            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-foreign-table-prefix
-     * @param string|null  $foreignTableWhere             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-foreign-table-where
-     * @param array|null   $itemGroups                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-item-groups
-     * @param int|null     $maxItems                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-maxitems
-     * @param int|null     $minItems                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-minitems
-     * @param Relationship $relationship                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-relationship
-     * @param int|null     $size                          https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-size
-     * @param array|null   $treeConfig                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-treeconfig
-     * @param string|null  $treeConfigChildrenField       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-childrenfield
-     *                                                    You can use the property name. It will be converted to the column
-     *                                                    name automatically.
-     * @param string|null  $treeConfigDataProvider        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-dataprovider
-     * @param bool|null    $treeConfigExpandAll           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-expandall
-     * @param int|null     $treeConfigMaxLevels           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-maxlevels
-     * @param string|null  $treeConfigNonSelectableLevels https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-nonselectablelevels
-     * @param string|null  $treeConfigParentField         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-parentfield
-     *                                                    You can use the property name. It will be converted to the column
-     *                                                    name automatically.
-     * @param bool|null    $treeConfigShowHeader          https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-showheader
-     * @param array        $treeConfigStartingPoints      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-startingpoints
+     * @param array<string, mixed>      $exclusiveKeys                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-exclusivekeys
+     * @param string|null               $foreignTableItemGroup         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-foreign-table-item-group
+     * @param string|null               $foreignTablePrefix            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-foreign-table-prefix
+     * @param string|null               $foreignTableWhere             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-foreign-table-where
+     * @param array<string, mixed>|null $itemGroups                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-item-groups
+     * @param int|null                  $maxItems                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-maxitems
+     * @param int|null                  $minItems                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-minitems
+     * @param Relationship              $relationship                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-relationship
+     * @param int|null                  $size                          https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-size
+     * @param array<string, mixed>|null $treeConfig                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Category/Index.html#confval-category-treeconfig
+     * @param string|null               $treeConfigChildrenField       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-childrenfield
+     *                                                                 You can use the property name. It will be converted to the column
+     *                                                                 name automatically.
+     * @param string|null               $treeConfigDataProvider        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-dataprovider
+     * @param bool|null                 $treeConfigExpandAll           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-expandall
+     * @param int|null                  $treeConfigMaxLevels           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-maxlevels
+     * @param string|null               $treeConfigNonSelectableLevels https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-nonselectablelevels
+     * @param string|null               $treeConfigParentField         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-parentfield
+     *                                                                 You can use the property name. It will be converted to the column
+     *                                                                 name automatically.
+     * @param bool|null                 $treeConfigShowHeader          https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-showheader
+     * @param array<string, mixed>      $treeConfigStartingPoints      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-startingpoints
      */
     public function __construct(
         protected array        $exclusiveKeys = [],
@@ -97,6 +97,9 @@ class Category extends AbstractColumnType
         return $this->foreignTableWhere;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getItemGroups(): ?array
     {
         return $this->itemGroups;
@@ -123,6 +126,7 @@ class Category extends AbstractColumnType
     }
 
     /**
+     * @return array<string, mixed>|null
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws ReflectionException

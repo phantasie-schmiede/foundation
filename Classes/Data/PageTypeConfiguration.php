@@ -19,14 +19,14 @@ namespace PSBits\Foundation\Data;
 class PageTypeConfiguration
 {
     /**
-     * @param int         $doktype
-     * @param string      $name
-     * @param array       $allowedTables  If empty, all tables are allowed.
-     * @param string|null $iconIdentifier Defaults to page-type-[your-page-type-name] if not set.
-     * @param string|null $label          Defaults to
-     *                                    EXT:[your_extension]/Resources/Private/Language/Backend/Configuration/TCA/Overrides/page.xlf:pageType.[yourPageTypeName]
-     *                                    if not set. If that key doesn't exist, "name" will be transformed from
-     *                                    "yourPageTypeName" to "Your Page Type Name".
+     * @param int          $doktype
+     * @param string       $name
+     * @param list<string> $allowedTables  If empty, all tables are allowed.
+     * @param string|null  $iconIdentifier Defaults to page-type-[your-page-type-name] if not set.
+     * @param string|null  $label          Defaults to
+     *                                     EXT:[your_extension]/Resources/Private/Language/Backend/Configuration/TCA/Overrides/page.xlf:pageType.[yourPageTypeName]
+     *                                     if not set. If that key doesn't exist, "name" will be transformed from
+     *                                     "yourPageTypeName" to "Your Page Type Name".
      */
     public function __construct(
         protected int     $doktype,
@@ -37,6 +37,9 @@ class PageTypeConfiguration
     ) {
     }
 
+    /**
+     * @return list<string>
+     */
     public function getAllowedTables(): array
     {
         return $this->allowedTables;

@@ -28,7 +28,7 @@ class ValidatorTest extends UnitTestCase
     private const string TABLE_NAME  = 'tx_validator_test';
 
     /**
-     * @return array<string, array{0: array, 1: string, 2: int}>
+     * @return array<string, array{0: array<string, mixed>, 1: string, 2: int}>
      */
     public static function invalidRelationshipCombinations(): array
     {
@@ -109,7 +109,7 @@ class ValidatorTest extends UnitTestCase
     }
 
     /**
-     * @return array<string, array{0: array}>
+     * @return array<string, array{0: array<string, mixed>}>
      */
     public static function validRelationshipCombinations(): array
     {
@@ -287,6 +287,11 @@ class ValidatorTest extends UnitTestCase
         (new Validator())->validate(self::TABLE_NAME);
     }
 
+    /**
+     * @param array<string, mixed> $columnConfig
+     *
+     * @throws MisconfiguredTcaException
+     */
     #[Test]
     #[DataProvider('validRelationshipCombinations')]
     public function validateAcceptsValidRelationships(array $columnConfig): void
@@ -299,6 +304,11 @@ class ValidatorTest extends UnitTestCase
         self::assertSame($columnConfig, $GLOBALS['TCA'][self::TABLE_NAME]['columns'][self::COLUMN_NAME]['config']);
     }
 
+    /**
+     * @param array<string, mixed> $columnConfig
+     *
+     * @throws MisconfiguredTcaException
+     */
     #[Test]
     #[DataProvider('invalidRelationshipCombinations')]
     public function validateRejectsInvalidRelationships(array $columnConfig, string $messagePattern, int $code): void
@@ -334,7 +344,7 @@ class ValidatorTest extends UnitTestCase
     }
 
     /**
-     * @param array $columnConfig
+     * @param array<string, mixed> $columnConfig
      */
     private function setColumnTca(array $columnConfig): void
     {

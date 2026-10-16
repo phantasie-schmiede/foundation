@@ -25,6 +25,9 @@ use function is_string;
  */
 class ArrayUtility
 {
+    /**
+     * @param array<int|string, mixed> $array
+     */
     public static function countRecursive(array $array): int
     {
         $count = 0;
@@ -41,8 +44,8 @@ class ArrayUtility
     }
 
     /**
-     * @param mixed $needle
-     * @param array $array
+     * @param mixed                    $needle
+     * @param array<int|string, mixed> $array
      *
      * @return false|int|string
      */
@@ -51,6 +54,9 @@ class ArrayUtility
         return array_search($needle, array_reverse($array, true), true);
     }
 
+    /**
+     * @return array<int|string, mixed>
+     */
     public static function guaranteeArrayType(mixed $variable, ?string $explodeOnCharacter = null): array
     {
         if (is_array($variable)) {
@@ -68,6 +74,11 @@ class ArrayUtility
         return [$variable];
     }
 
+    /**
+     * @param array<int|string, mixed> $haystack
+     *
+     * @return list<int|string>
+     */
     public static function inArrayRecursive(
         array $haystack,
         mixed $needle,
@@ -100,6 +111,12 @@ class ArrayUtility
         return $results;
     }
 
+    /**
+     * @param array<int|string, mixed> $array
+     * @param array<int|string, mixed> $elements
+     *
+     * @return array<int|string, mixed>
+     */
     public static function insertIntoArray(array $array, array $elements, int $index): array
     {
         if (!Typo3ArrayUtility::isAssociative($array)) {
@@ -112,6 +129,9 @@ class ArrayUtility
         return array_slice($array, 0, $index, true) + $elements + array_slice($array, $index, null, true);
     }
 
+    /**
+     * @param array<int|string, mixed> $array
+     */
     public static function isMultiDimensionalArray(array $array): bool
     {
         foreach ($array as $value) {
@@ -123,6 +143,9 @@ class ArrayUtility
         return false;
     }
 
+    /**
+     * @param array<string, mixed> $array
+     */
     public static function setValueByPath(array &$array, string $path, mixed $value, string $delimiter = '.'): void
     {
         $pathSegments = GeneralUtility::trimExplode($delimiter, $path);
@@ -141,6 +164,8 @@ class ArrayUtility
 
     /**
      * This function shuffles associative arrays and those with integer keys - even multidimensional ones if desired.
+     *
+     * @param array<int|string, mixed> $array
      */
     public static function shuffle(array &$array, bool $recursive = false): void
     {

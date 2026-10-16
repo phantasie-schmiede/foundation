@@ -22,8 +22,8 @@ use Attribute;
 class None extends AbstractColumnType
 {
     /**
-     * @param string|array|null $format https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/None/Index.html#confval-none-format
-     * @param int               $size   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/None/Index.html#confval-none-size
+     * @param string|array<string, mixed>|null $format https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/None/Index.html#confval-none-format
+     * @param int                              $size   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/None/Index.html#confval-none-size
      */
     public function __construct(
         protected string|array|null $format = null,
@@ -41,6 +41,9 @@ class None extends AbstractColumnType
         return '';
     }
 
+    /**
+     * @return string|array<string, mixed>|null
+     */
     public function getFormat(): string|array|null
     {
         return $this->format;

@@ -15,6 +15,7 @@ use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PSBits\Foundation\Utility\LocalizationUtility;
+use ReflectionException;
 use ReflectionMethod;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Localization\Locales;
@@ -102,6 +103,11 @@ class LanguageServiceTest extends UnitTestCase
         );
     }
 
+    /**
+     * @param array<string, mixed> $localLanguage
+     *
+     * @throws ReflectionException
+     */
     private function invokeGetLLL(string $index, array $localLanguage): string
     {
         $method = new ReflectionMethod(LanguageService::class, 'getLLL');

@@ -93,6 +93,9 @@ class TcaUtility
         return self::PROPERTY_KEY_MAPPING[$key] ?? $key;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getDefaultConfigurationForDisabledField(): array
     {
         return [
@@ -111,6 +114,9 @@ class TcaUtility
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getDefaultConfigurationForEndTimeField(): array
     {
         return [
@@ -129,6 +135,9 @@ class TcaUtility
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getDefaultConfigurationForLanguageField(): array
     {
         return [
@@ -140,6 +149,9 @@ class TcaUtility
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getDefaultConfigurationForStartTimeField(): array
     {
         return [
@@ -156,6 +168,7 @@ class TcaUtility
     }
 
     /**
+     * @return array<string, mixed>
      * @return string[][]
      */
     public static function getDefaultConfigurationForTransOrigDiffSourceField(): array
@@ -168,6 +181,9 @@ class TcaUtility
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getDefaultConfigurationForTransOrigPointerField(string $tableName): array
     {
         return [
@@ -190,7 +206,7 @@ class TcaUtility
     }
 
     /**
-     * @return string[][]
+     * @return array<string, mixed>
      */
     public static function getDefaultConfigurationForTranslationSourceField(): array
     {

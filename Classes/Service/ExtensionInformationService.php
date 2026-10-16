@@ -41,7 +41,7 @@ class ExtensionInformationService implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     /**
-     * @var ExtensionInformationInterface[]
+     * @var list<ExtensionInformationInterface>
      */
     protected array $extensionInformationInstances = [];
 
@@ -51,6 +51,9 @@ class ExtensionInformationService implements LoggerAwareInterface
     ) {
     }
 
+    /**
+     * @return array{extensionKey: string, extensionName: string, vendorName: string}
+     */
     public function extractExtensionInformationFromClassName(string $className): array
     {
         $classNameParts = GeneralUtility::trimExplode('\\', $className, true);
@@ -124,6 +127,9 @@ class ExtensionInformationService implements LoggerAwareInterface
         return $extensionConfiguration;
     }
 
+    /**
+     * @return list<string>
+     */
     public function getDomainModelClassNames(ExtensionInformationInterface $extensionInformation): array
     {
         $classNames = [];

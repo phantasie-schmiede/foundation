@@ -43,6 +43,9 @@ class VariableUtilityTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @param array<string, mixed> $variable
+     */
     #[Test]
     #[DataProvider('getValueByPathArrayDataProvider')]
     public function getValueByPathOnArray(array $variable, string $path, mixed $expectedResult): void

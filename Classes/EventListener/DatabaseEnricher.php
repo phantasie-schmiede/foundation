@@ -32,6 +32,7 @@ class DatabaseEnricher
         'UNIQUE',
     ];
 
+    /** @var array<string, array<string, list<string>>> */
     protected array $originalFields = [];
 
     public function __invoke(AlterTableDefinitionStatementsEvent $event): void
@@ -84,6 +85,9 @@ class DatabaseEnricher
         }
     }
 
+    /**
+     * @return array<string, array<string, list<string>>>
+     */
     private function generateDataFromRawSql(string $sql): array
     {
         $data = [];

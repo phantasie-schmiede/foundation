@@ -28,6 +28,8 @@ readonly class FrontendUrlService
     }
 
     /**
+     * @param array<string, mixed> $parameters
+     *
      * @throws SiteNotFoundException
      */
     public function buildPageUrl(

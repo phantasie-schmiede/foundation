@@ -32,13 +32,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Color extends AbstractColumnType implements ColumnTypeWithItemsInterface
 {
     /**
-     * @param array       $items       The items are not a TCA option by themselves, they are passed to valuePicker.
-     *                                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-valuepicker
-     * @param string|null $mode        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-mode
-     * @param string|null $opacity     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-opacity
-     * @param string|null $placeholder https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-placeholder
-     * @param int|null    $size        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-size
-     * @param array       $valuePicker https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-valuepicker
+     * @param array<int|string, mixed> $items       The items are not a TCA option by themselves, they are passed to valuePicker.
+     *                                              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-valuepicker
+     * @param string|null              $mode        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-mode
+     * @param string|null              $opacity     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-opacity
+     * @param string|null              $placeholder https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-placeholder
+     * @param int|null                 $size        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-size
+     * @param array<string, mixed>     $valuePicker https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Color/Index.html#confval-color-valuepicker
      */
     public function __construct(
         protected array   $items = [],
@@ -75,6 +75,9 @@ class Color extends AbstractColumnType implements ColumnTypeWithItemsInterface
         return $this->size;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getValuePicker(): array
     {
         return array_merge($this->valuePicker, ['items' => $this->items]);

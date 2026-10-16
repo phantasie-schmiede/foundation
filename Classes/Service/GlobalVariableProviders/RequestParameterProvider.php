@@ -30,6 +30,7 @@ use function is_string;
 class RequestParameterProvider extends AbstractProvider
 {
     /**
+     * @return array<string, mixed>
      * @throws ContainerExceptionInterface
      * @throws JsonException
      * @throws NotFoundExceptionInterface

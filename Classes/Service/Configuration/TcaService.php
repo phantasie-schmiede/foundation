@@ -54,12 +54,18 @@ class TcaService
         $this->nameResolver = new NameResolver($extensionInformationService, $packageManager);
     }
 
+    /**
+     * @param array<string, mixed> $columnConfiguration
+     */
     public function addColumnConfiguration(string $columnName, array $columnConfiguration): void
     {
         $this->getTcaTable()
             ->addColumnConfiguration($columnName, $columnConfiguration);
     }
 
+    /**
+     * @param list<string> $fieldNames
+     */
     public function addToPalette(string $identifier, array $fieldNames, string $position = ''): void
     {
         $this->getTcaTable()
@@ -133,6 +139,7 @@ class TcaService
      * The result is an array of class names which are mapped to the given table name.
      * If no class is found, an empty array is returned.
      *
+     * @return list<string>
      * @throws ContainerExceptionInterface
      * @throws ImplementationException
      * @throws NotFoundExceptionInterface
@@ -163,6 +170,7 @@ class TcaService
     }
 
     /**
+     * @return array<string, array<string, string>>
      * @throws ContainerExceptionInterface
      * @throws ImplementationException
      * @throws NotFoundExceptionInterface
@@ -174,6 +182,7 @@ class TcaService
     }
 
     /**
+     * @return array<string, mixed>
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws ReflectionException

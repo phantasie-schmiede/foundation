@@ -23,6 +23,10 @@ use function in_array;
  */
 class ValidationUtility
 {
+    /**
+     * @param array<string, mixed> $constant
+     * @param list<string>         $keys
+     */
     public static function checkArrayAgainstConstantKeys(array $constant, array $keys): void
     {
         foreach ($keys as $key) {
@@ -30,6 +34,10 @@ class ValidationUtility
         }
     }
 
+    /**
+     * @param array<string, mixed> $constant
+     * @param list<mixed>          $values
+     */
     public static function checkArrayAgainstConstantValues(array $constant, array $values): void
     {
         foreach ($values as $value) {
@@ -37,6 +45,9 @@ class ValidationUtility
         }
     }
 
+    /**
+     * @param array<string, mixed> $constant
+     */
     public static function checkKeyAgainstConstant(array $constant, string $key): void
     {
         if (!isset($constant[$key])) {
@@ -47,6 +58,9 @@ class ValidationUtility
         }
     }
 
+    /**
+     * @param array<string, mixed> $constant
+     */
     public static function checkValueAgainstConstant(array $constant, mixed $value): void
     {
         if (!in_array($value, $constant, true)) {

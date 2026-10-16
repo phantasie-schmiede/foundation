@@ -36,6 +36,9 @@ class TcaTable
     ) {
     }
 
+    /**
+     * @param array<string, mixed> $columnConfiguration
+     */
     public function addColumnConfiguration(string $columnName, array $columnConfiguration): void
     {
         ExtensionManagementUtility::addTCAcolumns($this->tableName, [$columnName => $columnConfiguration]);
@@ -49,6 +52,9 @@ class TcaTable
         ExtensionManagementUtility::addToAllTCAtypes($this->tableName, $fields, $typeList, $position);
     }
 
+    /**
+     * @param list<string> $fieldNames
+     */
     public function addFieldsToPalette(string $identifier, array $fieldNames, string $position = ''): void
     {
         [
@@ -66,6 +72,8 @@ class TcaTable
 
     /**
      * Applies the given ctrl properties to the table. Properties with the value "UNSET" are removed.
+     *
+     * @param array<string, mixed> $ctrlProperties
      */
     public function applyCtrlProperties(array $ctrlProperties): void
     {
@@ -135,6 +143,9 @@ class TcaTable
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getColumnConfiguration(string $columnName): array
     {
         return $GLOBALS['TCA'][$this->tableName]['columns'][$columnName] ?? throw new RuntimeException(
@@ -176,6 +187,8 @@ class TcaTable
 
     /**
      * Sets the base configuration of the table. Existing configuration is overwritten.
+     *
+     * @param array<string, mixed> $configuration
      */
     public function setBaseConfiguration(array $configuration): void
     {
@@ -184,6 +197,8 @@ class TcaTable
 
     /**
      * Sets the configuration for a record type. In override mode, an existing configuration is extended recursively.
+     *
+     * @param array<string, mixed> $typeConfigurationArray
      */
     public function setTypeConfiguration(
         int|string $recordType,

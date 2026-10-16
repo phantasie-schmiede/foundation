@@ -174,6 +174,10 @@ class GlobalVariablesViewHelperTest extends UnitTestCase
         return $viewHelper;
     }
 
+    /**
+     * @return array<string, mixed>
+     * @throws ReflectionException
+     */
     private function initializedArgumentDefinitions(): array
     {
         $viewHelper = $this->createInitializedViewHelper();
@@ -183,6 +187,8 @@ class GlobalVariablesViewHelperTest extends UnitTestCase
     }
 
     /**
+     * @param array<string, mixed> $arguments
+     *
      * @throws ReflectionException
      */
     private function setArguments(object $viewHelper, array $arguments): void

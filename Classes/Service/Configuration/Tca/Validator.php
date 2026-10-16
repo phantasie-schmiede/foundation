@@ -120,7 +120,7 @@ class Validator
     /**
      * Validates the "relationship" option of all column types that support it.
      *
-     * @param array<string, array> $columns
+     * @param array<string, array<string, mixed>> $columns
      *
      * @throws MisconfiguredTcaException
      */

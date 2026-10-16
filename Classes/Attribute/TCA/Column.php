@@ -54,28 +54,28 @@ class Column extends AbstractTcaAttribute
     protected ?ColumnTypeInterface $configuration = null;
 
     /**
-     * @param bool              $addDatabaseKey               Set to true to add this field as simple key like
-     *                                                        "KEY my_field (my_field)".
-     * @param bool|null         $allowLanguageSynchronization https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-behaviour-allowlanguagesynchronization
-     * @param string|null       $databaseDefinition           Use this property to override the automatically generated
-     *                                                        definition.
-     * @param mixed             $default                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-default
-     * @param string|null       $description                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-description
-     * @param string|array|null $displayCond                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-displaycond
-     * @param bool|null         $exclude                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-exclude
-     * @param array|null        $fieldControl                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/FieldControl/Index.html#confval-fieldcontrol
-     * @param array|null        $fieldInformation             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/FieldInformation/Index.html#confval-fieldinformation
-     * @param array|null        $fieldWizard                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/FieldWizard/Index.html#confval-fieldwizard
-     * @param string|null       $l10nDisplay                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-l10n-display
-     * @param string|null       $l10nMode                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-l10n-mode
-     * @param string            $label                        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-label
-     * @param bool|null         $nullable                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-nullable
-     * @param string|null       $onChange                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-onchange
-     * @param string            $position
-     * @param bool|null         $readOnly                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-readonly
-     * @param bool|null         $required                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-required
-     * @param string            $typeList                     Comma separated list of record types (values of the TCA
-     *                                                        type field) for which the field is added to showitem.
+     * @param bool                             $addDatabaseKey               Set to true to add this field as simple key like
+     *                                                                       "KEY my_field (my_field)".
+     * @param bool|null                        $allowLanguageSynchronization https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-behaviour-allowlanguagesynchronization
+     * @param string|null                      $databaseDefinition           Use this property to override the automatically generated
+     *                                                                       definition.
+     * @param mixed                            $default                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-default
+     * @param string|null                      $description                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-description
+     * @param string|array<string, mixed>|null $displayCond                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-displaycond
+     * @param bool|null                        $exclude                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-exclude
+     * @param array<string, mixed>|null        $fieldControl                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/FieldControl/Index.html#confval-fieldcontrol
+     * @param array<string, mixed>|null        $fieldInformation             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/FieldInformation/Index.html#confval-fieldinformation
+     * @param array<string, mixed>|null        $fieldWizard                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/FieldWizard/Index.html#confval-fieldwizard
+     * @param string|null                      $l10nDisplay                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-l10n-display
+     * @param string|null                      $l10nMode                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-l10n-mode
+     * @param string                           $label                        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-label
+     * @param bool|null                        $nullable                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-nullable
+     * @param string|null                      $onChange                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-onchange
+     * @param string                           $position
+     * @param bool|null                        $readOnly                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-readonly
+     * @param bool|null                        $required                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-required
+     * @param string                           $typeList                     Comma separated list of record types (values of the TCA
+     *                                                                       type field) for which the field is added to showitem.
      */
     public function __construct(
         protected bool              $addDatabaseKey = false,
@@ -130,21 +130,33 @@ class Column extends AbstractTcaAttribute
         return $this->description;
     }
 
+    /**
+     * @return string|array<string, mixed>|null
+     */
     public function getDisplayCond(): array|string|null
     {
         return $this->displayCond;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getFieldControl(): ?array
     {
         return $this->fieldControl;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getFieldInformation(): ?array
     {
         return $this->fieldInformation;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getFieldWizard(): ?array
     {
         return $this->fieldWizard;
@@ -225,7 +237,7 @@ class Column extends AbstractTcaAttribute
     }
 
     /**
-     * @throws ReflectionException
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {

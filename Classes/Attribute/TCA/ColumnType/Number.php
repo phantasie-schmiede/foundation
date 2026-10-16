@@ -24,16 +24,16 @@ use PSBits\Foundation\Utility\Database\DefinitionUtility;
 class Number extends AbstractColumnType
 {
     /**
-     * @param bool|null    $autocomplete https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-autocomplete
-     * @param NumberFormat $format       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-format
-     * @param int          $precision    used internally for database definition only (when format=decimal)
-     * @param int|null     $rangeLower   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-range
-     * @param int|null     $rangeUpper   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-range
-     * @param int          $scale        used internally for database definition only (when format=decimal)
-     * @param int|null     $size         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-size
-     * @param int|null     $sliderStep   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-slider
-     * @param int|null     $sliderWidth  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-slider
-     * @param array|null   $valuePicker  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-valuepicker
+     * @param bool|null                 $autocomplete https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-autocomplete
+     * @param NumberFormat              $format       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-format
+     * @param int                       $precision    used internally for database definition only (when format=decimal)
+     * @param int|null                  $rangeLower   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-range
+     * @param int|null                  $rangeUpper   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-range
+     * @param int                       $scale        used internally for database definition only (when format=decimal)
+     * @param int|null                  $size         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-size
+     * @param int|null                  $sliderStep   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-slider
+     * @param int|null                  $sliderWidth  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-slider
+     * @param array<string, mixed>|null $valuePicker  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Number/Index.html#confval-number-valuepicker
      */
     public function __construct(
         protected ?bool        $autocomplete = null,
@@ -69,6 +69,9 @@ class Number extends AbstractColumnType
         return $this->format->value;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getRange(): ?array
     {
         $range = null;
@@ -89,6 +92,9 @@ class Number extends AbstractColumnType
         return $this->size;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getSlider(): ?array
     {
         $sliderConfiguration = null;
@@ -104,6 +110,9 @@ class Number extends AbstractColumnType
         return $sliderConfiguration;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getValuePicker(): ?array
     {
         if (null === $this->valuePicker) {

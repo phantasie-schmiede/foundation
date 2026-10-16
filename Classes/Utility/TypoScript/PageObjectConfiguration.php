@@ -25,12 +25,16 @@ class PageObjectConfiguration
     protected bool        $disableAllHeaderCode = true;
     protected string      $extensionName;
     protected string      $pluginName;
-    protected array       $settings = [];
-    protected int         $typeNum;
-    protected string      $typoScriptObjectName = '';
-    protected string      $userFunc             = '';
-    protected array       $userFuncParameters;
-    protected string      $vendorName;
+
+    /** @var array<string, mixed> */
+    protected array  $settings = [];
+    protected int    $typeNum;
+    protected string $typoScriptObjectName = '';
+    protected string $userFunc             = '';
+
+    /** @var list<mixed> */
+    protected array  $userFuncParameters;
+    protected string $vendorName;
 
     public function getContentType(): ContentType
     {
@@ -47,6 +51,9 @@ class PageObjectConfiguration
         return $this->pluginName;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getSettings(): array
     {
         return $this->settings;
@@ -67,6 +74,9 @@ class PageObjectConfiguration
         return $this->userFunc;
     }
 
+    /**
+     * @return list<mixed>
+     */
     public function getUserFuncParameters(): array
     {
         return $this->userFuncParameters ?? [];
@@ -116,6 +126,9 @@ class PageObjectConfiguration
         return $this;
     }
 
+    /**
+     * @param array<string, mixed> $settings
+     */
     public function setSettings(array $settings): self
     {
         $this->settings = $settings;
@@ -142,6 +155,9 @@ class PageObjectConfiguration
         $this->userFunc = $userFunc;
     }
 
+    /**
+     * @param list<mixed> $userFuncParameters
+     */
     public function setUserFuncParameters(array $userFuncParameters): void
     {
         $this->userFuncParameters = $userFuncParameters;
