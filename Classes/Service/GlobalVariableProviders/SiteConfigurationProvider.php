@@ -36,6 +36,18 @@ class SiteConfigurationProvider extends AbstractProvider
         ValidationUtility::requiresFrontendContext();
         ValidationUtility::requiresTypoScriptLoaded();
 
-        return $this->siteFinder->getSiteByPageId($GLOBALS['TSFE']->id);
+        $site = $GLOBALS['TYPO3_REQUEST']->getAttribute('site');
+
+        if ($site instanceof Site) {
+            return $site;
+        }
+
+        // On TYPO3 v13 a site-less request still carries the $GLOBALS['TSFE'] global, so the site
+        // can be looked up by page id as before.
+        if (isset($GLOBALS['TSFE'])) {
+            return $this->siteFinder->getSiteByPageId($GLOBALS['TSFE']->id);
+        }
+
+        throw new SiteNotFoundException(__CLASS__ . ': No site found for the current request!', 1791312000);
     }
 }

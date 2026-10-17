@@ -13,6 +13,7 @@ namespace PSBits\Foundation\EventListener;
 
 use PSBits\Foundation\Attribute\TCA\Column;
 use PSBits\Foundation\Utility\StringUtility;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Database\Event\AlterTableDefinitionStatementsEvent;
 
 use function in_array;
@@ -22,6 +23,7 @@ use function in_array;
  *
  * @package PSBits\Foundation\EventListener
  */
+#[AsEventListener(identifier: 'foundation_databaseEnricher')]
 class DatabaseEnricher
 {
     protected const string CREATE_TABLE_PHRASE = 'CREATE TABLE';

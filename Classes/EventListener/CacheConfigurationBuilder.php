@@ -15,6 +15,7 @@ use Doctrine\DBAL\Exception as DbalException;
 use Exception;
 use PSBits\Foundation\Service\Configuration\PageCacheService;
 use PSBits\Foundation\Utility\FileUtility;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Cache\Event\CacheFlushEvent;
 use TYPO3\CMS\Core\Core\Environment;
 
@@ -23,6 +24,7 @@ use TYPO3\CMS\Core\Core\Environment;
  *
  * @package PSBits\Foundation\EventListener
  */
+#[AsEventListener(identifier: 'foundation_cacheConfigurationBuilder')]
 final readonly class CacheConfigurationBuilder
 {
     public const array FILE_PATHS = [

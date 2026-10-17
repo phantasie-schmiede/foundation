@@ -1,0 +1,16 @@
+{
+	"name": "psbitstest/tcafixture",
+	"type": "typo3-cms-extension",
+	"description": "A test extension for PSBits | Foundation",
+	"license": "GPL-3.0-or-later",
+	"extra": {
+		"typo3/cms": {
+			"extension-key": "tcafixture"
+		}
+	},
+	"autoload": {
+		"psr-4": {
+			"PSBitsTest\\Tcafixture\\": "Classes/"
+		}
+	}
+}

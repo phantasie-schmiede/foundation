@@ -103,7 +103,9 @@ class Ctrl extends AbstractTcaAttribute
      * @param string|null                      $previewRenderer                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-previewrenderer
      * @param bool|null                        $readOnly                         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-readonly
      * @param int|null                         $rootLevel                        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-rootlevel
-     * @param array<string, mixed>|null        $searchFields                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-searchfields
+     * @param array<string, mixed>|null        $searchFields                     https://docs.typo3.org/m/typo3/reference-tca/13.4/en-us/Ctrl/Index.html#confval-ctrl-searchfields
+     *                                                                           Removed in TYPO3 v14: the core migrates the option at runtime
+     *                                                                           (TcaMigration) and applies it via the per-field "searchable" config.
      * @param array<string, mixed>|null        $security                         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-security
      * @param string|null                      $selIconField                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-selicon-field
      * @param string|null                      $sortBy                           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-sortby
