@@ -13,7 +13,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "PSBits\\Foundation\\PhpCsFixer\\Fixer\\": "Build/Quality/php-cs-fixer",
+            "PSBits\\Foundation\\PhpCsFixer\\Fixer\\": "Build/Quality/PhpCsFixer",
             "PSBits\\Foundation\\Tests\\": "Tests"
         }
     },
@@ -70,7 +70,7 @@
         "audit:composer": "composer audit --abandoned=report",
         "docker:images": [
             "Composer\\Config::disableProcessTimeout",
-            "sh Build/Scripts/buildTestImages.sh"
+            "sh Build/Testing/Scripts/buildTestImages.sh"
         ],
         "fix:all": [
             "@fix:classes",
@@ -110,18 +110,18 @@
             "@test:local",
             "@test:docker"
         ],
-        "test:coverage": "sh Build/Scripts/runCoverage.sh @additional_args",
-        "test:coverage:update-baseline": "sh Build/Scripts/runCoverage.sh --update-baseline @additional_args",
+        "test:coverage": "sh Build/Testing/Scripts/runCoverage.sh @additional_args",
+        "test:coverage:update-baseline": "sh Build/Testing/Scripts/runCoverage.sh --update-baseline @additional_args",
         "test:docker": [
             "Composer\\Config::disableProcessTimeout",
-            "sh Build/Scripts/runDockerTests.sh @additional_args"
+            "sh Build/Testing/Scripts/runDockerTests.sh @additional_args"
         ],
         "test:local": [
             "Composer\\Config::disableProcessTimeout",
-            "sh Build/Scripts/runLocalTests.sh @additional_args"
+            "sh Build/Testing/Scripts/runLocalTests.sh @additional_args"
         ],
-        "test:functional": "php -d memory_limit=1G .Build/bin/phpunit -c Build/phpunit/FunctionalTests.xml",
-        "test:unit": "php -d memory_limit=1G .Build/bin/phpunit -c Build/phpunit/UnitTests.xml",
+        "test:functional": "php -d memory_limit=1G .Build/bin/phpunit -c Build/Testing/FunctionalTests.xml",
+        "test:unit": "php -d memory_limit=1G .Build/bin/phpunit -c Build/Testing/UnitTests.xml",
         "validate:composer": "composer validate --no-check-publish"
     },
     "type": "typo3-cms-extension"

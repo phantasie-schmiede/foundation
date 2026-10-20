@@ -3,7 +3,7 @@
 # Build the local test images for all supported PHP versions.
 #
 # Usage:
-#   sh Build/Scripts/buildTestImages.sh
+#   sh Build/Testing/Scripts/buildTestImages.sh
 #
 # The images are tagged psbits/foundation-test:<php-version>; docker-compose.yml
 # selects the version via PHP_VERSION (default 8.4). USER_UID/USER_GID default
@@ -13,14 +13,14 @@
 # hosts whose network routes TLS through a corporate (MITM) proxy the proxy's
 # root CA must be trusted inside the image. This script therefore stages the
 # host's additional CA certificates (everything beyond the standard bundle)
-# into Build/testing-docker/build-ca, which the Dockerfile installs. Set
+# into Build/Testing/Docker/build-ca, which the Dockerfile installs. Set
 # EXTRA_CA_FILES (colon separated paths) to control the selection explicitly.
 #
 set -eu
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-CA_STAGE_DIR="$REPO_ROOT/Build/testing-docker/build-ca"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+CA_STAGE_DIR="$REPO_ROOT/Build/Testing/Docker/build-ca"
 
 cd "$REPO_ROOT"
 
@@ -68,8 +68,8 @@ for php in 8.3 8.4 8.5; do
         --build-arg USER_UID="$(id -u)" \
         --build-arg USER_GID="$(id -g)" \
         --tag "psbits/foundation-test:$php" \
-        --file Build/testing-docker/Dockerfile \
-        Build/testing-docker
+        --file Build/Testing/Docker/Dockerfile \
+        Build/Testing/Docker
 done
 
 echo "Done. Images:"

@@ -20,11 +20,12 @@ have it):
 
 A fully green block is the definition of done for a change.
 
-## Test matrix (repos with `Build/Scripts/`)
+## Test matrix (repos with `Build/Testing/Scripts/`)
 
-`foundation` and `security` carry the full matrix infrastructure:
+`acl-deployment`, `debug`, `foundation`, `security` and `view-helpers` carry the full matrix
+infrastructure; `crafter` only carries `runCoverage.sh`:
 
-- `Build/Scripts/runTests.sh <core>` - resolves the core via composer and runs unit +
+- `Build/Testing/Scripts/runTests.sh <core>` - resolves the core via composer and runs unit +
   functional tests (e.g. `runTests.sh 13.4`, `runTests.sh 14.3`)
 - `runLocalTests.sh` - local PHP with docker databases, `runDockerTests.sh` - everything in
   containers, `buildTestImages.sh` - builds the test images
@@ -55,7 +56,7 @@ published version:
 
 ## Coverage
 
-- `Build/Scripts/runCoverage.sh` (where present) runs phpunit with coverage and compares
+- `Build/Testing/Scripts/runCoverage.sh` (where present) runs phpunit with coverage and compares
   against `Build/Quality/coverage-baseline.json`.
 - The baseline update script (`test:coverage:update-baseline` /
   `runCoverage.sh update-baseline`) rewrites the baseline - only with explicit user approval.

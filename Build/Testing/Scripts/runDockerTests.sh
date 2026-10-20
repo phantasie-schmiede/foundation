@@ -3,8 +3,8 @@
 # Docker test matrix runner.
 #
 # Usage:
-#   sh Build/Scripts/runDockerTests.sh                     full Docker matrix
-#   sh Build/Scripts/runDockerTests.sh <core-version> [--lowest] [--db sqlite|mysql|postgres]
+#   sh Build/Testing/Scripts/runDockerTests.sh                     full Docker matrix
+#   sh Build/Testing/Scripts/runDockerTests.sh <core-version> [--lowest] [--db sqlite|mysql|postgres]
 #
 # With no arguments it runs the full Docker matrix - the sqlite legs for
 # 13.4 and 14.3 (each plus --lowest) plus mysql and postgres legs - using
@@ -24,14 +24,14 @@
 set -eu
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
 
 cd "$REPO_ROOT"
 
 . "$SCRIPT_DIR/console.sh"
 
 compose() {
-    docker compose -f Build/testing-docker/docker-compose.yml "$@"
+    docker compose -f Build/Testing/Docker/docker-compose.yml "$@"
 }
 
 LEG_NO=0
@@ -77,7 +77,7 @@ trap on_exit EXIT
 run_leg() {
     SERVICE="$1"
     shift
-    compose run --rm "$SERVICE" sh Build/Scripts/runTests.sh "$@"
+    compose run --rm "$SERVICE" sh Build/Testing/Scripts/runTests.sh "$@"
 }
 
 if [ $# -eq 0 ]; then
@@ -91,7 +91,7 @@ if [ $# -eq 0 ]; then
         shift 2
         LEG_NO=$((LEG_NO + 1))
         banner "Leg ${LEG_NO}/${LEG_TOTAL} — ${DESC}"
-        if compose run --rm "$SERVICE" sh Build/Scripts/runTests.sh "$@"; then
+        if compose run --rm "$SERVICE" sh Build/Testing/Scripts/runTests.sh "$@"; then
             record_result "PASSED" "Leg ${LEG_NO}/${LEG_TOTAL} — ${DESC}"
             banner green "Leg ${LEG_NO}/${LEG_TOTAL} — PASSED"
         else

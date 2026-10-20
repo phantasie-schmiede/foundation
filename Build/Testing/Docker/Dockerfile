@@ -3,7 +3,7 @@ ARG php_version=8.4
 FROM php:${php_version}-cli
 
 # If the development network routes TLS through a corporate proxy, then root CA
-# must be trusted for apt, composer and the tests themselves. Build/Scripts/
+# must be trusted for apt, composer and the tests themselves. Build/Testing/Scripts/
 # buildTestImages.sh stages the host's additional CA certificates into the
 # build context (the directory stays empty on hosts without such CAs). They
 # are appended to the trust store directly, because update-ca-certificates

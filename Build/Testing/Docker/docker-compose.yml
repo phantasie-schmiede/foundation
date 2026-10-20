@@ -1,7 +1,7 @@
 # Test matrix runner for psbits/foundation.
 #
 # Build the test images first:
-#   sh Build/Scripts/buildTestImages.sh
+#   sh Build/Testing/Scripts/buildTestImages.sh
 #
 # Usage (run from the repository root):
 #   composer test:docker                                full Docker matrix
@@ -9,14 +9,14 @@
 #   PHP_VERSION=8.3 composer test:docker -- 13.4        single leg on PHP 8.3
 #
 # Equivalent raw compose commands:
-#   docker compose -f Build/testing-docker/docker-compose.yml run --rm tests sh Build/Scripts/runTests.sh 13.4
-#   docker compose -f Build/testing-docker/docker-compose.yml run --rm tests-mysql sh Build/Scripts/runTests.sh 13.4 --db mysql
-#   docker compose -f Build/testing-docker/docker-compose.yml run --rm tests-postgres sh Build/Scripts/runTests.sh 13.4 --db postgres
+#   docker compose -f Build/Testing/Docker/docker-compose.yml run --rm tests sh Build/Testing/Scripts/runTests.sh 13.4
+#   docker compose -f Build/Testing/Docker/docker-compose.yml run --rm tests-mysql sh Build/Testing/Scripts/runTests.sh 13.4 --db mysql
+#   docker compose -f Build/Testing/Docker/docker-compose.yml run --rm tests-postgres sh Build/Testing/Scripts/runTests.sh 13.4 --db postgres
 #
 # Plain "docker compose run --rm tests" (no command override) runs the full
-# local matrix inside the selected PHP image, via Build/Scripts/runLocalTests.sh.
+# local matrix inside the selected PHP image, via Build/Testing/Scripts/runLocalTests.sh.
 # The Docker matrix itself is orchestrated from the host (composer test:docker
-# / sh Build/Scripts/runDockerTests.sh), which starts the matching service.
+# / sh Build/Testing/Scripts/runDockerTests.sh), which starts the matching service.
 #
 # The repository is bind-mounted. runTests.sh never touches tracked files; the
 # generated composer-matrix.json / composer-matrix.lock and the tested core stay
@@ -64,7 +64,7 @@ services:
     volumes:
       - ${ROOT_DIR:-../..}:/repo
       - composer-home:/home/builder/.composer
-    command: ["sh", "Build/Scripts/runLocalTests.sh"]
+    command: ["sh", "Build/Testing/Scripts/runLocalTests.sh"]
 
   # Full matrix leg against a real MariaDB.
   tests-mysql:

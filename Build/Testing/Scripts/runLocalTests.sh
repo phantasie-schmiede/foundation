@@ -3,8 +3,8 @@
 # Local (non-Docker) test matrix runner.
 #
 # Usage:
-#   sh Build/Scripts/runLocalTests.sh                     full local matrix
-#   sh Build/Scripts/runLocalTests.sh <core-version> [--lowest] [--db sqlite|mysql|postgres]
+#   sh Build/Testing/Scripts/runLocalTests.sh                     full local matrix
+#   sh Build/Testing/Scripts/runLocalTests.sh <core-version> [--lowest] [--db sqlite|mysql|postgres]
 #
 # With no arguments it runs the full local matrix - the same legs CI runs
 # natively: 13.4 and 14.3, plus both at the lowest allowed dependency set. With

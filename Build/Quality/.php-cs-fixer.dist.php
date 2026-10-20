@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/php-cs-fixer/ClassBlockSeparationFixer.php';
-require_once __DIR__ . '/php-cs-fixer/PropertyNamesAlignmentFixer.php';
+require_once __DIR__ . '/PhpCsFixer/ClassBlockSeparationFixer.php';
+require_once __DIR__ . '/PhpCsFixer/PropertyNamesAlignmentFixer.php';
 
 $finder = PhpCsFixer\Finder::create()
     ->in([

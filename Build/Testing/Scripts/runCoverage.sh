@@ -4,7 +4,7 @@
 # coverage baseline and write clover/cobertura/html reports.
 #
 # Usage:
-#   sh Build/Scripts/runCoverage.sh [--update-baseline]
+#   sh Build/Testing/Scripts/runCoverage.sh [--update-baseline]
 #
 #   --update-baseline  Rewrite the baseline file with the measured values
 #                      instead of checking it (requires a coverage driver).
@@ -30,7 +30,7 @@
 set -eu
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
 
 . "$SCRIPT_DIR/console.sh"
 
@@ -185,8 +185,8 @@ run_suite() {
     fi
 }
 
-run_suite "unit" "Build/phpunit/UnitTests.xml"
-run_suite "functional" "Build/phpunit/FunctionalTests.xml"
+run_suite "unit" "Build/Testing/UnitTests.xml"
+run_suite "functional" "Build/Testing/FunctionalTests.xml"
 
 if [ "$FAILED" -ne 0 ]; then
     banner red "Coverage baseline violated"
