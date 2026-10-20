@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
 use PSBits\Foundation\Attribute\TCA\AbstractTcaAttribute;
-use ReflectionException;
 
 /**
  * Class AbstractColumnType

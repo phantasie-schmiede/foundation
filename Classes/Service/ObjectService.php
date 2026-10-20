@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Service;
 
 use Doctrine\DBAL\Exception as DbalException;
-use Exception;
 use PSBits\Foundation\Attribute\TCA\ColumnType\Select;
 use PSBits\Foundation\Exceptions\ImplementationException;
 use PSBits\Foundation\Service\Configuration\TcaService;
