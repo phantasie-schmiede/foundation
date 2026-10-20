@@ -1,5 +1,13 @@
+includes:
+  - ../../.Build/vendor/psbits/qa/Resources/Quality/phpstan.neon
+  - ../../.Build/vendor/saschaegerer/phpstan-typo3/extension.neon
+
 parameters:
-  level: 6
+  tmpDir: .phpstan
+  paths:
+    - ../../Classes
+    - ../../Tests/Unit
+
   ignoreErrors:
       -
         identifier: trait.unused
@@ -26,9 +34,11 @@ parameters:
         identifier: staticMethod.notFound
         message: '#addUserTSConfig#'
         reportUnmatched: false
-  paths:
-    - ../../Classes
-    - ../../Tests/Unit
+
+
+
+
+
   excludePaths:
     # Static analysis covers the shipped code and the unit tests. The functional tests need a booted
     # testing framework instance (database, instance path, container) and are verified by the
@@ -39,7 +49,3 @@ parameters:
     # On each major the branch meant for the other major is an invalid (non-ignorable) extension, so
     # the file is left to the functional suites, which exercise it on every supported major.
     - ../../Classes/Service/Typo3/LanguageServiceFactory.php
-  tmpDir: .phpstan
-
-includes:
-  - ../../.Build/vendor/saschaegerer/phpstan-typo3/extension.neon

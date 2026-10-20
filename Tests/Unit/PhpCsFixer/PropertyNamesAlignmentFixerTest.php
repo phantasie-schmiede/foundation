@@ -17,7 +17,7 @@ use PhpCsFixer\RuleSet\RuleSet;
 use PhpCsFixer\Tokenizer\Tokens;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use PSBits\Foundation\PhpCsFixer\Fixer\PropertyNamesAlignmentFixer;
+use PSBits\Qa\PhpCsFixer\Fixer\PropertyNamesAlignmentFixer;
 use SplFileInfo;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
