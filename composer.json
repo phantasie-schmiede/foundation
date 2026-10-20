@@ -102,13 +102,11 @@
         "qa": [
             "@fix:all",
             "@lint:all",
-            "@test"
-        ],
-        "test": [
-            "@test:unit",
-            "@test:functional"
+            "@test:all"
         ],
         "test:all": [
+            "@test:unit",
+            "@test:functional",
             "@test:local",
             "@test:docker"
         ],

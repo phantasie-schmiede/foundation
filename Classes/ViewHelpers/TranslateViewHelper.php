@@ -83,6 +83,11 @@ class TranslateViewHelper extends AbstractViewHelper
      *
      * @return string|null
      * @throws AspectNotFoundException
+     * @throws ContainerExceptionInterface
+     * @throws InvalidArgumentException
+     * @throws JsonException
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
      */
     protected static function translate(
         string  $id,
