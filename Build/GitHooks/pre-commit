@@ -1,6 +1,0 @@
-#!/usr/bin/env sh
-
-# Fast checks only.
-
-echo "Running composer lint:all ..."
-composer lint:all

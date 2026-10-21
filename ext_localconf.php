@@ -38,16 +38,6 @@ defined('TYPO3') or die();
         $pluginService->configurePlugins($extensionInformation);
     }
 
-    if (file_exists(Environment::getVarPath() . CacheConfigurationBuilder::FILE_PATHS['TSCONFIG'])) {
-        $fileContents = file_get_contents(
-            Environment::getVarPath() . CacheConfigurationBuilder::FILE_PATHS['TSCONFIG']
-        );
-
-        if (!empty(trim($fileContents))) {
-            $GLOBALS['TYPO3_CONF_VARS']['BE']['defaultPageTSconfig'] .= LF . $fileContents;
-        }
-    }
-
     if (file_exists(Environment::getVarPath() . CacheConfigurationBuilder::FILE_PATHS['TYPOSCRIPT'])) {
         $fileContents = file_get_contents(
             Environment::getVarPath() . CacheConfigurationBuilder::FILE_PATHS['TYPOSCRIPT']

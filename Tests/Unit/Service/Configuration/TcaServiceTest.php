@@ -301,6 +301,9 @@ class TcaServiceTest extends UnitTestCase
         $logMissingLanguageLabels->setValue(null, $state);
     }
 
+    /**
+     * @param list<string> $labelIds
+     */
     private function writeLanguageFile(array $labelIds): void
     {
         $languageDirectory = rtrim(Environment::getPublicPath(), '/') . '/test_lang';

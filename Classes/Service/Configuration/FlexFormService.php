@@ -15,6 +15,7 @@ use BackedEnum;
 use PSBits\Foundation\Service\GlobalVariableProviders\EarlyAccessConstantsProvider;
 use PSBits\Foundation\Service\GlobalVariableService;
 use PSBits\Foundation\Utility\StringUtility;
+use PSBits\Foundation\Utility\Typo3VersionUtility;
 use Throwable;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use UnitEnum;
@@ -114,14 +115,24 @@ class FlexFormService
         $xml = $this->processMarkers($xml);
 
         if (self::ALL_PLUGINS !== $pluginSignature) {
-            $pluginSignature                                                                     = strtolower($pluginSignature);
-            $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'pi_flexform';
+            $pluginSignature = strtolower($pluginSignature);
+
+            // Plugin subtypes (subtypes_addlist) are removed in TYPO3 v14.
+            if (!Typo3VersionUtility::isAtLeast('14.0')) {
+                $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'pi_flexform';
+            }
         }
 
-        ExtensionManagementUtility::addPiFlexFormValue(
-            $pluginSignature,
-            $xml,
-            $cType
-        );
+        // addPiFlexFormValue() is deprecated in TYPO3 v14 (removal in v15) and applies the data
+        // structure directly via columnsOverrides there, so mirror that behavior.
+        if (Typo3VersionUtility::isAtLeast('14.0')) {
+            $GLOBALS['TCA']['tt_content']['types'][$cType]['columnsOverrides']['pi_flexform']['config']['ds'] = $xml;
+        } else {
+            ExtensionManagementUtility::addPiFlexFormValue(
+                $pluginSignature,
+                $xml,
+                $cType
+            );
+        }
     }
 }

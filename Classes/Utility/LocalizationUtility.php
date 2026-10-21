@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Utility;
 
+use InvalidArgumentException;
 use JsonException;
 use PSBits\Foundation\Utility\Configuration\FilePathUtility;
 use PSBits\Foundation\Utility\Localization\LoggingUtility;
@@ -27,6 +28,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility as ExtbaseLocalizationUtility;
 
 use function array_slice;
+use function is_array;
 use function is_string;
 
 /**
@@ -49,15 +51,16 @@ class LocalizationUtility
     /**
      * Returns the localized label of the LOCAL_LANG key, $key.
      *
-     * @param string      $key           The key from the LOCAL_LANG array for which to return the value.
-     * @param string|null $extensionName The name of the extension
-     * @param array|null  $arguments     The arguments of the extension, being passed over to vsprintf
-     * @param string|null $languageKey   The language key or null for using the current language from the
-     *                                   system
+     * @param string                    $key           The key from the LOCAL_LANG array for which to return the value.
+     * @param string|null               $extensionName The name of the extension
+     * @param array<string, mixed>|null $arguments     The arguments of the extension, being passed over to vsprintf
+     * @param string|null               $languageKey   The language key or null for using the current language from the
+     *                                                 system
      *
      * @return string|null The value from LOCAL_LANG or null if no translation was found.
      * @throws AspectNotFoundException
      * @throws ContainerExceptionInterface
+     * @throws InvalidArgumentException
      * @throws JsonException
      * @throws NotFoundExceptionInterface
      * @throws ReflectionException
@@ -120,18 +123,16 @@ class LocalizationUtility
     }
 
     /**
-     * @param string      $key
-     * @param string|null $extensionName
-     * @param array|null  $arguments
-     * @param string|null $languageKey
-     * @param string      $newLineMarker If set, user defined new lines are created while plain line breaks will still
-     *                                   be removed
+     * @param array<string, mixed>|null $arguments
+     * @param string                    $newLineMarker If set, user defined new lines are created while plain line breaks will still
+     *                                                 be removed
      *
-     * @return string
      * @throws AspectNotFoundException
      * @throws ContainerExceptionInterface
+     * @throws InvalidArgumentException
      * @throws JsonException
      * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
      */
     public static function translateConcatenatingNewLines(
         string $key,
@@ -151,10 +152,14 @@ class LocalizationUtility
     }
 
     /**
+     * @param array<string, mixed>|null $arguments
+     *
      * @throws AspectNotFoundException
      * @throws ContainerExceptionInterface
+     * @throws InvalidArgumentException
      * @throws JsonException
      * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
      */
     public static function translatePreservingNewLines(
         string $key,
@@ -172,7 +177,7 @@ class LocalizationUtility
             array_shift($lines);
         }
 
-        if ('' === array_values(array_slice($lines, -1))[0]) {
+        if ('' === array_slice($lines, -1)[0]) {
             array_pop($lines);
         }
 
@@ -188,6 +193,7 @@ class LocalizationUtility
      * @throws ExtensionConfigurationPathDoesNotExistException
      * @throws JsonException
      * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
      */
     public static function translationExists(string $key, bool $logMissingTranslation = true): bool
     {
@@ -238,6 +244,7 @@ class LocalizationUtility
      * @throws ExtensionConfigurationPathDoesNotExistException
      * @throws JsonException
      * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
      */
     public static function validateLabel(string $label): bool
     {

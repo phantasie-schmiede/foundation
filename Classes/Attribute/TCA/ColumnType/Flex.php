@@ -23,10 +23,10 @@ use PSBits\Foundation\Utility\Database\DefinitionUtility;
 class Flex extends AbstractColumnType
 {
     /**
-     * @param array|null $ds             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Flex/Index.html#confval-flex-ds
-     * @param string     $dsPointerField https://docs.typo3.org/m/typo3/reference-tca/13.4/en-us/ColumnsConfig/Type/Flex/Index.html#confval-flex-ds-pointerfield
-     *                                   Removed in TYPO3 v14: the pointer field functionality of TCA flex was
-     *                                   removed (Breaking-107047). The option is kept for TYPO3 v13 support.
+     * @param array<string, mixed>|null $ds             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Flex/Index.html#confval-flex-ds
+     * @param string                    $dsPointerField https://docs.typo3.org/m/typo3/reference-tca/13.4/en-us/ColumnsConfig/Type/Flex/Index.html#confval-flex-ds-pointerfield
+     *                                                  Removed in TYPO3 v14: the pointer field functionality of TCA flex was
+     *                                                  removed (Breaking-107047). The option is kept for TYPO3 v13 support.
      */
     public function __construct(
         protected ?array $ds = null,
@@ -39,6 +39,9 @@ class Flex extends AbstractColumnType
         return DefinitionUtility::text();
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getDs(): ?array
     {
         return $this->ds;

@@ -232,6 +232,8 @@ class PluginService
     }
 
     /**
+     * @param array<string, mixed> $configuration
+     *
      * @throws ContainerExceptionInterface
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
@@ -262,7 +264,7 @@ class PluginService
     /**
      * @param PluginConfiguration $configuration
      *
-     * @return array[]
+     * @return list<array<string, mixed>>
      * @throws ReflectionException
      */
     private function collectActionsAndConfiguration(

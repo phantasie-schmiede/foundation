@@ -23,12 +23,12 @@ use PSBits\Foundation\Utility\Database\DefinitionUtility;
 class Link extends AbstractColumnType
 {
     /**
-     * @param array|null  $allowedTypes https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Link/Index.html#confval-link-allowedtypes
-     * @param array|null  $appearance   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Link/Index.html#confval-link-appearance
-     * @param bool        $autocomplete https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Link/Index.html#confval-link-autocomplete
-     * @param string|null $placeholder  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Link/Index.html#confval-link-placeholder
-     * @param int|null    $size         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Link/Index.html#confval-link-size
-     * @param array|null  $valuePicker  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Link/Index.html#confval-link-valuepicker
+     * @param array<string, mixed>|null $allowedTypes https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Link/Index.html#confval-link-allowedtypes
+     * @param array<string, mixed>|null $appearance   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Link/Index.html#confval-link-appearance
+     * @param bool                      $autocomplete https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Link/Index.html#confval-link-autocomplete
+     * @param string|null               $placeholder  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Link/Index.html#confval-link-placeholder
+     * @param int|null                  $size         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Link/Index.html#confval-link-size
+     * @param array<string, mixed>|null $valuePicker  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Link/Index.html#confval-link-valuepicker
      */
     public function __construct(
         protected ?array  $allowedTypes = null,
@@ -40,11 +40,17 @@ class Link extends AbstractColumnType
     ) {
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getAllowedTypes(): ?array
     {
         return $this->allowedTypes;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getAppearance(): ?array
     {
         return $this->appearance;
@@ -70,6 +76,9 @@ class Link extends AbstractColumnType
         return $this->size;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getValuePicker(): ?array
     {
         if (null === $this->valuePicker) {

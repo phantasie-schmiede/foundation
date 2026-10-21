@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Utility;
 
 use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Result;
 use Generator;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -25,6 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class QueryBuilderUtility
 {
     /**
+     * @return Generator<int, Result>
      * @throws Exception
      */
     public static function processInChunks(QueryBuilder $queryBuilder, int $chunkSize): Generator

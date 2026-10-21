@@ -22,6 +22,7 @@ use PSBits\Foundation\Utility\Xml\XmlUtility;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
+use ReflectionException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use TYPO3\CMS\Backend\Attribute\AsController;
@@ -67,10 +68,12 @@ class AnalyzeLocalLangController extends AbstractModuleController
     /**
      * Returns an array with all defined identifiers as keys (format: "LLL:EXT:...").
      *
+     * @return array<string, int|string|null>
      * @throws ContainerExceptionInterface
      * @throws ImplementationException
      * @throws JsonException
      * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
      */
     private function collectAllLanguageLabels(): array
     {
@@ -121,11 +124,13 @@ class AnalyzeLocalLangController extends AbstractModuleController
     }
 
     /**
+     * @return array<string, array<string, int|string|null>>
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws ImplementationException
      * @throws JsonException
      * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
      */
     private function fetchLabelAccessLogData(): array
     {
@@ -167,6 +172,7 @@ class AnalyzeLocalLangController extends AbstractModuleController
     }
 
     /**
+     * @return array<string, list<string>>
      * @throws Exception
      * @throws JsonException
      */

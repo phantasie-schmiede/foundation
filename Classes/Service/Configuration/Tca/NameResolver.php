@@ -46,7 +46,9 @@ class NameResolver
         'TCA'           => 'tca',
     ];
 
-    protected static bool           $allowCaching         = true;
+    protected static bool $allowCaching = true;
+
+    /** @var array<string, array<string, string>> */
     protected static array          $classTableMapping    = [];
     protected ?ClassesConfiguration $classesConfiguration = null;
 
@@ -133,6 +135,7 @@ class NameResolver
      * The result is an array of class names which are mapped to the given table name.
      * If no class is found, an empty array is returned.
      *
+     * @return list<string>
      * @throws ContainerExceptionInterface
      * @throws ImplementationException
      * @throws NotFoundExceptionInterface
@@ -268,6 +271,10 @@ class NameResolver
     /**
      * Copied from TYPO3\CMS\Extbase\Persistence\ClassesConfigurationFactory because instantiation of that class would
      * throw an exception (e.g. CacheManager not available, dependency injection not ready).
+     *
+     * @param array<string, array<string, mixed>> $classes
+     *
+     * @return array<string, array<string, mixed>>
      */
     private function inheritPropertiesFromParentClasses(array $classes): array
     {
@@ -314,10 +321,7 @@ class NameResolver
                 }
 
                 // Merge new properties over existing ones.
-                $classes[$className]['properties'] = array_replace_recursive(
-                    $properties,
-                    $classes[$className]['properties'] ?? []
-                );
+                $classes[$className]['properties'] = array_replace_recursive($properties, $classes[$className]['properties']);
             }
         }
 

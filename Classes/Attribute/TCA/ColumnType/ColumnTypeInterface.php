@@ -22,5 +22,8 @@ interface ColumnTypeInterface
 
     public function getType(): string;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array;
 }

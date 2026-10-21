@@ -24,66 +24,72 @@ use PSBits\Foundation\Utility\Database\DefinitionUtility;
 class File extends AbstractColumnType
 {
     /**
-     * @param array|string $allowed                              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html#confval-file-allowed
-     * @param array|null   $appearance                           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html#confval-file-appearance
-     * @param string|null  $disallowed                           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html#confval-file-disallowed
-     * @param bool         $disableMovingChildrenWithParent      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html#confval-file-disablemovingchildrenwithparent
-     * @param bool         $enableCascadingDelete                https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html#confval-file-enablecascadingdelete
-     * @param int|null     $maxItems                             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html#confval-file-maxitems
-     * @param int|null     $minItems                             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html#confval-file-minitems
-     * @param array|null   $overrideChildTca                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html#confval-file-overridechildtca
-     * @param Relationship $relationship                         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html#confval-file-relationship
-     * @param array|null   $upload
-     * @param string|null  $uploadDuplicationBehaviour           Defines how duplicates in the file system should be
-     *                                                           handled (default is renaming the new file).
-     *                                                           See \TYPO3\CMS\Core\Resource\DuplicationBehavior.
-     * @param int|null     $uploadFileMaxSize                    If set and greater than zero, uploaded files must not
-     *                                                           exceed this size (in bytes).
-     * @param bool         $uploadFileNameGeneratorAppendHash    If true, the hash value of the file content is
-     *                                                           appended to the file name.
-     * @param string       $uploadFileNameGeneratorPartSeparator string which combines the different file name parts
-     *                                                           (default is "-")
-     * @param string|null  $uploadFileNameGeneratorPrefix        If set, the file name will start with this string.
-     * @param array|null   $uploadFileNameGeneratorProperties    If empty, client file name will be used (removing
-     *                                                           unsafe characters).
-     * @param array|null   $uploadFileNameGeneratorReplacements  Associative array whose keys will be replaced by its
-     *                                                           values in the file name
-     * @param string|null  $uploadFileNameGeneratorSuffix        If set, the file name will end with this string.
-     * @param string|null  $uploadTargetFolder                   This can be a simple file path or a combined
-     *                                                           identifier like "2:my/file/path/" which defines the
-     *                                                           ResourceStorage to be used. Default is "user_upload".
-     *                                                           Example: "my/file/path/" will result to
-     *                                                           "1:fileadmin/my/file/path/" (with default TYPO3
-     *                                                           configuration).
+     * @param array<string, mixed>|string $allowed                              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html#confval-file-allowed
+     * @param array<string, mixed>|null   $appearance                           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html#confval-file-appearance
+     * @param string|null                 $disallowed                           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html#confval-file-disallowed
+     * @param bool                        $disableMovingChildrenWithParent      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html#confval-file-disablemovingchildrenwithparent
+     * @param bool                        $enableCascadingDelete                https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html#confval-file-enablecascadingdelete
+     * @param int|null                    $maxItems                             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html#confval-file-maxitems
+     * @param int|null                    $minItems                             https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html#confval-file-minitems
+     * @param array<string, mixed>|null   $overrideChildTca                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html#confval-file-overridechildtca
+     * @param Relationship|null           $relationship                         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html#confval-file-relationship
+     * @param array<string, mixed>|null   $upload
+     * @param string|null                 $uploadDuplicationBehaviour           Defines how duplicates in the file system should be
+     *                                                                          handled (default is renaming the new file).
+     *                                                                          See \TYPO3\CMS\Core\Resource\DuplicationBehavior.
+     * @param int|null                    $uploadFileMaxSize                    If set and greater than zero, uploaded files must not
+     *                                                                          exceed this size (in bytes).
+     * @param bool                        $uploadFileNameGeneratorAppendHash    If true, the hash value of the file content is
+     *                                                                          appended to the file name.
+     * @param string                      $uploadFileNameGeneratorPartSeparator string which combines the different file name parts
+     *                                                                          (default is "-")
+     * @param string|null                 $uploadFileNameGeneratorPrefix        If set, the file name will start with this string.
+     * @param array<string, mixed>|null   $uploadFileNameGeneratorProperties    If empty, client file name will be used (removing
+     *                                                                          unsafe characters).
+     * @param array<string, mixed>|null   $uploadFileNameGeneratorReplacements  Associative array whose keys will be replaced by its
+     *                                                                          values in the file name
+     * @param string|null                 $uploadFileNameGeneratorSuffix        If set, the file name will end with this string.
+     * @param string|null                 $uploadTargetFolder                   This can be a simple file path or a combined
+     *                                                                          identifier like "2:my/file/path/" which defines the
+     *                                                                          ResourceStorage to be used. Default is "user_upload".
+     *                                                                          Example: "my/file/path/" will result to
+     *                                                                          "1:fileadmin/my/file/path/" (with default TYPO3
+     *                                                                          configuration).
      */
     public function __construct(
-        protected array|string $allowed = 'common-image-types',
-        protected ?array       $appearance = null,
-        protected ?string      $disallowed = null,
-        protected ?bool        $disableMovingChildrenWithParent = null,
-        protected ?bool        $enableCascadingDelete = null,
-        protected ?int         $maxItems = null,
-        protected ?int         $minItems = null,
-        protected ?array       $overrideChildTca = null,
-        protected Relationship $relationship = Relationship::manyToMany,
-        protected ?array       $upload = null,
-        protected ?string      $uploadDuplicationBehaviour = null,
-        protected ?int         $uploadFileMaxSize = null,
-        protected bool         $uploadFileNameGeneratorAppendHash = true,
-        protected string       $uploadFileNameGeneratorPartSeparator = '-',
-        protected ?string      $uploadFileNameGeneratorPrefix = null,
-        protected ?array       $uploadFileNameGeneratorProperties = null,
-        protected ?array       $uploadFileNameGeneratorReplacements = null,
-        protected ?string      $uploadFileNameGeneratorSuffix = null,
-        protected ?string      $uploadTargetFolder = null,
+        protected array|string  $allowed = 'common-image-types',
+        protected ?array        $appearance = null,
+        protected ?string       $disallowed = null,
+        protected ?bool         $disableMovingChildrenWithParent = null,
+        protected ?bool         $enableCascadingDelete = null,
+        protected ?int          $maxItems = null,
+        protected ?int          $minItems = null,
+        protected ?array        $overrideChildTca = null,
+        protected ?Relationship $relationship = null,
+        protected ?array        $upload = null,
+        protected ?string       $uploadDuplicationBehaviour = null,
+        protected ?int          $uploadFileMaxSize = null,
+        protected bool          $uploadFileNameGeneratorAppendHash = true,
+        protected string        $uploadFileNameGeneratorPartSeparator = '-',
+        protected ?string       $uploadFileNameGeneratorPrefix = null,
+        protected ?array        $uploadFileNameGeneratorProperties = null,
+        protected ?array        $uploadFileNameGeneratorReplacements = null,
+        protected ?string       $uploadFileNameGeneratorSuffix = null,
+        protected ?string       $uploadTargetFolder = null,
     ) {
     }
 
+    /**
+     * @return array<string, mixed>|string
+     */
     public function getAllowed(): array|string
     {
         return $this->allowed;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getAppearance(): ?array
     {
         return $this->appearance;
@@ -109,16 +115,22 @@ class File extends AbstractColumnType
         return $this->minItems;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getOverrideChildTca(): ?array
     {
         return $this->overrideChildTca;
     }
 
-    public function getRelationship(): string
+    public function getRelationship(): ?string
     {
-        return $this->relationship->value;
+        return $this->relationship?->value;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getUpload(): ?array
     {
         $configuration = null;
@@ -162,6 +174,9 @@ class File extends AbstractColumnType
         return $configuration;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         $configuration = parent::toArray();

@@ -31,11 +31,11 @@ class LocalizationService
     /**
      * Returns the localized label of the LOCAL_LANG key, $key.
      *
-     * @param string      $key           The key from the LOCAL_LANG array for which to return the value.
-     * @param string|null $extensionName The name of the extension
-     * @param array|null  $arguments     The arguments of the extension, being passed over to vsprintf
-     * @param string|null $languageKey   The language key or null for using the current language from the
-     *                                   system
+     * @param string                    $key           The key from the LOCAL_LANG array for which to return the value.
+     * @param string|null               $extensionName The name of the extension
+     * @param array<string, mixed>|null $arguments     The arguments of the extension, being passed over to vsprintf
+     * @param string|null               $languageKey   The language key or null for using the current language from the
+     *                                                 system
      *
      * @return string|null The value from LOCAL_LANG or null if no translation was found.
      * @throws AspectNotFoundException

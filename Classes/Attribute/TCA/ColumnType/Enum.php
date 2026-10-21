@@ -42,6 +42,7 @@ use function strlen;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Enum implements ColumnTypeWithItemsInterface
 {
+    /** @var list<array{label: string, value: mixed}> */
     protected array $items = [];
 
     /**
@@ -146,6 +147,9 @@ class Enum implements ColumnTypeWithItemsInterface
         $this->items = $items;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return [

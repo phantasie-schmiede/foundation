@@ -20,8 +20,10 @@ use PSBits\Foundation\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\TypoScript\AST\Node\RootNode;
 use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -118,6 +120,10 @@ class GlobalVariableServiceTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
         $this->mockSiteConfiguration();
         $this->mockTsfe();
+
+        // $GLOBALS['TSFE'] is removed in TYPO3 v14, the site is exposed as request attribute instead.
+        $site                     = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByRootPageId(self::ROOT_PAGE_ID);
+        $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute('site', $site);
     }
 
     private function mockSiteConfiguration(): void

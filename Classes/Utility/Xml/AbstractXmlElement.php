@@ -28,16 +28,19 @@ class AbstractXmlElement implements XmlElementInterface
 {
     use AutoFillPropertiesTrait;
 
+    /** @var array<string, string> */
     protected array $_attributes = [];
 
     /**
-     * @var array Should be of type mixed, but Extbase throws an error in that case. Thus, we have to use this
-     *            workaround.
+     * @var array<int, mixed> Should be of type mixed, but Extbase throws an error in that case. Thus, we have to use this
+     *                        workaround.
      */
     protected array $_nodeValue = [];
     protected ?int  $_position  = null;
 
     /**
+     * @param array<string, mixed> $childData
+     *
      * @throws ReflectionException
      */
     public function __construct(array $childData)
@@ -79,6 +82,9 @@ class AbstractXmlElement implements XmlElementInterface
         return XmlUtility::sanitizeTagName((new ReflectionClass(static::class))->getShortName());
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function _getAttributes(): array
     {
         return $this->_attributes;
@@ -94,6 +100,9 @@ class AbstractXmlElement implements XmlElementInterface
         return $this->_position;
     }
 
+    /**
+     * @param array<string, string> $attributes
+     */
     public function _setAttributes(array $attributes): void
     {
         $this->_attributes = $attributes;
@@ -110,7 +119,7 @@ class AbstractXmlElement implements XmlElementInterface
     }
 
     /**
-     * @throws ReflectionException
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {

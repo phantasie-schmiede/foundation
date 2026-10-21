@@ -21,6 +21,8 @@ use PSBits\Foundation\Tests\Examples\Domain\Model\CoreFieldPositionModel;
 use PSBits\Foundation\Tests\Examples\Domain\Model\DataObjectModel;
 use PSBits\Foundation\Tests\Examples\Domain\Model\ExtendedTcaChildModel;
 use PSBits\Foundation\Tests\Examples\Domain\Model\ExtendedTcaParentModel;
+use PSBits\Foundation\Tests\Examples\Domain\Model\InvalidRelationshipModel;
+use PSBits\Foundation\Tests\Examples\Domain\Model\ManyToOneRelationshipModel;
 use PSBits\Foundation\Tests\Examples\Domain\Model\PositionLoopModel;
 use PSBits\Foundation\Tests\Examples\Domain\Model\PositionReferenceModel;
 use PSBits\Foundation\Tests\Examples\Domain\Model\ProtectedSortModel;
@@ -41,14 +43,16 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class TcaServiceTest extends FunctionalTestCase
 {
-    private const string TABLE_NAME_ALL_ATTRIBUTES      = 'tx_foundation_all_tca_attributes';
-    private const string TABLE_NAME_CORE_FIELD_POSITION = 'tx_foundation_core_field_position';
-    private const string TABLE_NAME_DATA_OBJECT         = 'tx_foundation_data_object';
-    private const string TABLE_NAME_EXTENDED_TCA        = 'tx_foundation_extended_tca';
-    private const string TABLE_NAME_POSITION_LOOP       = 'tx_foundation_position_loop';
-    private const string TABLE_NAME_POSITION_REFERENCE  = 'tx_foundation_position_reference';
-    private const string TABLE_NAME_PROTECTED_SORT      = 'tx_foundation_protected_sort';
-    private const string TABLE_NAME_SORT_CONFLICT       = 'tx_foundation_sort_conflict';
+    private const string TABLE_NAME_ALL_ATTRIBUTES           = 'tx_foundation_all_tca_attributes';
+    private const string TABLE_NAME_CORE_FIELD_POSITION      = 'tx_foundation_core_field_position';
+    private const string TABLE_NAME_DATA_OBJECT              = 'tx_foundation_data_object';
+    private const string TABLE_NAME_EXTENDED_TCA             = 'tx_foundation_extended_tca';
+    private const string TABLE_NAME_INVALID_RELATIONSHIP     = 'tx_foundation_invalid_relationship';
+    private const string TABLE_NAME_MANY_TO_ONE_RELATIONSHIP = 'tx_foundation_many_to_one_relationship';
+    private const string TABLE_NAME_POSITION_LOOP            = 'tx_foundation_position_loop';
+    private const string TABLE_NAME_POSITION_REFERENCE       = 'tx_foundation_position_reference';
+    private const string TABLE_NAME_PROTECTED_SORT           = 'tx_foundation_protected_sort';
+    private const string TABLE_NAME_SORT_CONFLICT            = 'tx_foundation_sort_conflict';
 
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/psbits/foundation',
@@ -251,6 +255,50 @@ class TcaServiceTest extends FunctionalTestCase
         $this->buildFromAttributes(ProtectedSortModel::class, self::TABLE_NAME_PROTECTED_SORT, false);
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws MisconfiguredTcaException
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+     */
+    #[Test]
+    public function buildFromAttributesThrowsOnDisallowedManyToManyRelationship(): void
+    {
+        unset($GLOBALS['TCA'][self::TABLE_NAME_INVALID_RELATIONSHIP]);
+
+        $this->expectException(MisconfiguredTcaException::class);
+        $this->expectExceptionCode(1791849601);
+        $this->expectExceptionMessageMatches('/The type "file" does not support the relationship "manyToMany"/');
+
+        $this->buildFromAttributes(InvalidRelationshipModel::class, self::TABLE_NAME_INVALID_RELATIONSHIP, false);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws MisconfiguredTcaException
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+     */
+    #[Test]
+    public function buildFromAttributesAcceptsManyToOneRelationship(): void
+    {
+        unset($GLOBALS['TCA'][self::TABLE_NAME_MANY_TO_ONE_RELATIONSHIP]);
+
+        $this->buildFromAttributes(ManyToOneRelationshipModel::class, self::TABLE_NAME_MANY_TO_ONE_RELATIONSHIP, false);
+
+        $config = $GLOBALS['TCA'][self::TABLE_NAME_MANY_TO_ONE_RELATIONSHIP]['columns']['company']['config'] ?? [];
+
+        self::assertSame('select', $config['type']);
+        self::assertSame('sys_category', $config['foreign_table']);
+        self::assertSame('manyToOne', $config['relationship']);
+    }
+
     protected function tearDown(): void
     {
         unset(
@@ -258,6 +306,8 @@ class TcaServiceTest extends FunctionalTestCase
             $GLOBALS['TCA'][self::TABLE_NAME_CORE_FIELD_POSITION],
             $GLOBALS['TCA'][self::TABLE_NAME_DATA_OBJECT],
             $GLOBALS['TCA'][self::TABLE_NAME_EXTENDED_TCA],
+            $GLOBALS['TCA'][self::TABLE_NAME_INVALID_RELATIONSHIP],
+            $GLOBALS['TCA'][self::TABLE_NAME_MANY_TO_ONE_RELATIONSHIP],
             $GLOBALS['TCA'][self::TABLE_NAME_POSITION_LOOP],
             $GLOBALS['TCA'][self::TABLE_NAME_POSITION_REFERENCE],
             $GLOBALS['TCA'][self::TABLE_NAME_PROTECTED_SORT],

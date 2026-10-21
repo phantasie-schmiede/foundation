@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
 use PSBits\Foundation\Attribute\TCA\AbstractTcaAttribute;
-use ReflectionException;
 
 /**
  * Class AbstractColumnType
@@ -32,7 +31,7 @@ abstract class AbstractColumnType extends AbstractTcaAttribute implements Column
     }
 
     /**
-     * @throws ReflectionException
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {

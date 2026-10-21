@@ -77,8 +77,8 @@ class TypoScriptUtilityTest extends UnitTestCase
     }
 
     /**
-     * @param array  $array
-     * @param string $expectedResult
+     * @param array<string, mixed> $array
+     * @param string               $expectedResult
      *
      * @return void
      */

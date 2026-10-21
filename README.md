@@ -115,8 +115,8 @@ This repository ships with additional quality tooling for PHP, XML/XLF, YAML, Ty
 - `composer fix:classes`: normalizes class attributes
 - `composer fix:htmlxml`: formats XML and XLF files
 
-`composer install` also installs frontend tooling and copies the pre-commit hook from
-`Build/GitHooks/pre-commit` to `.git/hooks/pre-commit`.
+`composer install` also installs frontend tooling and installs the pre-commit hook
+from the psbits/qa package via `.Build/bin/qa link`.
 
 #### Code coverage
 

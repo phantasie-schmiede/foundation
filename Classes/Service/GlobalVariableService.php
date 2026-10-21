@@ -25,6 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class GlobalVariableService
 {
+    /** @var array<string, mixed> */
     protected static array $cachedVariables = [];
 
     /**

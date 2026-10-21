@@ -7,16 +7,6 @@ services:
   PSBits\Foundation\:
     resource: '../Classes/*'
 
-  PSBits\Foundation\EventListener\CacheConfigurationBuilder:
-    tags:
-      - identifier: 'foundation_cacheConfigurationBuilder'
-        name: event.listener
-
-  PSBits\Foundation\EventListener\DatabaseEnricher:
-    tags:
-      - identifier: 'foundation_databaseEnricher'
-        name: event.listener
-
   PSBits\Foundation\Service\Configuration\ModuleService:
     public: true
 

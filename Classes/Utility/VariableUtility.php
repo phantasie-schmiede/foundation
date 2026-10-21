@@ -26,10 +26,10 @@ use function is_object;
 class VariableUtility
 {
     /**
-     * @param object|array $variable
-     * @param string       $path
-     * @param bool         $strict    If set to false this function will return null if path does not exist.
-     * @param string       $delimiter
+     * @param object|array<string, mixed> $variable
+     * @param string                      $path
+     * @param bool                        $strict    If set to false this function will return null if path does not exist.
+     * @param string                      $delimiter
      *
      * @return mixed
      */

@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service;
 
-use Exception;
+use Doctrine\DBAL\Exception as DbalException;
 use PSBits\Foundation\Attribute\TCA\ColumnType\Select;
 use PSBits\Foundation\Exceptions\ImplementationException;
 use PSBits\Foundation\Service\Configuration\TcaService;
@@ -28,6 +28,7 @@ use TYPO3\CMS\Core\Database\RelationHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+use TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 use function get_class;
@@ -53,6 +54,9 @@ class ObjectService
      * to a single table, the preferred models (array of full qualified class names) will be used as filter. The first
      * mapping result is used if there is no preferred model.
      *
+     * @param list<class-string<AbstractEntity>> $preferredModels
+     *
+     * @return list<array<string, mixed>|DomainObjectInterface|null>
      * @throws ContainerExceptionInterface
      * @throws ImplementationException
      * @throws NotFoundExceptionInterface
@@ -123,7 +127,9 @@ class ObjectService
      * If you have a select field in TCA with 'multiple' set to true, Extbase still returns each selected record only
      * once. This method returns the whole selected set sorted as in backend.
      *
-     * @throws Exception
+     * @return list<AbstractDomainObject>
+     * @throws DbalException
+     * @throws ReflectionException
      */
     public function resolveMultipleMmRelation(AbstractDomainObject $object, string $property): array
     {

@@ -51,12 +51,7 @@ class ModuleService
     /**
      * For use in ext_tables.php files
      *
-     * @throws ContainerExceptionInterface
-     * @throws ExtensionConfigurationExtensionNotConfiguredException
-     * @throws ExtensionConfigurationPathDoesNotExistException
-     * @throws JsonException
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
+     * @return array<string, mixed>
      */
     public function buildModuleConfiguration(ExtensionInformationInterface $extensionInformation): array
     {
@@ -83,6 +78,7 @@ class ModuleService
     }
 
     /**
+     * @return array<string, mixed>
      * @throws ContainerExceptionInterface
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
@@ -141,6 +137,9 @@ class ModuleService
     }
 
     /**
+     * @param array<int|string, string|list<string>> $controllersCollection
+     *
+     * @return array<string, list<string>>
      * @throws ReflectionException
      */
     private function collectActions(

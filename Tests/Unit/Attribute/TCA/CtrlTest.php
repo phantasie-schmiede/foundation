@@ -146,6 +146,10 @@ class CtrlTest extends UnitTestCase
         self::assertSame('tstamp', $constructorDefaults['tstamp']);
     }
 
+    /**
+     * @param string|list<string> $coreFields
+     * @param list<string>        $expectedValues
+     */
     #[Test]
     #[DataProvider('coreFieldGroupDataProvider')]
     public function coreFieldSelectionKeepsOnlySelectedGroups(

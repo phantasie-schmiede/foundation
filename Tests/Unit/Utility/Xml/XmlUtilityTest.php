@@ -17,6 +17,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use ReflectionException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -77,9 +78,12 @@ class XmlUtilityTest extends UnitTestCase
     }
 
     /**
+     * @param array<string, mixed> $expectedResult
+     *
      * @throws ContainerExceptionInterface
      * @throws JsonException
      * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
      */
     #[Test]
     #[DataProvider('convertFromXmlDataProvider')]
@@ -91,6 +95,9 @@ class XmlUtilityTest extends UnitTestCase
         );
     }
 
+    /**
+     * @param array<string, mixed> $array
+     */
     #[Test]
     #[DataProvider('convertToXmlDataProvider')]
     public function convertToXml(array $array, string $expectedResult): void

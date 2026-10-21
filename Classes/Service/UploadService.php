@@ -26,6 +26,8 @@ use Symfony\Component\HttpFoundation\File\Exception\IniSizeFileException;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Http\UploadedFile;
 use TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior;
+use TYPO3\CMS\Core\Resource\Exception\ExistingTargetFolderException;
+use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderWritePermissionsException;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\ResourceStorageInterface;
 use TYPO3\CMS\Core\Resource\StorageRepository;
@@ -109,6 +111,8 @@ class UploadService
     }
 
     /**
+     * @param array<string, mixed> $uploadConfiguration
+     *
      * @throws PropertyNotAccessibleException
      */
     private function buildTargetFileName(
@@ -161,6 +165,8 @@ class UploadService
     }
 
     /**
+     * @param array<string, mixed> $uploadConfiguration
+     *
      * @throws AspectNotFoundException
      */
     private function checkFileSize(string $property, array $uploadConfiguration, UploadedFile $uploadedFile): void
@@ -191,6 +197,9 @@ class UploadService
         }
     }
 
+    /**
+     * @param array<string, mixed> $uploadConfiguration
+     */
     private function checkMimeType(string $property, array $uploadConfiguration, UploadedFile $uploadedFile): void
     {
         $mimeType = FileUtility::getMimeType($uploadedFile->getTemporaryFileName());
@@ -214,6 +223,9 @@ class UploadService
     }
 
     /**
+     * @param list<string> $properties
+     *
+     * @return array<string, mixed>
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws ReflectionException
@@ -241,6 +253,9 @@ class UploadService
         return GeneralUtility::trimExplode('/', $mimeType)[1];
     }
 
+    /**
+     * @param array<string, mixed> $uploadConfiguration
+     */
     private function moveUploadedFileToFileStorage(
         string       $property,
         string       $targetFileName,
@@ -256,9 +271,9 @@ class UploadService
     }
 
     /**
-     * @throws AspectNotFoundException
+     * @param array<string, mixed> $uploadedFilesCollection
+     *
      * @throws ContainerExceptionInterface
-     * @throws MisconfiguredTcaException
      * @throws NotFoundExceptionInterface
      * @throws PropertyNotAccessibleException
      * @throws ReflectionException
@@ -290,6 +305,10 @@ class UploadService
     }
 
     /**
+     * @param array<string, mixed> $uploadConfiguration
+     *
+     * @throws ExistingTargetFolderException
+     * @throws InsufficientFolderWritePermissionsException
      * @throws MisconfiguredTcaException
      */
     private function provideTargetFolders(array &$uploadConfiguration): void
@@ -300,6 +319,10 @@ class UploadService
     }
 
     /**
+     * @param array<string, mixed> $uploadConfiguration
+     *
+     * @throws ExistingTargetFolderException
+     * @throws InsufficientFolderWritePermissionsException
      * @throws MisconfiguredTcaException
      */
     private function setStorageAndTargetFolder(string $property, array &$uploadConfiguration): void
@@ -341,6 +364,9 @@ class UploadService
 
     /**
      * Checks if the uploaded files match given constraints and ensures a consistent array structure for further loops.
+     *
+     * @param array<string, mixed> $uploadConfiguration
+     * @param array<string, mixed> $uploadedFilesCollection
      *
      * @throws AspectNotFoundException
      */

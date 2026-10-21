@@ -44,6 +44,8 @@ class StringUtility
     }
 
     /**
+     * @param array<string, string> $namespaces
+     *
      * @throws ContainerExceptionInterface
      * @throws JsonException
      * @throws NotFoundExceptionInterface
@@ -323,6 +325,9 @@ class StringUtility
         return mb_substr($string, 0, $length) . $appendix;
     }
 
+    /**
+     * @return list<string>
+     */
     public static function explodeByLineBreaks(string $string): array
     {
         return preg_split(

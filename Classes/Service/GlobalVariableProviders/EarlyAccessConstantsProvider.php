@@ -51,6 +51,7 @@ class EarlyAccessConstantsProvider extends AbstractProvider
     public const string DIRECTORY = '/Configuration/EarlyAccessConstants/';
 
     /**
+     * @return array<string, mixed>
      * @throws ImplementationException
      */
     public function getGlobalVariables(): array
