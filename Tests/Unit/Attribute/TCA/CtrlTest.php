@@ -18,6 +18,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PSBits\Foundation\Attribute\TCA\Ctrl;
 use ReflectionClass;
+use ReflectionProperty;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -273,6 +274,21 @@ class CtrlTest extends UnitTestCase
                 'language',
             ])
         );
+    }
+
+    #[Test]
+    public function searchFieldsAcceptsAListOfPropertyNames(): void
+    {
+        /*
+         * searchFields is a list of property names: getSearchFields() converts each entry to a column name
+         * and implodes the result into the comma-separated ctrl value. Exercising the list form here keeps
+         * the constructor parameter under phpstan coverage.
+         */
+        $ctrl = new Ctrl(searchFields: ['subtitle', 'title']);
+
+        $reflection = new ReflectionProperty(Ctrl::class, 'searchFields');
+
+        self::assertSame(['subtitle', 'title'], $reflection->getValue($ctrl));
     }
 
     #[Test]
