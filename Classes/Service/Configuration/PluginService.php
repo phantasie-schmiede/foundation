@@ -18,7 +18,6 @@ use PSBits\Foundation\Data\PluginConfiguration;
 use PSBits\Foundation\Utility\Configuration\FilePathUtility;
 use PSBits\Foundation\Utility\LocalizationUtility;
 use PSBits\Foundation\Utility\ReflectionUtility;
-use PSBits\Foundation\Utility\Typo3VersionUtility;
 use PSBits\Foundation\Utility\TypoScript\PageObjectConfiguration;
 use PSBits\Foundation\Utility\TypoScript\TypoScriptUtility;
 use Psr\Container\ContainerExceptionInterface;
@@ -29,7 +28,6 @@ use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotCon
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\DataHandling\PageDoktypeRegistry;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
@@ -43,87 +41,10 @@ use function is_int;
  */
 class PluginService
 {
-    /**
-     * This variable is used to keep track of already registered wizard groups and is pre-filled with TYPO3's default
-     * groups as defined in typo3\cms-backend\Configuration\page.tsconfig
-     *
-     * @var string[]
-     */
-    private array $contentElementWizardGroups = [
-        'common',
-        'forms',
-        'menu',
-        'plugins',
-        'special',
-    ];
-
     public function __construct(
         protected FlexFormService     $flexFormService,
         protected PageDoktypeRegistry $pageDoktypeRegistry,
     ) {
-    }
-
-    /**
-     * For use in ext_localconf.php files
-     *
-     * @throws ContainerExceptionInterface
-     * @throws ExtensionConfigurationExtensionNotConfiguredException
-     * @throws ExtensionConfigurationPathDoesNotExistException
-     * @throws JsonException
-     * @throws NotFoundExceptionInterface
-     */
-    public function addPluginToElementWizard(
-        ExtensionInformationInterface $extensionInformation,
-        PluginConfiguration           $pluginConfiguration,
-    ): void {
-        $group          = $pluginConfiguration->getGroup() ?: mb_strtolower($extensionInformation->getVendorName());
-        $iconIdentifier = $pluginConfiguration->getIconIdentifier() ?: $extensionInformation->getExtensionKey(
-        ) . '-' . str_replace(
-            '_',
-            '-',
-            GeneralUtility::camelCaseToLowerCaseUnderscored($pluginConfiguration->getName())
-        );
-        $ll = 'LLL:EXT:' . $extensionInformation->getExtensionKey(
-        ) . '/Resources/Private/Language/Backend/Configuration/TsConfig/Page/Mod/Wizards/newContentElement.xlf:' . $group . '.elements.' . lcfirst(
-            $pluginConfiguration->getName()
-        );
-        $description = $ll . '.description';
-        $title       = $ll . '.title';
-        $listType    = str_replace('_', '', $extensionInformation->getExtensionKey()) . '_' . mb_strtolower(
-            $pluginConfiguration->getName()
-        );
-
-        if (false === LocalizationUtility::translationExists($description)) {
-            $description = '';
-        }
-
-        if (false === LocalizationUtility::translationExists($title, false)) {
-            $title = $this->getDefaultLabelPathForPlugin($extensionInformation, $pluginConfiguration->getName());
-
-            if (false === LocalizationUtility::translationExists($title)) {
-                $title = $pluginConfiguration->getName();
-            }
-        }
-
-        /*
-         * The IconRegistry is only available once the boot is complete, so it is resolved on demand
-         * instead of being injected.
-         */
-        $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
-
-        $configuration = [
-            'description'          => $description,
-            'iconIdentifier'       => $iconRegistry->isRegistered(
-                $iconIdentifier
-            ) ? $iconIdentifier : 'content-plugin',
-            'title'                => $title,
-            'tt_content_defValues' => [
-                'CType'     => 'list',
-                'list_type' => $listType,
-            ],
-        ];
-
-        $this->addElementWizardItem($configuration, $extensionInformation->getExtensionKey(), $group, $listType);
     }
 
     /**
@@ -153,10 +74,6 @@ class PluginService
 
             if (0 < $configuration->getTypeNum()) {
                 $this->registerPageTypeForPlugin($configuration, $extensionInformation);
-            }
-
-            if ($configuration->isAddToElementWizard()) {
-                $this->addPluginToElementWizard($extensionInformation, $configuration);
             }
         }
     }
@@ -202,62 +119,6 @@ class PluginService
                 $iconRegistry->isRegistered($iconIdentifier) ? $iconIdentifier : 'content-plugin'
             );
             $this->registerFlexFormForPlugin($extensionInformation, $configuration, $pluginSignature);
-        }
-    }
-
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws ExtensionConfigurationExtensionNotConfiguredException
-     * @throws ExtensionConfigurationPathDoesNotExistException
-     * @throws JsonException
-     * @throws NotFoundExceptionInterface
-     */
-    private function addElementWizardGroup(string $extensionKey, string $key): void
-    {
-        $header = 'LLL:EXT:' . $extensionKey . '/Resources/Private/Language/Backend/Configuration/TsConfig/Page/Mod/Wizards/newContentElement.xlf:' . $key . '.header';
-        LocalizationUtility::translationExists($header);
-        $pageTS['mod']['wizards']['newContentElement']['wizardItems'][$key] = [
-            'header' => $header,
-            'show'   => '*',
-        ];
-
-        /*
-         * addPageTSConfig() was removed in v14; the content element wizard is derived from the plugin
-         * registration on that major, so the TSconfig is only registered up to v13.
-         */
-        if (!Typo3VersionUtility::isAtLeast('14.0')) {
-            ExtensionManagementUtility::addPageTSConfig(TypoScriptUtility::convertArrayToTypoScript($pageTS));
-        }
-        $this->contentElementWizardGroups[] = $key;
-    }
-
-    /**
-     * @param array<string, mixed> $configuration
-     *
-     * @throws ContainerExceptionInterface
-     * @throws ExtensionConfigurationExtensionNotConfiguredException
-     * @throws ExtensionConfigurationPathDoesNotExistException
-     * @throws JsonException
-     * @throws NotFoundExceptionInterface
-     */
-    private function addElementWizardItem(
-        array  $configuration,
-        string $extensionKey,
-        string $group,
-        string $key,
-    ): void {
-        if (!in_array($group, $this->contentElementWizardGroups, true)) {
-            $this->addElementWizardGroup($extensionKey, $group);
-        }
-
-        $newPageTS['mod']['wizards']['newContentElement']['wizardItems'][$group]['elements'][$key] = $configuration;
-
-        /*
-         * addPageTSConfig() was removed in v14; the content element wizard is derived from the plugin
-         * registration on that major, so the TSconfig is only registered up to v13.
-         */
-        if (!Typo3VersionUtility::isAtLeast('14.0')) {
-            ExtensionManagementUtility::addPageTSConfig(TypoScriptUtility::convertArrayToTypoScript($newPageTS));
         }
     }
 
