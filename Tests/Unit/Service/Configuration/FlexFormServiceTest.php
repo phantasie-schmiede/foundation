@@ -13,11 +13,13 @@ namespace PSBits\Foundation\Service\Configuration;
 
 use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\Attributes\Test;
 use PSBits\Foundation\Service\GlobalVariableProviders\EarlyAccessConstantsProvider;
 use PSBits\Foundation\Service\GlobalVariableService;
 use PSBits\Foundation\Tests\Examples\BackedEnum;
 use PSBits\Foundation\Tests\Examples\Enum;
+use PSBits\Foundation\Utility\Typo3VersionUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -32,6 +34,11 @@ class FlexFormServiceTest extends UnitTestCase
     public const string TEST_STRING_CONSTANT = 'test_constant_value';
 
     private FlexFormService $subject;
+
+    /**
+     * @var array<string, mixed>|null
+     */
+    private ?array $savedTca = null;
 
     public static function processDataProvider(): Generator
     {
@@ -103,10 +110,52 @@ class FlexFormServiceTest extends UnitTestCase
         self::assertEquals($expectedResult, $this->subject->processMarkers($xml));
     }
 
+    /**
+     * On v14, plugins are registered as their own content type, so the data structure is applied to that type and
+     * the flexform field is added to its showitem.
+     */
+    #[Test]
+    public function registerAppliesTheFlexFormToThePluginContentTypeOnV14(): void
+    {
+        if (!Typo3VersionUtility::isAtLeast('14.0')) {
+            self::markTestSkipped('This behavior only applies to TYPO3 v14 or higher.');
+        }
+
+        $GLOBALS['TCA']['tt_content']['types']['poems_poem'] = [
+            'showitem' => '--palette--;;headers, bodytext',
+        ];
+
+        $this->subject->register('<T3DataStructure/>', 'Poems_Poem');
+
+        $type = $GLOBALS['TCA']['tt_content']['types']['poems_poem'];
+        self::assertSame('<T3DataStructure/>', $type['columnsOverrides']['pi_flexform']['config']['ds']);
+        self::assertStringContainsString('--div--;core.form.tabs:plugin, pi_flexform', $type['showitem']);
+    }
+
+    /**
+     * Below v14, the flexform is applied as a subtype of the list content type. addPiFlexFormValue() emits a
+     * deprecation notice on that major.
+     */
+    #[Test]
+    #[IgnoreDeprecations]
+    public function registerAppliesTheFlexFormToTheListTypeSubtypeBelowV14(): void
+    {
+        if (Typo3VersionUtility::isAtLeast('14.0')) {
+            self::markTestSkipped('This behavior only applies below TYPO3 v14.');
+        }
+
+        $this->subject->register('<T3DataStructure/>', 'Poems_Poem');
+
+        $type = $GLOBALS['TCA']['tt_content']['types']['list'];
+        self::assertSame('pi_flexform', $type['subtypes_addlist']['poems_poem']);
+        self::assertSame('<T3DataStructure/>', $type['columnsOverrides']['pi_flexform']['config']['ds']);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
-        $providerMock = $this->getMockBuilder(EarlyAccessConstantsProvider::class)
+        $this->savedTca = $GLOBALS['TCA'] ?? null;
+        $providerMock   = $this->getMockBuilder(EarlyAccessConstantsProvider::class)
             ->onlyMethods(['getGlobalVariables'])
             ->getMock();
 
@@ -128,6 +177,13 @@ class FlexFormServiceTest extends UnitTestCase
 
     protected function tearDown(): void
     {
+        if (null === $this->savedTca) {
+            unset($GLOBALS['TCA']);
+        } else {
+            $GLOBALS['TCA'] = $this->savedTca;
+        }
+        $this->savedTca = null;
+
         GlobalVariableService::clearCache();
         GeneralUtility::purgeInstances();
         parent::tearDown();
