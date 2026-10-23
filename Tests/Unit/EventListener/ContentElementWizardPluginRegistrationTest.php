@@ -20,6 +20,8 @@ use PSBits\Foundation\Utility\Localization\LoggingUtility;
 use PSBits\Foundation\Utility\Typo3VersionUtility;
 use ReflectionProperty;
 use TYPO3\CMS\Backend\Controller\Event\ModifyNewContentElementWizardItemsEvent;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
 use TYPO3\CMS\Core\Localization\LanguageService;
@@ -243,8 +245,6 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
          * Pre-seed the singleton so translations resolve without the core factory's dependencies.
          */
         $languageService = $this->createMock(LanguageService::class);
-        $languageService->method('translate')
-            ->willReturn(null);
         $languageService->method('getLocale')
             ->willReturn(new Locale('en'));
 
@@ -252,6 +252,22 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
             LanguageServiceFactory::class,
             new FakeLanguageServiceFactory($languageService)
         );
+
+        /*
+         * On v13, the core keeps the language service in the runtime cache between lookups, which is not configured
+         * in unit tests. A stubbed cache manager serves the pre-seeded language service instead.
+         */
+        if (false === Typo3VersionUtility::isAtLeast('14.0')) {
+            $cache = $this->createMock(FrontendInterface::class);
+            $cache->method('get')
+                ->willReturn($languageService);
+
+            $cacheManager = $this->createMock(CacheManager::class);
+            $cacheManager->method('getCache')
+                ->willReturn($cache);
+
+            GeneralUtility::setSingletonInstance(CacheManager::class, $cacheManager);
+        }
 
         $this->iconRegistry = null;
     }

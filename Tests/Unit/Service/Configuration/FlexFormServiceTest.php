@@ -13,7 +13,6 @@ namespace PSBits\Foundation\Service\Configuration;
 
 use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\Attributes\Test;
 use PSBits\Foundation\Service\GlobalVariableProviders\EarlyAccessConstantsProvider;
 use PSBits\Foundation\Service\GlobalVariableService;
@@ -133,22 +132,26 @@ class FlexFormServiceTest extends UnitTestCase
     }
 
     /**
-     * Below v14, the flexform is applied as a subtype of the list content type. addPiFlexFormValue() emits a
-     * deprecation notice on that major.
+     * Below v14, the flexform is applied as a subtype of the list content type. addPiFlexFormValue() only extends the
+     * existing column-level ds array, so the test pre-seeds it.
      */
     #[Test]
-    #[IgnoreDeprecations]
     public function registerAppliesTheFlexFormToTheListTypeSubtypeBelowV14(): void
     {
         if (Typo3VersionUtility::isAtLeast('14.0')) {
             self::markTestSkipped('This behavior only applies below TYPO3 v14.');
         }
 
+        $GLOBALS['TCA']['tt_content']['columns']['pi_flexform']['config']['ds'] = [];
+
         $this->subject->register('<T3DataStructure/>', 'Poems_Poem');
 
         $type = $GLOBALS['TCA']['tt_content']['types']['list'];
         self::assertSame('pi_flexform', $type['subtypes_addlist']['poems_poem']);
-        self::assertSame('<T3DataStructure/>', $type['columnsOverrides']['pi_flexform']['config']['ds']);
+        self::assertSame(
+            '<T3DataStructure/>',
+            $GLOBALS['TCA']['tt_content']['columns']['pi_flexform']['config']['ds']['poems_poem,list']
+        );
     }
 
     protected function setUp(): void
