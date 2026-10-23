@@ -126,7 +126,21 @@ class FlexFormService
         // addPiFlexFormValue() is deprecated in TYPO3 v14 (removal in v15) and applies the data
         // structure directly via columnsOverrides there, so mirror that behavior.
         if (Typo3VersionUtility::isAtLeast('14.0')) {
-            $GLOBALS['TCA']['tt_content']['types'][$cType]['columnsOverrides']['pi_flexform']['config']['ds'] = $xml;
+            if (self::ALL_PLUGINS !== $pluginSignature) {
+                /*
+                 * On v14, plugins are registered as their own content type, so the data structure is applied to that
+                 * type and the flexform field is added to its showitem.
+                 */
+                $GLOBALS['TCA']['tt_content']['types'][$pluginSignature]['columnsOverrides']['pi_flexform']['config']['ds'] = $xml;
+                ExtensionManagementUtility::addToAllTCAtypes(
+                    'tt_content',
+                    '--div--;core.form.tabs:plugin, pi_flexform',
+                    $pluginSignature,
+                    'after:palette:headers'
+                );
+            } else {
+                $GLOBALS['TCA']['tt_content']['types'][$cType]['columnsOverrides']['pi_flexform']['config']['ds'] = $xml;
+            }
         } else {
             ExtensionManagementUtility::addPiFlexFormValue(
                 $pluginSignature,

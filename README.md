@@ -504,6 +504,12 @@ If it doesn't exist either, the plugin name will be used as fallback.
 of the content element wizard. If a new tab is created, its label will be fetched from here:
 `EXT:your_extension/Resources/Private/Language/Backend/Configuration/TsConfig/Page/Mod/Wizards/newContentElement.xlf:[group].header`
 
+You can exclude a plugin from the wizard by setting the `addToElementWizard`-property of `PluginConfiguration` to
+`false`. This works on both supported core majors.
+
+Since TYPO3 v14, plugins are registered as their own content type. If you upgrade existing plugin records from a lower
+core version, have a look at `Documentation/Upgrade_v4.md`.
+
 #### Custom page types for single plugins
 
 You can add a custom page type that renders a specific plugin only.
