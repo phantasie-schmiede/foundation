@@ -1,0 +1,16 @@
+{
+	"name": "psbitstest/pluginfixture",
+	"type": "typo3-cms-extension",
+	"description": "A test extension for PSBits | Foundation",
+	"license": "GPL-3.0-or-later",
+	"extra": {
+		"typo3/cms": {
+			"extension-key": "pluginfixture"
+		}
+	},
+	"autoload": {
+		"psr-4": {
+			"PSBitsTest\\Pluginfixture\\": "Classes/"
+		}
+	}
+}
