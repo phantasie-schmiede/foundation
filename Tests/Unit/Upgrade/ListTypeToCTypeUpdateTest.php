@@ -15,9 +15,9 @@ use PHPUnit\Framework\Attributes\Test;
 use PSBits\Foundation\Data\ExtensionInformationInterface;
 use PSBits\Foundation\Data\PluginConfiguration;
 use PSBits\Foundation\Service\ExtensionInformationService;
-use PSBits\Foundation\Utility\Typo3VersionUtility;
 use ReflectionMethod;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Upgrades\AbstractListTypeToCTypeUpdate;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 use function array_key_first;
@@ -25,6 +25,9 @@ use function array_values;
 
 /**
  * Class ListTypeToCTypeUpdateTest
+ *
+ * The upgrade wizard is only functional on TYPO3 v14, where the core provides the upgrade wizard infrastructure, so
+ * the tests are skipped on v13.
  *
  * @package PSBits\Foundation\Upgrade
  */
@@ -63,16 +66,6 @@ class ListTypeToCTypeUpdateTest extends UnitTestCase
 
         self::assertCount(1, $mapping);
         self::assertSame(array_key_first($mapping), array_values($mapping)[0]);
-    }
-
-    #[Test]
-    public function isNotNecessaryBelowV14(): void
-    {
-        if (Typo3VersionUtility::isAtLeast('14.0')) {
-            self::markTestSkipped('The version guard is only verifiable below TYPO3 v14.');
-        }
-
-        self::assertFalse($this->subject->updateNecessary());
     }
 
     #[Test]
@@ -116,6 +109,10 @@ class ListTypeToCTypeUpdateTest extends UnitTestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        if (false === class_exists(AbstractListTypeToCTypeUpdate::class)) {
+            self::markTestSkipped('The upgrade wizard is only available on TYPO3 v14.');
+        }
 
         $this->subject = $this->createSubject(
             $this->createExtensionInformation('poems', [new PluginConfiguration(name: 'Poem')])

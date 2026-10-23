@@ -27,80 +27,86 @@ use function str_replace;
  * wizard converts the corresponding content elements (and the affected backend user group permissions) of all
  * installed extensions that provide an ExtensionInformation class.
  *
+ * The core only provides the upgrade wizard infrastructure on TYPO3 v14, so the wizard is only declared there; on
+ * v13 a placeholder keeps the class present for the DI container's class scan.
+ *
  * @package PSBits\Foundation\Upgrade
  */
-#[UpgradeWizard(identifier: 'foundation_listTypeToCType')]
-class ListTypeToCTypeUpdate extends AbstractListTypeToCTypeUpdate
-{
-    private const NO_PLUGINS_PLACEHOLDER = '__foundation_no_plugins__';
-
-    public function __construct(
-        private readonly ExtensionInformationService $extensionInformationService,
-        ConnectionPool                               $connectionPool,
-    ) {
-        parent::__construct($connectionPool);
-    }
-
-    protected function getListTypeToCTypeMapping(): array
+if (Typo3VersionUtility::isAtLeast('14.0')) {
+    #[UpgradeWizard(identifier: 'foundation_listTypeToCType')]
+    class ListTypeToCTypeUpdate extends AbstractListTypeToCTypeUpdate
     {
-        $mapping = [];
+        private const NO_PLUGINS_PLACEHOLDER = '__foundation_no_plugins__';
 
-        foreach ($this->extensionInformationService->getAllExtensionInformation() as $extensionInformation) {
-            foreach ($extensionInformation->getPlugins() as $configuration) {
-                $listType = str_replace('_', '', $extensionInformation->getExtensionKey()) . '_' . mb_strtolower(
-                    $configuration->getName()
-                );
-                $mapping[$listType] = $listType;
+        public function __construct(
+            private readonly ExtensionInformationService $extensionInformationService,
+            ConnectionPool                               $connectionPool,
+        ) {
+            parent::__construct($connectionPool);
+        }
+
+        protected function getListTypeToCTypeMapping(): array
+        {
+            $mapping = [];
+
+            foreach ($this->extensionInformationService->getAllExtensionInformation() as $extensionInformation) {
+                foreach ($extensionInformation->getPlugins() as $configuration) {
+                    $listType = str_replace('_', '', $extensionInformation->getExtensionKey()) . '_' . mb_strtolower(
+                        $configuration->getName()
+                    );
+                    $mapping[$listType] = $listType;
+                }
             }
+
+            /*
+             * The parent class requires a non-empty mapping. When no plugin extension is installed, a placeholder keeps
+             * the wizard inert; updateNecessary() returns false in that case.
+             */
+            if ([] === $mapping) {
+                return [self::NO_PLUGINS_PLACEHOLDER => self::NO_PLUGINS_PLACEHOLDER];
+            }
+
+            return $mapping;
         }
 
-        /*
-         * The parent class requires a non-empty mapping. When no plugin extension is installed, a placeholder keeps
-         * the wizard inert; updateNecessary() returns false in that case.
-         */
-        if ([] === $mapping) {
-            return [self::NO_PLUGINS_PLACEHOLDER => self::NO_PLUGINS_PLACEHOLDER];
+        public function getTitle(): string
+        {
+            return 'Convert plugin content elements from list_type to CType';
         }
 
-        return $mapping;
-    }
+        public function getDescription(): string
+        {
+            return 'TYPO3 v14 registers plugins as content types. This wizard converts the content elements of all PSBits'
+                . ' plugins from CType "list" with the corresponding list_type to the new CType and updates the affected'
+                . ' backend user group permissions.';
+        }
 
-    public function getTitle(): string
-    {
-        return 'Convert plugin content elements from list_type to CType';
-    }
+        public function updateNecessary(): bool
+        {
+            if (false === $this->hasPlugins()) {
+                return false;
+            }
 
-    public function getDescription(): string
-    {
-        return 'TYPO3 v14 registers plugins as content types. This wizard converts the content elements of all PSBits'
-            . ' plugins from CType "list" with the corresponding list_type to the new CType and updates the affected'
-            . ' backend user group permissions.';
-    }
+            return parent::updateNecessary();
+        }
 
-    public function updateNecessary(): bool
-    {
-        /*
-         * The new CType values do not exist below TYPO3 v14, so the wizard must stay inactive there.
-         */
-        if (!Typo3VersionUtility::isAtLeast('14.0')) {
+        private function hasPlugins(): bool
+        {
+            foreach ($this->extensionInformationService->getAllExtensionInformation() as $extensionInformation) {
+                if ([] !== $extensionInformation->getPlugins()) {
+                    return true;
+                }
+            }
+
             return false;
         }
-
-        if (false === $this->hasPlugins()) {
-            return false;
-        }
-
-        return parent::updateNecessary();
     }
-
-    private function hasPlugins(): bool
+} else {
+    /**
+     * Placeholder for TYPO3 v13, where the core does not provide the upgrade wizard infrastructure. The class
+     * exists only to satisfy the DI container's class scan; no wizard is registered on that major.
+     */
+    class ListTypeToCTypeUpdate
     {
-        foreach ($this->extensionInformationService->getAllExtensionInformation() as $extensionInformation) {
-            if ([] !== $extensionInformation->getPlugins()) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

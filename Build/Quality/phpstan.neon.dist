@@ -34,6 +34,17 @@ parameters:
         identifier: staticMethod.notFound
         message: '#addUserTSConfig#'
         reportUnmatched: false
+      # The upgrade wizard is a v13 placeholder without the wizard methods; the test file's calls and
+      # instantiation are version-gated to v14, where the analyser resolves the real class and the
+      # entries stay unmatched.
+      -
+        identifier: method.notFound
+        message: '#ListTypeToCTypeUpdate::(getTitle|getDescription)#'
+        reportUnmatched: false
+      -
+        identifier: new.noConstructor
+        message: '#ListTypeToCTypeUpdate#'
+        reportUnmatched: false
 
 
 
@@ -49,3 +60,9 @@ parameters:
     # On each major the branch meant for the other major is an invalid (non-ignorable) extension, so
     # the file is left to the functional suites, which exercise it on every supported major.
     - ../../Classes/Service/Typo3/LanguageServiceFactory.php
+    # The wizard is declared conditionally: the real class is only available on v14, where the core
+    # provides the upgrade wizard infrastructure (AbstractListTypeToCTypeUpdate, UpgradeWizard
+    # attribute); on v13 a placeholder keeps the class present for the DI container. On each major
+    # the branch meant for the other major is an invalid (non-ignorable) extension, so the file is
+    # left to the test suites, which exercise it on v14 and skip it on v13.
+    - ../../Classes/Upgrade/ListTypeToCTypeUpdate.php
