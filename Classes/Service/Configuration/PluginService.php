@@ -18,6 +18,7 @@ use PSBits\Foundation\Data\PluginConfiguration;
 use PSBits\Foundation\Utility\Configuration\FilePathUtility;
 use PSBits\Foundation\Utility\LocalizationUtility;
 use PSBits\Foundation\Utility\ReflectionUtility;
+use PSBits\Foundation\Utility\Typo3VersionUtility;
 use PSBits\Foundation\Utility\TypoScript\PageObjectConfiguration;
 use PSBits\Foundation\Utility\TypoScript\TypoScriptUtility;
 use Psr\Container\ContainerExceptionInterface;
@@ -107,16 +108,22 @@ class PluginService
             );
 
             /*
-             * The IconRegistry is only available once the boot is complete, so it is resolved on demand
-             * instead of being injected.
+             * On v14 the IconRegistry is unavailable while the TCA is built, so the identifier is passed
+             * through as is: the core IconFactory falls back to the default icon identifier once the icon
+             * turns out to be unregistered. On v13 the registry is checked, falling back to the core
+             * plugin icon.
              */
-            $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
+            $icon = Typo3VersionUtility::isAtLeast('14.0')
+                ? $iconIdentifier
+                : (GeneralUtility::makeInstance(IconRegistry::class)->isRegistered($iconIdentifier)
+                    ? $iconIdentifier
+                    : 'content-plugin');
 
             $pluginSignature = ExtensionUtility::registerPlugin(
                 $extensionInformation->getExtensionName(),
                 $configuration->getName(),
                 $title,
-                $iconRegistry->isRegistered($iconIdentifier) ? $iconIdentifier : 'content-plugin'
+                $icon
             );
             $this->registerFlexFormForPlugin($extensionInformation, $configuration, $pluginSignature);
         }
