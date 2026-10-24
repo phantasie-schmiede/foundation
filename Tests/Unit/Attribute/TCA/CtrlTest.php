@@ -292,6 +292,21 @@ class CtrlTest extends UnitTestCase
     }
 
     #[Test]
+    public function labelAltAcceptsAListOfPropertyNames(): void
+    {
+        /*
+         * labelAlt is a comma-separated string or a list of property names: getLabelAlt() converts each
+         * entry to a column name and implodes the result into the comma-separated ctrl value. Exercising
+         * the list form here keeps the constructor parameter under phpstan coverage.
+         */
+        $ctrl = new Ctrl(labelAlt: ['subtitle', 'title']);
+
+        $reflection = new ReflectionProperty(Ctrl::class, 'labelAlt');
+
+        self::assertSame(['subtitle', 'title'], $reflection->getValue($ctrl));
+    }
+
+    #[Test]
     public function unknownCoreFieldGroupInListThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
