@@ -12,10 +12,11 @@ helpers.
 ## Current branch and release status
 
 - Work happens on branch `4.2.x` (repo: `vendor/psbits/foundation`).
-- `4.2.x` is currently **two commits ahead of the tagged 4.2.1**:
+- `4.2.x` is currently **three commits ahead of the tagged 4.2.1**:
   - `f551d76` — `[BUGFIX] Document Ctrl labelAlt as a list of property names.`
   - `3d2d3f9` — `[BUGFIX] Skip the IconRegistry check for page type icons on
     v14.`
+  - `310f56d` — `[TASK] Add the OpenCode skill for Foundation.`
 - **4.2.2 has not been released** (the maintainer decides; no tag and no
   release notes by automation).
 - All consumer extensions lock `psbits/foundation` at the Packagist tag
@@ -56,7 +57,9 @@ helpers.
 
 ## Verification and CI
 
-- **No GitHub Actions workflow in this repo** — pushes do not trigger CI.
+- The repo carries the shared CI caller `.github/workflows/ci.yml`
+  (identical to the queue extensions, managed by `qa link`) — pushes
+  trigger the shared workflow matrix in GitHub Actions.
 - Local verification with a v14.3.x `.Build`: unit suite green (351 tests on
   v14.3.10); the functional suite needs the `pdo_sqlite` driver, which the
   local PHP build lacks — "could not find driver" errors there are an
