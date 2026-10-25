@@ -15,6 +15,11 @@ Foundation 4.2 adapts the plugin registration to that change and works on both s
     - If your extension code calls this method, remove the call. The wizard registration happens automatically for
       every plugin declared in your `ExtensionInformation` class.
 - FlexForms of plugins are now registered on the plugin's content type on v14, as the core does it.
+- The `uploadDuplicationBehaviour` parameter of the `File` TCA attribute now expects the core enum
+  `TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior` instead of a string.
+    - Replace string values like `uploadDuplicationBehaviour: 'rename'` with
+      `uploadDuplicationBehaviour: DuplicationBehavior::RENAME` (import
+      `TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior`).
 
 Data migration
 --------------

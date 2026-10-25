@@ -14,6 +14,7 @@ namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 use Attribute;
 use PSBits\Foundation\Enum\Relationship;
 use PSBits\Foundation\Utility\Database\DefinitionUtility;
+use TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior;
 
 /**
  * Class File
@@ -34,9 +35,9 @@ class File extends AbstractColumnType
      * @param array<string, mixed>|null   $overrideChildTca                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html#confval-file-overridechildtca
      * @param Relationship|null           $relationship                         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html#confval-file-relationship
      * @param array<string, mixed>|null   $upload
-     * @param string|null                 $uploadDuplicationBehaviour           Defines how duplicates in the file system should be
+     * @param DuplicationBehavior|null    $uploadDuplicationBehaviour           Defines how duplicates in the file system should be
      *                                                                          handled (default is renaming the new file).
-     *                                                                          See \TYPO3\CMS\Core\Resource\DuplicationBehavior.
+     *                                                                          See \TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior.
      * @param int|null                    $uploadFileMaxSize                    If set and greater than zero, uploaded files must not
      *                                                                          exceed this size (in bytes).
      * @param bool                        $uploadFileNameGeneratorAppendHash    If true, the hash value of the file content is
@@ -57,25 +58,25 @@ class File extends AbstractColumnType
      *                                                                          configuration).
      */
     public function __construct(
-        protected array|string  $allowed = 'common-image-types',
-        protected ?array        $appearance = null,
-        protected ?string       $disallowed = null,
-        protected ?bool         $disableMovingChildrenWithParent = null,
-        protected ?bool         $enableCascadingDelete = null,
-        protected ?int          $maxItems = null,
-        protected ?int          $minItems = null,
-        protected ?array        $overrideChildTca = null,
-        protected ?Relationship $relationship = null,
-        protected ?array        $upload = null,
-        protected ?string       $uploadDuplicationBehaviour = null,
-        protected ?int          $uploadFileMaxSize = null,
-        protected bool          $uploadFileNameGeneratorAppendHash = true,
-        protected string        $uploadFileNameGeneratorPartSeparator = '-',
-        protected ?string       $uploadFileNameGeneratorPrefix = null,
-        protected ?array        $uploadFileNameGeneratorProperties = null,
-        protected ?array        $uploadFileNameGeneratorReplacements = null,
-        protected ?string       $uploadFileNameGeneratorSuffix = null,
-        protected ?string       $uploadTargetFolder = null,
+        protected array|string         $allowed = 'common-image-types',
+        protected ?array               $appearance = null,
+        protected ?string              $disallowed = null,
+        protected ?bool                $disableMovingChildrenWithParent = null,
+        protected ?bool                $enableCascadingDelete = null,
+        protected ?int                 $maxItems = null,
+        protected ?int                 $minItems = null,
+        protected ?array               $overrideChildTca = null,
+        protected ?Relationship        $relationship = null,
+        protected ?array               $upload = null,
+        protected ?DuplicationBehavior $uploadDuplicationBehaviour = null,
+        protected ?int                 $uploadFileMaxSize = null,
+        protected bool                 $uploadFileNameGeneratorAppendHash = true,
+        protected string               $uploadFileNameGeneratorPartSeparator = '-',
+        protected ?string              $uploadFileNameGeneratorPrefix = null,
+        protected ?array               $uploadFileNameGeneratorProperties = null,
+        protected ?array               $uploadFileNameGeneratorReplacements = null,
+        protected ?string              $uploadFileNameGeneratorSuffix = null,
+        protected ?string              $uploadTargetFolder = null,
     ) {
     }
 
@@ -156,7 +157,7 @@ class File extends AbstractColumnType
         }
 
         if (null !== $this->uploadDuplicationBehaviour) {
-            $configuration['duplicationBehaviour'] = $this->uploadDuplicationBehaviour;
+            $configuration['duplicationBehaviour'] = $this->uploadDuplicationBehaviour->value;
         }
 
         if (null !== $this->uploadFileMaxSize) {
