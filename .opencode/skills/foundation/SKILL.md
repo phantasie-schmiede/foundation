@@ -1,6 +1,6 @@
 ---
 name: PSBits Foundation
-description: psbits/foundation — the base package all psbits extensions register with. 4.2.x branch status, ExtensionInformation/PageTypeService/PluginService, the v14 IconRegistry fix, release status. Use when working on foundation or its integration points in other extensions.
+description: psbits/foundation — the base package all psbits extensions register with. 4.2.x branch and release status, the 4.2.2 changes, ExtensionInformation/PageTypeService/PluginService, the v14 IconRegistry fix. Use when working on foundation or its integration points in other extensions.
 ---
 
 # psbits/foundation
@@ -12,16 +12,25 @@ helpers.
 ## Current branch and release status
 
 - Work happens on branch `4.2.x` (repo: `vendor/psbits/foundation`).
-- `4.2.x` is currently **three commits ahead of the tagged 4.2.1**:
-  - `f551d76` — `[BUGFIX] Document Ctrl labelAlt as a list of property names.`
-  - `3d2d3f9` — `[BUGFIX] Skip the IconRegistry check for page type icons on
-    v14.`
-  - `310f56d` — `[TASK] Add the OpenCode skill for Foundation.`
-- **4.2.2 has not been released** (the maintainer decides; no tag and no
-  release notes by automation).
-- All consumer extensions lock `psbits/foundation` at the Packagist tag
-  (currently 4.2.1) — they only pick up these fixes once 4.2.2 is tagged and
-  they run `composer update`.
+- **4.2.2 is the current release** (tagged on `4.2.x`). Compared to 4.2.1:
+  - `[BUGFIX] Document Ctrl labelAlt as a list of property names.` —
+    `Ctrl::$labelAlt` is now documented as `list<string>|string|null`, so the
+    phpstan `argument.type` errors in consumers passing a list are gone.
+  - `[BUGFIX] Skip the IconRegistry check for page type icons on v14.` — see
+    the v14 status section below.
+  - `[FEATURE] Use the DuplicationBehavior enum for the upload duplication
+    behaviour.` — the `uploadDuplicationBehaviour` parameter of the `File`
+    TCA attribute now expects the core enum
+    `TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior` instead of a string
+    (breaking; string values like `'rename'` must be replaced with
+    `DuplicationBehavior::RENAME`). Documented in
+    `Documentation/Upgrade_v4.md`.
+  - `[BUGFIX] Document the File attribute list parameters as string lists.` —
+    `File::$allowed` and `File::$uploadFileNameGeneratorProperties` are now
+    documented as `list<string>`, so the phpstan `argument.type` errors in
+    consumers passing a list are gone.
+- All consumer extensions lock `psbits/foundation` at the Packagist tag —
+  they pick up 4.2.2 once they run `composer update`.
 
 ## Key classes (4.2 structure)
 
@@ -49,7 +58,7 @@ helpers.
 ## v14 status
 
 - The IconRegistry-at-boot issue (v14 `ServiceProvider::getIconRegistry()`
-  throws while boot is incomplete) is fixed in `3d2d3f9` — see the
+  throws while boot is incomplete) is fixed in 4.2.2 (`3d2d3f9`) — see the
   `typo3-v14-migration` skill (in the ddev-typo3 project) for the full
   picture and the safe pattern.
 - Only extensions defining page types were affected; within psbits that is
