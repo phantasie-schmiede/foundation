@@ -262,11 +262,15 @@ class UploadService
         array        $uploadConfiguration,
         UploadedFile $uploadedFile,
     ): FileInterface {
+        $conflictMode = DuplicationBehavior::tryFrom(
+            (string) ($uploadConfiguration[$property]['duplicationBehaviour'] ?? '')
+        ) ?? DuplicationBehavior::RENAME;
+
         return $uploadConfiguration[$property]['storage']->addUploadedFile(
             $uploadedFile,
             $uploadConfiguration[$property]['targetFolder'],
             $targetFileName,
-            $uploadConfiguration[$property]['duplicationBehaviour'] ?? DuplicationBehavior::RENAME
+            $conflictMode
         );
     }
 

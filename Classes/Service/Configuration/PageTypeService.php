@@ -116,16 +116,21 @@ class PageTypeService
                 'pageType' . ucfirst($name)
             );
             /*
-             * The IconRegistry is only available once the boot is complete, so it is resolved on demand
-             * instead of being injected: pages.php runs in that late phase.
+             * On v14 the IconRegistry is unavailable while the TCA is built (ServiceProvider::getIconRegistry()
+             * throws while the boot state is not complete), so the variant identifiers are added as is: the
+             * core IconFactory falls back to the default icon identifier once the icon turns out to be
+             * unregistered. On v13 the registry is resolved on demand (pages.php runs in that late phase) and
+             * only registered variants are added.
              */
-            $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
-            $icons        = [
+            $iconRegistry = Typo3VersionUtility::isAtLeast('14.0')
+                ? null
+                : GeneralUtility::makeInstance(IconRegistry::class);
+            $icons = [
                 $doktype => $iconIdentifier,
             ];
 
             foreach (self::ICON_SUFFIXES as $suffix) {
-                if ($iconRegistry->isRegistered($iconIdentifier . $suffix)) {
+                if (null === $iconRegistry || $iconRegistry->isRegistered($iconIdentifier . $suffix)) {
                     $icons[$doktype . $suffix] = $iconIdentifier . $suffix;
                 }
             }
