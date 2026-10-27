@@ -15,19 +15,13 @@ use PHPUnit\Framework\Attributes\Test;
 use PSBits\Foundation\Data\ExtensionInformationInterface;
 use PSBits\Foundation\Data\PluginConfiguration;
 use PSBits\Foundation\Service\ExtensionInformationService;
-use PSBits\Foundation\Tests\Examples\FakeLanguageServiceFactory;
 use PSBits\Foundation\Utility\Localization\LoggingUtility;
 use PSBits\Foundation\Utility\Typo3VersionUtility;
+use PSBits\Qa\Testing\Support\LanguageStackSeeder;
 use ReflectionProperty;
 use TYPO3\CMS\Backend\Controller\Event\ModifyNewContentElementWizardItemsEvent;
-use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
-use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
-use TYPO3\CMS\Core\Localization\Locale;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 use function array_filter;
@@ -41,6 +35,8 @@ use function array_search;
  */
 class ContentElementWizardPluginRegistrationTest extends UnitTestCase
 {
+    use LanguageStackSeeder;
+
     private const string LIST_TYPE = 'poems_poem';
 
     private IconRegistry|null $iconRegistry            = null;
@@ -242,32 +238,9 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
 
         /*
          * The language service factory is overwritten in ext_localconf.php, which does not run in unit tests.
-         * Pre-seed the singleton so translations resolve without the core factory's dependencies.
+         * The seeder pre-seeds the singleton so translations resolve without the core factory's dependencies.
          */
-        $languageService = $this->createMock(LanguageService::class);
-        $languageService->method('getLocale')
-            ->willReturn(new Locale('en'));
-
-        GeneralUtility::setSingletonInstance(
-            LanguageServiceFactory::class,
-            new FakeLanguageServiceFactory($languageService)
-        );
-
-        /*
-         * On v13, the core keeps the language service in the runtime cache between lookups, which is not configured
-         * in unit tests. A stubbed cache manager serves the pre-seeded language service instead.
-         */
-        if (false === Typo3VersionUtility::isAtLeast('14.0')) {
-            $cache = $this->createMock(FrontendInterface::class);
-            $cache->method('get')
-                ->willReturn($languageService);
-
-            $cacheManager = $this->createMock(CacheManager::class);
-            $cacheManager->method('getCache')
-                ->willReturn($cache);
-
-            GeneralUtility::setSingletonInstance(CacheManager::class, $cacheManager);
-        }
+        $this->seedLanguageStack();
 
         $this->iconRegistry = null;
     }

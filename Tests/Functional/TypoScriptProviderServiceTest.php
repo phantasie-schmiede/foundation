@@ -14,7 +14,7 @@ namespace PSBits\Foundation\Tests\Functional;
 use JsonException;
 use PHPUnit\Framework\Attributes\Test;
 use PSBits\Foundation\Service\TypoScriptProviderService;
-use PSBits\Foundation\Tests\Functional\SiteHandling\SiteBasedTestTrait;
+use PSBits\Qa\Testing\Support\SiteBasedTestTrait;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ServerRequestInterface;

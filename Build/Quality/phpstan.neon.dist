@@ -66,8 +66,3 @@ parameters:
     # the branch meant for the other major is an invalid (non-ignorable) extension, so the file is
     # left to the test suites, which exercise it on v14 and skip it on v13.
     - ../../Classes/Upgrade/ListTypeToCTypeUpdate.php
-    # The fake factory is declared conditionally, because the core LanguageServiceFactory is a readonly
-    # class on v14 but a plain class on v13, and a child must carry the same readonly status as its
-    # parent. On each major the branch meant for the other major is an invalid (non-ignorable)
-    # extension, so the file is left to the unit test suites.
-    - ../../Tests/Examples/FakeLanguageServiceFactory.php
