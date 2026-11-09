@@ -13,11 +13,6 @@ namespace PSBits\Foundation\Data;
 
 use PSBits\Foundation\Enum\ContentType;
 
-/**
- * Class PluginConfiguration
- *
- * @package PSBits\Foundation\Data
- */
 class PluginConfiguration
 {
     /**

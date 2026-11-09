@@ -12,17 +12,17 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Service;
 
 use Exception;
+use InvalidArgumentException;
 use PSBits\Foundation\Service\GlobalVariableProviders\GlobalVariableProviderInterface;
 use PSBits\Foundation\Utility\VariableUtility;
 use RuntimeException;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class GlobalVariableService
- *
- * @package PSBits\Foundation\Service
- */
+use function array_keys;
+use function explode;
+use function implode;
+
 class GlobalVariableService
 {
     /** @var array<string, mixed> */
@@ -47,6 +47,8 @@ class GlobalVariableService
 
     /**
      * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public static function get(string $path, bool $strict = true, mixed $fallback = null): mixed
     {
@@ -110,6 +112,8 @@ class GlobalVariableService
 
     /**
      * For use in ext_localconf.php
+     *
+     * @throws RuntimeException
      */
     public static function registerGlobalVariableProvider(string $className): void
     {

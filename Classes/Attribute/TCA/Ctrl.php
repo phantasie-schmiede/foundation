@@ -11,11 +11,10 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Attribute\TCA;
 
+use ArgumentCountError;
 use Attribute;
 use InvalidArgumentException;
 use PSBits\Foundation\Utility\Configuration\TcaUtility;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -23,46 +22,44 @@ use function array_key_exists;
 use function array_keys;
 use function array_unique;
 use function array_values;
+use function implode;
 use function in_array;
 use function is_string;
 
 /**
- * Class Ctrl
- *
  * @link    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html
- * @package PSBits\Foundation\Attribute\TCA
  */
 #[Attribute(Attribute::TARGET_CLASS)]
 class Ctrl extends AbstractTcaAttribute
 {
-    public const string DEFAULT_SORTBY = 'uid DESC';
-    public const array ENABLE_COLUMNS  = [
-        self::ENABLE_COLUMN_IDENTIFIERS['DISABLED']  => 'hidden',
-        self::ENABLE_COLUMN_IDENTIFIERS['ENDTIME']   => 'endtime',
-        self::ENABLE_COLUMN_IDENTIFIERS['STARTTIME'] => 'starttime',
-    ];
-    public const array ENABLE_COLUMN_IDENTIFIERS = [
-        'DISABLED'  => 'disabled',
-        'ENDTIME'   => 'endtime',
-        'STARTTIME' => 'starttime',
-    ];
-    public const string CORE_FIELDS_ALL       = 'all';
-    public const string CORE_FIELDS_NONE      = 'none';
-    public const string CORE_FIELDS_PARAMETER = 'coreFields';
-    public const array  CORE_FIELD_GROUPS     = [
+    public const array  CORE_FIELD_GROUPS = [
+        'enableColumns' => [
+            'enableColumns',
+        ],
         'language'      => [
             'languageField',
             'transOrigDiffSourceField',
             'transOrigPointerField',
             'translationSource',
         ],
-        'enableColumns' => [
-            'enableColumns',
-        ],
         'timestamps'    => [
             'crdate',
             'tstamp',
         ],
+    ];
+    public const string CORE_FIELDS_ALL          = 'all';
+    public const string CORE_FIELDS_NONE         = 'none';
+    public const string CORE_FIELDS_PARAMETER    = 'coreFields';
+    public const string DEFAULT_SORTBY           = 'uid DESC';
+    public const array ENABLE_COLUMN_IDENTIFIERS = [
+        'DISABLED'  => 'disabled',
+        'ENDTIME'   => 'endtime',
+        'STARTTIME' => 'starttime',
+    ];
+    public const array ENABLE_COLUMNS = [
+        self::ENABLE_COLUMN_IDENTIFIERS['DISABLED']  => 'hidden',
+        self::ENABLE_COLUMN_IDENTIFIERS['ENDTIME']   => 'endtime',
+        self::ENABLE_COLUMN_IDENTIFIERS['STARTTIME'] => 'starttime',
     ];
 
     /**
@@ -120,6 +117,7 @@ class Ctrl extends AbstractTcaAttribute
      * @param string|null               $useColumnsForDefaultValues       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-usecolumnsfordefaultvalues
      * @param bool|null                 $versioningWS                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-versioningws
      * @param bool|null                 $versioningWS_alwaysAllowLiveEdit https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Ctrl/Index.html#confval-ctrl-versioningws-alwaysallowliveedit
+     * @throws InvalidArgumentException
      */
     public function __construct(
         protected ?array            $EXT = null,
@@ -179,7 +177,6 @@ class Ctrl extends AbstractTcaAttribute
      * Returns the names of the core field properties that are disabled by the given core field group selection.
      *
      * @param string|list<string> $coreFields
-     *
      * @return list<string>
      * @throws InvalidArgumentException
      */
@@ -205,7 +202,6 @@ class Ctrl extends AbstractTcaAttribute
      * Resolves the active core field groups of the given core field group selection.
      *
      * @param string|list<string> $coreFields
-     *
      * @return list<string>
      * @throws InvalidArgumentException
      */
@@ -276,14 +272,6 @@ class Ctrl extends AbstractTcaAttribute
         return $this->descriptionColumn;
     }
 
-    /**
-     * @return array<string, mixed>|null
-     */
-    public function getEXT(): ?array
-    {
-        return $this->EXT;
-    }
-
     public function getEditLock(): ?string
     {
         return $this->editLock;
@@ -295,6 +283,14 @@ class Ctrl extends AbstractTcaAttribute
     public function getEnableColumns(): ?array
     {
         return $this->enableColumns;
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function getEXT(): ?array
+    {
+        return $this->EXT;
     }
 
     public function getFormattedLabelUserFunc(): ?string
@@ -336,8 +332,7 @@ class Ctrl extends AbstractTcaAttribute
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function getLabel(): string
@@ -346,8 +341,8 @@ class Ctrl extends AbstractTcaAttribute
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws ArgumentCountError
+     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function getLabelAlt(): ?string
@@ -418,8 +413,8 @@ class Ctrl extends AbstractTcaAttribute
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws ArgumentCountError
+     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function getSearchFields(): ?string
@@ -471,6 +466,11 @@ class Ctrl extends AbstractTcaAttribute
         return $this->title;
     }
 
+    public function getTranslationSource(): ?string
+    {
+        return $this->translationSource;
+    }
+
     public function getTransOrigDiffSourceField(): ?string
     {
         return $this->transOrigDiffSourceField;
@@ -479,11 +479,6 @@ class Ctrl extends AbstractTcaAttribute
     public function getTransOrigPointerField(): ?string
     {
         return $this->transOrigPointerField;
-    }
-
-    public function getTranslationSource(): ?string
-    {
-        return $this->translationSource;
     }
 
     public function getTstamp(): ?string
@@ -505,8 +500,7 @@ class Ctrl extends AbstractTcaAttribute
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function getTypeIconColumn(): ?string
@@ -538,6 +532,7 @@ class Ctrl extends AbstractTcaAttribute
      */
     /**
      * @return array<string, mixed>
+     * @throws InvalidArgumentException
      */
     public function toArray(): array
     {
@@ -555,6 +550,8 @@ class Ctrl extends AbstractTcaAttribute
      * Nulls the core field defaults that are not part of the active core field groups. Explicitly passed
      * arguments take precedence over the group selection; arguments passed with their default value are
      * indistinguishable and are therefore subject to the group selection, too.
+     *
+     * @throws InvalidArgumentException
      */
     private function applyCoreFieldSelection(): void
     {

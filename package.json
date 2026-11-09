@@ -4,9 +4,11 @@
   "description": "Configuration framework for TYPO3 extension development",
   "scripts": {
     "fix:classes": "node .Build/vendor/psbits/qa/Resources/Quality/lint-class-attributes.mjs",
-    "fix:htmlxml": "prettier --config .Build/vendor/psbits/qa/Resources/Quality/prettier.config.mjs --ignore-path Build/Quality/.prettierignore --write \"**/*.{xml,xlf}\"",
+    "fix:htmlxml": "prettier --config .Build/vendor/psbits/qa/Resources/Quality/prettier.config.mjs --ignore-path Build/Quality/.prettierignore --write \"**/*.{html,xml,xlf}\"",
+    "fix:json": "prettier --config .Build/vendor/psbits/qa/Resources/Quality/prettier.config.mjs --ignore-path Build/Quality/.prettierignore --write \"package.json\"",
     "lint:classes": "node .Build/vendor/psbits/qa/Resources/Quality/lint-class-attributes.mjs --dry-run",
-    "lint:htmlxml": "prettier --config .Build/vendor/psbits/qa/Resources/Quality/prettier.config.mjs --ignore-path Build/Quality/.prettierignore --check \"**/*.{xml,xlf}\""
+    "lint:htmlxml": "prettier --config .Build/vendor/psbits/qa/Resources/Quality/prettier.config.mjs --ignore-path Build/Quality/.prettierignore --check \"**/*.{html,xml,xlf}\"",
+    "lint:json": "prettier --config .Build/vendor/psbits/qa/Resources/Quality/prettier.config.mjs --ignore-path Build/Quality/.prettierignore --check \"package.json\""
   },
   "repository": {
     "type": "git",

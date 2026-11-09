@@ -13,8 +13,10 @@ namespace PSBits\Foundation\Tests\Unit\Service\Configuration\Tca;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\ExpectationFailedException;
 use PSBits\Foundation\Exceptions\MisconfiguredTcaException;
 use PSBits\Foundation\Service\Configuration\Tca\Validator;
+use RuntimeException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -271,6 +273,9 @@ class ValidatorTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @throws MisconfiguredTcaException
+     */
     #[Test]
     public function validateAcceptsBothSortbySettingsButNotTogether(): void
     {
@@ -289,7 +294,7 @@ class ValidatorTest extends UnitTestCase
 
     /**
      * @param array<string, mixed> $columnConfig
-     *
+     * @throws ExpectationFailedException
      * @throws MisconfiguredTcaException
      */
     #[Test]
@@ -306,7 +311,6 @@ class ValidatorTest extends UnitTestCase
 
     /**
      * @param array<string, mixed> $columnConfig
-     *
      * @throws MisconfiguredTcaException
      */
     #[Test]
@@ -322,6 +326,9 @@ class ValidatorTest extends UnitTestCase
         (new Validator())->validate(self::TABLE_NAME);
     }
 
+    /**
+     * @throws MisconfiguredTcaException
+     */
     #[Test]
     public function validateRejectsSortbyOnProtectedColumn(): void
     {
@@ -337,6 +344,9 @@ class ValidatorTest extends UnitTestCase
         (new Validator())->validate(self::TABLE_NAME);
     }
 
+    /**
+     * @throws RuntimeException
+     */
     protected function tearDown(): void
     {
         unset($GLOBALS['TCA'][self::TABLE_NAME]);

@@ -13,18 +13,17 @@ namespace PSBits\Foundation\Data;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+use function explode;
 use function get_class;
+use function str_replace;
+use function strtolower;
 
 /**
- * Class AbstractExtensionInformation
- *
  * You only need to extend this class to be able to provide the extension_key, the ExtensionName and the VendorName.
  * This information is extracted within the constructor using the namespaced class name of your class. If you want to
  * use module, plugin or page type services, make sure to overwrite the constants MODULES and PLUGINS with your own
  * information
  * (see examples below).
- *
- * @package PSBits\Foundation\Data
  */
 abstract class AbstractExtensionInformation implements ExtensionInformationInterface
 {

@@ -15,15 +15,12 @@ use PSBits\Foundation\Attribute\TCA\Column;
 use PSBits\Foundation\Attribute\TCA\Palette;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+use function array_merge;
 use function str_contains;
 
 /**
- * Class Position
- *
  * A parsed position specification in the form "keyword:reference" as used by TCA attributes
  * (e.g. "after:myField", "palette:myPalette", "newLineAfter:myField").
- *
- * @package PSBits\Foundation\Service\Configuration\Tca
  */
 final readonly class Position
 {
@@ -38,7 +35,6 @@ final readonly class Position
      * prepended/appended to the field names.
      *
      * @param string[] $fieldNames
-     *
      * @return array{position: string, fieldNames: string[]}
      */
     public static function applyLineBreaks(string $position, array $fieldNames): array
@@ -62,8 +58,8 @@ final readonly class Position
         }
 
         return [
-            'position'   => $position,
             'fieldNames' => $fieldNames,
+            'position'   => $position,
         ];
     }
 

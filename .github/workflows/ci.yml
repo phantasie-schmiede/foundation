@@ -1,7 +1,7 @@
 name: CI
 
 # Caller workflow for the shared extension CI (phantasie-schmiede/qa,
-# .github/workflows/extension-ci.yml). This file is managed by `qa link`
+# .github/workflows/extension-ci.yml). This file is managed by `qa sync`
 # (composer post-install/update) and verified by `qa check` in the CI:
 # keep it identical to the template in the psbits/qa package
 # (Resources/CI/ci.yml), do not edit it by hand.

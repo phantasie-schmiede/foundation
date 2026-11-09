@@ -16,8 +16,10 @@ use Generator;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\ExpectationFailedException;
 use PSBits\Foundation\Attribute\TCA\Ctrl;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionProperty;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -127,6 +129,10 @@ class CtrlTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @throws ExpectationFailedException
+     * @throws ReflectionException
+     */
     #[Test]
     public function coreFieldGroupPropertiesMatchConstructorDefaults(): void
     {
@@ -150,6 +156,8 @@ class CtrlTest extends UnitTestCase
     /**
      * @param string|list<string> $coreFields
      * @param list<string>        $expectedValues
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
      */
     #[Test]
     #[DataProvider('coreFieldGroupDataProvider')]
@@ -163,6 +171,10 @@ class CtrlTest extends UnitTestCase
         self::assertSame($expectedValues, $actualValues($ctrl));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     */
     #[Test]
     public function coreFieldsNoneDisablesAllCoreFields(): void
     {
@@ -181,6 +193,9 @@ class CtrlTest extends UnitTestCase
         self::assertSame('t3_origuid', $ctrl->getOrigUid());
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function coreFieldsParameterIsNotSerializedByObjectToArray(): void
     {
@@ -194,6 +209,10 @@ class CtrlTest extends UnitTestCase
         self::assertFalse($reflection->hasMethod('is' . ucfirst(Ctrl::CORE_FIELDS_PARAMETER)));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     */
     #[Test]
     public function defaultConfigurationKeepsAllCoreFields(): void
     {
@@ -212,6 +231,10 @@ class CtrlTest extends UnitTestCase
         self::assertSame('t3_origuid', $ctrl->getOrigUid());
     }
 
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     */
     #[Test]
     public function explicitArgumentsTakePrecedenceOverCoreFieldSelection(): void
     {
@@ -234,6 +257,10 @@ class CtrlTest extends UnitTestCase
         self::assertNull($ctrl->getTstamp());
     }
 
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     */
     #[Test]
     public function explicitNullValueIsKept(): void
     {
@@ -251,12 +278,16 @@ class CtrlTest extends UnitTestCase
         self::assertSame('crdate', $ctrl->getCrdate());
     }
 
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     */
     #[Test]
     public function resolveActiveCoreFieldGroupsReturnsExpectedGroups(): void
     {
         self::assertSame([
-            'language',
             'enableColumns',
+            'language',
             'timestamps',
         ], Ctrl::resolveActiveCoreFieldGroups('all'));
         self::assertSame([], Ctrl::resolveActiveCoreFieldGroups('none'));
@@ -276,6 +307,10 @@ class CtrlTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     */
     #[Test]
     public function searchFieldsAcceptsAListOfPropertyNames(): void
     {
@@ -291,6 +326,10 @@ class CtrlTest extends UnitTestCase
         self::assertSame(['subtitle', 'title'], $reflection->getValue($ctrl));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     */
     #[Test]
     public function labelAltAcceptsAListOfPropertyNames(): void
     {
@@ -306,6 +345,9 @@ class CtrlTest extends UnitTestCase
         self::assertSame(['subtitle', 'title'], $reflection->getValue($ctrl));
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     #[Test]
     public function unknownCoreFieldGroupInListThrowsException(): void
     {
@@ -318,6 +360,9 @@ class CtrlTest extends UnitTestCase
         ]);
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     #[Test]
     public function unknownCoreFieldGroupThrowsException(): void
     {

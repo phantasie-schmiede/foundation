@@ -13,11 +13,6 @@ namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
 use Attribute;
 
-/**
- * Class Slug
- *
- * @package PSBits\Foundation\Attribute\TCA\ColumnType
- */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Slug extends AbstractColumnType
 {
@@ -60,19 +55,19 @@ class Slug extends AbstractColumnType
     }
 
     /**
-     * Database field for type slug is added by TYPO3 automatically.
-     */
-    public function getDatabaseDefinition(): string
-    {
-        return '';
-    }
-
-    /**
      * @return array<string, mixed>|null
      */
     public function getAppearance(): ?array
     {
         return $this->appearance;
+    }
+
+    /**
+     * Database field for type slug is added by TYPO3 automatically.
+     */
+    public function getDatabaseDefinition(): string
+    {
+        return '';
     }
 
     public function getEval(): string

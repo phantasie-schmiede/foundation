@@ -14,11 +14,6 @@ namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 use Attribute;
 use PSBits\Foundation\Utility\Database\DefinitionUtility;
 
-/**
- * Class Json
- *
- * @package PSBits\Foundation\Attribute\TCA\ColumnType
- */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Json extends AbstractColumnType
 {

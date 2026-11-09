@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Tests\Unit\Service\Typo3;
 
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\ExpectationFailedException;
 use PSBits\Foundation\Service\Typo3\LanguageService;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -30,6 +31,9 @@ class LanguageServiceFactoryTest extends UnitTestCase
      */
     private const FACTORY_CLASS = 'PSBits\\Foundation\\Service\\Typo3\\LanguageServiceFactory';
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function theFactoryExtendsTheCoreFactoryAndReturnsTheCustomLanguageService(): void
     {

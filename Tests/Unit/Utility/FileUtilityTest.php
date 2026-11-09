@@ -11,9 +11,13 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Tests\Unit\Utility;
 
+use DateMalformedStringException;
 use DateTime;
+use DivisionByZeroError;
+use Exception;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\ExpectationFailedException;
 use PSBits\Foundation\Utility\FileUtility;
 use RuntimeException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
@@ -45,6 +49,9 @@ class FileUtilityTest extends UnitTestCase
         mkdir($this->tempDir, 0777, true);
     }
 
+    /**
+     * @throws RuntimeException
+     */
     protected function tearDown(): void
     {
         $files = glob($this->tempDir . '/*') ?: [];
@@ -89,6 +96,9 @@ class FileUtilityTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     #[DataProvider('sanitizeFileNameDataProvider')]
     public function sanitizeFileName(string $fileName, string $expected): void
@@ -153,6 +163,11 @@ class FileUtilityTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @throws DivisionByZeroError
+     * @throws Exception
+     * @throws ExpectationFailedException
+     */
     #[Test]
     #[DataProvider('formatFileSizeDataProvider')]
     public function formatFileSize(int|string $input, ?int $unit, int $decimals, string $expected): void
@@ -164,6 +179,9 @@ class FileUtilityTest extends UnitTestCase
         self::assertSame($expected, FileUtility::formatFileSize($input, $unit, $decimals));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function fileExistsReportsPresenceAndAbsenceOfFiles(): void
     {
@@ -173,6 +191,9 @@ class FileUtilityTest extends UnitTestCase
         self::assertFalse(FileUtility::fileExists($this->tempDir . '/missing.txt'));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function resolveFileNameReturnsAbsoluteExistingPath(): void
     {
@@ -181,6 +202,9 @@ class FileUtilityTest extends UnitTestCase
         self::assertSame($path, FileUtility::resolveFileName($path));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function resolveFileNameReturnsEmptyStringForUnresolvablePath(): void
     {
@@ -188,6 +212,9 @@ class FileUtilityTest extends UnitTestCase
         self::assertSame('', FileUtility::resolveFileName('/nonexistent_outside_project/file.txt'));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function getLockFileNameAppendsLockSuffix(): void
     {
@@ -196,12 +223,18 @@ class FileUtilityTest extends UnitTestCase
         self::assertSame($path . '.lock', FileUtility::getLockFileName($path));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function getLockFileNameFallsBackToGivenNameForUnresolvablePath(): void
     {
         self::assertSame('EXT:nonexistent/file.txt.lock', FileUtility::getLockFileName('EXT:nonexistent/file.txt'));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function getMimeTypeDetectsPlainText(): void
     {
@@ -210,6 +243,11 @@ class FileUtilityTest extends UnitTestCase
         self::assertSame('text/plain', FileUtility::getMimeType($path));
     }
 
+    /**
+     * @throws DateMalformedStringException
+     * @throws ExpectationFailedException
+     * @throws RuntimeException
+     */
     #[Test]
     public function lockFileWithoutLifetimeCreatesEmptyLockFile(): void
     {
@@ -221,6 +259,11 @@ class FileUtilityTest extends UnitTestCase
         self::assertTrue(FileUtility::isFileLocked($path));
     }
 
+    /**
+     * @throws DateMalformedStringException
+     * @throws ExpectationFailedException
+     * @throws RuntimeException
+     */
     #[Test]
     public function lockFileWithFutureLifetimeKeepsFileLocked(): void
     {
@@ -232,6 +275,11 @@ class FileUtilityTest extends UnitTestCase
         self::assertSame($lifetime->format('Y-m-d H:i:s'), trim(file_get_contents($path . '.lock')));
     }
 
+    /**
+     * @throws DateMalformedStringException
+     * @throws ExpectationFailedException
+     * @throws RuntimeException
+     */
     #[Test]
     public function lockFileWithPastLifetimeIsReleasedOnLockCheck(): void
     {
@@ -242,6 +290,11 @@ class FileUtilityTest extends UnitTestCase
         self::assertFileDoesNotExist($path . '.lock');
     }
 
+    /**
+     * @throws DateMalformedStringException
+     * @throws ExpectationFailedException
+     * @throws RuntimeException
+     */
     #[Test]
     public function unlockFileRemovesLockFile(): void
     {
@@ -253,6 +306,9 @@ class FileUtilityTest extends UnitTestCase
         self::assertFileDoesNotExist($path . '.lock');
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function unlockFileWithoutLockFileSucceeds(): void
     {
@@ -261,6 +317,11 @@ class FileUtilityTest extends UnitTestCase
         self::assertTrue(FileUtility::unlockFile($path));
     }
 
+    /**
+     * @throws DateMalformedStringException
+     * @throws ExpectationFailedException
+     * @throws RuntimeException
+     */
     #[Test]
     public function writeCreatesFileWithContent(): void
     {
@@ -270,6 +331,11 @@ class FileUtilityTest extends UnitTestCase
         self::assertSame('hello', file_get_contents($path));
     }
 
+    /**
+     * @throws DateMalformedStringException
+     * @throws ExpectationFailedException
+     * @throws RuntimeException
+     */
     #[Test]
     public function writeAppendsWhenRequested(): void
     {
@@ -280,6 +346,11 @@ class FileUtilityTest extends UnitTestCase
         self::assertSame('onetwo', file_get_contents($path));
     }
 
+    /**
+     * @throws DateMalformedStringException
+     * @throws ExpectationFailedException
+     * @throws RuntimeException
+     */
     #[Test]
     public function writeWithEmptyContentSucceeds(): void
     {
@@ -290,6 +361,11 @@ class FileUtilityTest extends UnitTestCase
         self::assertSame('', file_get_contents($path));
     }
 
+    /**
+     * @throws DateMalformedStringException
+     * @throws ExpectationFailedException
+     * @throws RuntimeException
+     */
     #[Test]
     public function writeFailsWhileFileIsLocked(): void
     {
@@ -300,6 +376,9 @@ class FileUtilityTest extends UnitTestCase
         self::assertFileDoesNotExist($path);
     }
 
+    /**
+     * @throws RuntimeException
+     */
     #[Test]
     public function initiateDownloadWithoutContentAndFilenameThrows(): void
     {
@@ -310,6 +389,9 @@ class FileUtilityTest extends UnitTestCase
         FileUtility::initiateDownload('text/plain');
     }
 
+    /**
+     * @throws RuntimeException
+     */
     #[Test]
     public function initiateDownloadWithContentButWithoutDownloadNameThrows(): void
     {
@@ -320,6 +402,10 @@ class FileUtilityTest extends UnitTestCase
         FileUtility::initiateDownload('text/plain', content: 'content');
     }
 
+    /**
+     * @throws ExpectationFailedException
+     * @throws RuntimeException
+     */
     #[Test]
     public function initiateDownloadOutputsGivenContent(): void
     {
@@ -330,6 +416,10 @@ class FileUtilityTest extends UnitTestCase
         self::assertSame('downloaded content', $output);
     }
 
+    /**
+     * @throws ExpectationFailedException
+     * @throws RuntimeException
+     */
     #[Test]
     public function initiateDownloadOutputsFileContent(): void
     {

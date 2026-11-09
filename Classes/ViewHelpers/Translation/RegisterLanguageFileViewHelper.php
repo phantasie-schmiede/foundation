@@ -13,9 +13,9 @@ namespace PSBits\Foundation\ViewHelpers\Translation;
 
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
+use function pathinfo;
+
 /**
- * Class RegisterLanguageFileViewHelper
- *
  * This ViewHelper allows you to define path aliases for language files inside your Fluid-template. Works with the
  * TranslateViewHelper of this extension only.
  *
@@ -27,8 +27,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  * If you omit the name attribute, the filename will be used as alias:
  * <psbits:translation.registerLanguageFile file="EXT:my_extension/Resources/Private/Language/myFile.xlf" />
  * <psbits:translate id="myFile:myLabel" />
- *
- * @package PSBits\Foundation\ViewHelpers\Translation
  */
 class RegisterLanguageFileViewHelper extends AbstractViewHelper
 {

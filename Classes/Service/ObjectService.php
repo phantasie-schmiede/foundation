@@ -12,13 +12,13 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Service;
 
 use Doctrine\DBAL\Exception as DbalException;
+use InvalidArgumentException;
+use LogicException;
 use PSBits\Foundation\Attribute\TCA\ColumnType\Select;
 use PSBits\Foundation\Exceptions\ImplementationException;
 use PSBits\Foundation\Service\Configuration\TcaService;
 use PSBits\Foundation\Utility\ObjectUtility;
 use PSBits\Foundation\Utility\ReflectionUtility;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
 use ReflectionException;
 use RuntimeException;
@@ -31,13 +31,9 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
+use function class_exists;
 use function get_class;
 
-/**
- * Class ObjectService
- *
- * @package PSBits\Foundation\Service
- */
 class ObjectService
 {
     public function __construct(
@@ -55,12 +51,12 @@ class ObjectService
      * mapping result is used if there is no preferred model.
      *
      * @param list<class-string<AbstractEntity>> $preferredModels
-     *
      * @return list<array<string, mixed>|DomainObjectInterface|null>
-     * @throws ContainerExceptionInterface
      * @throws ImplementationException
-     * @throws NotFoundExceptionInterface
+     * @throws InvalidArgumentException
+     * @throws LogicException
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function resolveMmRelationWithDifferentTables(
         AbstractEntity $domainModel,
@@ -130,6 +126,7 @@ class ObjectService
      * @return list<AbstractDomainObject>
      * @throws DbalException
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function resolveMultipleMmRelation(AbstractDomainObject $object, string $property): array
     {
@@ -176,8 +173,10 @@ class ObjectService
             ->orderBy('sorting')
             ->executeQuery();
 
-        // Create a complete collection by using the ordered items of the mm-table by replacing the foreign uid with the
-        // concrete object.
+        /*
+         * Create a complete collection by using the ordered items of the mm-table by replacing the foreign uid with the
+         * concrete object.
+         */
         $completeElements = [];
 
         while ($row = $statement->fetchAssociative()) {

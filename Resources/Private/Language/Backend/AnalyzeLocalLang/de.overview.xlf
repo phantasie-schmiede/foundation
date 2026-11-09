@@ -9,6 +9,10 @@
         target-language="de">
         <header />
         <body>
+            <trans-unit id="accessLogSummary">
+                <source>Access log summary (ordered by hit count in ascending order)</source>
+                <target>Zugriffs-Log-Zusammenfassung (sortiert nach Aufrufen in aufsteigender Reihenfolge)</target>
+            </trans-unit>
             <trans-unit id="header">
                 <source>Overview</source>
                 <target>Übersicht</target>
@@ -16,10 +20,6 @@
             <trans-unit id="missingLanguageLabels">
                 <source>Missing language labels</source>
                 <target>Fehlende Labels</target>
-            </trans-unit>
-            <trans-unit id="accessLogSummary">
-                <source>Access log summary (ordered by hit count in ascending order)</source>
-                <target>Zugriffs-Log-Zusammenfassung (sortiert nach Aufrufen in aufsteigender Reihenfolge)</target>
             </trans-unit>
         </body>
     </file>

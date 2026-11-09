@@ -14,11 +14,6 @@ namespace PSBits\Foundation\ExpressionLanguage;
 use PSBits\Foundation\TypoScript\ConditionFunctionsProvider;
 use TYPO3\CMS\Core\ExpressionLanguage\AbstractProvider;
 
-/**
- * Class TypoScriptConditionProvider
- *
- * @package PSBits\Foundation\ExpressionLanguage
- */
 class TypoScriptConditionProvider extends AbstractProvider
 {
     public function __construct()

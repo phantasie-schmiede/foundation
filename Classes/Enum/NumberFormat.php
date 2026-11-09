@@ -11,11 +11,6 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Enum;
 
-/**
- * Enum NumberFormat
- *
- * @package PSBits\Foundation\Enum
- */
 enum NumberFormat: string
 {
     case decimal = 'decimal';

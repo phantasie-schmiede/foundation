@@ -22,8 +22,6 @@ namespace PSBits\Foundation\Utility\Localization;
  * Other resources:
  * https://www.unicode.org/cldr/charts/43/supplemental/language_plural_rules.html
  * https://cldr.unicode.org/index/cldr-spec/plural-rules
- *
- * @package PSBits\Foundation\Utility\Localization
  */
 class PluralFormUtility
 {
@@ -172,9 +170,7 @@ class PluralFormUtility
     ];
 
     /**
-     * @param string    $languageKey ISO code of language
-     * @param int|float $quantity
-     *
+     * @param string $languageKey ISO code of language
      * @return int Returns 0 if no rule is defined for given language.
      */
     public static function getPluralForm(string $languageKey, int|float $quantity): int

@@ -45,10 +45,13 @@ parameters:
         identifier: new.noConstructor
         message: '#ListTypeToCTypeUpdate#'
         reportUnmatched: false
-
-
-
-
+      # class_exists() itself never throws, but the autoloader it triggers can - e.g. an autoloader
+      # depending on the CacheManager, which is unavailable during TCA generation (georgringer/news,
+      # starting with version 14.0.3). The catch is a deliberate safety net the analyser cannot see.
+      -
+        identifier: catch.neverThrown
+        path: ../../Classes/Service/ExtensionInformationService.php
+        message: '#Throwable#'
 
   excludePaths:
     # Static analysis covers the shipped code and the unit tests. The functional tests need a booted

@@ -11,8 +11,12 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service\Configuration\Tca;
 
+use DateMalformedStringException;
+use Doctrine\DBAL\Exception as DBALException;
+use Error;
 use InvalidArgumentException;
 use JsonException;
+use LogicException;
 use PSBits\Foundation\Attribute\TCA\Column;
 use PSBits\Foundation\Attribute\TCA\ColumnType\ColumnTypeInterface;
 use PSBits\Foundation\Attribute\TCA\ColumnType\ColumnTypeWithItemsInterface;
@@ -25,7 +29,6 @@ use PSBits\Foundation\Exceptions\MisconfiguredTcaException;
 use PSBits\Foundation\Utility\Configuration\TcaUtility;
 use PSBits\Foundation\Utility\ReflectionUtility;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionProperty;
@@ -33,16 +36,16 @@ use RuntimeException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
+use ValueError;
 
+use function array_filter;
 use function array_keys;
+use function implode;
 use function is_array;
 
 /**
- * Class Builder
- *
  * Builds the TCA of a domain model class from its attributes.
- *
- * @package PSBits\Foundation\Service\Configuration\Tca
  */
 readonly class Builder
 {
@@ -62,16 +65,20 @@ readonly class Builder
      * @param bool $overrideMode If set to false, the configuration of all original domain models (not extending other
      *                           domain models) is added to the TCA.
      *                           If set to true, the configuration of all extending domain models is added to the TCA.
-     *
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
      * @throws ImplementationException
      * @throws InvalidArgumentException
      * @throws JsonException
+     * @throws LogicException
      * @throws MisconfiguredTcaException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function build(bool $overrideMode): void
     {
@@ -83,18 +90,19 @@ readonly class Builder
     /**
      * Builds the TCA of the given class from its attributes.
      *
-     * @param string $className
-     * @param string $tableName
-     * @param bool   $overrideMode
-     *
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
      * @throws InvalidArgumentException
      * @throws JsonException
      * @throws MisconfiguredTcaException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
      * @throws ReflectionException
+     * @throws RuntimeException
+     * @throws ValueError
      */
     public function buildFromAttributes(string $className, string $tableName, bool $overrideMode): void
     {
@@ -227,16 +235,87 @@ readonly class Builder
     }
 
     /**
+     * Collects the column configurations from the annotated properties of a class.
+     *
+     * @param ReflectionProperty[] $properties
+     * @return Column[]
+     * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
+     * @throws JsonException
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
+    private function buildColumnConfigurations(array $properties, string $className, string $defaultLabelPath): array
+    {
+        $columnConfigurations = [];
+
+        foreach ($properties as $property) {
+            $columnTypeAttribute = ReflectionUtility::getAttributeInstance(ColumnTypeInterface::class, $property);
+
+            if (!$columnTypeAttribute instanceof ColumnTypeInterface) {
+                continue;
+            }
+
+            $columnAttribute = ReflectionUtility::getAttributeInstance(
+                Column::class,
+                $property
+            ) ?? GeneralUtility::makeInstance(Column::class);
+
+            $columnName = $this->nameResolver->convertPropertyNameToColumnName($property->getName(), $className);
+
+            if (empty($columnAttribute->getDescription())) {
+                $description = LabelResolver::resolveLabel(
+                    '',
+                    $defaultLabelPath . $property->getName() . '.description',
+                    '',
+                    false
+                );
+
+                if ('' !== $description) {
+                    $columnAttribute->setDescription($description);
+                }
+            }
+
+            if ('' === $columnAttribute->getLabel()) {
+                $label = $defaultLabelPath . $property->getName();
+                $columnAttribute->setLabel(LabelResolver::resolveLabel('', $label, $label));
+            }
+
+            if ($columnTypeAttribute instanceof ColumnTypeWithItemsInterface) {
+                $columnTypeAttribute->processItems(
+                    $defaultLabelPath . $property->getName() . '.'
+                );
+            }
+
+            $columnAttribute->setConfiguration($columnTypeAttribute);
+            $columnConfigurations[$columnName] = $columnAttribute;
+        }
+
+        return $columnConfigurations;
+    }
+
+    /**
      * Creates the definitions of the default fields that are added to the showitems of all types after the
      * position-dependencies of the columns have been resolved. The definitions can be used as position references.
      *
      * @return list<DefaultFieldDefinition>
-     *
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     private function createDefaultFieldDefinitions(
         TcaTable $table,
@@ -300,68 +379,6 @@ readonly class Builder
         }
 
         return $definitions;
-    }
-
-    /**
-     * Collects the column configurations from the annotated properties of a class.
-     *
-     * @param ReflectionProperty[] $properties
-     *
-     * @return Column[]
-     * @throws ContainerExceptionInterface
-     * @throws ExtensionConfigurationExtensionNotConfiguredException
-     * @throws ExtensionConfigurationPathDoesNotExistException
-     * @throws JsonException
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
-     */
-    private function buildColumnConfigurations(array $properties, string $className, string $defaultLabelPath): array
-    {
-        $columnConfigurations = [];
-
-        foreach ($properties as $property) {
-            $columnTypeAttribute = ReflectionUtility::getAttributeInstance(ColumnTypeInterface::class, $property);
-
-            if (!$columnTypeAttribute instanceof ColumnTypeInterface) {
-                continue;
-            }
-
-            $columnAttribute = ReflectionUtility::getAttributeInstance(
-                Column::class,
-                $property
-            ) ?? GeneralUtility::makeInstance(Column::class);
-
-            $columnName = $this->nameResolver->convertPropertyNameToColumnName($property->getName(), $className);
-
-            if (empty($columnAttribute->getDescription())) {
-                $description = LabelResolver::resolveLabel(
-                    '',
-                    $defaultLabelPath . $property->getName() . '.description',
-                    '',
-                    false
-                );
-
-                if ('' !== $description) {
-                    $columnAttribute->setDescription($description);
-                }
-            }
-
-            if ('' === $columnAttribute->getLabel()) {
-                $label = $defaultLabelPath . $property->getName();
-                $columnAttribute->setLabel(LabelResolver::resolveLabel('', $label, $label));
-            }
-
-            if ($columnTypeAttribute instanceof ColumnTypeWithItemsInterface) {
-                $columnTypeAttribute->processItems(
-                    $defaultLabelPath . $property->getName() . '.'
-                );
-            }
-
-            $columnAttribute->setConfiguration($columnTypeAttribute);
-            $columnConfigurations[$columnName] = $columnAttribute;
-        }
-
-        return $columnConfigurations;
     }
 
     private function createType(TcaTable $table, Type $typeConfiguration, bool $overrideMode): void

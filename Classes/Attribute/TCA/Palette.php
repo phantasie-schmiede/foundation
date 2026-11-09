@@ -13,15 +13,9 @@ namespace PSBits\Foundation\Attribute\TCA;
 
 use Attribute;
 use PSBits\Foundation\Service\Configuration\Tca\Position;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use ReflectionException;
 
 /**
- * Class Palette
- *
  * @link    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Palettes/Index.html
- * @package PSBits\Foundation\Attribute\TCA
  */
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS)]
 class Palette extends AbstractTcaAttribute
@@ -41,7 +35,6 @@ class Palette extends AbstractTcaAttribute
      * @param string $identifier      Key of the palette and part of the showitem reference (--palette--;;identifier).
      * @param bool   $isHiddenPalette https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Palettes/Index.html#confval-palettes-ishiddenpalette
      * @param string $label           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Palettes/Index.html#confval-palettes-label
-     * @param string $position
      */
     public function __construct(
         protected string $description = '',
@@ -71,16 +64,6 @@ class Palette extends AbstractTcaAttribute
         return $this->label;
     }
 
-    public function isHiddenPalette(): bool
-    {
-        return $this->isHiddenPalette;
-    }
-
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
-     */
     public function getPosition(): string
     {
         return Position::normalize(
@@ -88,5 +71,10 @@ class Palette extends AbstractTcaAttribute
             fn(string $name): string => $this->tcaService()
                 ->convertPropertyNameToColumnName($name)
         );
+    }
+
+    public function isHiddenPalette(): bool
+    {
+        return $this->isHiddenPalette;
     }
 }

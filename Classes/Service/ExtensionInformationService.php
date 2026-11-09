@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service;
 
+use BadFunctionCallException;
 use InvalidArgumentException;
+use LogicException;
 use PSBits\Foundation\Data\ExtensionInformationInterface;
 use PSBits\Foundation\Exceptions\ImplementationException;
 use Psr\Log\LoggerAwareInterface;
@@ -27,15 +29,17 @@ use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+use function array_merge;
+use function class_exists;
 use function count;
+use function explode;
+use function implode;
 use function in_array;
 use function is_array;
+use function str_replace;
+use function str_starts_with;
+use function substr;
 
-/**
- * Class ExtensionInformationService
- *
- * @package PSBits\Foundation\Service
- */
 class ExtensionInformationService implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
@@ -53,6 +57,7 @@ class ExtensionInformationService implements LoggerAwareInterface
 
     /**
      * @return array{extensionKey: string, extensionName: string, vendorName: string}
+     * @throws InvalidArgumentException
      */
     public function extractExtensionInformationFromClassName(string $className): array
     {
@@ -95,6 +100,7 @@ class ExtensionInformationService implements LoggerAwareInterface
     /**
      * @return ExtensionInformationInterface[]
      * @throws ImplementationException
+     * @throws InvalidArgumentException
      */
     public function getAllExtensionInformation(): array
     {
@@ -111,6 +117,7 @@ class ExtensionInformationService implements LoggerAwareInterface
      *
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      */
     public function getConfiguration(
         ExtensionInformationInterface $extensionInformation,
@@ -129,6 +136,8 @@ class ExtensionInformationService implements LoggerAwareInterface
 
     /**
      * @return list<string>
+     * @throws BadFunctionCallException
+     * @throws LogicException
      */
     public function getDomainModelClassNames(ExtensionInformationInterface $extensionInformation): array
     {
@@ -186,6 +195,7 @@ class ExtensionInformationService implements LoggerAwareInterface
 
     /**
      * @throws ImplementationException
+     * @throws InvalidArgumentException
      */
     public function getExtensionInformation(string $extensionKey): ExtensionInformationInterface
     {
@@ -204,6 +214,7 @@ class ExtensionInformationService implements LoggerAwareInterface
      * a series of automated tasks like TCA-generation, icon registration and plugin configuration.
      *
      * @throws ImplementationException
+     * @throws InvalidArgumentException
      */
     private function register(): void
     {

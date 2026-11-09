@@ -13,11 +13,6 @@ namespace PSBits\Foundation\ViewHelpers\GlobalVariables;
 
 use PSBits\Foundation\Service\GlobalVariableProviders\EarlyAccessConstantsProvider;
 
-/**
- * Class EarlyAccessConstantsViewHelper
- *
- * @package PSBits\Foundation\ViewHelpers\GlobalVariables
- */
 class EarlyAccessConstantsViewHelper extends AbstractGlobalVariablesViewHelper
 {
     protected function getBaseKey(): string

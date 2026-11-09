@@ -17,40 +17,54 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service\Typo3;
 
+use DateMalformedStringException;
 use Doctrine\DBAL\Exception;
+use InvalidArgumentException;
 use JsonException;
 use PSBits\Foundation\Utility\Localization\LoggingUtility;
 use PSBits\Foundation\Utility\LocalizationUtility;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
+use RuntimeException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Localization\LanguageService as Typo3LanguageService;
 
+use function explode;
 use function is_array;
 use function is_string;
+use function str_contains;
 use function strlen;
+use function substr;
 
 /**
- * Class LanguageService
- *
  * Overwrites the original functions in order to respect plural forms and support logging.
- *
- * @package PSBits\Foundation\Service\Typo3
  */
 class LanguageService extends Typo3LanguageService
 {
     private static bool $pluralFormMissing = false;
 
     /**
+     * Resolves a single plural form to its label. v13 stores each form as
+     * ['target' => string], v14 as the plain string.
+     *
+     * @param string|array{target: string} $form
+     */
+    private static function resolvePluralForm(string|array $form): string
+    {
+        return is_array($form) ? $form['target'] : $form;
+    }
+
+    /**
      * Overwrites the function to support logging.
      *
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
      * @throws Exception
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws RuntimeException
      */
     public function sL($input): string
     {
@@ -73,8 +87,6 @@ class LanguageService extends Typo3LanguageService
      *
      * @param string               $index         Label key
      * @param array<string, mixed> $localLanguage $LOCAL_LANG array to get label key from
-     *
-     * @return string
      */
     protected function getLLL(string $index, array $localLanguage, bool $returnNullIfNotSet = false): string
     {
@@ -113,16 +125,5 @@ class LanguageService extends Typo3LanguageService
         }
 
         return $value ?? '';
-    }
-
-    /**
-     * Resolves a single plural form to its label. v13 stores each form as
-     * ['target' => string], v14 as the plain string.
-     *
-     * @param string|array{target: string} $form
-     */
-    private static function resolvePluralForm(string|array $form): string
-    {
-        return is_array($form) ? $form['target'] : $form;
     }
 }

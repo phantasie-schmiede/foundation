@@ -2,134 +2,137 @@
     data-namespace-typo3-fluid="true"
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
     xmlns:foundation="http://typo3.org/ns/PSBits/Foundation/ViewHelpers">
-<f:layout name="Module" />
+    <f:layout name="Module" />
 
-<f:section name="Before">
-    <style>
-        .collapsible-accordion {
-            border: #292929 1px solid;
-            border-radius: 5px;
-            margin: 10px 0;
-            overflow: hidden;
-        }
+    <f:section name="Before">
+        <style>
+            .collapsible-accordion {
+                border: #292929 1px solid;
+                border-radius: 5px;
+                margin: 10px 0;
+                overflow: hidden;
+            }
 
-        .collapsible-item input {
-            opacity: 0;
-            position: fixed;
-            z-index: -1;
-        }
+            .collapsible-item input {
+                opacity: 0;
+                position: fixed;
+                z-index: -1;
+            }
 
-        .collapsible-item input:checked + .collapsible-item-label::after {
-            transform: rotate(90deg);
-        }
+            .collapsible-item input:checked + .collapsible-item-label::after {
+                transform: rotate(90deg);
+            }
 
-        .collapsible-item input:checked ~ .collapsible-item-content {
-            max-height: 20vh;
-            padding: 1em 2em;
-            overflow-y: scroll;
-        }
+            .collapsible-item input:checked ~ .collapsible-item-content {
+                max-height: 20vh;
+                padding: 1em 2em;
+                overflow-y: scroll;
+            }
 
-        .collapsible-item-content {
-            background: white;
-            max-height: 0;
-            padding: 0 1em;
-            transition: all 0.35s;
-        }
+            .collapsible-item-content {
+                background: white;
+                max-height: 0;
+                padding: 0 1em;
+                transition: all 0.35s;
+            }
 
-        .collapsible-item-label {
-            background: #292929;
-            color: #fff;
-            cursor: pointer;
-            display: flex;
-            font-weight: bold;
-            justify-content: space-between;
-            padding: 1em;
-        }
+            .collapsible-item-label {
+                background: #292929;
+                color: #fff;
+                cursor: pointer;
+                display: flex;
+                font-weight: bold;
+                justify-content: space-between;
+                padding: 1em;
+            }
 
-        .collapsible-item-label::after {
-            content: "→";
-            height: 1em;
-            text-align: center;
-            transition: all 0.35s;
-            width: 1em;
-        }
-    </style>
-</f:section>
+            .collapsible-item-label::after {
+                content: "→";
+                height: 1em;
+                text-align: center;
+                transition: all 0.35s;
+                width: 1em;
+            }
+        </style>
+    </f:section>
 
-<f:section name="Content">
-    <div class="row">
-        <div class="col">
-            <h1>
-                <foundation:translate id="header" />
-            </h1>
+    <f:section name="Content">
+        <div class="row">
+            <div class="col">
+                <h1>
+                    <foundation:translate id="header" />
+                </h1>
 
-            <h2>
-                <foundation:translate id="missingLanguageLabels" />
-            </h2>
+                <h2>
+                    <foundation:translate id="missingLanguageLabels" />
+                </h2>
 
-            <f:for
-                as="missingLabels"
-                each="{missingLabelsLogData}"
-                iteration="iterator"
-                key="extensionKey">
-                <div class="collapsible-accordion">
-                    <div class="collapsible-item">
-                        <input
-                            id="missing-category-{iterator.cycle}"
-                            name="extension"
-                            type="radio">
-                        <label
-                            class="collapsible-item-label"
-                            for="missing-category-{iterator.cycle}">
-                            {extensionKey} ({missingLabels -> f:count()})
-                        </label>
-                        <div class="collapsible-item-content">
-                            <ul class="list-group">
-                                <f:for
-                                    as="missingLabel"
-                                    each="{missingLabels}">
-                                    <li>{missingLabel}</li>
-                                </f:for>
-                            </ul>
+                <f:for
+                    as="missingLabels"
+                    each="{missingLabelsLogData}"
+                    iteration="iterator"
+                    key="extensionKey">
+                    <div class="collapsible-accordion">
+                        <div class="collapsible-item">
+                            <input
+                                id="missing-category-{iterator.cycle}"
+                                name="extension"
+                                type="radio" />
+                            <label
+                                class="collapsible-item-label"
+                                for="missing-category-{iterator.cycle}">
+                                {extensionKey} ({missingLabels -> f:count()})
+                            </label>
+                            <div class="collapsible-item-content">
+                                <ul class="list-group">
+                                    <f:for
+                                        as="missingLabel"
+                                        each="{missingLabels}">
+                                        <li>{missingLabel}</li>
+                                    </f:for>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </f:for>
+                </f:for>
 
-            <h2>
-                <foundation:translate id="accessLogSummary" />
-            </h2>
+                <h2>
+                    <foundation:translate id="accessLogSummary" />
+                </h2>
 
-            <f:for
-                as="accessedLabels"
-                each="{labelAccessLogData}"
-                iteration="iterator"
-                key="extensionKey">
-                <div class="collapsible-accordion">
-                    <div class="collapsible-item">
-                        <input
-                            id="access-category-{iterator.cycle}"
-                            name="extension"
-                            type="radio">
-                        <label
-                            class="collapsible-item-label"
-                            for="access-category-{iterator.cycle}">
-                            {extensionKey} ({accessedLabels -> f:count()})
-                        </label>
-                        <div class="collapsible-item-content">
-                            <ul class="list-group">
-                                <f:for
-                                    as="hitCount"
-                                    each="{accessedLabels}"
-                                    key="languageLabel">
-                                    <li>{languageLabel}: {hitCount -> f:or(alternative: 0)}</li>
-                                </f:for>
-                            </ul>
+                <f:for
+                    as="accessedLabels"
+                    each="{labelAccessLogData}"
+                    iteration="iterator"
+                    key="extensionKey">
+                    <div class="collapsible-accordion">
+                        <div class="collapsible-item">
+                            <input
+                                id="access-category-{iterator.cycle}"
+                                name="extension"
+                                type="radio" />
+                            <label
+                                class="collapsible-item-label"
+                                for="access-category-{iterator.cycle}">
+                                {extensionKey} ({accessedLabels -> f:count()})
+                            </label>
+                            <div class="collapsible-item-content">
+                                <ul class="list-group">
+                                    <f:for
+                                        as="hitCount"
+                                        each="{accessedLabels}"
+                                        key="languageLabel">
+                                        <li>
+                                            {languageLabel}: {hitCount ->
+                                            f:or(alternative: 0)}
+                                        </li>
+                                    </f:for>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </f:for>
+                </f:for>
+            </div>
         </div>
-    </div>
-</f:section>
+    </f:section>
 </html>

@@ -11,11 +11,6 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Enum;
 
-/**
- * Enum SelectRenderType
- *
- * @package PSBits\Foundation\Enum
- */
 enum SelectRenderType: string
 {
     case selectCheckBox           = 'selectCheckBox';

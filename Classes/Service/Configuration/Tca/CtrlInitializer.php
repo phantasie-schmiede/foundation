@@ -11,27 +11,28 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service\Configuration\Tca;
 
+use DateMalformedStringException;
+use Doctrine\DBAL\Exception as DBALException;
+use Error;
+use InvalidArgumentException;
 use JsonException;
 use PSBits\Foundation\Attribute\TCA\Ctrl;
 use PSBits\Foundation\Utility\Configuration\TcaUtility;
 use PSBits\Foundation\Utility\LocalizationUtility;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
 use ReflectionException;
+use RuntimeException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
 
 use function array_key_exists;
 use function is_array;
 
 /**
- * Class CtrlInitializer
- *
  * Applies the configuration of the Ctrl attribute to a table and creates the default columns derived from the ctrl
  * settings (enable columns, language fields).
- *
- * @package PSBits\Foundation\Service\Configuration\Tca
  */
 readonly class CtrlInitializer
 {
@@ -45,8 +46,7 @@ readonly class CtrlInitializer
      * explicitly set are applied.
      *
      * @param ReflectionClass<object> $reflection
-     *
-     * @throws ReflectionException
+     * @throws InvalidArgumentException
      */
     public function apply(?Ctrl $ctrl, bool $overrideMode, ReflectionClass $reflection): void
     {
@@ -94,10 +94,16 @@ readonly class CtrlInitializer
      * Ensures that a valid ctrl title is set, using the default label as fallback.
      *
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function ensureTitle(string $defaultLabelPath): void
     {

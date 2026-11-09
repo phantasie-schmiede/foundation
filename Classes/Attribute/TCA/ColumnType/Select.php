@@ -12,6 +12,10 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
 use Attribute;
+use DateMalformedStringException;
+use Doctrine\DBAL\Exception as DBALException;
+use Error;
+use InvalidArgumentException;
 use JsonException;
 use PSBits\Foundation\Enum\Relationship;
 use PSBits\Foundation\Enum\SelectRenderType;
@@ -22,22 +26,24 @@ use PSBits\Foundation\Utility\Configuration\FilePathUtility;
 use PSBits\Foundation\Utility\Database\DefinitionUtility;
 use PSBits\Foundation\Utility\LocalizationUtility;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
+use RuntimeException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
 
+use function array_merge;
+use function class_exists;
+use function implode;
 use function is_array;
 use function is_float;
 use function is_int;
 use function is_string;
+use function max;
+use function str_starts_with;
+use function strlen;
 
-/**
- * Class Select
- *
- * @package PSBits\Foundation\Attribute\TCA\ColumnType
- */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
 {
@@ -82,11 +88,7 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
      * @param int|null                      $autoSizeMax                   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-autosizemax
      * @param int|null                      $dbFieldLength                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-dbfieldlength
      * @param bool|null                     $disableNoMatchingValueElement https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-disablenomatchingvalueelement
-     * @param string|null                   $eval
      * @param array<int|string, mixed>|null $fieldControl                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-fieldcontrol
-     * @param bool|null                     $fieldControlDisableAddRecord
-     * @param bool|null                     $fieldControlDisableEditPopup
-     * @param bool|null                     $fieldControlDisableListModule
      * @param array<string, mixed>|null     $fileFolderConfig              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-filefolderconfig
      * @param string|null                   $foreignTable                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-foreign-table
      *                                                                     Instead of directly specifying a foreign table, it is possible
@@ -109,7 +111,6 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
      * @param bool|null                     $multiple                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-multiple
      * @param array<int|string, mixed>|null $prependItem
      * @param Relationship|null             $relationship                  https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-relationship
-     * @param SelectRenderType              $renderType
      * @param int|null                      $size                          https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-single-size
      * @param string|null                   $sortItems                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Single/Index.html#confval-select-sortitems
      * @param array<string, mixed>|null     $treeConfig                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig
@@ -125,9 +126,7 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
      *                                                                     column name automatically.
      * @param bool|null                     $treeConfigShowHeader          https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-showheader
      * @param array<string, mixed>          $treeConfigStartingPoints      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Tree/Index.html#confval-select-treeconfig-startingpoints
-     *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function __construct(
@@ -197,14 +196,14 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
         }
     }
 
-    public function getAutoSizeMax(): ?int
-    {
-        return $this->autoSizeMax;
-    }
-
     public function getAuthMode(): ?string
     {
         return $this->authMode;
+    }
+
+    public function getAutoSizeMax(): ?int
+    {
+        return $this->autoSizeMax;
     }
 
     public function getDatabaseDefinition(): string
@@ -358,8 +357,7 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function getMmOppositeField(): ?string
@@ -406,9 +404,8 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
 
     /**
      * @return array<string, mixed>|null
-     * @throws ContainerExceptionInterface
+     * @throws InvalidArgumentException
      * @throws MisconfiguredTcaException
-     * @throws NotFoundExceptionInterface
      * @throws ReflectionException
      */
     public function getTreeConfig(): ?array
@@ -482,10 +479,16 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function processItems(string $labelPath = ''): void
     {
@@ -506,10 +509,16 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     private function processSimpleFormat(string $labelPath = ''): void
     {
@@ -541,10 +550,16 @@ class Select extends AbstractColumnType implements ColumnTypeWithItemsInterface
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     private function processTcaFormat(): void
     {

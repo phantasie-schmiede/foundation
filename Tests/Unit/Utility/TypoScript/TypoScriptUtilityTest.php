@@ -14,8 +14,11 @@ namespace PSBits\Foundation\Utility\TypoScript;
 use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\ExpectationFailedException;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use UnexpectedValueException;
+use ValueError;
 
 /**
  * Class TypoScriptUtilityTest
@@ -79,8 +82,10 @@ class TypoScriptUtilityTest extends UnitTestCase
     /**
      * @param array<string, mixed> $array
      * @param string               $expectedResult
-     *
      * @return void
+     * @throws ExpectationFailedException
+     * @throws UnexpectedValueException
+     * @throws ValueError
      */
     #[Test]
     #[DataProvider('convertArrayToTypoScriptDataProvider')]

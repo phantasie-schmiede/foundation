@@ -11,6 +11,10 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Utility;
 
+use DateMalformedStringException;
+use Doctrine\DBAL\Exception as DBALException;
+use Error;
+use Exception;
 use InvalidArgumentException;
 use JsonException;
 use PSBits\Foundation\Utility\Configuration\FilePathUtility;
@@ -18,24 +22,27 @@ use PSBits\Foundation\Utility\Localization\LoggingUtility;
 use PSBits\Foundation\Utility\Localization\PluralFormUtility;
 use PSBits\Foundation\Utility\Xml\XmlUtility;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
+use RuntimeException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility as ExtbaseLocalizationUtility;
 
+use function array_keys;
+use function array_map;
 use function array_slice;
+use function array_values;
+use function explode;
+use function file_get_contents;
+use function implode;
 use function is_array;
 use function is_string;
+use function str_replace;
+use function str_starts_with;
 
-/**
- * Class LocalizationUtility
- *
- * @package PSBits\Foundation\Utility
- */
 class LocalizationUtility
 {
     public const array  PLACEHOLDER_MARKERS = [
@@ -56,15 +63,16 @@ class LocalizationUtility
      * @param array<string, mixed>|null $arguments     The arguments of the extension, being passed over to vsprintf
      * @param string|null               $languageKey   The language key or null for using the current language from the
      *                                                 system
-     *
      * @return string|null The value from LOCAL_LANG or null if no translation was found.
-     * @throws AspectNotFoundException
+     * @see ExtbaseLocalizationUtility
      * @throws ContainerExceptionInterface
+     * @throws Error
+     * @throws Exception
      * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
      * @throws ReflectionException
-     * @see ExtbaseLocalizationUtility
+     * @throws RuntimeException
      */
     public static function translate(
         string  $key,
@@ -126,13 +134,9 @@ class LocalizationUtility
      * @param array<string, mixed>|null $arguments
      * @param string                    $newLineMarker If set, user defined new lines are created while plain line breaks will still
      *                                                 be removed
-     *
-     * @throws AspectNotFoundException
      * @throws ContainerExceptionInterface
-     * @throws InvalidArgumentException
-     * @throws JsonException
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
+     * @throws Error
+     * @throws Exception
      */
     public static function translateConcatenatingNewLines(
         string $key,
@@ -153,13 +157,9 @@ class LocalizationUtility
 
     /**
      * @param array<string, mixed>|null $arguments
-     *
-     * @throws AspectNotFoundException
      * @throws ContainerExceptionInterface
-     * @throws InvalidArgumentException
-     * @throws JsonException
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
+     * @throws Error
+     * @throws Exception
      */
     public static function translatePreservingNewLines(
         string $key,
@@ -189,11 +189,16 @@ class LocalizationUtility
      * initialized yet.
      *
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     public static function translationExists(string $key, bool $logMissingTranslation = true): bool
     {
@@ -240,11 +245,16 @@ class LocalizationUtility
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     public static function validateLabel(string $label): bool
     {

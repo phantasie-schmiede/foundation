@@ -11,11 +11,15 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Tests\Unit\Service\Configuration\Tca;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Exception;
+use PHPUnit\Framework\ExpectationFailedException;
 use PSBits\Foundation\Attribute\TCA\Ctrl;
 use PSBits\Foundation\Service\Configuration\Tca\CtrlInitializer;
 use PSBits\Foundation\Service\Configuration\Tca\TcaTable;
 use ReflectionClass;
+use RuntimeException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -27,6 +31,11 @@ class CtrlInitializerTest extends UnitTestCase
 {
     private const string TABLE_NAME = 'tx_ctrl_initializer_test';
 
+    /**
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     */
     #[Test]
     public function applyInOverrideModeDisablesCoreFieldsOfInactiveGroups(): void
     {
@@ -56,6 +65,10 @@ class CtrlInitializerTest extends UnitTestCase
         self::assertArrayNotHasKey(Ctrl::CORE_FIELDS_PARAMETER, $ctrl);
     }
 
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     */
     #[Test]
     public function applyInOverrideModeKeepsExplicitArguments(): void
     {
@@ -75,6 +88,9 @@ class CtrlInitializerTest extends UnitTestCase
         self::assertNull($GLOBALS['TCA'][self::TABLE_NAME]['ctrl']['enablecolumns']);
     }
 
+    /**
+     * @throws RuntimeException
+     */
     protected function tearDown(): void
     {
         unset($GLOBALS['TCA'][self::TABLE_NAME]);

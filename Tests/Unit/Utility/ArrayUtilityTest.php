@@ -14,6 +14,7 @@ namespace PSBits\Foundation\Utility;
 use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\ExpectationFailedException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -61,8 +62,8 @@ class ArrayUtilityTest extends UnitTestCase
     /**
      * @param array<int|string, mixed> $array
      * @param int                      $expectedResult
-     *
      * @return void
+     * @throws ExpectationFailedException
      */
     #[Test]
     #[DataProvider('countRecursiveDataProvider')]
@@ -100,6 +101,7 @@ class ArrayUtilityTest extends UnitTestCase
 
     /**
      * @param array<int|string, mixed> $array
+     * @throws ExpectationFailedException
      */
     #[Test]
     #[DataProvider('findLastOccurrenceDataProvider')]
@@ -147,6 +149,7 @@ class ArrayUtilityTest extends UnitTestCase
 
     /**
      * @param array<int|string, mixed> $expectedResult
+     * @throws ExpectationFailedException
      */
     #[Test]
     #[DataProvider('guaranteeArrayTypeDataProvider')]
@@ -200,6 +203,7 @@ class ArrayUtilityTest extends UnitTestCase
     /**
      * @param array<int|string, mixed> $haystack
      * @param list<int|string>         $expectedResult
+     * @throws ExpectationFailedException
      */
     #[Test]
     #[DataProvider('inArrayRecursiveDataProvider')]
@@ -242,6 +246,7 @@ class ArrayUtilityTest extends UnitTestCase
      * @param array<int|string, mixed> $array
      * @param array<int|string, mixed> $elements
      * @param array<int|string, mixed> $expectedResult
+     * @throws ExpectationFailedException
      */
     #[Test]
     #[DataProvider('insertIntoArrayDataProvider')]
@@ -275,6 +280,7 @@ class ArrayUtilityTest extends UnitTestCase
 
     /**
      * @param array<int|string, mixed> $array
+     * @throws ExpectationFailedException
      */
     #[Test]
     #[DataProvider('isMultiDimensionalArrayDataProvider')]
@@ -314,6 +320,7 @@ class ArrayUtilityTest extends UnitTestCase
     /**
      * @param array<string, mixed> $array
      * @param array<string, mixed> $expectedResult
+     * @throws ExpectationFailedException
      */
     #[Test]
     #[DataProvider('setValueByPathDataProvider')]

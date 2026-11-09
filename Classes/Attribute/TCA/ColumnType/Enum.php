@@ -13,6 +13,10 @@ namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
 use Attribute;
 use BackedEnum;
+use DateMalformedStringException;
+use Doctrine\DBAL\Exception as DBALException;
+use Error;
+use InvalidArgumentException;
 use JsonException;
 use PSBits\Foundation\Enum\SelectRenderType;
 use PSBits\Foundation\Exceptions\MisconfiguredTcaException;
@@ -21,23 +25,23 @@ use PSBits\Foundation\Utility\Database\DefinitionUtility;
 use PSBits\Foundation\Utility\LocalizationUtility;
 use PSBits\Foundation\Utility\StringUtility;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
+use ReflectionException;
+use RuntimeException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
 
 use function is_string;
+use function max;
 use function method_exists;
+use function str_starts_with;
 use function strlen;
 
 /**
- * Class Enum
- *
  * Generates a select box with items based on a backed enum.
  * Item labels are based on sanitized case names by default.
  * If enum cases provide `getBackendLabel()`, that value is used as label.
  * If localized labels exist for the property label path, they override enum labels.
- *
- * @package PSBits\Foundation\Attribute\TCA\ColumnType
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Enum implements ColumnTypeWithItemsInterface
@@ -110,11 +114,17 @@ class Enum implements ColumnTypeWithItemsInterface
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
      * @throws MisconfiguredTcaException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function processItems(string $labelPath = ''): void
     {

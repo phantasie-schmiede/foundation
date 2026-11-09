@@ -8,12 +8,6 @@
         source-language="en">
         <header />
         <body>
-            <trans-unit id="message">
-                <source>Test message</source>
-            </trans-unit>
-            <trans-unit id="withArgument">
-                <source>Hello {name}!</source>
-            </trans-unit>
             <group
                 id="day"
                 restype="x-gettext-plurals">
@@ -24,6 +18,12 @@
                     <source>%s days</source>
                 </trans-unit>
             </group>
+            <trans-unit id="message">
+                <source>Test message</source>
+            </trans-unit>
+            <trans-unit id="withArgument">
+                <source>Hello {name}!</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

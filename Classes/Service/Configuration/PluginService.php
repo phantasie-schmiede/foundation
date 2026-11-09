@@ -11,6 +11,11 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service\Configuration;
 
+use ArgumentCountError;
+use DateMalformedStringException;
+use Doctrine\DBAL\Exception as DBALException;
+use Error;
+use InvalidArgumentException;
 use JsonException;
 use PSBits\Foundation\Attribute\PluginAction;
 use PSBits\Foundation\Data\ExtensionInformationInterface;
@@ -22,24 +27,27 @@ use PSBits\Foundation\Utility\Typo3VersionUtility;
 use PSBits\Foundation\Utility\TypoScript\PageObjectConfiguration;
 use PSBits\Foundation\Utility\TypoScript\TypoScriptUtility;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
 use ReflectionException;
+use RuntimeException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\DataHandling\PageDoktypeRegistry;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
+use UnexpectedValueException;
 
+use function file_get_contents;
+use function implode;
 use function in_array;
 use function is_int;
+use function lcfirst;
+use function str_contains;
+use function str_replace;
+use function strtolower;
 
-/**
- * Class PluginService
- *
- * @package PSBits\Foundation\Service\Configuration
- */
 class PluginService
 {
     public function __construct(
@@ -51,12 +59,10 @@ class PluginService
     /**
      * For use in ext_localconf.php files
      *
-     * @throws ContainerExceptionInterface
-     * @throws ExtensionConfigurationExtensionNotConfiguredException
-     * @throws ExtensionConfigurationPathDoesNotExistException
-     * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws ArgumentCountError
+     * @throws InvalidArgumentException
      * @throws ReflectionException
+     * @throws UnexpectedValueException
      */
     public function configurePlugins(ExtensionInformationInterface $extensionInformation): void
     {
@@ -83,10 +89,16 @@ class PluginService
      * For use in Configuration/TCA/Overrides/tt_content.php files
      *
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function registerPlugins(ExtensionInformationInterface $extensionInformation): void
     {
@@ -130,9 +142,8 @@ class PluginService
     }
 
     /**
-     * @param PluginConfiguration $configuration
-     *
      * @return list<array<string, mixed>>
+     * @throws ArgumentCountError
      * @throws ReflectionException
      */
     private function collectActionsAndConfiguration(
@@ -237,6 +248,10 @@ class PluginService
         }
     }
 
+    /**
+     * @throws InvalidArgumentException
+     * @throws UnexpectedValueException
+     */
     private function registerPageTypeForPlugin(
         PluginConfiguration           $pluginConfiguration,
         ExtensionInformationInterface $extensionInformation,

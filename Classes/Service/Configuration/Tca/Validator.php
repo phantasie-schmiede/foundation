@@ -13,15 +13,12 @@ namespace PSBits\Foundation\Service\Configuration\Tca;
 
 use PSBits\Foundation\Exceptions\MisconfiguredTcaException;
 
+use function implode;
 use function in_array;
 use function is_string;
 
 /**
- * Class Validator
- *
  * Validates the TCA configuration of a table.
- *
- * @package PSBits\Foundation\Service\Configuration\Tca
  */
 class Validator
 {
@@ -121,7 +118,6 @@ class Validator
      * Validates the "relationship" option of all column types that support it.
      *
      * @param array<string, array<string, mixed>> $columns
-     *
      * @throws MisconfiguredTcaException
      */
     private function validateRelationships(string $tableName, array $columns): void

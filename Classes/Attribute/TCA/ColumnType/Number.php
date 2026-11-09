@@ -15,11 +15,6 @@ use Attribute;
 use PSBits\Foundation\Enum\NumberFormat;
 use PSBits\Foundation\Utility\Database\DefinitionUtility;
 
-/**
- * Class Number
- *
- * @package PSBits\Foundation\Attribute\TCA\ColumnType
- */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Number extends AbstractColumnType
 {

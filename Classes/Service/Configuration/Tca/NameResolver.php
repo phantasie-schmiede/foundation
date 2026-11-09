@@ -11,14 +11,14 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service\Configuration\Tca;
 
+use InvalidArgumentException;
+use LogicException;
 use PSBits\Foundation\Attribute\TCA\Mapping\Field;
 use PSBits\Foundation\Attribute\TCA\Mapping\Table;
 use PSBits\Foundation\Exceptions\ImplementationException;
 use PSBits\Foundation\Service\ExtensionInformationService;
 use PSBits\Foundation\Utility\ArrayUtility;
 use PSBits\Foundation\Utility\ReflectionUtility;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionProperty;
@@ -29,21 +29,23 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\DomainObject\AbstractValueObject;
 use TYPO3\CMS\Extbase\Persistence\ClassesConfiguration;
 
+use function array_keys;
+use function array_map;
 use function array_replace_recursive;
 use function array_slice;
+use function explode;
+use function implode;
 use function in_array;
 use function is_array;
+use function mb_strtolower;
+use function str_starts_with;
+use function strtolower;
 
-/**
- * Class NameResolver
- *
- * @package PSBits\Foundation\Service\Configuration\Tca
- */
 class NameResolver
 {
     protected const array  CLASS_TABLE_MAPPING_KEYS = [
-        'TCA_OVERRIDES' => 'tcaOverrides',
         'TCA'           => 'tca',
+        'TCA_OVERRIDES' => 'tcaOverrides',
     ];
 
     protected static bool $allowCaching = true;
@@ -63,8 +65,7 @@ class NameResolver
      * value from mapping attributes is returned. As last fallback, the class name is converted according to the
      * naming convention.
      *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function convertClassNameToTableName(string $className): string
@@ -102,8 +103,7 @@ class NameResolver
      * value from mapping attributes is returned. As last fallback, the property name is converted according to the
      * naming convention.
      *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function convertPropertyNameToColumnName(string $propertyName, ?string $className = null): string
@@ -136,9 +136,8 @@ class NameResolver
      * If no class is found, an empty array is returned.
      *
      * @return list<string>
-     * @throws ContainerExceptionInterface
      * @throws ImplementationException
-     * @throws NotFoundExceptionInterface
+     * @throws LogicException
      * @throws ReflectionException
      */
     public function convertTableNameToClassNames(string $tableName): array
@@ -162,9 +161,8 @@ class NameResolver
 
     /**
      * @return array<string, array<string, string>>
-     * @throws ContainerExceptionInterface
      * @throws ImplementationException
-     * @throws NotFoundExceptionInterface
+     * @throws LogicException
      * @throws ReflectionException
      */
     public function getClassesTableMapping(): array
@@ -181,11 +179,9 @@ class NameResolver
      *
      * @param bool $overrideMode If set to true, the mapping of extending domain models is returned, otherwise the
      *                           mapping of all original domain models.
-     *
      * @return array<string, string> An array of class names as keys and table names as values.
-     * @throws ContainerExceptionInterface
      * @throws ImplementationException
-     * @throws NotFoundExceptionInterface
+     * @throws LogicException
      * @throws ReflectionException
      */
     public function getMappedClassNames(bool $overrideMode): array
@@ -200,9 +196,9 @@ class NameResolver
     }
 
     /**
-     * @throws ContainerExceptionInterface
      * @throws ImplementationException
-     * @throws NotFoundExceptionInterface
+     * @throws InvalidArgumentException
+     * @throws LogicException
      * @throws ReflectionException
      */
     protected function buildClassesTableMapping(): void
@@ -232,9 +228,7 @@ class NameResolver
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
+     * @throws InvalidArgumentException
      */
     private function checkClassesConfiguration(): void
     {
@@ -273,7 +267,6 @@ class NameResolver
      * throw an exception (e.g. CacheManager not available, dependency injection not ready).
      *
      * @param array<string, array<string, mixed>> $classes
-     *
      * @return array<string, array<string, mixed>>
      */
     private function inheritPropertiesFromParentClasses(array $classes): array

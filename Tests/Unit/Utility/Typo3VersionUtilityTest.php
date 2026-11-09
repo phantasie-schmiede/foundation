@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Tests\Unit\Utility;
 
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\ExpectationFailedException;
 use PSBits\Foundation\Utility\Typo3VersionUtility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
@@ -37,6 +38,8 @@ class Typo3VersionUtilityTest extends UnitTestCase
     /**
      * This is the gate behind passing the native DuplicationBehavior enum to
      * ResourceStorage::addUploadedFile() and behind skipping the manual user.tsconfig import.
+     *
+     * @throws ExpectationFailedException
      */
     #[Test]
     public function theV13GateIsTrueFromV13On(): void
@@ -47,6 +50,9 @@ class Typo3VersionUtilityTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function everyVersionWithinTheSupportWindowIsAtLeastTheFloor(): void
     {
@@ -59,6 +65,8 @@ class Typo3VersionUtilityTest extends UnitTestCase
     /**
      * The upper direction, which is the one the compatibility branches actually rely on: a version
      * above the running core is never satisfied.
+     *
+     * @throws ExpectationFailedException
      */
     #[Test]
     public function aVersionAboveTheRunningCoreIsNotSatisfied(): void
@@ -75,6 +83,8 @@ class Typo3VersionUtilityTest extends UnitTestCase
      * The trap this utility exists for: getNumericTypo3Version() returns a dotted string, so
      * casting it to an int only yields the major version - any integer-style gate built on the
      * raw value is unreliable.
+     *
+     * @throws ExpectationFailedException
      */
     #[Test]
     public function theCoreVersionIsADottedStringAndNotAnInteger(): void
@@ -88,6 +98,9 @@ class Typo3VersionUtilityTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function majorOnlyAndFullVersionsAreBothAccepted(): void
     {

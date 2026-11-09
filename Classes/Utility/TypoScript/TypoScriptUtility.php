@@ -11,19 +11,18 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Utility\TypoScript;
 
+use InvalidArgumentException;
 use PSBits\Foundation\Data\ExtensionInformationInterface;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use UnexpectedValueException;
 
+use function array_merge;
 use function count;
 use function is_array;
+use function ksort;
+use function str_repeat;
 
-/**
- * Class TypoScriptUtility
- *
- * @package PSBits\Foundation\Utility
- */
 class TypoScriptUtility
 {
     public const array COMPONENTS = [
@@ -48,6 +47,7 @@ class TypoScriptUtility
 
     /**
      * @param array<string, mixed> $array
+     * @throws UnexpectedValueException
      */
     public static function convertArrayToTypoScript(array $array): string
     {
@@ -72,6 +72,9 @@ class TypoScriptUtility
         return ($debugOutput ?? '') . $generatedTypoScript;
     }
 
+    /**
+     * @throws UnexpectedValueException
+     */
     public static function registerPageType(PageObjectConfiguration $pageTypeConfiguration): void
     {
         if (true === $pageTypeConfiguration->isCacheable()) {
@@ -123,6 +126,8 @@ class TypoScriptUtility
 
     /**
      * For use in Configuration/TCA/Overrides/sys_template.php files
+     *
+     * @throws InvalidArgumentException
      */
     public static function registerTypoScript(
         ExtensionInformationInterface $extensionInformation,
@@ -134,6 +139,7 @@ class TypoScriptUtility
 
     /**
      * @param array<string, mixed> $array
+     * @throws UnexpectedValueException
      */
     private static function buildTypoScriptFromArray(array $array, int $indentationLevel = 0): string
     {
@@ -221,6 +227,7 @@ class TypoScriptUtility
 
     /**
      * @param array<string, mixed> $value
+     * @throws UnexpectedValueException
      */
     private static function processRemainingArray(int $indentationLevel, int|string $key, array $value): string
     {

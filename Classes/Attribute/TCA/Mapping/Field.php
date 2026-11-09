@@ -14,12 +14,9 @@ namespace PSBits\Foundation\Attribute\TCA\Mapping;
 use Attribute;
 
 /**
- * Class Field
- *
  * Use this attribute to map a domain model property to a databse field name which does not convey to the naming
- * convention, e. g. when extending another model.
+ * convention, e.g. when extending another model.
  *
- * @package PSBits\Foundation\Attribute\TCA\Mapping
  * @see     https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Domain/Model.html#table-and-field-mapping
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]

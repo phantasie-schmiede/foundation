@@ -16,13 +16,14 @@ use PSBits\Foundation\Utility\StringUtility;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Database\Event\AlterTableDefinitionStatementsEvent;
 
+use function implode;
 use function in_array;
+use function str_contains;
+use function str_starts_with;
+use function strlen;
+use function substr;
+use function trim;
 
-/**
- * Class DatabaseEnricher
- *
- * @package PSBits\Foundation\EventListener
- */
 #[AsEventListener(identifier: 'foundation_databaseEnricher')]
 class DatabaseEnricher
 {

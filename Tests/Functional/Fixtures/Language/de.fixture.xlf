@@ -9,10 +9,6 @@
         target-language="de">
         <header />
         <body>
-            <trans-unit id="message">
-                <source>Test message</source>
-                <target>Testnachricht</target>
-            </trans-unit>
             <group
                 id="day"
                 restype="x-gettext-plurals">
@@ -25,6 +21,10 @@
                     <target>%s Tage</target>
                 </trans-unit>
             </group>
+            <trans-unit id="message">
+                <source>Test message</source>
+                <target>Testnachricht</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -14,14 +14,10 @@ namespace PSBits\Foundation\Utility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
 /**
- * Class Typo3VersionUtility
- *
  * Single place to ask for the running core version.
  *
  * VersionNumberUtility::getNumericTypo3Version() returns a dotted string such as "13.4.9".
  * The comparison is covered by Typo3VersionUtilityTest on every major.
- *
- * @package PSBits\Foundation\Utility
  */
 class Typo3VersionUtility
 {

@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Upgrade;
 
+use InvalidArgumentException;
+use PSBits\Foundation\Exceptions\ImplementationException;
 use PSBits\Foundation\Service\ExtensionInformationService;
 use PSBits\Foundation\Utility\Typo3VersionUtility;
 use TYPO3\CMS\Core\Attribute\UpgradeWizard;
@@ -36,7 +38,7 @@ if (Typo3VersionUtility::isAtLeast('14.0')) {
     #[UpgradeWizard(identifier: 'foundation_listTypeToCType')]
     class ListTypeToCTypeUpdate extends AbstractListTypeToCTypeUpdate
     {
-        private const NO_PLUGINS_PLACEHOLDER = '__foundation_no_plugins__';
+        private const string NO_PLUGINS_PLACEHOLDER = '__foundation_no_plugins__';
 
         public function __construct(
             private readonly ExtensionInformationService $extensionInformationService,
@@ -45,6 +47,35 @@ if (Typo3VersionUtility::isAtLeast('14.0')) {
             parent::__construct($connectionPool);
         }
 
+        public function getDescription(): string
+        {
+            return 'TYPO3 v14 registers plugins as content types. This wizard converts the content elements of all PSBits'
+                . ' plugins from CType "list" with the corresponding list_type to the new CType and updates the affected'
+                . ' backend user group permissions.';
+        }
+
+        public function getTitle(): string
+        {
+            return 'Convert plugin content elements from list_type to CType';
+        }
+
+        /**
+         * @throws ImplementationException
+         * @throws InvalidArgumentException
+         */
+        public function updateNecessary(): bool
+        {
+            if (false === $this->hasPlugins()) {
+                return false;
+            }
+
+            return parent::updateNecessary();
+        }
+
+        /**
+         * @throws ImplementationException
+         * @throws InvalidArgumentException
+         */
         protected function getListTypeToCTypeMapping(): array
         {
             $mapping = [];
@@ -69,27 +100,10 @@ if (Typo3VersionUtility::isAtLeast('14.0')) {
             return $mapping;
         }
 
-        public function getTitle(): string
-        {
-            return 'Convert plugin content elements from list_type to CType';
-        }
-
-        public function getDescription(): string
-        {
-            return 'TYPO3 v14 registers plugins as content types. This wizard converts the content elements of all PSBits'
-                . ' plugins from CType "list" with the corresponding list_type to the new CType and updates the affected'
-                . ' backend user group permissions.';
-        }
-
-        public function updateNecessary(): bool
-        {
-            if (false === $this->hasPlugins()) {
-                return false;
-            }
-
-            return parent::updateNecessary();
-        }
-
+        /**
+         * @throws ImplementationException
+         * @throws InvalidArgumentException
+         */
         private function hasPlugins(): bool
         {
             foreach ($this->extensionInformationService->getAllExtensionInformation() as $extensionInformation) {

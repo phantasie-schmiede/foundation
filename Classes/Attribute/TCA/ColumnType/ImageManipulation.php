@@ -12,16 +12,10 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
 use Attribute;
+use InvalidArgumentException;
 use PSBits\Foundation\Utility\Database\DefinitionUtility;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
 
-/**
- * Class ImageManipulation
- *
- * @package PSBits\Foundation\Attribute\TCA\ColumnType
- */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class ImageManipulation extends AbstractColumnType
 {
@@ -58,8 +52,7 @@ class ImageManipulation extends AbstractColumnType
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function getFileField(): ?string

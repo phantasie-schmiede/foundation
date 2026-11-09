@@ -8,14 +8,14 @@
         source-language="en">
         <header />
         <body>
+            <trans-unit id="accessLogSummary">
+                <source>Access log summary (ordered by hit count in ascending order)</source>
+            </trans-unit>
             <trans-unit id="header">
                 <source>Overview</source>
             </trans-unit>
             <trans-unit id="missingLanguageLabels">
                 <source>Missing language labels</source>
-            </trans-unit>
-            <trans-unit id="accessLogSummary">
-                <source>Access log summary (ordered by hit count in ascending order)</source>
             </trans-unit>
         </body>
     </file>

@@ -12,15 +12,11 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Service\GlobalVariableProviders;
 
 use PSBits\Foundation\Utility\ValidationUtility;
+use RuntimeException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 
-/**
- * Class SiteConfigurationProvider
- *
- * @package PSBits\Foundation\Service\GlobalVariableProviders
- */
 class SiteConfigurationProvider extends AbstractProvider
 {
     public function __construct(
@@ -29,6 +25,7 @@ class SiteConfigurationProvider extends AbstractProvider
     }
 
     /**
+     * @throws RuntimeException
      * @throws SiteNotFoundException
      */
     public function getGlobalVariables(): Site
@@ -42,8 +39,10 @@ class SiteConfigurationProvider extends AbstractProvider
             return $site;
         }
 
-        // On TYPO3 v13 a site-less request still carries the $GLOBALS['TSFE'] global, so the site
-        // can be looked up by page id as before.
+        /*
+         * On TYPO3 v13 a site-less request still carries the $GLOBALS['TSFE'] global, so the site
+         * can be looked up by page id as before.
+         */
         if (isset($GLOBALS['TSFE'])) {
             return $this->siteFinder->getSiteByPageId($GLOBALS['TSFE']->id);
         }

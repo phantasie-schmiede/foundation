@@ -11,13 +11,25 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\EventListener;
 
+use Doctrine\DBAL\Exception as DBALException;
+use Error;
+use Exception as BaseException;
+use InvalidArgumentException as BaseInvalidArgumentException;
+use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Exception as FrameworkException;
+use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\InvalidArgumentException;
+use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\IncompatibleReturnValueException;
 use PSBits\Foundation\Data\ExtensionInformationInterface;
 use PSBits\Foundation\Data\PluginConfiguration;
 use PSBits\Foundation\Service\ExtensionInformationService;
 use PSBits\Foundation\Utility\Localization\LoggingUtility;
 use PSBits\Foundation\Utility\Typo3VersionUtility;
 use PSBits\Qa\Testing\Support\LanguageStackSeeder;
+use Psr\Container\ContainerExceptionInterface;
+use ReflectionException;
 use ReflectionProperty;
 use TYPO3\CMS\Backend\Controller\Event\ModifyNewContentElementWizardItemsEvent;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -42,6 +54,18 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
     private IconRegistry|null $iconRegistry            = null;
     protected bool            $resetSingletonInstances = true;
 
+    /**
+     * @throws BaseException
+     * @throws BaseInvalidArgumentException
+     * @throws ContainerExceptionInterface
+     * @throws DBALException
+     * @throws Error
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws FrameworkException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     #[Test]
     public function replacesTheTcaDerivedItemWithTheVendorGroupItem(): void
     {
@@ -62,6 +86,17 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
         self::assertSame('content-plugin', $item['iconIdentifier']);
     }
 
+    /**
+     * @throws BaseException
+     * @throws BaseInvalidArgumentException
+     * @throws ContainerExceptionInterface
+     * @throws DBALException
+     * @throws Error
+     * @throws Exception
+     * @throws FrameworkException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     #[Test]
     public function removesTheTcaDerivedItemWhenThePluginIsExcluded(): void
     {
@@ -76,6 +111,18 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
         self::assertArrayNotHasKey('psbits_' . self::LIST_TYPE, $items);
     }
 
+    /**
+     * @throws BaseException
+     * @throws BaseInvalidArgumentException
+     * @throws ContainerExceptionInterface
+     * @throws DBALException
+     * @throws Error
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws FrameworkException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     #[Test]
     public function addsTheVendorGroupItemWithoutAnExistingTcaItem(): void
     {
@@ -92,6 +139,18 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
         self::assertSame($this->getExpectedDefaultValues(), $items['psbits_' . self::LIST_TYPE]['defaultValues']);
     }
 
+    /**
+     * @throws BaseException
+     * @throws BaseInvalidArgumentException
+     * @throws ContainerExceptionInterface
+     * @throws DBALException
+     * @throws Error
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws FrameworkException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     #[Test]
     public function registersTheVendorGroupHeaderOnlyOnceForMultiplePlugins(): void
     {
@@ -113,6 +172,18 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws BaseException
+     * @throws BaseInvalidArgumentException
+     * @throws ContainerExceptionInterface
+     * @throws DBALException
+     * @throws Error
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws FrameworkException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     #[Test]
     public function usesTheConfiguredGroupAndIcon(): void
     {
@@ -137,6 +208,12 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
         self::assertSame('poems-poem', $items['custom_' . self::LIST_TYPE]['iconIdentifier']);
     }
 
+    /**
+     * @throws Exception
+     * @throws IncompatibleReturnValueException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     private function createSubject(PluginConfiguration ...$plugins): ContentElementWizardPluginRegistration
     {
         $extensionInformationService = $this->createMock(ExtensionInformationService::class);
@@ -156,6 +233,7 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
 
     /**
      * @param array<string, array<string, mixed>> $wizardItems
+     * @throws BaseInvalidArgumentException
      */
     private function createEvent(array $wizardItems): ModifyNewContentElementWizardItemsEvent
     {
@@ -211,6 +289,12 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @throws Exception
+     * @throws IncompatibleReturnValueException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     private function createExtensionInformation(PluginConfiguration ...$plugins): ExtensionInformationInterface
     {
         $extensionInformation = $this->createMock(ExtensionInformationInterface::class);
@@ -226,6 +310,12 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
         return $extensionInformation;
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws ReflectionException
+     */
     protected function setUp(): void
     {
         parent::setUp();

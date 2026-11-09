@@ -20,17 +20,42 @@ use Throwable;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use UnitEnum;
 
-/**
- * Class FlexFormService
- *
- * @package PSBits\Foundation\Service\Configuration
- */
+use function is_scalar;
+use function str_starts_with;
+use function strtolower;
+
 class FlexFormService
 {
     public const string ALL_PLUGINS                          = '*';
     public const string EARLY_ACCESS_CONSTANTS_MARKER_PREFIX = 'EAC:';
     public const string MARKER_POSTFIX                       = '###';
     public const string MARKER_PREFIX                        = '###';
+
+    private static function stringifyResolvedMarkerValue(
+        mixed  $value,
+        string $markerContent,
+        string $fallbackMarker,
+    ): string {
+        if ($value instanceof BackedEnum) {
+            return (string)$value->value;
+        }
+
+        if ($value instanceof UnitEnum) {
+            return $value->name;
+        }
+
+        if (!is_scalar($value)) {
+            return $fallbackMarker;
+        }
+
+        $value = (string)$value;
+
+        if ($value === $markerContent) {
+            return $fallbackMarker;
+        }
+
+        return $value;
+    }
 
     /**
      * Replaces ###MARKER### placeholders in the FlexForm XML with resolved values.
@@ -76,39 +101,11 @@ class FlexFormService
         ) ?? $xml;
     }
 
-    private static function stringifyResolvedMarkerValue(
-        mixed  $value,
-        string $markerContent,
-        string $fallbackMarker,
-    ): string {
-        if ($value instanceof BackedEnum) {
-            return (string)$value->value;
-        }
-
-        if ($value instanceof UnitEnum) {
-            return $value->name;
-        }
-
-        if (!is_scalar($value)) {
-            return $fallbackMarker;
-        }
-
-        $value = (string)$value;
-
-        if ($value === $markerContent) {
-            return $fallbackMarker;
-        }
-
-        return $value;
-    }
-
     /**
      * @param string $xml             Pass the raw XML-data, not the file path!
      * @param string $pluginSignature '*' if you add a FlexForm for a content element, otherwise:
      *                                '[extensionkey]_[pluginname]'
      * @param string $cType           Plugins use the default value ('list').
-     *
-     * @return void
      */
     public function register(string $xml, string $pluginSignature = self::ALL_PLUGINS, string $cType = 'list'): void
     {
@@ -123,8 +120,10 @@ class FlexFormService
             }
         }
 
-        // addPiFlexFormValue() is deprecated in TYPO3 v14 (removal in v15) and applies the data
-        // structure directly via columnsOverrides there, so mirror that behavior.
+        /*
+         * addPiFlexFormValue() is deprecated in TYPO3 v14 (removal in v15) and applies the data
+         * structure directly via columnsOverrides there, so mirror that behavior.
+         */
         if (Typo3VersionUtility::isAtLeast('14.0')) {
             if (self::ALL_PLUGINS !== $pluginSignature) {
                 /*

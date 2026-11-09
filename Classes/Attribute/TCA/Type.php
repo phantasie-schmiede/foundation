@@ -14,13 +14,10 @@ namespace PSBits\Foundation\Attribute\TCA;
 use Attribute;
 
 /**
- * Class Type
- *
  * Use this attribute to define a record type (types section) of the table. A table can have multiple record types.
  * The record type of a record is stored in the field configured via ctrl.type.
  *
  * @link    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Types/Index.html
- * @package PSBits\Foundation\Attribute\TCA
  */
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS)]
 class Type extends AbstractTcaAttribute

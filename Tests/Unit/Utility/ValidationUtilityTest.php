@@ -15,6 +15,7 @@ use Generator;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Exception;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -35,6 +36,10 @@ class ValidationUtilityTest extends UnitTestCase
         yield 'existing key BAR' => ['BAR'];
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     */
     #[Test]
     #[DataProvider('checkKeyAgainstConstantValidDataProvider')]
     public function checkKeyAgainstConstantDoesNotThrowForExistingKey(string $key): void
@@ -43,6 +48,9 @@ class ValidationUtilityTest extends UnitTestCase
         ValidationUtility::checkKeyAgainstConstant(self::CONSTANT, $key);
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     #[Test]
     public function checkKeyAgainstConstantThrowsForMissingKey(): void
     {
@@ -56,6 +64,10 @@ class ValidationUtilityTest extends UnitTestCase
         yield 'existing value bar' => ['bar'];
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     */
     #[Test]
     #[DataProvider('checkValueAgainstConstantValidDataProvider')]
     public function checkValueAgainstConstantDoesNotThrowForExistingValue(string $value): void
@@ -64,6 +76,9 @@ class ValidationUtilityTest extends UnitTestCase
         ValidationUtility::checkValueAgainstConstant(self::CONSTANT, $value);
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     #[Test]
     public function checkValueAgainstConstantThrowsForMissingValue(): void
     {
@@ -71,6 +86,10 @@ class ValidationUtilityTest extends UnitTestCase
         ValidationUtility::checkValueAgainstConstant(self::CONSTANT, 'missing');
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     */
     #[Test]
     public function checkArrayAgainstConstantKeysDoesNotThrowForAllValidKeys(): void
     {
@@ -81,6 +100,9 @@ class ValidationUtilityTest extends UnitTestCase
         ValidationUtility::checkArrayAgainstConstantKeys(self::CONSTANT, ['FOO', 'BAR']);
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     #[Test]
     public function checkArrayAgainstConstantKeysThrowsForInvalidKey(): void
     {
@@ -88,6 +110,10 @@ class ValidationUtilityTest extends UnitTestCase
         ValidationUtility::checkArrayAgainstConstantKeys(self::CONSTANT, ['FOO', 'INVALID']);
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     */
     #[Test]
     public function checkArrayAgainstConstantValuesDoesNotThrowForAllValidValues(): void
     {
@@ -98,6 +124,9 @@ class ValidationUtilityTest extends UnitTestCase
         ValidationUtility::checkArrayAgainstConstantValues(self::CONSTANT, ['foo', 'bar']);
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     #[Test]
     public function checkArrayAgainstConstantValuesThrowsForInvalidValue(): void
     {

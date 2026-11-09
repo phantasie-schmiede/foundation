@@ -14,16 +14,18 @@ namespace PSBits\Foundation\Utility\Configuration;
 use PSBits\Foundation\Data\ExtensionInformationInterface;
 use PSBits\Foundation\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\Resource\Exception\InvalidFileException;
+use TYPO3\CMS\Core\SystemResource\Exception\CanNotResolvePublicResourceException;
+use TYPO3\CMS\Core\SystemResource\Exception\CanNotResolveSystemResourceException;
 use TYPO3\CMS\Core\Utility\PathUtility;
 
 use function array_slice;
+use function explode;
+use function implode;
+use function lcfirst;
+use function ltrim;
+use function str_ends_with;
+use function str_replace;
 
-/**
- * Class FilePathUtility
- *
- * @package PSBits\Foundation\Utility\Configuration
- */
 class FilePathUtility
 {
     public const string EXTENSION_DIRECTORY_PREFIX    = 'EXT:';
@@ -44,10 +46,7 @@ class FilePathUtility
      * a filename will return
      * "LLL:EXT:my_extension/Resources/Private/Language/Backend/Configuration/TCA/Overrides/tt_content.xlf:".
      *
-     * @param ExtensionInformationInterface $extensionInformation
-     * @param string|null                   $filename             custom filename without extension (.xlf is added automatically)
-     *
-     * @return string
+     * @param string|null $filename custom filename without extension (.xlf is added automatically)
      */
     public static function getLanguageFilePathForCurrentFile(
         ExtensionInformationInterface $extensionInformation,
@@ -107,7 +106,8 @@ class FilePathUtility
     }
 
     /**
-     * @throws InvalidFileException
+     * @throws CanNotResolvePublicResourceException // t3:14
+     * @throws CanNotResolveSystemResourceException // t3:14
      */
     public static function getPublicResourceWebPath(
         ExtensionInformationInterface $extensionInformation,

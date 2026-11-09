@@ -11,22 +11,25 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service;
 
+use ArgumentCountError;
+use DivisionByZeroError;
+use Doctrine\DBAL\Exception;
+use Exception as Exception2;
+use InvalidArgumentException;
 use PSBits\Foundation\Exceptions\MisconfiguredTcaException;
 use PSBits\Foundation\Service\Configuration\TcaService;
 use PSBits\Foundation\Utility\ArrayUtility;
 use PSBits\Foundation\Utility\ContextUtility;
 use PSBits\Foundation\Utility\FileUtility;
 use PSBits\Foundation\Utility\StringUtility;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
 use ReflectionException;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\File\Exception\IniSizeFileException;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Http\UploadedFile;
 use TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior;
 use TYPO3\CMS\Core\Resource\Exception\ExistingTargetFolderException;
+use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderWritePermissionsException;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\ResourceStorageInterface;
@@ -37,14 +40,15 @@ use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use TYPO3\CMS\Extbase\Reflection\Exception\PropertyNotAccessibleException;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
+use function array_filter;
+use function array_keys;
+use function array_values;
 use function count;
+use function implode;
 use function in_array;
+use function str_contains;
+use function str_replace;
 
-/**
- * Class UploadService
- *
- * @package PSBits\Foundation\Service
- */
 class UploadService
 {
     public const string DEFAULT_UPLOAD_DIRECTORY = 'user_upload';
@@ -60,12 +64,10 @@ class UploadService
      * Stores uploaded files of an extbase request and maps them to domain model properties. The name of the upload form
      * fields have to be identical with the properties' names!
      *
-     * @throws AspectNotFoundException
-     * @throws ContainerExceptionInterface
-     * @throws MisconfiguredTcaException
-     * @throws NotFoundExceptionInterface
-     * @throws PropertyNotAccessibleException
-     * @throws ReflectionException
+     * @throws ArgumentCountError
+     * @throws DivisionByZeroError
+     * @throws Exception
+     * @throws Exception2
      */
     public function fromRequest(AbstractEntity $domainModel, RequestInterface $request): void
     {
@@ -94,12 +96,10 @@ class UploadService
     }
 
     /**
-     * @throws AspectNotFoundException
-     * @throws ContainerExceptionInterface
-     * @throws MisconfiguredTcaException
-     * @throws NotFoundExceptionInterface
-     * @throws PropertyNotAccessibleException
-     * @throws ReflectionException
+     * @throws ArgumentCountError
+     * @throws DivisionByZeroError
+     * @throws Exception
+     * @throws Exception2
      */
     public function uploadForDomainObject(
         AbstractEntity $domainModel,
@@ -112,8 +112,9 @@ class UploadService
 
     /**
      * @param array<string, mixed> $uploadConfiguration
-     *
-     * @throws PropertyNotAccessibleException
+     * @throws ArgumentCountError
+     * @throws InvalidArgumentException // t3:13
+     * @throws PropertyNotAccessibleException // t3:13
      */
     private function buildTargetFileName(
         AbstractEntity $domainModel,
@@ -166,8 +167,9 @@ class UploadService
 
     /**
      * @param array<string, mixed> $uploadConfiguration
-     *
-     * @throws AspectNotFoundException
+     * @throws DivisionByZeroError
+     * @throws Exception2
+     * @throws RuntimeException
      */
     private function checkFileSize(string $property, array $uploadConfiguration, UploadedFile $uploadedFile): void
     {
@@ -182,6 +184,10 @@ class UploadService
         }
     }
 
+    /**
+     * @throws IniSizeFileException
+     * @throws RuntimeException
+     */
     private function checkForError(UploadedFile $uploadedFile): void
     {
         switch ($uploadedFile->getError()) {
@@ -199,6 +205,7 @@ class UploadService
 
     /**
      * @param array<string, mixed> $uploadConfiguration
+     * @throws RuntimeException
      */
     private function checkMimeType(string $property, array $uploadConfiguration, UploadedFile $uploadedFile): void
     {
@@ -224,11 +231,10 @@ class UploadService
 
     /**
      * @param list<string> $properties
-     *
      * @return array<string, mixed>
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws InvalidArgumentException
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     private function collectFieldConfigurations(AbstractEntity $domainModel, array $properties): array
     {
@@ -276,11 +282,18 @@ class UploadService
 
     /**
      * @param array<string, mixed> $uploadedFilesCollection
-     *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws ArgumentCountError
+     * @throws DivisionByZeroError
+     * @throws Exception
+     * @throws Exception2
+     * @throws ExistingTargetFolderException
+     * @throws FolderDoesNotExistException
+     * @throws InsufficientFolderWritePermissionsException
+     * @throws InvalidArgumentException
+     * @throws MisconfiguredTcaException
      * @throws PropertyNotAccessibleException
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     private function processCollection(AbstractEntity $domainModel, array $uploadedFilesCollection): void
     {
@@ -310,10 +323,12 @@ class UploadService
 
     /**
      * @param array<string, mixed> $uploadConfiguration
-     *
      * @throws ExistingTargetFolderException
+     * @throws FolderDoesNotExistException
      * @throws InsufficientFolderWritePermissionsException
+     * @throws InvalidArgumentException
      * @throws MisconfiguredTcaException
+     * @throws RuntimeException
      */
     private function provideTargetFolders(array &$uploadConfiguration): void
     {
@@ -324,10 +339,12 @@ class UploadService
 
     /**
      * @param array<string, mixed> $uploadConfiguration
-     *
      * @throws ExistingTargetFolderException
+     * @throws FolderDoesNotExistException // t3:14
      * @throws InsufficientFolderWritePermissionsException
+     * @throws InvalidArgumentException // t3:13
      * @throws MisconfiguredTcaException
+     * @throws RuntimeException
      */
     private function setStorageAndTargetFolder(string $property, array &$uploadConfiguration): void
     {
@@ -371,8 +388,9 @@ class UploadService
      *
      * @param array<string, mixed> $uploadConfiguration
      * @param array<string, mixed> $uploadedFilesCollection
-     *
-     * @throws AspectNotFoundException
+     * @throws DivisionByZeroError
+     * @throws Exception2
+     * @throws RuntimeException
      */
     private function validateUploadedFiles(array $uploadConfiguration, array &$uploadedFilesCollection): void
     {

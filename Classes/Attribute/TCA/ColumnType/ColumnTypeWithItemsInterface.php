@@ -11,11 +11,6 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
-/**
- * Interface ColumnTypeWithItemsInterface
- *
- * @package PSBits\Foundation\Attribute\TCA\ColumnType
- */
 interface ColumnTypeWithItemsInterface extends ColumnTypeInterface
 {
     public function processItems(string $labelPath = ''): void;

@@ -11,17 +11,15 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Utility;
 
+use InvalidArgumentException;
 use ReflectionClass;
-use ReflectionException;
 use ReflectionMethod;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-/**
- * Class ObjectUtility
- *
- * @package PSBits\Foundation\Utility
- */
+use function class_exists;
+use function str_replace;
+
 class ObjectUtility
 {
     public const string NAMESPACE_FALLBACK_KEY = '__fallback';
@@ -68,7 +66,7 @@ class ObjectUtility
 
     /**
      * @return array<string, mixed>
-     * @throws ReflectionException
+     * @throws InvalidArgumentException
      */
     public static function toArray(object $object): array
     {

@@ -11,19 +11,14 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Traits;
 
+use InvalidArgumentException;
 use PSBits\Foundation\Utility\ObjectUtility;
-use ReflectionException;
 
-/**
- * Trait ObjectToArrayTrait
- *
- * @package PSBits\Foundation\Traits
- */
 trait ObjectToArrayTrait
 {
     /**
      * @return array<string, mixed>
-     * @throws ReflectionException
+     * @throws InvalidArgumentException
      */
     public function toArray(): array
     {

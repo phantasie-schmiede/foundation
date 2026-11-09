@@ -11,11 +11,6 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Utility\Database;
 
-/**
- * Class DefinitionUtility
- *
- * @package PSBits\Foundation\Utility\Database
- */
 class DefinitionUtility
 {
     public static function bigint(int $default = 0, bool $unsigned = false): string

@@ -11,7 +11,12 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service\Configuration;
 
+use DateMalformedStringException;
+use Doctrine\DBAL\Exception as DBALException;
+use Error;
+use InvalidArgumentException;
 use JsonException;
+use LogicException;
 use PSBits\Foundation\Exceptions\ImplementationException;
 use PSBits\Foundation\Exceptions\MisconfiguredTcaException;
 use PSBits\Foundation\Service\Configuration\Tca\Builder;
@@ -20,23 +25,20 @@ use PSBits\Foundation\Service\Configuration\Tca\TcaTable;
 use PSBits\Foundation\Service\ExtensionInformationService;
 use PSBits\Foundation\Utility\Configuration\TcaUtility;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
 use RuntimeException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Package\PackageManager;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 use function get_class;
+use function str_contains;
 
 /**
- * Class TcaService
- *
  * Public API for the TCA generation from domain model attributes. The actual work is done by the classes of the
  * PSBits\Foundation\Service\Configuration\Tca namespace.
- *
- * @package PSBits\Foundation\Service\Configuration
  */
 class TcaService
 {
@@ -56,6 +58,7 @@ class TcaService
 
     /**
      * @param array<string, mixed> $columnConfiguration
+     * @throws RuntimeException
      */
     public function addColumnConfiguration(string $columnName, array $columnConfiguration): void
     {
@@ -65,6 +68,7 @@ class TcaService
 
     /**
      * @param list<string> $fieldNames
+     * @throws RuntimeException
      */
     public function addToPalette(string $identifier, array $fieldNames, string $position = ''): void
     {
@@ -82,14 +86,17 @@ class TcaService
      * @param bool $overrideMode If set to false, the configuration of all original domain models (not extending other
      *                           domain models) is added to the TCA.
      *                           If set to true, the configuration of all extending domain models is added to the TCA.
-     *
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
      * @throws ImplementationException
      * @throws JsonException
+     * @throws LogicException
      * @throws MisconfiguredTcaException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
      * @throws ReflectionException
      * @throws RuntimeException
      */
@@ -99,6 +106,9 @@ class TcaService
         $builder->build($overrideMode);
     }
 
+    /**
+     * @throws RuntimeException
+     */
     public function checkIfTableNameIsSet(): void
     {
         if ('' === $this->tableName) {
@@ -111,8 +121,7 @@ class TcaService
      * value from mapping attributes is returned. As last fallback, the class name is converted according to the
      * naming convention.
      *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function convertClassNameToTableName(string $className): string
@@ -125,8 +134,7 @@ class TcaService
      * value from mapping attributes is returned. As last fallback, the property name is converted according to the
      * naming convention.
      *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function convertPropertyNameToColumnName(string $propertyName, ?string $className = null): string
@@ -140,9 +148,8 @@ class TcaService
      * If no class is found, an empty array is returned.
      *
      * @return list<string>
-     * @throws ContainerExceptionInterface
      * @throws ImplementationException
-     * @throws NotFoundExceptionInterface
+     * @throws LogicException
      * @throws ReflectionException
      */
     public function convertTableNameToClassNames(string $tableName): array
@@ -154,10 +161,16 @@ class TcaService
      * An existing palette with given identifier would be overwritten!
      *
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function createPalette(
         string $identifier,
@@ -171,9 +184,8 @@ class TcaService
 
     /**
      * @return array<string, array<string, string>>
-     * @throws ContainerExceptionInterface
      * @throws ImplementationException
-     * @throws NotFoundExceptionInterface
+     * @throws LogicException
      * @throws ReflectionException
      */
     public function getClassesTableMapping(): array
@@ -183,9 +195,9 @@ class TcaService
 
     /**
      * @return array<string, mixed>
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws InvalidArgumentException
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function getConfigurationForPropertyOfDomainModel(AbstractEntity $domainModel, string $property): array
     {
@@ -196,8 +208,7 @@ class TcaService
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function setTableName(string $classOrTableName): void
@@ -209,6 +220,9 @@ class TcaService
         $this->tableName = $classOrTableName;
     }
 
+    /**
+     * @throws RuntimeException
+     */
     private function getTcaTable(): TcaTable
     {
         $this->checkIfTableNameIsSet();

@@ -12,28 +12,37 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Utility;
 
 use DateTime;
+use Error;
 use Exception;
+use InvalidArgumentException;
 use JsonException;
 use NumberFormatter;
 use PSBits\Foundation\Service\TypoScriptProviderService;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionEnum;
 use ReflectionException;
 use RuntimeException;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
+use ValueError;
 
+use function array_filter;
+use function array_map;
 use function constant;
+use function explode;
+use function implode;
 use function in_array;
+use function json_decode;
+use function lcfirst;
+use function str_contains;
+use function str_ends_with;
+use function str_replace;
+use function str_starts_with;
 use function strlen;
+use function strtolower;
+use function trim;
 
-/**
- * Class StringUtility
- *
- * @package PSBits\Foundation\Utility
- */
 class StringUtility
 {
     public const string EMPTY_CHARACTERS = " \t\n\r\0\x0B\xC2\xA0";
@@ -45,11 +54,14 @@ class StringUtility
 
     /**
      * @param array<string, string> $namespaces
-     *
      * @throws ContainerExceptionInterface
+     * @throws Error
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
      * @throws ReflectionException
+     * @throws RuntimeException
+     * @throws ValueError
      */
     public static function convertString(
         ?string $variable,
@@ -214,6 +226,9 @@ class StringUtility
         };
     }
 
+    /**
+     * @throws RuntimeException
+     */
     public static function convertToDateTime(string $dateTimeString): DateTime
     {
         $timestamp = strtotime($dateTimeString);
@@ -231,13 +246,9 @@ class StringUtility
     }
 
     /**
-     * @param string $string
-     * @param int    $length
-     * @param string $appendix
-     * @param bool   $respectWordBoundaries
-     * @param bool   $respectHtml           Increases length of output string until all opened tags are properly closed
-     *
-     * @return string
+     * @param bool $respectHtml Increases length of output string until all opened tags are properly closed
+     * @throws RuntimeException
+     * @throws ValueError
      */
     public static function crop(
         string $string,
@@ -351,7 +362,7 @@ class StringUtility
     }
 
     /**
-     * @throws AspectNotFoundException
+     * @throws Exception
      */
     public static function getNumberFormatter(int $style = NumberFormatter::DEFAULT_STYLE): NumberFormatter
     {

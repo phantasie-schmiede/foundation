@@ -14,11 +14,7 @@ namespace PSBits\Foundation\Attribute;
 use Attribute;
 
 /**
- * Class PluginAction
- *
  * Use this attribute for methods in a plugin controller.
- *
- * @package PSBits\Foundation\Attribute
  */
 #[Attribute(Attribute::TARGET_METHOD)]
 class PluginAction extends AbstractAttribute

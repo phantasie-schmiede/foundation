@@ -12,11 +12,7 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Exceptions;
 
 /**
- * Class MisconfiguredTcaException
- *
  * This exception should be thrown when there is something wrong with the TCA of a model.
- *
- * @package PSBits\Foundation\Exceptions
  */
 class MisconfiguredTcaException extends BaseException
 {

@@ -12,13 +12,30 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Service\Configuration;
 
 use Generator;
+use InvalidArgumentException as BaseInvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\InvalidArgumentException;
+use PHPUnit\Framework\MockObject\CannotUseOnlyMethodsException;
+use PHPUnit\Framework\MockObject\Generator\ClassIsEnumerationException;
+use PHPUnit\Framework\MockObject\Generator\ClassIsFinalException;
+use PHPUnit\Framework\MockObject\Generator\DuplicateMethodException;
+use PHPUnit\Framework\MockObject\Generator\InvalidMethodNameException;
+use PHPUnit\Framework\MockObject\Generator\NameAlreadyInUseException;
+use PHPUnit\Framework\MockObject\Generator\OriginalConstructorInvocationRequiredException;
+use PHPUnit\Framework\MockObject\Generator\ReflectionException;
+use PHPUnit\Framework\MockObject\Generator\RuntimeException;
+use PHPUnit\Framework\MockObject\Generator\UnknownTypeException;
+use PHPUnit\Framework\MockObject\IncompatibleReturnValueException;
+use PHPUnit\Framework\SkippedWithMessageException;
 use PSBits\Foundation\Service\GlobalVariableProviders\EarlyAccessConstantsProvider;
 use PSBits\Foundation\Service\GlobalVariableService;
 use PSBits\Foundation\Tests\Examples\BackedEnum;
 use PSBits\Foundation\Tests\Examples\Enum;
 use PSBits\Foundation\Utility\Typo3VersionUtility;
+use RuntimeException as PhpRuntimeException;
+use TypeError;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -102,6 +119,9 @@ class FlexFormServiceTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     #[DataProvider('processDataProvider')]
     public function process(string $xml, string $expectedResult): void
@@ -112,6 +132,9 @@ class FlexFormServiceTest extends UnitTestCase
     /**
      * On v14, plugins are registered as their own content type, so the data structure is applied to that type and
      * the flexform field is added to its showitem.
+     *
+     * @throws ExpectationFailedException
+     * @throws SkippedWithMessageException
      */
     #[Test]
     public function registerAppliesTheFlexFormToThePluginContentTypeOnV14(): void
@@ -134,6 +157,9 @@ class FlexFormServiceTest extends UnitTestCase
     /**
      * Below v14, the flexform is applied as a subtype of the list content type. addPiFlexFormValue() only extends the
      * existing column-level ds array, so the test pre-seeds it.
+     *
+     * @throws ExpectationFailedException
+     * @throws SkippedWithMessageException
      */
     #[Test]
     public function registerAppliesTheFlexFormToTheListTypeSubtypeBelowV14(): void
@@ -154,6 +180,23 @@ class FlexFormServiceTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws CannotUseOnlyMethodsException
+     * @throws ClassIsEnumerationException
+     * @throws ClassIsFinalException
+     * @throws DuplicateMethodException
+     * @throws IncompatibleReturnValueException
+     * @throws InvalidArgumentException
+     * @throws InvalidMethodNameException
+     * @throws NameAlreadyInUseException
+     * @throws OriginalConstructorInvocationRequiredException
+     * @throws PhpRuntimeException
+     * @throws ReflectionException
+     * @throws RuntimeException
+     * @throws TypeError
+     * @throws UnknownTypeException
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -178,6 +221,9 @@ class FlexFormServiceTest extends UnitTestCase
         $this->subject = new FlexFormService();
     }
 
+    /**
+     * @throws PhpRuntimeException
+     */
     protected function tearDown(): void
     {
         if (null === $this->savedTca) {

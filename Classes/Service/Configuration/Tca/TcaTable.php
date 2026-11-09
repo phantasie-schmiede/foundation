@@ -11,21 +11,25 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service\Configuration\Tca;
 
+use DateMalformedStringException;
+use Doctrine\DBAL\Exception as DBALException;
+use Error;
+use InvalidArgumentException;
 use JsonException;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
+use ReflectionException;
 use RuntimeException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
+
+use function array_replace_recursive;
+use function implode;
 
 /**
- * Class TcaTable
- *
  * Central access to the TCA configuration of a single table inside $GLOBALS['TCA']. All reads and writes of the
  * TCA of a table have to go through this class.
- *
- * @package PSBits\Foundation\Service\Configuration\Tca
  */
 class TcaTable
 {
@@ -90,10 +94,16 @@ class TcaTable
      * An existing palette with given identifier would be overwritten!
      *
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function createPalette(
         string $identifier,
@@ -145,6 +155,7 @@ class TcaTable
 
     /**
      * @return array<string, mixed>
+     * @throws RuntimeException
      */
     public function getColumnConfiguration(string $columnName): array
     {

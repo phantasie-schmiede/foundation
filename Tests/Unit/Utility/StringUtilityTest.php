@@ -11,22 +11,42 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Utility;
 
+use Error;
 use Generator;
+use InvalidArgumentException as BaseInvalidArgumentException;
 use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Exception;
+use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\InvalidArgumentException;
+use PHPUnit\Framework\MockObject\CannotUseOnlyMethodsException;
+use PHPUnit\Framework\MockObject\Generator\ClassIsEnumerationException;
+use PHPUnit\Framework\MockObject\Generator\ClassIsFinalException;
+use PHPUnit\Framework\MockObject\Generator\DuplicateMethodException;
+use PHPUnit\Framework\MockObject\Generator\InvalidMethodNameException;
+use PHPUnit\Framework\MockObject\Generator\NameAlreadyInUseException;
+use PHPUnit\Framework\MockObject\Generator\OriginalConstructorInvocationRequiredException;
+use PHPUnit\Framework\MockObject\Generator\ReflectionException as GeneratorReflectionException;
+use PHPUnit\Framework\MockObject\Generator\RuntimeException;
+use PHPUnit\Framework\MockObject\Generator\UnknownTypeException;
+use PHPUnit\Framework\MockObject\IncompatibleReturnValueException;
+use PHPUnit\Framework\MockObject\MethodCannotBeConfiguredException;
+use PHPUnit\Framework\MockObject\MethodNameAlreadyConfiguredException;
 use PSBits\Foundation\Service\TypoScriptProviderService;
 use PSBits\Foundation\Tests\Examples\BackedEnum;
 use PSBits\Foundation\Tests\Examples\Enum;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
+use RuntimeException as PhpRuntimeException;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\TypoScript\AST\Node\RootNode;
 use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use ValueError;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
 
 /**
  * Class StringUtilityTest
@@ -279,6 +299,9 @@ class StringUtilityTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     #[DataProvider('cleanUrlDataProvider')]
     public function cleanUrl(string $url, string $expectedResult): void
@@ -288,9 +311,13 @@ class StringUtilityTest extends UnitTestCase
 
     /**
      * @param mixed $expectedResult
+     * @throws BaseInvalidArgumentException
      * @throws ContainerExceptionInterface
+     * @throws Error
+     * @throws ExpectationFailedException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws PhpRuntimeException
      * @throws ReflectionException
      */
     #[Test]
@@ -304,10 +331,29 @@ class StringUtilityTest extends UnitTestCase
     }
 
     /**
+     * @throws BaseInvalidArgumentException
+     * @throws CannotUseOnlyMethodsException
+     * @throws ClassIsEnumerationException
+     * @throws ClassIsFinalException
      * @throws ContainerExceptionInterface
+     * @throws DuplicateMethodException
+     * @throws Error
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws GeneratorReflectionException
+     * @throws IncompatibleReturnValueException
+     * @throws InvalidArgumentException
+     * @throws InvalidMethodNameException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws MethodCannotBeConfiguredException
+     * @throws MethodNameAlreadyConfiguredException
+     * @throws NameAlreadyInUseException
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws OriginalConstructorInvocationRequiredException
+     * @throws PhpRuntimeException
      * @throws ReflectionException
+     * @throws RuntimeException
+     * @throws UnknownTypeException
      */
     #[Test]
     public function convertStringResolvesTypoScriptPathWithTypoScriptContext(): void
@@ -350,6 +396,9 @@ class StringUtilityTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     #[DataProvider('convertToFloatDataProvider')]
     public function convertToFloat(string $variable, float $expectedResult): void
@@ -357,6 +406,11 @@ class StringUtilityTest extends UnitTestCase
         self::assertEquals($expectedResult, StringUtility::convertToFloat($variable));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     * @throws PhpRuntimeException
+     * @throws ValueError
+     */
     #[Test]
     #[DataProvider('cropDataProvider')]
     public function crop(
@@ -373,6 +427,9 @@ class StringUtilityTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     #[DataProvider('getFirstWordDataProvider')]
     public function getFirstWord(string $sentence, string $expectedResult): void
@@ -380,6 +437,9 @@ class StringUtilityTest extends UnitTestCase
         self::assertEquals($expectedResult, StringUtility::getFirstWord($sentence));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     #[DataProvider('sanitizePropertyNameDataProvider')]
     public function sanitizePropertyName(string $propertyName, string $expectedResult): void
@@ -387,6 +447,9 @@ class StringUtilityTest extends UnitTestCase
         self::assertEquals($expectedResult, StringUtility::sanitizePropertyName($propertyName));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     #[DataProvider('isEmptyDataProvider')]
     public function stringIsEmpty(string $string, bool $expectedResult): void
@@ -394,6 +457,9 @@ class StringUtilityTest extends UnitTestCase
         self::assertSame($expectedResult, StringUtility::isEmpty($string));
     }
 
+    /**
+     * @throws PhpRuntimeException
+     */
     protected function tearDown(): void
     {
         unset($GLOBALS['TYPO3_REQUEST']);

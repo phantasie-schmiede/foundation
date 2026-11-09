@@ -13,6 +13,7 @@ namespace PSBits\Foundation\Utility;
 
 use Doctrine\DBAL\Exception;
 use Generator;
+use InvalidArgumentException;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser;
@@ -20,17 +21,12 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 use function count;
 
-/**
- * Class QueryUtility
- *
- * @package PSBits\Foundation\Utility
- */
 class QueryUtility
 {
     /**
-     * @template T of object
      * @param array<int, mixed> $constraints
      * @param QueryInterface<T> $query
+     * @template T of object
      */
     public static function applyConstraints(array $constraints, QueryInterface $query): void
     {
@@ -47,10 +43,11 @@ class QueryUtility
     }
 
     /**
-     * @template T of object
      * @param QueryInterface<T> $query
      * @return Generator<int, mixed>
+     * @template T of object
      * @throws Exception
+     * @throws InvalidArgumentException
      */
     public static function processInChunks(QueryInterface $query, int $chunkSize): Generator
     {

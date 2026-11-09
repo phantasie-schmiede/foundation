@@ -11,21 +11,25 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Utility;
 
+use DateMalformedStringException;
 use DateTime;
+use DivisionByZeroError;
 use Exception;
 use NumberFormatter;
 use RuntimeException;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+use function array_search;
+use function basename;
+use function file_get_contents;
+use function file_put_contents;
+use function is_file;
 use function is_int;
+use function pathinfo;
 use function strlen;
+use function trim;
+use function unlink;
 
-/**
- * Class FileUtility
- *
- * @package PSBits\Foundation\Utility
- */
 class FileUtility
 {
     /**
@@ -33,6 +37,7 @@ class FileUtility
      * unit names like KiB, MiB or GiB. Hence, the inaccurate, "old" units are being used.
      */
     public const array FILE_SIZE_UNITS = [
+        // PSBits/alphabetical_array_keys=values
         'B'  => 0,
         'KB' => 1,
         'MB' => 2,
@@ -54,12 +59,9 @@ class FileUtility
      *
      * To enforce a specific unit use a value of FILE_SIZE_UNITS as second parameter.
      *
-     * @param int|string $input    You can pass either the filesize or the filename.
-     * @param int|null   $unit
-     * @param int        $decimals
-     *
-     * @return string
-     * @throws AspectNotFoundException
+     * @param int|string $input You can pass either the filesize or the filename.
+     * @throws DivisionByZeroError
+     * @throws Exception
      */
     public static function formatFileSize(
         int|string $input,
@@ -108,6 +110,8 @@ class FileUtility
     /**
      * You must either directly pass $content or set a $filename which content will be read.
      * If you pass $content, you must also set a $downloadName.
+     *
+     * @throws RuntimeException
      */
     public static function initiateDownload(
         string  $contentType,
@@ -162,7 +166,7 @@ class FileUtility
     }
 
     /**
-     * @throws Exception
+     * @throws DateMalformedStringException
      */
     public static function isFileLocked(string $fileName): bool
     {
@@ -187,7 +191,8 @@ class FileUtility
     }
 
     /**
-     * @throws Exception
+     * @throws DateMalformedStringException
+     * @throws RuntimeException
      */
     public static function lockFile(string $fileName, ?DateTime $lifetime = null): bool
     {
@@ -203,13 +208,17 @@ class FileUtility
     /**
      * Converts relative to absolute paths.
      *
-     * @param string $fileName
      *
      * @return string returns an empty string if $fileName could not be resolved to a valid path
      */
     public static function resolveFileName(string $fileName): string
     {
         return GeneralUtility::getFileAbsFileName($fileName) ?: realpath($fileName) ?: '';
+    }
+
+    public static function sanitizeFileName(string $fileName): string
+    {
+        return preg_replace('/[^a-zA-Z0-9_.-]/', '_', $fileName);
     }
 
     public static function unlockFile(string $fileName): bool
@@ -223,13 +232,9 @@ class FileUtility
         return true;
     }
 
-    public static function sanitizeFileName(string $fileName): string
-    {
-        return preg_replace('/[^a-zA-Z0-9_.-]/', '_', $fileName);
-    }
-
     /**
-     * @throws Exception
+     * @throws DateMalformedStringException
+     * @throws RuntimeException
      */
     public static function write(string $fileName, string $content, bool $append = false): bool
     {

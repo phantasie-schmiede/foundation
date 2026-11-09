@@ -14,11 +14,7 @@ namespace PSBits\Foundation\Attribute;
 use Attribute;
 
 /**
- * Class ModuleAction
- *
  * Use this attribute for methods in a module controller.
- *
- * @package PSBits\Foundation\Attribute
  */
 #[Attribute(Attribute::TARGET_METHOD)]
 class ModuleAction extends AbstractAttribute

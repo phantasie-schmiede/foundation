@@ -17,6 +17,7 @@ use PhpCsFixer\RuleSet\RuleSet;
 use PhpCsFixer\Tokenizer\Tokens;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\ExpectationFailedException;
 use PSBits\Qa\PhpCsFixer\Fixer\PropertyNamesAlignmentFixer;
 use SplFileInfo;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
@@ -240,6 +241,9 @@ class Foo
         ];
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     #[DataProvider('alignPropertiesDataProvider')]
     public function propertyNamesAreAligned(string $input, string $expected): void
@@ -250,6 +254,9 @@ class Foo
         );
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     #[DataProvider('unchangedCodeDataProvider')]
     public function codeThatDoesNotRequireAlignmentIsLeftAsIs(string $input): void
@@ -332,6 +339,9 @@ class Foo
         ];
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     #[DataProvider('alignConstructorParametersDataProvider')]
     public function constructorParameterNamesAreAligned(string $input, string $expected): void
@@ -342,6 +352,9 @@ class Foo
         );
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     #[DataProvider('trimExcessWhitespaceDataProvider')]
     public function excessWhitespaceIsTrimmed(string $input, string $expected): void
@@ -352,6 +365,9 @@ class Foo
         );
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function fixingIsIdempotent(): void
     {
@@ -378,6 +394,8 @@ class Foo
     /**
      * The alignment must run before binary_operator_spaces, so the padding inserted
      * by this fixer is taken into account when the assignment signs are aligned.
+     *
+     * @throws ExpectationFailedException
      */
     #[Test]
     public function alignmentCooperatesWithBinaryOperatorSpaces(): void

@@ -12,15 +12,11 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
 use Attribute;
+use InvalidArgumentException;
 use PSBits\Foundation\Enum\Relationship;
 use PSBits\Foundation\Utility\Database\DefinitionUtility;
 use TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior;
 
-/**
- * Class File
- *
- * @package PSBits\Foundation\Attribute\TCA\ColumnType
- */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class File extends AbstractColumnType
 {
@@ -177,6 +173,7 @@ class File extends AbstractColumnType
 
     /**
      * @return array<string, mixed>
+     * @throws InvalidArgumentException
      */
     public function toArray(): array
     {

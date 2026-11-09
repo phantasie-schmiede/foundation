@@ -11,11 +11,6 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Utility\Configuration;
 
-/**
- * Class TcaUtility
- *
- * @package PSBits\Foundation\Utility\Configuration
- */
 class TcaUtility
 {
     public const array CORE_FIELD_LABELS = [
@@ -102,8 +97,8 @@ class TcaUtility
             'config'  => [
                 'items'      => [
                     [
-                        'label'              => '',
                         'invertStateDisplay' => true,
+                        'label'              => '',
                     ],
                 ],
                 'renderType' => 'checkboxToggle',
@@ -169,6 +164,18 @@ class TcaUtility
 
     /**
      * @return array<string, mixed>
+     */
+    public static function getDefaultConfigurationForTranslationSourceField(): array
+    {
+        return [
+            'config' => [
+                'type' => 'passthrough',
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
      * @return string[][]
      */
     public static function getDefaultConfigurationForTransOrigDiffSourceField(): array
@@ -202,18 +209,6 @@ class TcaUtility
             ],
             'displayCond' => 'FIELD:sys_language_uid:>:0',
             'label'       => self::CORE_FIELD_LABELS['L18N_PARENT'],
-        ];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public static function getDefaultConfigurationForTranslationSourceField(): array
-    {
-        return [
-            'config' => [
-                'type' => 'passthrough',
-            ],
         ];
     }
 }

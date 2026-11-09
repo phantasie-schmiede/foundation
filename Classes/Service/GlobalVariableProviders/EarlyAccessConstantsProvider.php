@@ -11,21 +11,25 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service\GlobalVariableProviders;
 
+use InvalidArgumentException;
 use PSBits\Foundation\Exceptions\ImplementationException;
 use PSBits\Foundation\Service\ExtensionInformationService;
 use PSBits\Foundation\Utility\Configuration\FilePathUtility;
 use PSBits\Foundation\Utility\TypoScript\TypoScriptUtility;
+use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use UnexpectedValueException;
 
 use function count;
+use function explode;
+use function implode;
+use function lcfirst;
 
 /**
- * Class EarlyAccessConstantsProvider
- *
  * Extensions may provide a YAML-file with constants that can be used in ext_localconf.php-files (before TypoScript is
  * available). Those constants can be accessed via the GlobalVariableService and are registered as
  * TypoScript-constants, too.
@@ -43,8 +47,6 @@ use function count;
  * /Configuration/EarlyAccessConstants/development.yaml
  * /Configuration/EarlyAccessConstants/production.yaml
  * /Configuration/EarlyAccessConstants/Production/staging.yaml
- *
- * @package PSBits\Foundation\Service\GlobalVariableProviders
  */
 class EarlyAccessConstantsProvider extends AbstractProvider
 {
@@ -53,6 +55,9 @@ class EarlyAccessConstantsProvider extends AbstractProvider
     /**
      * @return array<string, mixed>
      * @throws ImplementationException
+     * @throws InvalidArgumentException
+     * @throws ParseException
+     * @throws UnexpectedValueException
      */
     public function getGlobalVariables(): array
     {

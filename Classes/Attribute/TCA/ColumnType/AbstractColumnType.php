@@ -11,13 +11,12 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
+use InvalidArgumentException;
 use PSBits\Foundation\Attribute\TCA\AbstractTcaAttribute;
 
-/**
- * Class AbstractColumnType
- *
- * @package PSBits\Foundation\Attribute\TCA\ColumnType
- */
+use function explode;
+use function strtolower;
+
 abstract class AbstractColumnType extends AbstractTcaAttribute implements ColumnTypeInterface
 {
     /**
@@ -32,6 +31,7 @@ abstract class AbstractColumnType extends AbstractTcaAttribute implements Column
 
     /**
      * @return array<string, mixed>
+     * @throws InvalidArgumentException
      */
     public function toArray(): array
     {

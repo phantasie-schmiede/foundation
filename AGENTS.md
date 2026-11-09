@@ -143,7 +143,7 @@ workflow (`.github/workflows/ci.yml`). Quality configuration files are centraliz
 - `composer lint:all` - read-only verification (all linters).
 - `composer fix:all` - auto-fix (rewrites source files).
 - `composer test:unit` / `composer test:functional` - run the respective suite.
-- A pre-commit hook (installed by `.Build/bin/qa link` from the psbits/qa package) runs
+- A pre-commit hook (installed by `.Build/bin/qa sync` from the psbits/qa package) runs
   `composer lint:all`.
 
 ## Onboarding run notes (errors/workarounds)

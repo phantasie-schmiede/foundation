@@ -16,11 +16,6 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Service\FlexFormService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class BuilderForNews
- *
- * @package PSBits\Foundation\Service\Configuration\CacheConfigurationBuilder
- */
 readonly class BuilderForNews implements BuilderInterface
 {
     public function __construct(

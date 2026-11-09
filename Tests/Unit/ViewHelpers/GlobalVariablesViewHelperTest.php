@@ -11,7 +11,12 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Tests\Unit\ViewHelpers;
 
 use Exception;
+use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Exception as FrameworkException;
+use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\InvalidArgumentException;
+use PHPUnit\Framework\MockObject\Exception as MockObjectException;
 use PSBits\Foundation\Service\GlobalVariableProviders\GlobalVariableProviderInterface;
 use PSBits\Foundation\Service\GlobalVariableService;
 use PSBits\Foundation\ViewHelpers\GlobalVariablesViewHelper;
@@ -37,6 +42,14 @@ class GlobalVariablesViewHelperTest extends UnitTestCase
      */
     private const string PROVIDER_KEY = TestGlobalVariableProvider::class;
 
+    /**
+     * @throws ExpectationFailedException
+     * @throws FrameworkException
+     * @throws InvalidArgumentException
+     * @throws MockObjectException
+     * @throws NoPreviousThrowableException
+     * @throws ReflectionException
+     */
     #[Test]
     public function pathIsRegisteredAsARequiredArgument(): void
     {
@@ -51,6 +64,12 @@ class GlobalVariablesViewHelperTest extends UnitTestCase
 
     /**
      * An unknown top level key is rejected by the service before the strictness is even considered.
+     *
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws MockObjectException
+     * @throws NoPreviousThrowableException
+     * @throws ReflectionException
      */
     #[Test]
     public function renderRejectsAnUnregisteredTopLevelKeyEvenWhenNotStrict(): void
@@ -74,6 +93,14 @@ class GlobalVariablesViewHelperTest extends UnitTestCase
     /**
      * The value of the Fluid v5 migration: render() has to exist, be public and delegate to the
      * service, otherwise the ViewHelper is abstract on Fluid v5 and unusable.
+     *
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws MockObjectException
+     * @throws NoPreviousThrowableException
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     #[Test]
     public function renderResolvesTheValueFromTheGlobalVariableService(): void
@@ -98,7 +125,12 @@ class GlobalVariablesViewHelperTest extends UnitTestCase
 
     /**
      * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws MockObjectException
+     * @throws NoPreviousThrowableException
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     #[Test]
     public function renderReturnsTheFallbackForAnUnknownPathWhenNotStrict(): void
@@ -120,7 +152,11 @@ class GlobalVariablesViewHelperTest extends UnitTestCase
 
     /**
      * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws MockObjectException
+     * @throws NoPreviousThrowableException
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     #[Test]
     public function renderThrowsForAnUnknownPathWhenStrict(): void
@@ -142,6 +178,13 @@ class GlobalVariablesViewHelperTest extends UnitTestCase
         $viewHelper->render();
     }
 
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws MockObjectException
+     * @throws NoPreviousThrowableException
+     * @throws ReflectionException
+     */
     #[Test]
     public function strictDefaultsToTrueAndFallbackIsOptional(): void
     {
@@ -158,12 +201,20 @@ class GlobalVariablesViewHelperTest extends UnitTestCase
         GlobalVariableService::clearCache();
     }
 
+    /**
+     * @throws RuntimeException
+     */
     protected function tearDown(): void
     {
         GlobalVariableService::clearCache();
         parent::tearDown();
     }
 
+    /**
+     * @throws InvalidArgumentException
+     * @throws MockObjectException
+     * @throws NoPreviousThrowableException
+     */
     private function createInitializedViewHelper(): GlobalVariablesViewHelper
     {
         $viewHelper = new GlobalVariablesViewHelper();
@@ -176,6 +227,9 @@ class GlobalVariablesViewHelperTest extends UnitTestCase
 
     /**
      * @return array<string, mixed>
+     * @throws InvalidArgumentException
+     * @throws MockObjectException
+     * @throws NoPreviousThrowableException
      * @throws ReflectionException
      */
     private function initializedArgumentDefinitions(): array
@@ -188,7 +242,6 @@ class GlobalVariablesViewHelperTest extends UnitTestCase
 
     /**
      * @param array<string, mixed> $arguments
-     *
      * @throws ReflectionException
      */
     private function setArguments(object $viewHelper, array $arguments): void
