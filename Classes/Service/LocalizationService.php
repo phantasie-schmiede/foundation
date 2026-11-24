@@ -11,20 +11,22 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service;
 
+use DateMalformedStringException;
+use Doctrine\DBAL\Exception as DBALException;
+use Error;
+use Exception;
+use InvalidArgumentException;
 use JsonException;
 use PSBits\Foundation\Utility\LocalizationUtility;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
+use RuntimeException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
 
 /**
- * Class LocalizationService
- *
  * @deprecated Use \PSBits\Foundation\Utility\LocalizationUtility instead!
- * @package    PSBits\Foundation\Service
  */
 class LocalizationService
 {
@@ -36,13 +38,10 @@ class LocalizationService
      * @param array<string, mixed>|null $arguments     The arguments of the extension, being passed over to vsprintf
      * @param string|null               $languageKey   The language key or null for using the current language from the
      *                                                 system
-     *
      * @return string|null The value from LOCAL_LANG or null if no translation was found.
-     * @throws AspectNotFoundException
      * @throws ContainerExceptionInterface
-     * @throws JsonException
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
+     * @throws Error
+     * @throws Exception
      */
     public function translate(
         string  $key,
@@ -59,16 +58,11 @@ class LocalizationService
     }
 
     /**
-     * @param string      $key
-     * @param string|null $extension
-     * @param string      $newLineMarker If set, user defined new lines are created while plain line breaks will still
-     *                                   be removed
-     *
-     * @return string
-     * @throws AspectNotFoundException
+     * @param string $newLineMarker If set, user defined new lines are created while plain line breaks will still
+     *                              be removed
      * @throws ContainerExceptionInterface
-     * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws Error
+     * @throws Exception
      */
     public function translateConcatenatingNewLines(
         string  $key,
@@ -83,10 +77,9 @@ class LocalizationService
     }
 
     /**
-     * @throws AspectNotFoundException
      * @throws ContainerExceptionInterface
-     * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws Error
+     * @throws Exception
      */
     public function translatePreservingNewLines(string $key, ?string $extension = null): string
     {
@@ -98,10 +91,16 @@ class LocalizationService
      * initialized yet.
      *
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function translationExists(string $key, bool $logMissingTranslation = true): bool
     {

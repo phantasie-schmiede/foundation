@@ -11,19 +11,14 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Utility\Xml;
 
+use InvalidArgumentException;
 use PSBits\Foundation\Traits\AutoFillPropertiesTrait;
 use PSBits\Foundation\Utility\ObjectUtility;
 use ReflectionClass;
-use ReflectionException;
 
 use function in_array;
 use function is_array;
 
-/**
- * Class AbstractXmlElement
- *
- * @package PSBits\Foundation\Utility\Xml
- */
 class AbstractXmlElement implements XmlElementInterface
 {
     use AutoFillPropertiesTrait;
@@ -40,8 +35,7 @@ class AbstractXmlElement implements XmlElementInterface
 
     /**
      * @param array<string, mixed> $childData
-     *
-     * @throws ReflectionException
+     * @throws InvalidArgumentException
      */
     public function __construct(array $childData)
     {
@@ -120,6 +114,7 @@ class AbstractXmlElement implements XmlElementInterface
 
     /**
      * @return array<string, mixed>
+     * @throws InvalidArgumentException
      */
     public function toArray(): array
     {

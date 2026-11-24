@@ -13,11 +13,6 @@ namespace PSBits\Foundation\Exceptions;
 
 use Exception;
 
-/**
- * Class BaseException
- *
- * @package PSBits\Foundation\Exceptions
- */
 class BaseException extends Exception
 {
     public function __toString(): string

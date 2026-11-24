@@ -14,8 +14,8 @@ return [
         ],
         'creatingLibrary' => [
             '@attributes' => [
-                'version' => '21.09',
                 'url'     => 'https://mediaarea.net/MediaInfo',
+                'version' => '21.09',
             ],
             '@nodeValue'  => 'MediaInfoLib',
             '@position'   => 0,

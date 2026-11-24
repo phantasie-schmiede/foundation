@@ -14,14 +14,10 @@ namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 use Attribute;
 use PSBits\Foundation\Enum\DateType;
 use PSBits\Foundation\Utility\StringUtility;
+use RuntimeException;
 
 use function is_string;
 
-/**
- * Class Datetime
- *
- * @package PSBits\Foundation\Attribute\TCA\ColumnType
- */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Datetime extends AbstractColumnType
 {
@@ -34,6 +30,7 @@ class Datetime extends AbstractColumnType
      * @param \DateTime|string|null $rangeLower        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-range
      * @param \DateTime|string|null $rangeUpper        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-range
      * @param string|null           $softref           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-softref
+     * @throws RuntimeException
      */
     public function __construct(
         protected ?DateType             $dbType = DateType::datetime,

@@ -11,6 +11,10 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service\Configuration;
 
+use DateMalformedStringException;
+use Doctrine\DBAL\Exception as DBALException;
+use Error;
+use InvalidArgumentException;
 use JsonException;
 use PSBits\Foundation\Attribute\ModuleAction;
 use PSBits\Foundation\Data\ExtensionInformationInterface;
@@ -19,28 +23,26 @@ use PSBits\Foundation\Data\ModuleConfiguration;
 use PSBits\Foundation\Utility\LocalizationUtility;
 use PSBits\Foundation\Utility\ReflectionUtility;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
 use ReflectionException;
+use RuntimeException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
 
 use function in_array;
 use function is_int;
+use function lcfirst;
+use function str_replace;
 
-/**
- * Class ModuleService
- *
- * @package PSBits\Foundation\Service\Configuration
- */
 class ModuleService
 {
     public const array ICON_SUFFIXES = [
         'CONTENT_FROM_PID' => '-contentFromPid',
-        'ROOT'             => '-root',
         'HIDE_IN_MENU'     => '-hideinmenu',
+        'ROOT'             => '-root',
     ];
 
     public function __construct(
@@ -52,6 +54,17 @@ class ModuleService
      * For use in ext_tables.php files
      *
      * @return array<string, mixed>
+     * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
+     * @throws JsonException
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function buildModuleConfiguration(ExtensionInformationInterface $extensionInformation): array
     {
@@ -80,10 +93,16 @@ class ModuleService
     /**
      * @return array<string, mixed>
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     private function buildBasicConfiguration(
         MainModuleConfiguration       $configuration,
@@ -120,10 +139,16 @@ class ModuleService
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     private function checkLanguageLabels(string $filePath): void
     {
@@ -138,7 +163,6 @@ class ModuleService
 
     /**
      * @param array<int|string, string|list<string>> $controllersCollection
-     *
      * @return array<string, list<string>>
      * @throws ReflectionException
      */

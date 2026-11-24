@@ -11,17 +11,16 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Data;
 
+use InvalidArgumentException;
 use PSBits\Foundation\Controller\Backend\AnalyzeLocalLangController;
 use PSBits\Foundation\Controller\Backend\RegisteredIconsController;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class ExtensionInformation
- *
- * @package PSBits\Foundation\Data
- */
 class ExtensionInformation extends AbstractExtensionInformation
 {
+    /**
+     * @throws InvalidArgumentException
+     */
     public function __construct()
     {
         parent::__construct();

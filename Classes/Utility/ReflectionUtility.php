@@ -23,18 +23,10 @@ use ReflectionProperty;
 use function count;
 use function is_string;
 
-/**
- * Class ReflectionUtility
- *
- * @package PSBits\Foundation\Utility
- */
 class ReflectionUtility
 {
     /**
-     * @param string                                                                                                                                    $attributeClass
-     * @param ReflectionClass<object>|ReflectionClassConstant|ReflectionFunctionAbstract|ReflectionMethod|ReflectionParameter|ReflectionProperty|string $reflection     Can be a reflection or a full qualified class name.
-     *
-     * @return object|null
+     * @param ReflectionClass<object>|ReflectionClassConstant|ReflectionFunctionAbstract|ReflectionMethod|ReflectionParameter|ReflectionProperty|string $reflection Can be a reflection or a full qualified class name.
      * @throws ReflectionException
      */
     public static function getAttributeInstance(

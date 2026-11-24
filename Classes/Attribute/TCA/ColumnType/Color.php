@@ -12,22 +12,27 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
 use Attribute;
+use DateMalformedStringException;
+use Doctrine\DBAL\Exception as DBALException;
+use Error;
+use InvalidArgumentException;
 use JsonException;
 use PSBits\Foundation\Utility\ArrayUtility;
 use PSBits\Foundation\Utility\Configuration\FilePathUtility;
 use PSBits\Foundation\Utility\Database\DefinitionUtility;
 use PSBits\Foundation\Utility\LocalizationUtility;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
+use ReflectionException;
+use RuntimeException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
 
-/**
- * Class Color
- *
- * @package PSBits\Foundation\Attribute\TCA\ColumnType
- */
+use function array_merge;
+use function is_string;
+use function str_starts_with;
+
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Color extends AbstractColumnType implements ColumnTypeWithItemsInterface
 {
@@ -85,10 +90,16 @@ class Color extends AbstractColumnType implements ColumnTypeWithItemsInterface
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function processItems(string $labelPath = ''): void
     {
@@ -103,10 +114,16 @@ class Color extends AbstractColumnType implements ColumnTypeWithItemsInterface
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     private function processSimpleFormat(string $labelPath = ''): void
     {
@@ -138,10 +155,16 @@ class Color extends AbstractColumnType implements ColumnTypeWithItemsInterface
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     private function processTcaFormat(): void
     {

@@ -11,13 +11,18 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service\Configuration;
 
+use DateMalformedStringException;
+use Doctrine\DBAL\Exception as DBALException;
+use Error;
+use InvalidArgumentException;
 use JsonException;
 use PSBits\Foundation\Data\ExtensionInformationInterface;
 use PSBits\Foundation\Utility\Configuration\IconUtility;
 use PSBits\Foundation\Utility\LocalizationUtility;
 use PSBits\Foundation\Utility\Typo3VersionUtility;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
+use ReflectionException;
+use RuntimeException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\DataHandling\PageDoktypeRegistry;
@@ -26,18 +31,17 @@ use TYPO3\CMS\Core\Imaging\IconRegistry;
 use TYPO3\CMS\Core\Utility\ArrayUtility as Typo3CoreArrayUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
 
-/**
- * Class PageTypeService
- *
- * @package PSBits\Foundation\Service\Configuration
- */
+use function implode;
+use function trim;
+
 class PageTypeService
 {
     public const array ICON_SUFFIXES = [
         'CONTENT_FROM_PID' => '-contentFromPid',
-        'ROOT'             => '-root',
         'HIDE_IN_MENU'     => '-hideinmenu',
+        'ROOT'             => '-root',
     ];
     public const array PAGE_TYPE_REGISTRATION_MODES = [
         'EXT_TABLES'   => 'ext_tables',
@@ -86,10 +90,16 @@ class PageTypeService
      * Add new page types to the TCA of 'pages' (select box).
      *
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function addToSelectBox(
         ExtensionInformationInterface $extensionInformation,

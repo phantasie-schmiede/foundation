@@ -12,26 +12,22 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Service\Configuration\Tca;
 
 /**
- * Class DefaultFieldDefinition
- *
  * A default showitem entry (tab, palette or field) that is added to the showitems of all types after the
  * position-dependencies of the columns have been resolved. The definitions can be used as position references.
- *
- * @package PSBits\Foundation\Service\Configuration\Tca
  */
 final readonly class DefaultFieldDefinition
 {
     public const string BLOCK_ACCESS   = 'access';
     public const string BLOCK_LANGUAGE = 'language';
-    public const string TYPE_FIELD     = 'field';
-    public const string TYPE_PALETTE   = 'palette';
-    public const string TYPE_TAB       = 'tab';
 
     /*
      * The language tab and the language palette share the identifier "language", so the palette gets its own
      * reference name.
      */
     public const string REFERENCE_LANGUAGE_PALETTE = 'languagePalette';
+    public const string TYPE_FIELD                 = 'field';
+    public const string TYPE_PALETTE               = 'palette';
+    public const string TYPE_TAB                   = 'tab';
 
     /**
      * @param string $reference  The reference name that can be used in position specifications

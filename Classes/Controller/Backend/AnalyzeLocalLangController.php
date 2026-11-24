@@ -11,8 +11,12 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Controller\Backend;
 
+use DateMalformedStringException;
 use Doctrine\DBAL\Exception;
+use Error;
+use InvalidArgumentException;
 use JsonException;
+use LogicException;
 use PSBits\Foundation\Attribute\ModuleAction;
 use PSBits\Foundation\Exceptions\ImplementationException;
 use PSBits\Foundation\Service\ExtensionInformationService;
@@ -20,22 +24,28 @@ use PSBits\Foundation\Utility\Configuration\FilePathUtility;
 use PSBits\Foundation\Utility\Localization\LoggingUtility;
 use PSBits\Foundation\Utility\Xml\XmlUtility;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionException;
+use RuntimeException;
+use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use TYPO3\CMS\Backend\Attribute\AsController;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
+use ValueError;
 
+use function array_key_exists;
+use function file_get_contents;
 use function is_array;
+use function is_dir;
+use function ksort;
+use function sort;
 
 /**
  * Class AbstractModuleController
- *
- * @package PSBits\Foundation\Controller\Backend
  */
 #[AsController]
 class AnalyzeLocalLangController extends AbstractModuleController
@@ -49,10 +59,16 @@ class AnalyzeLocalLangController extends AbstractModuleController
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws Error
      * @throws Exception
      * @throws ImplementationException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws LogicException
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
+     * @throws ValueError
      */
     #[ModuleAction(default: true)]
     public function overviewAction(): ResponseInterface
@@ -70,10 +86,15 @@ class AnalyzeLocalLangController extends AbstractModuleController
      *
      * @return array<string, int|string|null>
      * @throws ContainerExceptionInterface
+     * @throws DirectoryNotFoundException
+     * @throws Error
      * @throws ImplementationException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws LogicException
+     * @throws NoServerRequestGivenException // t3:14
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     private function collectAllLanguageLabels(): array
     {
@@ -126,11 +147,17 @@ class AnalyzeLocalLangController extends AbstractModuleController
     /**
      * @return array<string, array<string, int|string|null>>
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws Error
      * @throws Exception
      * @throws ImplementationException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws LogicException
+     * @throws NoServerRequestGivenException // t3:14
      * @throws ReflectionException
+     * @throws RuntimeException
+     * @throws ValueError
      */
     private function fetchLabelAccessLogData(): array
     {
@@ -173,8 +200,12 @@ class AnalyzeLocalLangController extends AbstractModuleController
 
     /**
      * @return array<string, list<string>>
+     * @throws DateMalformedStringException
      * @throws Exception
-     * @throws JsonException
+     * @throws InvalidArgumentException
+     * @throws LogicException
+     * @throws RuntimeException
+     * @throws ValueError
      */
     private function fetchMissingLabelsLogData(): array
     {
@@ -200,6 +231,9 @@ class AnalyzeLocalLangController extends AbstractModuleController
         return $result;
     }
 
+    /**
+     * @throws ValueError
+     */
     private function getExtensionKeyFromLanguageLabel(string $languageLabel): string
     {
         // "LLL:EXT:" = 8 characters

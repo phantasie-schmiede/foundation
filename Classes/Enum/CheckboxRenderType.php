@@ -11,11 +11,6 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Enum;
 
-/**
- * Enum CheckboxRenderType
- *
- * @package PSBits\Foundation\Enum
- */
 enum CheckboxRenderType: string
 {
     case checkboxLabeledToggle = 'checkboxLabeledToggle';

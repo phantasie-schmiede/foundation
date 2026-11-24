@@ -11,11 +11,6 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Enum;
 
-/**
- * Enum DateType
- *
- * @package PSBits\Foundation\Enum
- */
 enum DateType: string
 {
     case date     = 'date';

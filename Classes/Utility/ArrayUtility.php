@@ -14,15 +14,13 @@ namespace PSBits\Foundation\Utility;
 use TYPO3\CMS\Core\Utility\ArrayUtility as Typo3ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+use function array_keys;
+use function array_search;
 use function array_slice;
 use function is_array;
 use function is_string;
+use function str_contains;
 
-/**
- * Class ArrayUtility
- *
- * @package PSBits\Foundation\Utility
- */
 class ArrayUtility
 {
     /**
@@ -44,9 +42,7 @@ class ArrayUtility
     }
 
     /**
-     * @param mixed                    $needle
      * @param array<int|string, mixed> $array
-     *
      * @return false|int|string
      */
     public static function findLastOccurrence(mixed $needle, array $array): bool|int|string
@@ -76,7 +72,6 @@ class ArrayUtility
 
     /**
      * @param array<int|string, mixed> $haystack
-     *
      * @return list<int|string>
      */
     public static function inArrayRecursive(
@@ -114,7 +109,6 @@ class ArrayUtility
     /**
      * @param array<int|string, mixed> $array
      * @param array<int|string, mixed> $elements
-     *
      * @return array<int|string, mixed>
      */
     public static function insertIntoArray(array $array, array $elements, int $index): array

@@ -13,16 +13,13 @@ namespace PSBits\Foundation\Service\Configuration\Tca;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+use function array_map;
 use function explode;
 use function in_array;
 
 /**
- * Class ShowItemList
- *
  * A parsed showitem list (comma separated entries, optionally with ";" separated parts like
  * "--palette--;identifier;paletteIdentifier").
- *
- * @package PSBits\Foundation\Service\Configuration\Tca
  */
 final readonly class ShowItemList
 {

@@ -13,6 +13,7 @@ namespace PSBits\Foundation\Tests\Unit\Data;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\ExpectationFailedException;
 use PSBits\Foundation\Data\MainModuleConfiguration;
 use PSBits\Foundation\Data\ModuleConfiguration;
 use PSBits\Foundation\Data\PageTypeConfiguration;
@@ -66,6 +67,7 @@ class PluginConfigurationTest extends UnitTestCase
 
     /**
      * @param array<int|string, string|list<string>> $controllers
+     * @throws ExpectationFailedException
      */
     #[Test]
     #[DataProvider('pluginConfigurationDataProvider')]
@@ -138,6 +140,7 @@ class PluginConfigurationTest extends UnitTestCase
 
     /**
      * @param array<string, mixed>|null $position
+     * @throws ExpectationFailedException
      */
     #[Test]
     #[DataProvider('mainModuleConfigurationDataProvider')]
@@ -205,6 +208,7 @@ class PluginConfigurationTest extends UnitTestCase
     /**
      * @param array<int|string, string|list<string>> $controllers
      * @param array<string, mixed>|null              $position
+     * @throws ExpectationFailedException
      */
     #[Test]
     #[DataProvider('moduleConfigurationDataProvider')]
@@ -270,6 +274,7 @@ class PluginConfigurationTest extends UnitTestCase
 
     /**
      * @param list<string> $allowedTables
+     * @throws ExpectationFailedException
      */
     #[Test]
     #[DataProvider('pageTypeConfigurationDataProvider')]

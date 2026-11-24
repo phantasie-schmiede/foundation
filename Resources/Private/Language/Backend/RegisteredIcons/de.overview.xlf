@@ -29,13 +29,13 @@
                 <source>No registered icons were found.</source>
                 <target>Es wurden keine registrierten Icons gefunden.</target>
             </trans-unit>
-            <trans-unit id="table.preview">
-                <source>Preview</source>
-                <target>Vorschau</target>
-            </trans-unit>
             <trans-unit id="table.identifier">
                 <source>Identifier</source>
                 <target>Identifier</target>
+            </trans-unit>
+            <trans-unit id="table.preview">
+                <source>Preview</source>
+                <target>Vorschau</target>
             </trans-unit>
             <trans-unit id="table.source">
                 <source>Source</source>

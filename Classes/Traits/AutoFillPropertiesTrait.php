@@ -11,23 +11,17 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Traits;
 
+use InvalidArgumentException;
 use PSBits\Foundation\Utility\StringUtility;
 use ReflectionClass;
-use ReflectionException;
 use ReflectionMethod;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Trait AutoFillPropertiesTrait
- *
- * @package PSBits\Foundation\Traits
- */
 trait AutoFillPropertiesTrait
 {
     /**
      * @param array<string, mixed> $properties
-     *
-     * @throws ReflectionException
+     * @throws InvalidArgumentException
      */
     public function fillProperties(array $properties): void
     {

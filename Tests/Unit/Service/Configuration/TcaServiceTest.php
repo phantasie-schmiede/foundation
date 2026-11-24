@@ -11,15 +11,30 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Tests\Unit\Service\Configuration;
 
+use DateMalformedStringException;
+use Doctrine\DBAL\Exception as DBALException;
+use Error;
+use InvalidArgumentException as BaseInvalidArgumentException;
+use JsonException;
+use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\InvalidArgumentException;
+use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\IncompatibleReturnValueException;
 use PSBits\Foundation\Service\Configuration\TcaService;
 use PSBits\Foundation\Service\ExtensionInformationService;
 use PSBits\Foundation\Tests\Examples\Domain\Model\AllTcaAttributesModel;
 use PSBits\Foundation\Utility\Localization\LoggingUtility;
+use Psr\Container\ContainerExceptionInterface;
+use ReflectionException;
 use ReflectionProperty;
 use RuntimeException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Package\PackageManager;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -37,6 +52,12 @@ class TcaServiceTest extends UnitTestCase
 
     private TcaService $subject;
 
+    /**
+     * @throws Exception
+     * @throws IncompatibleReturnValueException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -47,6 +68,10 @@ class TcaServiceTest extends UnitTestCase
         $this->subject               = new TcaService($extensionInformationService, $packageManager);
     }
 
+    /**
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
     protected function tearDown(): void
     {
         $this->resetLoggingState();
@@ -59,12 +84,18 @@ class TcaServiceTest extends UnitTestCase
         parent::tearDown();
     }
 
+    /**
+     * @throws ReflectionException
+     */
     private function resetLoggingState(): void
     {
         $logMissingLanguageLabels = new ReflectionProperty(LoggingUtility::class, 'logMissingLanguageLabels');
         $logMissingLanguageLabels->setValue(null, null);
     }
 
+    /**
+     * @throws RuntimeException
+     */
     #[Test]
     public function checkIfTableNameIsSetThrowsWithoutTableName(): void
     {
@@ -75,6 +106,12 @@ class TcaServiceTest extends UnitTestCase
         $this->subject->checkIfTableNameIsSet();
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ExpectationFailedException
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
     #[Test]
     public function setTableNameAcceptsPlainTableName(): void
     {
@@ -85,6 +122,11 @@ class TcaServiceTest extends UnitTestCase
         $this->subject->checkIfTableNameIsSet();
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ExpectationFailedException
+     * @throws ReflectionException
+     */
     #[Test]
     public function setTableNameConvertsFullyQualifiedClassName(): void
     {
@@ -94,6 +136,12 @@ class TcaServiceTest extends UnitTestCase
         self::assertSame('tx_foundation_all_tca_attributes', $tableName->getValue($this->subject));
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ExpectationFailedException
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
     #[Test]
     public function addColumnConfigurationAddsColumnToTca(): void
     {
@@ -118,6 +166,9 @@ class TcaServiceTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws RuntimeException
+     */
     #[Test]
     public function addColumnConfigurationThrowsWithoutTableName(): void
     {
@@ -127,6 +178,12 @@ class TcaServiceTest extends UnitTestCase
         $this->subject->addColumnConfiguration('my_column', ['config' => []]);
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ExpectationFailedException
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
     #[Test]
     public function addToPaletteAppendsFieldsToExistingPalette(): void
     {
@@ -148,6 +205,12 @@ class TcaServiceTest extends UnitTestCase
         self::assertSame('field_a, field_b', $GLOBALS['TCA'][self::TABLE_NAME]['palettes']['my_palette']['showitem']);
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ExpectationFailedException
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
     #[Test]
     public function addToPaletteInsertsLineBreakAfterReferenceField(): void
     {
@@ -172,6 +235,12 @@ class TcaServiceTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ExpectationFailedException
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
     #[Test]
     public function addToPaletteInsertsLineBreakBeforeReferenceField(): void
     {
@@ -196,6 +265,20 @@ class TcaServiceTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
+     * @throws ExpectationFailedException
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
     #[Test]
     public function createPaletteCreatesPaletteWithoutLabel(): void
     {
@@ -207,6 +290,20 @@ class TcaServiceTest extends UnitTestCase
         self::assertSame(['showitem' => ''], $GLOBALS['TCA'][self::TABLE_NAME]['palettes']['my_palette']);
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
+     * @throws ExpectationFailedException
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
     #[Test]
     public function createPaletteStoresPlainTextLabelAndDescription(): void
     {
@@ -225,6 +322,20 @@ class TcaServiceTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
+     * @throws ExpectationFailedException
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
     #[Test]
     public function createPaletteFallsBackToExistingDefaultLabelTranslation(): void
     {
@@ -250,6 +361,20 @@ class TcaServiceTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
+     * @throws ExpectationFailedException
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
     #[Test]
     public function createPaletteSkipsMissingLanguageLabels(): void
     {
@@ -262,6 +387,12 @@ class TcaServiceTest extends UnitTestCase
         self::assertSame(['showitem' => ''], $GLOBALS['TCA'][self::TABLE_NAME]['palettes']['my_palette']);
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ExpectationFailedException
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
     #[Test]
     public function getConfigurationForPropertyOfDomainModelReturnsColumnConfiguration(): void
     {
@@ -282,6 +413,11 @@ class TcaServiceTest extends UnitTestCase
         self::assertSame($columnConfiguration, $result);
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
     #[Test]
     public function getConfigurationForPropertyOfDomainModelThrowsForUnknownColumn(): void
     {
@@ -295,6 +431,9 @@ class TcaServiceTest extends UnitTestCase
         $this->subject->getConfigurationForPropertyOfDomainModel(new AllTcaAttributesModel(), 'mappedField');
     }
 
+    /**
+     * @throws ReflectionException
+     */
     private function setLoggingState(bool $state): void
     {
         $logMissingLanguageLabels = new ReflectionProperty(LoggingUtility::class, 'logMissingLanguageLabels');

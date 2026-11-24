@@ -17,15 +17,13 @@ use TYPO3\CMS\Backend\Attribute\AsController;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Exception;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
+use TYPO3\CMS\Core\SystemResource\Exception\CanNotResolvePublicResourceException;
+use TYPO3\CMS\Core\SystemResource\Exception\CanNotResolveSystemResourceException;
 use TYPO3\CMS\Core\Utility\PathUtility;
 
 use function count;
+use function ksort;
 
-/**
- * Class RegisteredIconsController
- *
- * @package PSBits\Foundation\Controller\Backend
- */
 #[AsController]
 class RegisteredIconsController extends AbstractModuleController
 {
@@ -37,6 +35,8 @@ class RegisteredIconsController extends AbstractModuleController
     }
 
     /**
+     * @throws CanNotResolvePublicResourceException // t3:14
+     * @throws CanNotResolveSystemResourceException // t3:14
      * @throws Exception
      */
     #[ModuleAction(default: true)]

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Tests\Unit\Service\Configuration\Tca;
 
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\ExpectationFailedException;
 use PSBits\Foundation\Service\Configuration\Tca\Position;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -22,6 +23,9 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class PositionTest extends UnitTestCase
 {
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function fromStringParsesKeywordAndReference(): void
     {
@@ -32,6 +36,9 @@ class PositionTest extends UnitTestCase
         self::assertSame('after:my_field', $position->toString());
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function fromStringWithMissingReferenceReturnsEmptyReference(): void
     {
@@ -41,6 +48,9 @@ class PositionTest extends UnitTestCase
         self::assertSame('', $position->getReference());
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function isMethodsMatchKeywords(): void
     {
@@ -51,6 +61,9 @@ class PositionTest extends UnitTestCase
         self::assertFalse(Position::fromString('after:my_field')->isNewLineAfter());
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function normalizeConvertsReferenceToColumnName(): void
     {
@@ -59,6 +72,9 @@ class PositionTest extends UnitTestCase
         self::assertSame('after:converted_myField', Position::normalize('after:myField', $converter));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function normalizeKeepsPaletteNamesUnchanged(): void
     {
@@ -67,12 +83,18 @@ class PositionTest extends UnitTestCase
         self::assertSame('palette:my-palette', Position::normalize('palette:my-palette', $converter));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function normalizeReturnsEmptyStringForEmptyPosition(): void
     {
         self::assertSame('', Position::normalize('', fn(string $name): string => $name));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function applyLineBreaksPrependsLineBreakForNewLineAfter(): void
     {
@@ -85,6 +107,9 @@ class PositionTest extends UnitTestCase
         self::assertSame(['--linebreak--', 'field_a', 'field_b'], $fieldNames);
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function applyLineBreaksAppendsLineBreakForNewLineBefore(): void
     {
@@ -97,6 +122,9 @@ class PositionTest extends UnitTestCase
         self::assertSame(['field_a', 'field_b', '--linebreak--'], $fieldNames);
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function applyLineBreaksKeepsOtherPositionsUnchanged(): void
     {
@@ -109,6 +137,9 @@ class PositionTest extends UnitTestCase
         self::assertSame(['field_a'], $fieldNames);
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function applyLineBreaksKeepsEmptyPositionUnchanged(): void
     {

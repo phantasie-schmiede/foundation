@@ -10,11 +10,21 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Tests\Unit\ViewHelpers;
 
+use Error;
+use Exception as BaseException;
+use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Exception as FrameworkException;
+use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\InvalidArgumentException;
+use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\IncompatibleReturnValueException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PSBits\Foundation\ViewHelpers\TranslateViewHelper;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
+use ReflectionException;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
@@ -36,6 +46,11 @@ class TranslateViewHelperTest extends UnitTestCase
     private TranslateViewHelper         $subject;
     private RenderingContext&MockObject $renderingContext;
 
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -45,6 +60,9 @@ class TranslateViewHelperTest extends UnitTestCase
         $this->subject->initializeArguments();
     }
 
+    /**
+     * @throws FrameworkException
+     */
     #[Test]
     public function allArgumentsAreRegistered(): void
     {
@@ -65,6 +83,11 @@ class TranslateViewHelperTest extends UnitTestCase
         }
     }
 
+    /**
+     * @throws BaseException
+     * @throws ContainerExceptionInterface
+     * @throws Error
+     */
     #[Test]
     public function aMissingIdOrKeyIsReported(): void
     {
@@ -78,6 +101,13 @@ class TranslateViewHelperTest extends UnitTestCase
 
     /**
      * The core exposes the request as a rendering context attribute, which resolveRequest() reads.
+     *
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws FrameworkException
+     * @throws IncompatibleReturnValueException
+     * @throws NoPreviousThrowableException
+     * @throws ReflectionException
      */
     #[Test]
     public function theRequestIsReadFromTheRenderingContextAttribute(): void
@@ -98,6 +128,10 @@ class TranslateViewHelperTest extends UnitTestCase
     /**
      * An id is mandatory, but a key alone has to keep working - an empty key is not a valid label
      * either, so the same exception is expected.
+     *
+     * @throws BaseException
+     * @throws ContainerExceptionInterface
+     * @throws Error
      */
     #[Test]
     public function anEmptyKeyIsReported(): void
@@ -110,6 +144,9 @@ class TranslateViewHelperTest extends UnitTestCase
 
     /**
      * @param array<string, mixed> $arguments
+     * @throws BaseException
+     * @throws ContainerExceptionInterface
+     * @throws Error
      */
     private function render(array $arguments): mixed
     {
@@ -131,6 +168,12 @@ class TranslateViewHelperTest extends UnitTestCase
     /**
      * The frontend middleware puts the resolved SiteLanguage into the "language" request attribute,
      * which is what render() reads the locale from - a SiteLanguage, not a Context.
+     *
+     * @throws Exception
+     * @throws FrameworkException
+     * @throws IncompatibleReturnValueException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
      */
     private function createRequest(string $locale): ServerRequestInterface
     {

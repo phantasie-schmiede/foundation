@@ -11,20 +11,15 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service;
 
+use Doctrine\DBAL\Exception;
+use InvalidArgumentException;
 use PSBits\Foundation\Service\Configuration\TcaService;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-/**
- * Class FileReferenceService
- *
- * @package PSBits\Foundation\Service
- */
 class FileReferenceService
 {
     public const string TABLE_NAME = 'sys_file_reference';
@@ -35,8 +30,8 @@ class FileReferenceService
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function create(

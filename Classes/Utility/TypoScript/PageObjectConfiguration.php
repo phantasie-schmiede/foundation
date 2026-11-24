@@ -13,11 +13,6 @@ namespace PSBits\Foundation\Utility\TypoScript;
 
 use PSBits\Foundation\Enum\ContentType;
 
-/**
- * Class PageObjectConfiguration
- *
- * @package PSBits\Foundation\Utility\TypoScript
- */
 class PageObjectConfiguration
 {
     protected bool        $cacheable;

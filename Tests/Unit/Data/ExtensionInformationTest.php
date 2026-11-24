@@ -11,7 +11,10 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Tests\Unit\Data;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Exception;
+use PHPUnit\Framework\ExpectationFailedException;
 use PSBits\Foundation\Data\AbstractExtensionInformation;
 use PSBits\Foundation\Data\ExtensionInformation;
 use PSBits\Foundation\Data\ExtensionInformationInterface;
@@ -29,6 +32,9 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class ExtensionInformationTest extends UnitTestCase
 {
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function abstractInformationExtractsVendorAndExtensionNameFromClassName(): void
     {
@@ -39,6 +45,9 @@ class ExtensionInformationTest extends UnitTestCase
         self::assertSame('foundation', $information->getExtensionKey());
     }
 
+    /**
+     * @throws Exception
+     */
     #[Test]
     public function abstractInformationImplementsExtensionInformationInterface(): void
     {
@@ -47,6 +56,10 @@ class ExtensionInformationTest extends UnitTestCase
         self::assertInstanceOf(ExtensionInformationInterface::class, $information);
     }
 
+    /**
+     * @throws Exception
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function builderMethodsCollectConfigurations(): void
     {
@@ -73,6 +86,10 @@ class ExtensionInformationTest extends UnitTestCase
         self::assertSame('test_plugin', $plugins[0]->getName());
     }
 
+    /**
+     * @throws Exception
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function builderMethodsAreChainable(): void
     {
@@ -99,6 +116,9 @@ class ExtensionInformationTest extends UnitTestCase
         self::assertCount(1, $information->getPlugins());
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function buildModuleKeyPrefixStripsUnderscoresAndAppendsTrailingUnderscore(): void
     {
@@ -108,6 +128,11 @@ class ExtensionInformationTest extends UnitTestCase
         self::assertSame('foundation_', $method->invoke($information));
     }
 
+    /**
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     */
     #[Test]
     public function concreteExtensionInformationRegistersMainModuleAndChildModules(): void
     {

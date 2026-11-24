@@ -11,24 +11,26 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service\Configuration\Tca;
 
+use DateMalformedStringException;
+use Doctrine\DBAL\Exception as DBALException;
+use Error;
+use InvalidArgumentException;
 use JsonException;
 use PSBits\Foundation\Service\ExtensionInformationService;
 use PSBits\Foundation\Utility\LocalizationUtility;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
+use ReflectionException;
+use RuntimeException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
+use ValueError;
 
 use function lcfirst;
 use function strrpos;
 use function substr;
 
-/**
- * Class LabelResolver
- *
- * @package PSBits\Foundation\Service\Configuration\Tca
- */
 class LabelResolver
 {
     /**
@@ -39,6 +41,8 @@ class LabelResolver
      *
      * @param string $className Fully qualified class name of the domain model.
      * @param string $tableName The table name of the domain model.
+     * @throws InvalidArgumentException
+     * @throws ValueError
      */
     public static function getDefaultLabelPath(string $className, string $tableName): string
     {
@@ -65,12 +69,17 @@ class LabelResolver
      * @param string $fallback              The value to return if no valid label and no default translation exists.
      * @param bool   $logMissingTranslation Whether the default label is logged as missing translation if it does not
      *                                      exist.
-     *
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     public static function resolveLabel(
         string $label,

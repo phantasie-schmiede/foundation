@@ -11,11 +11,6 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service\GlobalVariableProviders;
 
-/**
- * Interface GlobalVariableProviderInterface
- *
- * @package PSBits\Foundation\Service\GlobalVariableProviders
- */
 interface GlobalVariableProviderInterface
 {
     public function getGlobalVariables(): mixed;

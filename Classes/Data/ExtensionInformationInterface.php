@@ -11,11 +11,6 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Data;
 
-/**
- * Interface ExtensionInformationInterface
- *
- * @package PSBits\Foundation\Data
- */
 interface ExtensionInformationInterface
 {
     public function getExtensionKey(): string;

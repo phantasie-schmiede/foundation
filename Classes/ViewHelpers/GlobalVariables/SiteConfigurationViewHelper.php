@@ -13,11 +13,6 @@ namespace PSBits\Foundation\ViewHelpers\GlobalVariables;
 
 use PSBits\Foundation\Service\GlobalVariableProviders\SiteConfigurationProvider;
 
-/**
- * Class SiteConfigurationViewHelper
- *
- * @package PSBits\Foundation\ViewHelpers\GlobalVariables
- */
 class SiteConfigurationViewHelper extends AbstractGlobalVariablesViewHelper
 {
     protected function getBaseKey(): string

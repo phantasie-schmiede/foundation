@@ -15,11 +15,6 @@ use Exception;
 use PSBits\Foundation\Service\GlobalVariableService;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
-/**
- * Class GlobalVariablesViewHelper
- *
- * @package PSBits\Foundation\ViewHelpers
- */
 class GlobalVariablesViewHelper extends AbstractViewHelper
 {
     public function initializeArguments(): void

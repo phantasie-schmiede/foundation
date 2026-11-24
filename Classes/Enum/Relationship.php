@@ -11,11 +11,6 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Enum;
 
-/**
- * Enum Relationship
- *
- * @package PSBits\Foundation\Enum
- */
 enum Relationship: string
 {
     case manyToMany = 'manyToMany';

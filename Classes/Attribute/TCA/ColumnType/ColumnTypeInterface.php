@@ -11,11 +11,6 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
-/**
- * Interface ColumnTypeInterface
- *
- * @package PSBits\Foundation\Attribute\TCA\ColumnType
- */
 interface ColumnTypeInterface
 {
     public function getDatabaseDefinition(): string;

@@ -14,6 +14,7 @@ namespace PSBits\Foundation\Utility;
 use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\ExpectationFailedException;
 use RuntimeException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -45,6 +46,8 @@ class VariableUtilityTest extends UnitTestCase
 
     /**
      * @param array<string, mixed> $variable
+     * @throws ExpectationFailedException
+     * @throws RuntimeException
      */
     #[Test]
     #[DataProvider('getValueByPathArrayDataProvider')]
@@ -56,6 +59,9 @@ class VariableUtilityTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws RuntimeException
+     */
     #[Test]
     public function getValueByPathThrowsForMissingPathInStrictMode(): void
     {
@@ -63,6 +69,10 @@ class VariableUtilityTest extends UnitTestCase
         VariableUtility::getValueByPath(['foo' => 'bar'], 'missing');
     }
 
+    /**
+     * @throws ExpectationFailedException
+     * @throws RuntimeException
+     */
     #[Test]
     public function getValueByPathReturnsNullForMissingPathInNonStrictMode(): void
     {
@@ -71,6 +81,10 @@ class VariableUtilityTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws ExpectationFailedException
+     * @throws RuntimeException
+     */
     #[Test]
     public function getValueByPathOnObject(): void
     {
@@ -84,6 +98,10 @@ class VariableUtilityTest extends UnitTestCase
         self::assertEquals('test', VariableUtility::getValueByPath($object, 'name'));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     * @throws RuntimeException
+     */
     #[Test]
     public function getValueByPathOnNestedObjectAndArray(): void
     {

@@ -12,17 +12,30 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Tests\Unit\Service\Configuration\Tca;
 
 use Countable;
+use InvalidArgumentException as BaseInvalidArgumentException;
+use LogicException;
+use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Exception as FrameworkException;
+use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\InvalidArgumentException;
+use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\IncompatibleReturnValueException;
+use PHPUnit\Framework\MockObject\MethodCannotBeConfiguredException;
+use PHPUnit\Framework\MockObject\MethodNameAlreadyConfiguredException;
 use PSBits\Foundation\Data\ExtensionInformationInterface;
 use PSBits\Foundation\Data\PluginConfiguration;
+use PSBits\Foundation\Exceptions\ImplementationException;
 use PSBits\Foundation\Service\Configuration\Tca\NameResolver;
 use PSBits\Foundation\Service\ExtensionInformationService;
 use PSBits\Foundation\Tests\Examples\Domain\Model\AllTcaAttributesModel;
 use PSBits\Foundation\Tests\Examples\Domain\Model\ChildTcaModel;
 use PSBits\Foundation\Tests\Examples\Domain\Model\ForeignTableModel;
 use PSBits\Foundation\Tests\Examples\Domain\Model\ParentTcaModel;
+use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
+use RuntimeException;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Package\PackageInterface;
 use TYPO3\CMS\Core\Package\PackageManager;
@@ -50,6 +63,12 @@ class NameResolverTest extends UnitTestCase
      */
     private array $activePackages = [];
 
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws ReflectionException
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -62,12 +81,19 @@ class NameResolverTest extends UnitTestCase
         $this->resetStaticState();
     }
 
+    /**
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
     protected function tearDown(): void
     {
         $this->resetStaticState();
         parent::tearDown();
     }
 
+    /**
+     * @throws ReflectionException
+     */
     private function resetStaticState(): void
     {
         $classTableMapping = new ReflectionProperty(NameResolver::class, 'classTableMapping');
@@ -76,6 +102,11 @@ class NameResolverTest extends UnitTestCase
         $allowCaching->setValue(null, true);
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ExpectationFailedException
+     * @throws ReflectionException
+     */
     #[Test]
     public function convertClassNameToTableNameReturnsNameFromTableAttribute(): void
     {
@@ -85,6 +116,11 @@ class NameResolverTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ExpectationFailedException
+     * @throws ReflectionException
+     */
     #[Test]
     public function convertClassNameToTableNameFallsBackToNamingConvention(): void
     {
@@ -94,6 +130,11 @@ class NameResolverTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ExpectationFailedException
+     * @throws ReflectionException
+     */
     #[Test]
     public function convertClassNameToTableNameSkipsVendorAndProductForCoreClasses(): void
     {
@@ -103,6 +144,11 @@ class NameResolverTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ExpectationFailedException
+     * @throws ReflectionException
+     */
     #[Test]
     public function convertClassNameToTableNameUsesClassesConfigurationIfAvailable(): void
     {
@@ -115,12 +161,22 @@ class NameResolverTest extends UnitTestCase
         self::assertSame('custom_table', $this->subject->convertClassNameToTableName(AllTcaAttributesModel::class));
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ExpectationFailedException
+     * @throws ReflectionException
+     */
     #[Test]
     public function convertPropertyNameToColumnNameConvertsCamelCaseWithoutClassName(): void
     {
         self::assertSame('my_field_name', $this->subject->convertPropertyNameToColumnName('myFieldName'));
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ExpectationFailedException
+     * @throws ReflectionException
+     */
     #[Test]
     public function convertPropertyNameToColumnNameReturnsNameFromFieldAttribute(): void
     {
@@ -130,6 +186,11 @@ class NameResolverTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ExpectationFailedException
+     * @throws ReflectionException
+     */
     #[Test]
     public function convertPropertyNameToColumnNameFallsBackToConventionWithoutFieldAttribute(): void
     {
@@ -139,6 +200,11 @@ class NameResolverTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ExpectationFailedException
+     * @throws ReflectionException
+     */
     #[Test]
     public function convertPropertyNameToColumnNameUsesClassesConfigurationIfAvailable(): void
     {
@@ -158,6 +224,16 @@ class NameResolverTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws ImplementationException
+     * @throws IncompatibleReturnValueException
+     * @throws InvalidArgumentException
+     * @throws LogicException
+     * @throws NoPreviousThrowableException
+     * @throws ReflectionException
+     */
     #[Test]
     public function getClassesTableMappingBuildsMappingFromExtensionInformation(): void
     {
@@ -191,6 +267,17 @@ class NameResolverTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws ImplementationException
+     * @throws InvalidArgumentException
+     * @throws LogicException
+     * @throws MethodCannotBeConfiguredException
+     * @throws MethodNameAlreadyConfiguredException
+     * @throws NoPreviousThrowableException
+     * @throws ReflectionException
+     */
     #[Test]
     public function getClassesTableMappingReturnsCachedMappingWithoutRebuilding(): void
     {
@@ -209,6 +296,12 @@ class NameResolverTest extends UnitTestCase
         self::assertSame($cachedMapping, $this->subject->getClassesTableMapping());
     }
 
+    /**
+     * @throws ExpectationFailedException
+     * @throws ImplementationException
+     * @throws LogicException
+     * @throws ReflectionException
+     */
     #[Test]
     public function convertTableNameToClassNamesFindsMappedClassNames(): void
     {
@@ -227,6 +320,9 @@ class NameResolverTest extends UnitTestCase
         self::assertSame([], $this->subject->convertTableNameToClassNames('tx_unknown_table'));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function inheritPropertiesFromParentClassesMergesParentProperties(): void
     {
@@ -264,6 +360,14 @@ class NameResolverTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws FrameworkException
+     * @throws IncompatibleReturnValueException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     #[Test]
     public function checkClassesConfigurationLoadsClassesFilesFromActivePackages(): void
     {

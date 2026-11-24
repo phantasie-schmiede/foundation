@@ -12,17 +12,13 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
 use Attribute;
+use InvalidArgumentException;
 use PSBits\Foundation\Enum\Relationship;
 use PSBits\Foundation\Utility\Database\DefinitionUtility;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
 
-/**
- * Class Inline
- *
- * @package PSBits\Foundation\Attribute\TCA\ColumnType
- */
+use function class_exists;
+
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Inline extends AbstractColumnType
 {
@@ -54,9 +50,7 @@ class Inline extends AbstractColumnType
      * @param string|null               $overrideChildTca                https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-overridechildtca
      * @param Relationship              $relationship                    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-relationship
      * @param int|null                  $size                            https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html#confval-inline-size
-     *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function __construct(
@@ -135,8 +129,7 @@ class Inline extends AbstractColumnType
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function getForeignField(): ?string
@@ -247,6 +240,7 @@ class Inline extends AbstractColumnType
 
     /**
      * @return array<string, mixed>
+     * @throws InvalidArgumentException
      */
     public function toArray(): array
     {

@@ -12,10 +12,13 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Service\Typo3;
 
 use Generator;
+use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\InvalidArgumentException;
+use PHPUnit\Framework\MockObject\Exception;
 use PSBits\Foundation\Utility\LocalizationUtility;
-use ReflectionException;
 use ReflectionMethod;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Localization\Locales;
@@ -68,6 +71,9 @@ class LanguageServiceTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function extensionSupportsTheRunningCoreVersion(): void
     {
@@ -82,6 +88,12 @@ class LanguageServiceTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     #[Test]
     #[DataProvider('labelDataProvider')]
     public function getLLLResolvesLabelsAndPluralForms(string $index, string $expectedResult): void
@@ -89,6 +101,11 @@ class LanguageServiceTest extends UnitTestCase
         self::assertSame($expectedResult, $this->invokeGetLLL($index, self::LOCAL_LANGUAGE));
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     private function createSubject(): LanguageService
     {
         /*
@@ -105,8 +122,9 @@ class LanguageServiceTest extends UnitTestCase
 
     /**
      * @param array<string, mixed> $localLanguage
-     *
-     * @throws ReflectionException
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
      */
     private function invokeGetLLL(string $index, array $localLanguage): string
     {

@@ -11,11 +11,6 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Utility\Xml;
 
-/**
- * Interface XmlElementInterface
- *
- * @package PSBits\Foundation\Utility\Xml
- */
 interface XmlElementInterface
 {
     public static function getTagName(): string;

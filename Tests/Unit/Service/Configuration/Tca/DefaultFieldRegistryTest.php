@@ -12,9 +12,11 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Tests\Unit\Service\Configuration\Tca;
 
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\ExpectationFailedException;
 use PSBits\Foundation\Service\Configuration\Tca\DefaultFieldDefinition;
 use PSBits\Foundation\Service\Configuration\Tca\DefaultFieldRegistry;
 use PSBits\Foundation\Service\Configuration\Tca\TcaTable;
+use RuntimeException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -39,6 +41,9 @@ class DefaultFieldRegistryTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @throws RuntimeException
+     */
     protected function tearDown(): void
     {
         unset($GLOBALS['TCA'][self::TABLE_NAME]);
@@ -46,6 +51,9 @@ class DefaultFieldRegistryTest extends UnitTestCase
         parent::tearDown();
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function findByReferenceReturnsMatchingDefinition(): void
     {
@@ -56,6 +64,9 @@ class DefaultFieldRegistryTest extends UnitTestCase
         self::assertSame('timeRestriction', $registry->findByReference('timeRestriction')?->getReference());
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function findByReferenceMatchesUnderscoredVariant(): void
     {
@@ -68,12 +79,18 @@ class DefaultFieldRegistryTest extends UnitTestCase
         self::assertSame('timeRestriction', $registry->findByReference('time_restriction')?->getReference());
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function findByReferenceReturnsNullForUnknownReference(): void
     {
         self::assertNull($this->createRegistry()->findByReference('unknownReference'));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function materializeBlockAddsItemsInDefinitionOrder(): void
     {
@@ -89,6 +106,9 @@ class DefaultFieldRegistryTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function materializeBlockIsIdempotent(): void
     {

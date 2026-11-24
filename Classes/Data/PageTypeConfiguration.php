@@ -11,16 +11,9 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Data;
 
-/**
- * Class PageTypeConfiguration
- *
- * @package PSBits\Foundation\Data
- */
 class PageTypeConfiguration
 {
     /**
-     * @param int          $doktype
-     * @param string       $name
      * @param list<string> $allowedTables  If empty, all tables are allowed.
      * @param string|null  $iconIdentifier Defaults to page-type-[your-page-type-name] if not set.
      * @param string|null  $label          Defaults to

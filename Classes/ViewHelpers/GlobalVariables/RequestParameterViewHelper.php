@@ -13,11 +13,6 @@ namespace PSBits\Foundation\ViewHelpers\GlobalVariables;
 
 use PSBits\Foundation\Service\GlobalVariableProviders\RequestParameterProvider;
 
-/**
- * Class RequestParameterViewHelper
- *
- * @package PSBits\Foundation\ViewHelpers\GlobalVariables
- */
 class RequestParameterViewHelper extends AbstractGlobalVariablesViewHelper
 {
     protected function getBaseKey(): string

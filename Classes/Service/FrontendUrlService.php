@@ -11,15 +11,12 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service;
 
+use InvalidArgumentException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Routing\InvalidRouteArgumentsException;
 use TYPO3\CMS\Core\Routing\RouterInterface;
 use TYPO3\CMS\Core\Site\SiteFinder;
 
-/**
- * Class FrontendUrlService
- *
- * @package PSBits\Foundation\Service
- */
 readonly class FrontendUrlService
 {
     public function __construct(
@@ -29,7 +26,8 @@ readonly class FrontendUrlService
 
     /**
      * @param array<string, mixed> $parameters
-     *
+     * @throws InvalidArgumentException
+     * @throws InvalidRouteArgumentsException // t3:14
      * @throws SiteNotFoundException
      */
     public function buildPageUrl(

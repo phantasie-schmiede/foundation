@@ -11,30 +11,34 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\ViewHelpers;
 
+use ArgumentCountError;
+use Error;
+use Exception as Exception2;
 use InvalidArgumentException;
-use JsonException;
 use PSBits\Foundation\Utility\Configuration\FilePathUtility;
 use PSBits\Foundation\Utility\ContextUtility;
 use PSBits\Foundation\Utility\LocalizationUtility;
 use PSBits\Foundation\ViewHelpers\Translation\RegisterLanguageFileViewHelper;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use ReflectionException;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
+use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Exception;
+use ValueError;
 
 use function count;
+use function explode;
+use function implode;
 use function in_array;
 use function is_array;
+use function lcfirst;
+use function str_replace;
+use function str_starts_with;
 
 /**
- * Class TranslateViewHelper
- *
  * Extended clone of the core ViewHelper.
  * - uses \PSBits\Foundation\Utility\LocalizationUtility to log missing language labels
  * - supports plural forms in language files:
@@ -63,8 +67,6 @@ use function is_array;
  *   If a variable is not passed, the marker will remain untouched!
  * - adds the attribute "excludedLanguages": matching language keys will return null (bypasses fallbacks!)
  *   This way you can remove texts from certain site languages without additional condition wrappers in your template.
- *
- * @package PSBits\Foundation\ViewHelpers
  */
 class TranslateViewHelper extends AbstractViewHelper
 {
@@ -80,14 +82,9 @@ class TranslateViewHelper extends AbstractViewHelper
      * @param string|null               $extensionName UpperCamelCased extension key (for example BlogExample)
      * @param array<string, mixed>|null $arguments     Arguments to be replaced in the resulting string
      * @param string|null               $languageKey   Language key to use for this translation
-     *
-     * @return string|null
-     * @throws AspectNotFoundException
      * @throws ContainerExceptionInterface
-     * @throws InvalidArgumentException
-     * @throws JsonException
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
+     * @throws Error
+     * @throws Exception2
      */
     protected static function translate(
         string  $id,
@@ -98,6 +95,9 @@ class TranslateViewHelper extends AbstractViewHelper
         return LocalizationUtility::translate($id, $extensionName, $arguments, $languageKey);
     }
 
+    /**
+     * @throws RuntimeException
+     */
     private static function buildIdFromRequest(string $id, RequestInterface $request): string
     {
         $path = 'LLL:EXT:' . GeneralUtility::camelCaseToLowerCaseUnderscored(
@@ -124,10 +124,8 @@ class TranslateViewHelper extends AbstractViewHelper
     }
 
     /**
-     * @param string                    $id
-     * @param RenderingContextInterface $renderingContext
-     *
      * @return false|string
+     * @throws ValueError
      */
     private static function checkRegisteredLanguageFiles(
         string                    $id,
@@ -182,11 +180,13 @@ class TranslateViewHelper extends AbstractViewHelper
     }
 
     /**
-     * @throws AspectNotFoundException
+     * @throws ArgumentCountError
      * @throws ContainerExceptionInterface
-     * @throws JsonException
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
+     * @throws Error
+     * @throws Exception
+     * @throws Exception2
+     * @throws RuntimeException
+     * @throws ValueError
      */
     public function render(): mixed
     {

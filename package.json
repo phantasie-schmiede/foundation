@@ -1,12 +1,14 @@
 {
   "name": "foundation",
-  "version": "3.3.0",
+  "version": "4.2.3",
   "description": "Configuration framework for TYPO3 extension development",
   "scripts": {
     "fix:classes": "node .Build/vendor/psbits/qa/Resources/Quality/lint-class-attributes.mjs",
-    "fix:htmlxml": "prettier --config .Build/vendor/psbits/qa/Resources/Quality/prettier.config.mjs --ignore-path Build/Quality/.prettierignore --write \"**/*.{xml,xlf}\"",
+    "fix:htmlxml": "node .Build/vendor/psbits/qa/Resources/Quality/prettier.mjs fix",
+    "fix:json": "prettier --config .Build/vendor/psbits/qa/Resources/Quality/prettier.config.mjs --ignore-path Build/Quality/.prettierignore --write \"package.json\"",
     "lint:classes": "node .Build/vendor/psbits/qa/Resources/Quality/lint-class-attributes.mjs --dry-run",
-    "lint:htmlxml": "prettier --config .Build/vendor/psbits/qa/Resources/Quality/prettier.config.mjs --ignore-path Build/Quality/.prettierignore --check \"**/*.{xml,xlf}\""
+    "lint:htmlxml": "node .Build/vendor/psbits/qa/Resources/Quality/prettier.mjs check",
+    "lint:json": "prettier --config .Build/vendor/psbits/qa/Resources/Quality/prettier.config.mjs --ignore-path Build/Quality/.prettierignore --check \"package.json\""
   },
   "repository": {
     "type": "git",

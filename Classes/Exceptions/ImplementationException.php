@@ -12,11 +12,7 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Exceptions;
 
 /**
- * Class ImplementationException
- *
  * This exception should be thrown when Service or Utility classes are not used as intended.
- *
- * @package PSBits\Foundation\Exceptions
  */
 class ImplementationException extends BaseException
 {

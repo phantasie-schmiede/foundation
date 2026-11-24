@@ -11,11 +11,6 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Enum;
 
-/**
- * Enum ContentType
- *
- * @package PSBits\Foundation\Enum
- */
 enum ContentType: string
 {
     case HTML  = 'text/html';

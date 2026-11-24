@@ -16,16 +16,12 @@ use RuntimeException;
 
 use function in_array;
 
-/**
- * Class ValidationUtility
- *
- * @package PSBits\Foundation\Utility
- */
 class ValidationUtility
 {
     /**
      * @param array<string, mixed> $constant
      * @param list<string>         $keys
+     * @throws InvalidArgumentException
      */
     public static function checkArrayAgainstConstantKeys(array $constant, array $keys): void
     {
@@ -37,6 +33,7 @@ class ValidationUtility
     /**
      * @param array<string, mixed> $constant
      * @param list<mixed>          $values
+     * @throws InvalidArgumentException
      */
     public static function checkArrayAgainstConstantValues(array $constant, array $values): void
     {
@@ -47,6 +44,7 @@ class ValidationUtility
 
     /**
      * @param array<string, mixed> $constant
+     * @throws InvalidArgumentException
      */
     public static function checkKeyAgainstConstant(array $constant, string $key): void
     {
@@ -60,6 +58,7 @@ class ValidationUtility
 
     /**
      * @param array<string, mixed> $constant
+     * @throws InvalidArgumentException
      */
     public static function checkValueAgainstConstant(array $constant, mixed $value): void
     {
@@ -71,6 +70,9 @@ class ValidationUtility
         }
     }
 
+    /**
+     * @throws RuntimeException
+     */
     public static function requiresBackendContext(): void
     {
         if (!ContextUtility::isBackend()) {
@@ -78,6 +80,9 @@ class ValidationUtility
         }
     }
 
+    /**
+     * @throws RuntimeException
+     */
     public static function requiresFrontendContext(): void
     {
         if (!ContextUtility::isFrontend()) {
@@ -85,6 +90,9 @@ class ValidationUtility
         }
     }
 
+    /**
+     * @throws RuntimeException
+     */
     public static function requiresTypoScriptLoaded(): void
     {
         if (!ContextUtility::isTypoScriptAvailable()) {

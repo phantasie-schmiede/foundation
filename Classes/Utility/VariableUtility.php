@@ -18,20 +18,12 @@ use function array_key_exists;
 use function is_array;
 use function is_object;
 
-/**
- * Class VariableUtility
- *
- * @package PSBits\Foundation\Utility
- */
 class VariableUtility
 {
     /**
      * @param object|array<string, mixed> $variable
-     * @param string                      $path
-     * @param bool                        $strict    If set to false this function will return null if path does not exist.
-     * @param string                      $delimiter
-     *
-     * @return mixed
+     * @param bool                        $strict   If set to false this function will return null if path does not exist.
+     * @throws RuntimeException
      */
     public static function getValueByPath(
         object|array $variable,

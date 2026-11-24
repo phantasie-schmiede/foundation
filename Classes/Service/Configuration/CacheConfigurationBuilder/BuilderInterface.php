@@ -11,11 +11,6 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service\Configuration\CacheConfigurationBuilder;
 
-/**
- * Interface BuilderInterface
- *
- * @package PSBits\Foundation\Service\Configuration\CacheConfigurationBuilder
- */
 interface BuilderInterface
 {
     /**

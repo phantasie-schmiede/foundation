@@ -14,20 +14,17 @@ namespace PSBits\Foundation\Utility;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Result;
 use Generator;
+use InvalidArgumentException;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class QueryBuilderUtility
- *
- * @package PSBits\Foundation\Utility
- */
 class QueryBuilderUtility
 {
     /**
      * @return Generator<int, Result>
      * @throws Exception
+     * @throws InvalidArgumentException
      */
     public static function processInChunks(QueryBuilder $queryBuilder, int $chunkSize): Generator
     {

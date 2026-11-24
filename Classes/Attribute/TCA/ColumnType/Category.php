@@ -12,17 +12,13 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
 use Attribute;
+use InvalidArgumentException;
 use PSBits\Foundation\Enum\Relationship;
 use PSBits\Foundation\Utility\Database\DefinitionUtility;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
 
-/**
- * Class Category
- *
- * @package PSBits\Foundation\Attribute\TCA\ColumnType
- */
+use function implode;
+
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Category extends AbstractColumnType
 {
@@ -127,8 +123,7 @@ class Category extends AbstractColumnType
 
     /**
      * @return array<string, mixed>|null
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function getTreeConfig(): ?array

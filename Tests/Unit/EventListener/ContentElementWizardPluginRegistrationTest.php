@@ -11,23 +11,29 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\EventListener;
 
+use Doctrine\DBAL\Exception as DBALException;
+use Error;
+use Exception as BaseException;
+use InvalidArgumentException as BaseInvalidArgumentException;
+use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Exception as FrameworkException;
+use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\InvalidArgumentException;
+use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\IncompatibleReturnValueException;
 use PSBits\Foundation\Data\ExtensionInformationInterface;
 use PSBits\Foundation\Data\PluginConfiguration;
 use PSBits\Foundation\Service\ExtensionInformationService;
-use PSBits\Foundation\Tests\Examples\FakeLanguageServiceFactory;
 use PSBits\Foundation\Utility\Localization\LoggingUtility;
 use PSBits\Foundation\Utility\Typo3VersionUtility;
+use PSBits\Qa\Testing\Support\LanguageStackSeeder;
+use Psr\Container\ContainerExceptionInterface;
+use ReflectionException;
 use ReflectionProperty;
 use TYPO3\CMS\Backend\Controller\Event\ModifyNewContentElementWizardItemsEvent;
-use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
-use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
-use TYPO3\CMS\Core\Localization\Locale;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 use function array_filter;
@@ -41,11 +47,25 @@ use function array_search;
  */
 class ContentElementWizardPluginRegistrationTest extends UnitTestCase
 {
+    use LanguageStackSeeder;
+
     private const string LIST_TYPE = 'poems_poem';
 
     private IconRegistry|null $iconRegistry            = null;
     protected bool            $resetSingletonInstances = true;
 
+    /**
+     * @throws BaseException
+     * @throws BaseInvalidArgumentException
+     * @throws ContainerExceptionInterface
+     * @throws DBALException
+     * @throws Error
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws FrameworkException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     #[Test]
     public function replacesTheTcaDerivedItemWithTheVendorGroupItem(): void
     {
@@ -66,6 +86,17 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
         self::assertSame('content-plugin', $item['iconIdentifier']);
     }
 
+    /**
+     * @throws BaseException
+     * @throws BaseInvalidArgumentException
+     * @throws ContainerExceptionInterface
+     * @throws DBALException
+     * @throws Error
+     * @throws Exception
+     * @throws FrameworkException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     #[Test]
     public function removesTheTcaDerivedItemWhenThePluginIsExcluded(): void
     {
@@ -80,6 +111,18 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
         self::assertArrayNotHasKey('psbits_' . self::LIST_TYPE, $items);
     }
 
+    /**
+     * @throws BaseException
+     * @throws BaseInvalidArgumentException
+     * @throws ContainerExceptionInterface
+     * @throws DBALException
+     * @throws Error
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws FrameworkException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     #[Test]
     public function addsTheVendorGroupItemWithoutAnExistingTcaItem(): void
     {
@@ -96,6 +139,18 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
         self::assertSame($this->getExpectedDefaultValues(), $items['psbits_' . self::LIST_TYPE]['defaultValues']);
     }
 
+    /**
+     * @throws BaseException
+     * @throws BaseInvalidArgumentException
+     * @throws ContainerExceptionInterface
+     * @throws DBALException
+     * @throws Error
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws FrameworkException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     #[Test]
     public function registersTheVendorGroupHeaderOnlyOnceForMultiplePlugins(): void
     {
@@ -117,6 +172,18 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws BaseException
+     * @throws BaseInvalidArgumentException
+     * @throws ContainerExceptionInterface
+     * @throws DBALException
+     * @throws Error
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws FrameworkException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     #[Test]
     public function usesTheConfiguredGroupAndIcon(): void
     {
@@ -141,6 +208,12 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
         self::assertSame('poems-poem', $items['custom_' . self::LIST_TYPE]['iconIdentifier']);
     }
 
+    /**
+     * @throws Exception
+     * @throws IncompatibleReturnValueException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     private function createSubject(PluginConfiguration ...$plugins): ContentElementWizardPluginRegistration
     {
         $extensionInformationService = $this->createMock(ExtensionInformationService::class);
@@ -160,6 +233,7 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
 
     /**
      * @param array<string, array<string, mixed>> $wizardItems
+     * @throws BaseInvalidArgumentException
      */
     private function createEvent(array $wizardItems): ModifyNewContentElementWizardItemsEvent
     {
@@ -215,6 +289,12 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @throws Exception
+     * @throws IncompatibleReturnValueException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     private function createExtensionInformation(PluginConfiguration ...$plugins): ExtensionInformationInterface
     {
         $extensionInformation = $this->createMock(ExtensionInformationInterface::class);
@@ -230,6 +310,12 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
         return $extensionInformation;
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws ReflectionException
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -242,32 +328,9 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
 
         /*
          * The language service factory is overwritten in ext_localconf.php, which does not run in unit tests.
-         * Pre-seed the singleton so translations resolve without the core factory's dependencies.
+         * The seeder pre-seeds the singleton so translations resolve without the core factory's dependencies.
          */
-        $languageService = $this->createMock(LanguageService::class);
-        $languageService->method('getLocale')
-            ->willReturn(new Locale('en'));
-
-        GeneralUtility::setSingletonInstance(
-            LanguageServiceFactory::class,
-            new FakeLanguageServiceFactory($languageService)
-        );
-
-        /*
-         * On v13, the core keeps the language service in the runtime cache between lookups, which is not configured
-         * in unit tests. A stubbed cache manager serves the pre-seeded language service instead.
-         */
-        if (false === Typo3VersionUtility::isAtLeast('14.0')) {
-            $cache = $this->createMock(FrontendInterface::class);
-            $cache->method('get')
-                ->willReturn($languageService);
-
-            $cacheManager = $this->createMock(CacheManager::class);
-            $cacheManager->method('getCache')
-                ->willReturn($cache);
-
-            GeneralUtility::setSingletonInstance(CacheManager::class, $cacheManager);
-        }
+        $this->seedLanguageStack();
 
         $this->iconRegistry = null;
     }

@@ -14,11 +14,8 @@ namespace PSBits\Foundation\Utility\Configuration;
 use PSBits\Foundation\Data\ExtensionInformationInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class IconUtility
- *
- * @package PSBits\Foundation\Utility\Configuration
- */
+use function str_replace;
+
 class IconUtility
 {
     public static function getDefaultIdentifier(

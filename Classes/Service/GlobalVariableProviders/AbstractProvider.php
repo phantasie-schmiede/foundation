@@ -11,11 +11,6 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service\GlobalVariableProviders;
 
-/**
- * Class AbstractProvider
- *
- * @package PSBits\Foundation\Service\GlobalVariableProviders
- */
 abstract class AbstractProvider implements GlobalVariableProviderInterface
 {
     protected bool $cacheable = true;

@@ -12,18 +12,13 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Attribute\TCA;
 
 use Attribute;
+use InvalidArgumentException;
 use PSBits\Foundation\Attribute\TCA\ColumnType\ColumnTypeInterface;
 use PSBits\Foundation\Service\Configuration\Tca\Position;
 use PSBits\Foundation\Utility\Configuration\TcaUtility;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use ReflectionException;
 
-/**
- * Class Column
- *
- * @package PSBits\Foundation\Attribute\TCA
- */
+use function str_ends_with;
+
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Column extends AbstractTcaAttribute
 {
@@ -71,7 +66,6 @@ class Column extends AbstractTcaAttribute
      * @param string                           $label                        https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-label
      * @param bool|null                        $nullable                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Datetime/Index.html#confval-datetime-nullable
      * @param string|null                      $onChange                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Columns/Index.html#confval-columns-onchange
-     * @param string                           $position
      * @param bool|null                        $readOnly                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-readonly
      * @param bool|null                        $required                     https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Input/Index.html#confval-input-required
      * @param string                           $typeList                     Comma separated list of record types (values of the TCA
@@ -182,11 +176,6 @@ class Column extends AbstractTcaAttribute
         return $this->onChange;
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
-     */
     public function getPosition(): string
     {
         return Position::normalize(
@@ -238,6 +227,7 @@ class Column extends AbstractTcaAttribute
 
     /**
      * @return array<string, mixed>
+     * @throws InvalidArgumentException
      */
     public function toArray(): array
     {

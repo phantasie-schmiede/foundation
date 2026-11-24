@@ -12,17 +12,16 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
 use Attribute;
+use InvalidArgumentException;
 use PSBits\Foundation\Enum\Relationship;
 use PSBits\Foundation\Utility\Database\DefinitionUtility;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
 
-/**
- * Class Group
- *
- * @package PSBits\Foundation\Attribute\TCA\ColumnType
- */
+use function array_keys;
+use function array_map;
+use function class_exists;
+use function implode;
+
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Group extends AbstractColumnType
 {
@@ -50,9 +49,7 @@ class Group extends AbstractColumnType
      * @param string|null               $prependTname                           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Group/Index.html#confval-group-prepend-tname
      * @param Relationship|null         $relationship                           https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Group/Index.html#confval-group-relationship
      * @param int|null                  $size                                   https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Group/Index.html#confval-group-size
-     *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
     public function __construct(

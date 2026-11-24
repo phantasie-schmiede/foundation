@@ -23,11 +23,11 @@
             <trans-unit id="noIcons">
                 <source>No registered icons were found.</source>
             </trans-unit>
-            <trans-unit id="table.preview">
-                <source>Preview</source>
-            </trans-unit>
             <trans-unit id="table.identifier">
                 <source>Identifier</source>
+            </trans-unit>
+            <trans-unit id="table.preview">
+                <source>Preview</source>
             </trans-unit>
             <trans-unit id="table.source">
                 <source>Source</source>

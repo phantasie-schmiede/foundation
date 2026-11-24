@@ -10,8 +10,12 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Tests\Unit\ViewHelpers;
 
+use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\InvalidArgumentException;
+use PHPUnit\Framework\MockObject\Exception;
 use PSBits\Foundation\Service\GlobalVariableProviders\EarlyAccessConstantsProvider;
 use PSBits\Foundation\Service\GlobalVariableProviders\RequestParameterProvider;
 use PSBits\Foundation\Service\GlobalVariableProviders\SiteConfigurationProvider;
@@ -23,6 +27,7 @@ use PSBits\Foundation\ViewHelpers\GlobalVariables\SiteConfigurationViewHelper;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
+use RuntimeException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
@@ -61,7 +66,7 @@ class AbstractGlobalVariablesViewHelperTest extends UnitTestCase
 
     /**
      * @param class-string $viewHelperClass
-     *
+     * @throws ExpectationFailedException
      * @throws ReflectionException
      */
     #[Test]
@@ -80,7 +85,8 @@ class AbstractGlobalVariablesViewHelperTest extends UnitTestCase
      * getVariable() has to join the base key and the path with a dot. This is the exact composition
      * the render() migration relies on.
      *
-     * @throws ReflectionException
+     * @throws ExpectationFailedException
+     * @throws RuntimeException
      */
     #[Test]
     public function getVariableJoinsBaseKeyAndPathWithADot(): void
@@ -101,7 +107,8 @@ class AbstractGlobalVariablesViewHelperTest extends UnitTestCase
     }
 
     /**
-     * @throws ReflectionException
+     * @throws ExpectationFailedException
+     * @throws RuntimeException
      */
     #[Test]
     public function getVariablePassesTheFallbackThroughForAnUnknownNestedKey(): void
@@ -125,7 +132,8 @@ class AbstractGlobalVariablesViewHelperTest extends UnitTestCase
      * Without a path the lookup stops at the base key, which is the provider class name. The service
      * keys its variables by that name, so the result is the provider's whole variable array.
      *
-     * @throws ReflectionException
+     * @throws ExpectationFailedException
+     * @throws RuntimeException
      */
     #[Test]
     public function getVariableReturnsTheWholeProviderSetWhenNoPathIsGiven(): void
@@ -147,7 +155,10 @@ class AbstractGlobalVariablesViewHelperTest extends UnitTestCase
 
     /**
      * @param class-string $viewHelperClass
-     *
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
      * @throws ReflectionException
      */
     #[Test]
@@ -165,6 +176,9 @@ class AbstractGlobalVariablesViewHelperTest extends UnitTestCase
         );
     }
 
+    /**
+     * @throws RuntimeException
+     */
     protected function tearDown(): void
     {
         GlobalVariableService::clearCache();

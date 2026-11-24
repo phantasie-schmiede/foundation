@@ -15,11 +15,6 @@ use Attribute;
 use PSBits\Foundation\Enum\Relationship;
 use PSBits\Foundation\Utility\Database\DefinitionUtility;
 
-/**
- * Class Folder
- *
- * @package PSBits\Foundation\Attribute\TCA\ColumnType
- */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Folder extends AbstractColumnType
 {

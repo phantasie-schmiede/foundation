@@ -12,15 +12,11 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Data;
 
 /**
- * Class ModuleConfiguration
- *
- * @package PSBits\Foundation\Data
  * @see     https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ExtensionArchitecture/HowTo/BackendModule/ModuleConfiguration.html
  */
 class ModuleConfiguration extends MainModuleConfiguration
 {
     /**
-     * @param string                                 $key
      * @param string                                 $access              https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ExtensionArchitecture/HowTo/BackendModule/ModuleConfiguration.html
      * @param array<int|string, string|list<string>> $controllers         https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ExtensionArchitecture/HowTo/BackendModule/ModuleConfiguration.html
      * @param string|null                            $iconIdentifier      https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ExtensionArchitecture/HowTo/BackendModule/ModuleConfiguration.html

@@ -13,6 +13,7 @@ namespace PSBits\Foundation\Tests\Unit\Service\Configuration\Tca;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\ExpectationFailedException;
 use PSBits\Foundation\Service\Configuration\Tca\ShowItemList;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -57,6 +58,9 @@ class ShowItemListTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     #[DataProvider('containsPaletteReferenceDataProvider')]
     public function containsPaletteReference(string $showItem, string $paletteIdentifier, bool $expected): void
@@ -64,6 +68,9 @@ class ShowItemListTest extends UnitTestCase
         self::assertSame($expected, ShowItemList::fromString($showItem)->containsPaletteReference($paletteIdentifier));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function containsPaletteReferenceFindsReferenceInList(): void
     {
@@ -73,6 +80,9 @@ class ShowItemListTest extends UnitTestCase
         self::assertFalse($showItemList->containsPaletteReference('other_palette'));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function containsFieldFindsPlainField(): void
     {
@@ -83,6 +93,9 @@ class ShowItemListTest extends UnitTestCase
         self::assertFalse($showItemList->containsField('field_c'));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function containsFieldIgnoresFieldsOfPaletteReferences(): void
     {
@@ -93,6 +106,9 @@ class ShowItemListTest extends UnitTestCase
         self::assertFalse($showItemList->containsField('my_palette'));
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function fromStringTrimsWhitespace(): void
     {
@@ -101,6 +117,9 @@ class ShowItemListTest extends UnitTestCase
         self::assertSame(['field_a', 'field_b'], $showItemList->getFieldNames());
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function fromStringWithEmptyStringReturnsSingleEmptyItem(): void
     {

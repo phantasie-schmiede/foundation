@@ -14,13 +14,9 @@ namespace PSBits\Foundation\Service\Configuration\Tca;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class DefaultFieldRegistry
- *
  * Keeps track of the default showitem entries (tabs, palettes and fields) that are added to the showitems of all
  * types after the position-dependencies of the columns have been resolved. It resolves position references to these
  * entries and materializes their blocks on demand.
- *
- * @package PSBits\Foundation\Service\Configuration\Tca
  */
 class DefaultFieldRegistry
 {

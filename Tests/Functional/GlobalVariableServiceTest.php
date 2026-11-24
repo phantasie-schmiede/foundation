@@ -16,7 +16,7 @@ use PSBits\Foundation\Service\GlobalVariableProviders\EarlyAccessConstantsProvid
 use PSBits\Foundation\Service\GlobalVariableProviders\RequestParameterProvider;
 use PSBits\Foundation\Service\GlobalVariableProviders\SiteConfigurationProvider;
 use PSBits\Foundation\Service\GlobalVariableService;
-use PSBits\Foundation\Tests\Functional\SiteHandling\SiteBasedTestTrait;
+use PSBits\Qa\Testing\Support\SiteBasedTestTrait;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;

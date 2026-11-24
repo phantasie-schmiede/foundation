@@ -13,11 +13,6 @@ namespace PSBits\Foundation\Attribute;
 
 use PSBits\Foundation\Traits\ObjectToArrayTrait;
 
-/**
- * Class AbstractAttribute
- *
- * @package PSBits\Foundation\Attribute
- */
 abstract class AbstractAttribute
 {
     use ObjectToArrayTrait;

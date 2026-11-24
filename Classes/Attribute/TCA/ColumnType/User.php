@@ -14,10 +14,7 @@ namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 use Attribute;
 
 /**
- * Class User
- *
  * @link    https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/User/Index.html#confval-user-rendertype
- * @package PSBits\Foundation\Attribute\TCA\ColumnType
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class User extends AbstractColumnType

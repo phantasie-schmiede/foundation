@@ -13,11 +13,6 @@ namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
 use Attribute;
 
-/**
- * Class PassThrough
- *
- * @package PSBits\Foundation\Attribute\TCA\ColumnType
- */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class PassThrough extends AbstractColumnType
 {

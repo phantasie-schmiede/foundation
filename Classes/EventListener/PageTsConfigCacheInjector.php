@@ -15,12 +15,11 @@ use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\TypoScript\IncludeTree\Event\BeforeLoadedPageTsConfigEvent;
 
+use function file_get_contents;
+use function trim;
+
 /**
- * Class PageTsConfigCacheInjector
- *
  * Injects the generated cache configuration TSconfig into the global page TSconfig.
- *
- * @package PSBits\Foundation\EventListener
  */
 #[AsEventListener(identifier: 'foundation_pageTsConfigCacheInjector')]
 final readonly class PageTsConfigCacheInjector

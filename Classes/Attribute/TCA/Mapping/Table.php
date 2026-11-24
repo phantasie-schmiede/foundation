@@ -14,21 +14,16 @@ namespace PSBits\Foundation\Attribute\TCA\Mapping;
 use Attribute;
 
 /**
- * Class Table
- *
  * Use this attribute to map a domain model to a table which does not convey to the naming convention, e. g. when
  * extending another model.
  *
- * @package PSBits\Foundation\Attribute\TCA\Mapping
  * @see     https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Domain/Model.html#table-and-field-mapping
  */
 #[Attribute(Attribute::TARGET_CLASS)]
 class Table
 {
     /**
-     * @param string          $name
-     * @param string|null     $parentClass If parent class is given, the model will be added to that class' subclasses.
-     * @param int|string|null $recordType
+     * @param string|null $parentClass If parent class is given, the model will be added to that class' subclasses.
      */
     public function __construct(
         protected string          $name,

@@ -12,24 +12,25 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Utility\Xml;
 
 use DOMDocument;
+use DOMException;
+use Error;
+use InvalidArgumentException;
 use JsonException;
 use PSBits\Foundation\Utility\StringUtility;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
 use RuntimeException;
 use SimpleXMLElement;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
 
 use function is_array;
 use function is_string;
+use function ksort;
+use function str_replace;
+use function trim;
 
-/**
- * Class XmlUtility
- *
- * @package PSBits\Foundation\Utility\Xml
- */
 class XmlUtility
 {
     public const array SPECIAL_ARRAY_KEYS = [
@@ -46,6 +47,9 @@ class XmlUtility
     ];
     public const string XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>';
 
+    /**
+     * @throws DOMException
+     */
     public static function beautifyXml(string $xml, bool $forceNoWrap = false): string
     {
         $dom                     = new DOMDocument();
@@ -67,15 +71,16 @@ class XmlUtility
     }
 
     /**
-     * @param SimpleXMLElement|string                          $xml
      * @param bool                                             $sortAlphabetically Sort tags on same level alphabetically by tag name.
      * @param array<string, class-string<XmlElementInterface>> $mapping
-     *
      * @return array<string, mixed>|SimpleXMLElement|XmlElementInterface
      * @throws ContainerExceptionInterface
+     * @throws Error
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     public static function convertFromXml(
         SimpleXMLElement|string $xml,
@@ -104,6 +109,7 @@ class XmlUtility
 
     /**
      * @param array<string, mixed>|XmlElementInterface $data
+     * @throws DOMException
      */
     public static function convertToXml(
         array|XmlElementInterface $data,
@@ -121,6 +127,7 @@ class XmlUtility
 
     /**
      * @param array<string, mixed> $array
+     * @throws RuntimeException
      */
     public static function getNodeValue(array $array, string $path, bool $strict = true): mixed
     {
@@ -135,6 +142,7 @@ class XmlUtility
 
     /**
      * @param array<mixed, mixed> $array
+     * @throws RuntimeException
      */
     public static function removeNode(array &$array, string $path, bool $strict = false): void
     {
@@ -152,6 +160,7 @@ class XmlUtility
 
     /**
      * @param array<mixed, mixed> $array
+     * @throws RuntimeException
      */
     public static function setNodeValue(array &$array, string $path, mixed $value): void
     {
@@ -160,18 +169,18 @@ class XmlUtility
     }
 
     /**
-     * @param bool                                             $sortAlphabetically
-     * @param SimpleXMLElement                                 $xml
      * @param array<string, class-string<XmlElementInterface>> $mapping
      * @param array<string, string>                            $namespaces
-     * @param bool                                             $rootLevel          This is an internal parameter only to be set
-     *                                                                             from within this function.
-     *
+     * @param bool                                             $rootLevel  This is an internal parameter only to be set
+     *                                                                     from within this function.
      * @return array<string, mixed>|SimpleXMLElement|XmlElementInterface
      * @throws ContainerExceptionInterface
+     * @throws Error
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     private static function buildFromXml(
         bool             $sortAlphabetically,
@@ -365,7 +374,6 @@ class XmlUtility
 
     /**
      * @param list<array{tagName: string, tagValue: mixed}> $siblings
-     *
      * @return list<array{tagName: string, tagValue: mixed}>
      */
     private static function sortSiblings(array $siblings): array

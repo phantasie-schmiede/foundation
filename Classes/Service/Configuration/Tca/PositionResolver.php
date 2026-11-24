@@ -11,26 +11,29 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service\Configuration\Tca;
 
+use DateMalformedStringException;
+use Doctrine\DBAL\Exception as DBALException;
+use Error;
+use InvalidArgumentException;
 use JsonException;
 use PSBits\Foundation\Attribute\TCA\Column;
 use PSBits\Foundation\Attribute\TCA\Palette;
 use PSBits\Foundation\Attribute\TCA\Tab;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
+use RuntimeException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
 
+use function array_filter;
+use function implode;
 use function in_array;
 
 /**
- * Class PositionResolver
- *
  * Resolves the position-dependencies of TCA fields (e.g. "after:myField", "palette:myPalette", "tab:myTab") and
  * adds the fields, palettes and tabs to the showitems as soon as all requirements are met.
- *
- * @package PSBits\Foundation\Service\Configuration\Tca
  */
 readonly class PositionResolver
 {
@@ -51,16 +54,18 @@ readonly class PositionResolver
      * This method resolves position-dependencies and only adds the field (and palette or tab) if all requirements are
      * met.
      *
-     * @param Column $attribute
-     * @param string $columnName
-     *
      * @return bool returns true if the field could be added to TCA
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function addFieldIfAlreadyPossible(Column $attribute, string $columnName): bool
     {
@@ -213,11 +218,16 @@ readonly class PositionResolver
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function addPaletteToShowItems(string $paletteIdentifier, string $typeList = ''): void
     {
@@ -234,11 +244,16 @@ readonly class PositionResolver
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function addTabToShowItems(string $identifier, string $label = '', string $typeList = ''): string
     {
@@ -264,6 +279,31 @@ readonly class PositionResolver
     }
 
     /**
+     * Normalizes the position of a palette or tab against the showitem items that are not columns (see
+     * resolveShowItemReference).
+     *
+     * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
+     * @throws JsonException
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
+    private function normalizeShowItemPosition(string $position): string
+    {
+        if ('' === $position) {
+            return $position;
+        }
+
+        return $this->resolveShowItemReference(Position::fromString($position)) ?? $position;
+    }
+
+    /**
      * Resolves the given position against the showitem items that are not columns: the default field anchors (which
      * are added to the showitems after the position-dependencies of the columns have been resolved) and the
      * user-defined palettes and tabs.
@@ -275,10 +315,16 @@ readonly class PositionResolver
      * Returns the position normalized to a form the core can match, or null if the reference can't be resolved.
      *
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     private function resolveShowItemReference(Position $parsedPosition): ?string
     {
@@ -332,24 +378,5 @@ readonly class PositionResolver
         }
 
         return null;
-    }
-
-    /**
-     * Normalizes the position of a palette or tab against the showitem items that are not columns (see
-     * resolveShowItemReference).
-     *
-     * @throws ContainerExceptionInterface
-     * @throws ExtensionConfigurationExtensionNotConfiguredException
-     * @throws ExtensionConfigurationPathDoesNotExistException
-     * @throws JsonException
-     * @throws NotFoundExceptionInterface
-     */
-    private function normalizeShowItemPosition(string $position): string
-    {
-        if ('' === $position) {
-            return $position;
-        }
-
-        return $this->resolveShowItemReference(Position::fromString($position)) ?? $position;
     }
 }

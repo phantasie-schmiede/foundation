@@ -12,15 +12,19 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Utility\Localization;
 
 use Closure;
+use DateMalformedStringException;
 use Doctrine\DBAL\Exception;
+use InvalidArgumentException;
 use JsonException;
+use LogicException;
 use PSBits\Foundation\Data\ExtensionInformation;
 use PSBits\Foundation\Service\ExtensionInformationService;
 use PSBits\Foundation\Utility\Configuration\FilePathUtility;
 use PSBits\Foundation\Utility\ContextUtility;
 use PSBits\Foundation\Utility\FileUtility;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
+use RuntimeException;
+use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
@@ -28,11 +32,15 @@ use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExis
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class LoggingUtility
- *
- * @package PSBits\Foundation\Utility\Localization
- */
+use function file_get_contents;
+use function json_decode;
+use function json_encode;
+use function str_replace;
+use function str_starts_with;
+use function substr;
+use function trim;
+use function unlink;
+
 class LoggingUtility
 {
     public const string LOCK_FILE_NAME    = '_.lock';
@@ -50,8 +58,9 @@ class LoggingUtility
     private static ?bool $logMissingLanguageLabels = null;
 
     /**
-     * @throws Exception
-     * @throws \Exception
+     * @throws DateMalformedStringException
+     * @throws LogicException
+     * @throws RuntimeException
      */
     public static function checkPostponedAccessLogEntries(): void
     {
@@ -73,7 +82,10 @@ class LoggingUtility
     }
 
     /**
-     * @throws \Exception
+     * @throws DateMalformedStringException
+     * @throws DirectoryNotFoundException
+     * @throws LogicException
+     * @throws RuntimeException
      */
     public static function checkPostponedLogEntries(Closure $closure, string $logFilePattern): void
     {
@@ -102,8 +114,9 @@ class LoggingUtility
     }
 
     /**
-     * @throws JsonException
-     * @throws \Exception
+     * @throws DateMalformedStringException
+     * @throws LogicException
+     * @throws RuntimeException
      */
     public static function checkPostponedMissingLogEntries(): void
     {
@@ -125,14 +138,14 @@ class LoggingUtility
     }
 
     /**
-     * @param string $key
-     *
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
      * @throws Exception
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
-     * @throws NotFoundExceptionInterface
-     * @throws \Exception
+     * @throws InvalidArgumentException
+     * @throws JsonException
+     * @throws RuntimeException
      */
     public static function logLanguageLabelAccess(string $key): void
     {
@@ -179,10 +192,13 @@ class LoggingUtility
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws Exception
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws RuntimeException
      */
     public static function logMissingLanguageLabel(string $key, bool $keyExists): void
     {
@@ -228,6 +244,7 @@ class LoggingUtility
     /**
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      */
     private static function getExtensionConfigurationSetting(string $key): mixed
     {
@@ -242,6 +259,7 @@ class LoggingUtility
 
     /**
      * @throws Exception
+     * @throws InvalidArgumentException
      */
     private static function writeAccessLogToDatabase(string $key, int $count = 1): void
     {
@@ -273,6 +291,10 @@ class LoggingUtility
         }
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     */
     private static function writeMissingLogToDatabase(string $key, bool $keyExists): void
     {
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)

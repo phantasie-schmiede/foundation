@@ -11,21 +11,19 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Attribute\TCA;
 
+use InvalidArgumentException;
 use PSBits\Foundation\Attribute\AbstractAttribute;
 use PSBits\Foundation\Service\Configuration\TcaService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class AbstractTcaAttribute
- *
- * @package PSBits\Foundation\Attribute\TCA
- */
 abstract class AbstractTcaAttribute extends AbstractAttribute
 {
     protected ?TcaService $tcaService = null;
 
     /**
      * Returns the TcaService, instantiating it lazily on first use.
+     *
+     * @throws InvalidArgumentException
      */
     protected function tcaService(): TcaService
     {

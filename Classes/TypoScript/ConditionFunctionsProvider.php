@@ -16,11 +16,6 @@ use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class ConditionFunctionsProvider
- *
- * @package PSBits\Foundation\TypoScript
- */
 class ConditionFunctionsProvider implements ExpressionFunctionProviderInterface
 {
     public function getFunctions(): array

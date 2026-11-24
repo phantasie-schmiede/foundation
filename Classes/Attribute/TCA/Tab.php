@@ -13,23 +13,13 @@ namespace PSBits\Foundation\Attribute\TCA;
 
 use Attribute;
 use PSBits\Foundation\Service\Configuration\Tca\Position;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use ReflectionException;
 
-/**
- * Class Tab
- *
- * @package PSBits\Foundation\Attribute\TCA
- */
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS)]
 class Tab extends AbstractTcaAttribute
 {
     /**
      * @param string $identifier The tab identifier has to be written in snake_case.
      *                           There is no TCA option for tabs, they are rendered as "--div--" entries in showitem.
-     * @param string $label
-     * @param string $position
      */
     public function __construct(
         protected string $identifier = '',
@@ -52,11 +42,6 @@ class Tab extends AbstractTcaAttribute
         return $this->label;
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
-     */
     public function getPosition(): string
     {
         return Position::normalize(

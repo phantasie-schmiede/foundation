@@ -11,30 +11,31 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service\GlobalVariableProviders;
 
+use Error;
+use InvalidArgumentException;
 use JsonException;
 use PSBits\Foundation\Utility\ContextUtility;
 use PSBits\Foundation\Utility\StringUtility;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
+use RuntimeException;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
 
 use function is_array;
 use function is_string;
 
-/**
- * Class RequestParameterProvider
- *
- * @package PSBits\Foundation\Service\GlobalVariableProviders
- */
 class RequestParameterProvider extends AbstractProvider
 {
     /**
      * @return array<string, mixed>
      * @throws ContainerExceptionInterface
+     * @throws Error
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function getGlobalVariables(): array
     {

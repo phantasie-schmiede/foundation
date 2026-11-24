@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Service\Typo3;
 
 use PSBits\Foundation\Utility\Typo3VersionUtility;
+use RuntimeException;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory as Typo3LanguageServiceFactory;
 use TYPO3\CMS\Core\Localization\Locale;
 
@@ -40,6 +41,7 @@ if (Typo3VersionUtility::isAtLeast('14.0')) {
          * Factory method to create a language service object.
          *
          * @param Locale|string $locale the locale
+         * @throws RuntimeException
          */
         public function create(Locale|string $locale): LanguageService
         {
@@ -56,6 +58,7 @@ if (Typo3VersionUtility::isAtLeast('14.0')) {
          * Factory method to create a language service object.
          *
          * @param Locale|string $locale the locale
+         * @throws RuntimeException
          */
         public function create(Locale|string $locale): LanguageService
         {

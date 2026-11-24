@@ -11,18 +11,19 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Service\Configuration;
 
+use ArgumentCountError;
 use Doctrine\DBAL\Exception;
 use InvalidArgumentException;
 use PSBits\Foundation\Service\Configuration\CacheConfigurationBuilder\BuilderInterface;
 use PSBits\Foundation\Utility\TypoScript\TypoScriptUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use UnexpectedValueException;
 
-/**
- * Class PageCacheService
- *
- * @package PSBits\Foundation\Service\Configuration
- */
+use function array_merge;
+use function array_unique;
+use function implode;
+
 class PageCacheService
 {
     /**
@@ -37,6 +38,7 @@ class PageCacheService
 
     /**
      * @param class-string<BuilderInterface> $builderClass
+     * @throws InvalidArgumentException
      */
     public static function registerBuilder(string $builderClass): void
     {
@@ -51,7 +53,10 @@ class PageCacheService
     }
 
     /**
+     * @throws ArgumentCountError
      * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws UnexpectedValueException
      */
     public function buildTSconfig(): string
     {
@@ -107,6 +112,11 @@ class PageCacheService
         return $tsConfig;
     }
 
+    /**
+     * @throws ArgumentCountError
+     * @throws InvalidArgumentException
+     * @throws UnexpectedValueException
+     */
     public function buildTypoScript(): string
     {
         $pagesArray = [];

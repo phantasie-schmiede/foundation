@@ -14,6 +14,7 @@ namespace PSBits\Foundation\Utility\Localization;
 use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\ExpectationFailedException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -64,6 +65,9 @@ class PluralFormUtilityTest extends UnitTestCase
         yield 'German Swiss plural fallback' => ['de_CH', 5, 1];
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     #[DataProvider('getPluralFormDataProvider')]
     public function getPluralForm(string $languageKey, int|float $quantity, int $expectedResult): void

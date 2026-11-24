@@ -11,11 +11,13 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Utility;
 
+use Exception;
+use InvalidArgumentException;
 use PSBits\Foundation\Service\GlobalVariableProviders\SiteConfigurationProvider;
 use PSBits\Foundation\Service\GlobalVariableService;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 use Throwable;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
@@ -30,16 +32,15 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 
 use function is_array;
+use function strtolower;
 
-/**
- * Class ContextUtility
- *
- * @package PSBits\Foundation\Utility
- */
 class ContextUtility
 {
     public const string DEFAULT_LANGUAGE_KEY = 'default';
 
+    /**
+     * @throws RuntimeException
+     */
     public static function getCurrentBackendLanguage(): string
     {
         ValidationUtility::requiresBackendContext();
@@ -55,6 +56,9 @@ class ContextUtility
 
     /**
      * @throws AspectNotFoundException
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public static function getCurrentFrontendLanguage(): SiteLanguage
     {
@@ -68,7 +72,8 @@ class ContextUtility
     }
 
     /**
-     * @throws AspectNotFoundException
+     * @throws Exception
+     * @throws RuntimeException
      */
     public static function getCurrentLocale(): string
     {
@@ -95,6 +100,9 @@ class ContextUtility
         return $GLOBALS['TYPO3_REQUEST'] ?? null;
     }
 
+    /**
+     * @throws RuntimeException
+     */
     public static function isBackend(): bool
     {
         $request = self::getRequest();
@@ -105,7 +113,6 @@ class ContextUtility
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     public static function isBootProcessRunning(): bool
     {
@@ -113,6 +120,9 @@ class ContextUtility
             ->get('boot.state')->complete;
     }
 
+    /**
+     * @throws RuntimeException
+     */
     public static function isFrontend(): bool
     {
         $request = self::getRequest();

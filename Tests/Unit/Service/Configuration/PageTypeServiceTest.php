@@ -10,8 +10,15 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Tests\Unit\Service\Configuration;
 
+use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Exception as FrameworkException;
+use PHPUnit\Framework\InvalidArgumentException;
+use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\IncompatibleReturnValueException;
+use PHPUnit\Framework\MockObject\MethodCannotBeConfiguredException;
+use PHPUnit\Framework\MockObject\MethodNameAlreadyConfiguredException;
 use PSBits\Foundation\Data\ExtensionInformation;
 use PSBits\Foundation\Data\PageTypeConfiguration;
 use PSBits\Foundation\Service\Configuration\PageTypeService;
@@ -35,6 +42,13 @@ class PageTypeServiceTest extends UnitTestCase
      * On v13 the TSconfig call is the only way to get the doktype into the drag area, so the page
      * types have to be read (that core call emits a deprecation in v13). On v14 the core determines
      * the drag area automatically, so nothing is read.
+     *
+     * @throws Exception
+     * @throws IncompatibleReturnValueException
+     * @throws InvalidArgumentException
+     * @throws MethodCannotBeConfiguredException
+     * @throws MethodNameAlreadyConfiguredException
+     * @throws NoPreviousThrowableException
      */
     #[Test]
     #[IgnoreDeprecations]
@@ -54,6 +68,15 @@ class PageTypeServiceTest extends UnitTestCase
         $this->subject->addToDragArea($extensionInformation);
     }
 
+    /**
+     * @throws Exception
+     * @throws FrameworkException
+     * @throws IncompatibleReturnValueException
+     * @throws InvalidArgumentException
+     * @throws MethodCannotBeConfiguredException
+     * @throws MethodNameAlreadyConfiguredException
+     * @throws NoPreviousThrowableException
+     */
     #[Test]
     public function addToRegistryRegistersAnUnrestrictedDoktypeWithoutExtraConfiguration(): void
     {
@@ -73,6 +96,15 @@ class PageTypeServiceTest extends UnitTestCase
         ))->addToRegistry($extensionInformation);
     }
 
+    /**
+     * @throws Exception
+     * @throws FrameworkException
+     * @throws IncompatibleReturnValueException
+     * @throws InvalidArgumentException
+     * @throws MethodCannotBeConfiguredException
+     * @throws MethodNameAlreadyConfiguredException
+     * @throws NoPreviousThrowableException
+     */
     #[Test]
     public function addToRegistryRegistersTheDoktypeWithItsAllowedTables(): void
     {
@@ -106,6 +138,11 @@ class PageTypeServiceTest extends UnitTestCase
         ))->addToRegistry($extensionInformation);
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     protected function setUp(): void
     {
         parent::setUp();

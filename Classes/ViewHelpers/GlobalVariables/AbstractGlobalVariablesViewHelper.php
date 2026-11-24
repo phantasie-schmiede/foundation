@@ -15,29 +15,10 @@ use Exception;
 use PSBits\Foundation\Service\GlobalVariableService;
 use PSBits\Foundation\ViewHelpers\GlobalVariablesViewHelper;
 
-/**
- * Class AbstractGlobalVariablesViewHelper
- *
- * @package PSBits\Foundation\ViewHelpers\GlobalVariables
- */
 abstract class AbstractGlobalVariablesViewHelper extends GlobalVariablesViewHelper
 {
     /**
-     * The top level key the extending ViewHelper reads from, normally the class name of its provider.
-     */
-    abstract protected function getBaseKey(): string;
-
-    /**
-     * @throws Exception
-     */
-    public function render(): mixed
-    {
-        return self::getVariable($this->getBaseKey(), $this->arguments);
-    }
-
-    /**
      * @param array<string, mixed> $arguments
-     *
      * @throws Exception
      */
     protected static function getVariable(string $baseKey, array $arguments): mixed
@@ -56,4 +37,17 @@ abstract class AbstractGlobalVariablesViewHelper extends GlobalVariablesViewHelp
         // Override this argument to make it optional as the extending ViewHelpers define a base path.
         $this->registerArgument('path', 'string', 'path segments must be separated by dots');
     }
+
+    /**
+     * @throws Exception
+     */
+    public function render(): mixed
+    {
+        return self::getVariable($this->getBaseKey(), $this->arguments);
+    }
+
+    /**
+     * The top level key the extending ViewHelper reads from, normally the class name of its provider.
+     */
+    abstract protected function getBaseKey(): string;
 }

@@ -11,19 +11,18 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\EventListener;
 
+use ArgumentCountError;
+use DateMalformedStringException;
 use Doctrine\DBAL\Exception as DbalException;
-use Exception;
+use InvalidArgumentException;
 use PSBits\Foundation\Service\Configuration\PageCacheService;
 use PSBits\Foundation\Utility\FileUtility;
+use RuntimeException;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Cache\Event\CacheFlushEvent;
 use TYPO3\CMS\Core\Core\Environment;
+use UnexpectedValueException;
 
-/**
- * Class CacheConfigurationBuilder
- *
- * @package PSBits\Foundation\EventListener
- */
 #[AsEventListener(identifier: 'foundation_cacheConfigurationBuilder')]
 final readonly class CacheConfigurationBuilder
 {
@@ -38,8 +37,12 @@ final readonly class CacheConfigurationBuilder
     }
 
     /**
+     * @throws ArgumentCountError
+     * @throws DateMalformedStringException
      * @throws DbalException
-     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws UnexpectedValueException
      */
     public function __invoke(CacheFlushEvent $event): void
     {

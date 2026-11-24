@@ -11,7 +11,14 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Upgrade;
 
+use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Exception as FrameworkException;
+use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\InvalidArgumentException;
+use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\IncompatibleReturnValueException;
+use PHPUnit\Framework\SkippedWithMessageException;
 use PSBits\Foundation\Data\ExtensionInformationInterface;
 use PSBits\Foundation\Data\PluginConfiguration;
 use PSBits\Foundation\Service\ExtensionInformationService;
@@ -22,6 +29,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 use function array_key_first;
 use function array_values;
+use ReflectionException;
 
 /**
  * Class ListTypeToCTypeUpdateTest
@@ -35,6 +43,13 @@ class ListTypeToCTypeUpdateTest extends UnitTestCase
 {
     private ListTypeToCTypeUpdate $subject;
 
+    /**
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws ReflectionException
+     */
     #[Test]
     public function mapsAllPluginsOfAllInstalledExtensions(): void
     {
@@ -57,6 +72,14 @@ class ListTypeToCTypeUpdateTest extends UnitTestCase
         ], $mapping);
     }
 
+    /**
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws FrameworkException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws ReflectionException
+     */
     #[Test]
     public function providesAPlaceholderWhenNoPluginIsInstalled(): void
     {
@@ -68,6 +91,9 @@ class ListTypeToCTypeUpdateTest extends UnitTestCase
         self::assertSame(array_key_first($mapping), array_values($mapping)[0]);
     }
 
+    /**
+     * @throws ExpectationFailedException
+     */
     #[Test]
     public function providesTitleAndDescription(): void
     {
@@ -77,6 +103,10 @@ class ListTypeToCTypeUpdateTest extends UnitTestCase
 
     /**
      * @param PluginConfiguration[] $plugins
+     * @throws Exception
+     * @throws IncompatibleReturnValueException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
      */
     private function createExtensionInformation(string $extensionKey, array $plugins): ExtensionInformationInterface
     {
@@ -91,12 +121,19 @@ class ListTypeToCTypeUpdateTest extends UnitTestCase
 
     /**
      * @return array<string, string>
+     * @throws ReflectionException // t3:13
      */
     private function getMapping(ListTypeToCTypeUpdate $subject): array
     {
         return (new ReflectionMethod(ListTypeToCTypeUpdate::class, 'getListTypeToCTypeMapping'))->invoke($subject);
     }
 
+    /**
+     * @throws Exception
+     * @throws IncompatibleReturnValueException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
     private function createSubject(ExtensionInformationInterface ...$extensionInformation): ListTypeToCTypeUpdate
     {
         $service = $this->createMock(ExtensionInformationService::class);
@@ -106,6 +143,12 @@ class ListTypeToCTypeUpdateTest extends UnitTestCase
         return new ListTypeToCTypeUpdate($service, new ConnectionPool());
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws SkippedWithMessageException
+     */
     protected function setUp(): void
     {
         parent::setUp();

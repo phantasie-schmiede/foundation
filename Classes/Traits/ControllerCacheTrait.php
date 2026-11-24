@@ -17,11 +17,8 @@ use TYPO3\CMS\Core\Cache\CacheTag;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheGroupException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Trait ControllerCacheTrait
- *
- * @package PSBits\Foundation\Traits
- */
+use function array_map;
+
 trait ControllerCacheTrait
 {
     /**

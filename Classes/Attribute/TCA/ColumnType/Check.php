@@ -12,6 +12,10 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Attribute\TCA\ColumnType;
 
 use Attribute;
+use DateMalformedStringException;
+use Doctrine\DBAL\Exception as DBALException;
+use Error;
+use InvalidArgumentException;
 use JsonException;
 use PSBits\Foundation\Enum\CheckboxRenderType;
 use PSBits\Foundation\Exceptions\MisconfiguredTcaException;
@@ -20,16 +24,18 @@ use PSBits\Foundation\Utility\Configuration\FilePathUtility;
 use PSBits\Foundation\Utility\Database\DefinitionUtility;
 use PSBits\Foundation\Utility\LocalizationUtility;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
+use ReflectionException;
+use RuntimeException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
 
-/**
- * Class Check
- *
- * @package PSBits\Foundation\Attribute\TCA\ColumnType
- */
+use function implode;
+use function is_int;
+use function is_string;
+use function str_starts_with;
+
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Check extends AbstractColumnType implements ColumnTypeWithItemsInterface
 {
@@ -37,16 +43,13 @@ class Check extends AbstractColumnType implements ColumnTypeWithItemsInterface
      * The parameters $maximumRecordsChecked and $maximumRecordsCheckedInPid are used for the TCA properties eval and
      * validation.
      *
-     * @param int|string                $cols                       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-cols
-     * @param string                    $eval                       https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-eval
-     * @param false|bool                $invertStateDisplay         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-invertstatedisplay
-     * @param array<int|string, mixed>  $items                      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-items
-     * @param string|null               $itemsProcFunc              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/ItemsProcFunc.html
-     * @param int                       $maximumRecordsChecked
-     * @param int                       $maximumRecordsCheckedInPid
-     * @param CheckboxRenderType        $renderType                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-rendertype
-     * @param array<string, mixed>|null $validation                 https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-validation
-     *
+     * @param int|string                $cols               https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-cols
+     * @param string                    $eval               https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-eval
+     * @param false|bool                $invertStateDisplay https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-invertstatedisplay
+     * @param array<int|string, mixed>  $items              https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-items
+     * @param string|null               $itemsProcFunc      https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/CommonProperties/ItemsProcFunc.html
+     * @param CheckboxRenderType        $renderType         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-rendertype
+     * @param array<string, mixed>|null $validation         https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html#confval-check-validation
      * @throws MisconfiguredTcaException
      */
     public function __construct(
@@ -141,10 +144,16 @@ class Check extends AbstractColumnType implements ColumnTypeWithItemsInterface
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function processItems(string $labelPath = ''): void
     {
@@ -159,10 +168,16 @@ class Check extends AbstractColumnType implements ColumnTypeWithItemsInterface
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     private function processSimpleFormat(string $labelPath = ''): void
     {
@@ -193,10 +208,16 @@ class Check extends AbstractColumnType implements ColumnTypeWithItemsInterface
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
      * @throws JsonException
-     * @throws NotFoundExceptionInterface
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     private function processTcaFormat(): void
     {
