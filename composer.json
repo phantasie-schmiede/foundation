@@ -26,7 +26,6 @@
         "typo3/cms-core": "^13.4 || ^14.3"
     },
     "require-dev": {
-        "psbits/crafter": "@dev",
         "psbits/qa": "@dev",
         "psbitstest/pluginfixture": "@dev",
         "psbitstest/tcafixture": "@dev",
