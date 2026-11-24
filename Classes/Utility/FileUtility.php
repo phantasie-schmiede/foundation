@@ -208,7 +208,6 @@ class FileUtility
     /**
      * Converts relative to absolute paths.
      *
-     *
      * @return string returns an empty string if $fileName could not be resolved to a valid path
      */
     public static function resolveFileName(string $fileName): string

@@ -5,10 +5,10 @@
 !/.idea/inspectionProfiles/
 /.php-cs-fixer.cache
 /Build/Quality/.phpstan/
-/composer.lock
 /composer-matrix.json
 /composer-matrix.lock
+/composer.lock
 /node_modules/
 /package-lock.json
+/packages/autoload-tests/
 /var/
-*.zip
