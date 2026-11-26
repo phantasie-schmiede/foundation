@@ -89,6 +89,98 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 )]
 class AllTcaAttributesModel extends AbstractEntity
 {
+    #[Category(
+        foreignTableWhere: 'AND deleted = 0',
+        itemGroups: [
+            [
+                'label' => 'Group A',
+                'items' => [
+                    1,
+                    2,
+                ],
+            ],
+        ],
+        maxItems: 10,
+        minItems: 1,
+        size: 5,
+    )]
+    protected int $categoryField = 0;
+
+    #[Check]
+    #[Column(position: 'palette:labelled_palette')]
+    protected bool $checkField = false;
+
+    #[Color(mode: 'rgb', opacity: '0.5', placeholder: '#000', size: 20)]
+    protected string $colorField = '';
+
+    #[Datetime(placeholder: 'Please pick a date')]
+    protected ?\DateTime $datetimeField = null;
+
+    #[Email]
+    protected string $emailField = '';
+
+    #[Enum(BackedEnum::class)]
+    protected string $enumField = '';
+
+    #[File(
+        appearance: [
+            'showRecalculateLink' => false,
+        ],
+        disallowed: 'jpg',
+        enableCascadingDelete: true,
+    )]
+    protected int $fileField = 0;
+
+    #[Flex(ds: [
+        'default' => 'FILE:EXT:core/Configuration/FlexForms/FlexForm.xml',
+    ])]
+    protected string $flexField = '';
+
+    #[Folder]
+    protected string $folderField = '';
+
+    #[Group(
+        allowed: 'sys_category',
+        autoSizeMax: 5,
+        hideDeleteIcon: true,
+        minItems: 1,
+        mmTableWhere: 'AND 1=1',
+        multiple: true,
+        prependTname: '1',
+        relationship: Relationship::oneToMany,
+        size: 5,
+    )]
+    protected string $groupField = '';
+
+    #[ImageManipulation(fileField: 'fileField')]
+    protected int $imageManipulationField = 0;
+
+    #[Inline(
+        customControls: [
+            'preview',
+        ],
+        disableMovingChildrenWithParent: true,
+        enableCascadingDelete: true,
+        foreignLabel: 'title',
+        foreignTable: 'sys_category',
+        foreignUnique: 'uid',
+        minItems: 1,
+        size: 10,
+    )]
+    protected int $inlineField = 0;
+
+    #[Json(enableCodeEditor: true)]
+    protected string $jsonField = '';
+
+    #[Link(
+        appearance: [
+            'enableBrowser' => true,
+        ],
+        placeholder: 'Please enter URL',
+        size: 50,
+    )]
+    protected string $linkField = '';
+
     #[Column(
         allowLanguageSynchronization: true,
         fieldControl: [
@@ -102,17 +194,28 @@ class AllTcaAttributesModel extends AbstractEntity
     #[Input(autocomplete: 'off', placeholder: 'Please enter...')]
     protected string $mappedField = '';
 
-    #[Column(position: 'tab:extra_tab')]
-    #[Text(enableTabulator: true, placeholder: 'Please write...')]
-    protected string $textField = '';
+    #[Column(databaseDefinition: 'int DEFAULT 0 NOT NULL')]
+    #[None]
+    protected int $noneField = 0;
 
     #[Column(position: 'after:checkField')]
     #[Number(size: 10)]
     protected int $numberField = 0;
 
-    #[Check]
-    #[Column(position: 'palette:labelled_palette')]
-    protected bool $checkField = false;
+    #[Column(databaseDefinition: 'varchar(64) DEFAULT \'\'')]
+    #[PassThrough]
+    protected string $passThroughField = '';
+
+    #[Password(hashed: true)]
+    protected string $passwordField = '';
+
+    #[Radio(items: [
+        [
+            'label' => 'One',
+            'value' => 1,
+        ],
+    ])]
+    protected string $radioField = '';
 
     #[Select(
         authMode: 'strict',
@@ -131,71 +234,6 @@ class AllTcaAttributesModel extends AbstractEntity
         sortItems: 'value ASC',
     )]
     protected int $selectField = 0;
-
-    #[Group(
-        allowed: 'sys_category',
-        autoSizeMax: 5,
-        hideDeleteIcon: true,
-        minItems: 1,
-        mmTableWhere: 'AND 1=1',
-        multiple: true,
-        prependTname: '1',
-        relationship: Relationship::oneToMany,
-        size: 5,
-    )]
-    protected string $groupField = '';
-
-    #[Inline(
-        customControls: [
-            'preview',
-        ],
-        disableMovingChildrenWithParent: true,
-        enableCascadingDelete: true,
-        foreignLabel: 'title',
-        foreignTable: 'sys_category',
-        foreignUnique: 'uid',
-        minItems: 1,
-        size: 10,
-    )]
-    protected int $inlineField = 0;
-
-    #[Category(
-        foreignTableWhere: 'AND deleted = 0',
-        itemGroups: [
-            [
-                'label' => 'Group A',
-                'items' => [
-                    1,
-                    2,
-                ],
-            ],
-        ],
-        maxItems: 10,
-        minItems: 1,
-        size: 5,
-    )]
-    protected int $categoryField = 0;
-
-    #[File(
-        appearance: [
-            'showRecalculateLink' => false,
-        ],
-        disallowed: 'jpg',
-        enableCascadingDelete: true,
-    )]
-    protected int $fileField = 0;
-
-    #[Datetime(placeholder: 'Please pick a date')]
-    protected ?\DateTime $datetimeField = null;
-
-    #[Link(
-        appearance: [
-            'enableBrowser' => true,
-        ],
-        placeholder: 'Please enter URL',
-        size: 50,
-    )]
-    protected string $linkField = '';
 
     #[Slug(
         appearance: [
@@ -222,52 +260,14 @@ class AllTcaAttributesModel extends AbstractEntity
     )]
     protected string $slugField = '';
 
-    #[Color(mode: 'rgb', opacity: '0.5', placeholder: '#000', size: 20)]
-    protected string $colorField = '';
-
-    #[Enum(BackedEnum::class)]
-    protected string $enumField = '';
-
-    #[Column(databaseDefinition: 'varchar(64) DEFAULT \'\'')]
-    #[PassThrough]
-    protected string $passThroughField = '';
+    #[Column(position: 'tab:extra_tab')]
+    #[Text(enableTabulator: true, placeholder: 'Please write...')]
+    protected string $textField = '';
 
     #[Column(databaseDefinition: 'varchar(255) DEFAULT \'\'')]
     #[User(renderType: 'testUserRenderType')]
     protected string $userField = '';
 
-    #[Email]
-    protected string $emailField = '';
-
-    #[Json(enableCodeEditor: true)]
-    protected string $jsonField = '';
-
-    #[Radio(items: [
-        [
-            'label' => 'One',
-            'value' => 1,
-        ],
-    ])]
-    protected string $radioField = '';
-
-    #[Password(hashed: true)]
-    protected string $passwordField = '';
-
     #[Uuid(version: 4)]
     protected string $uuidField = '';
-
-    #[Column(databaseDefinition: 'int DEFAULT 0 NOT NULL')]
-    #[None]
-    protected int $noneField = 0;
-
-    #[Folder]
-    protected string $folderField = '';
-
-    #[Flex(ds: [
-        'default' => 'FILE:EXT:core/Configuration/FlexForms/FlexForm.xml',
-    ])]
-    protected string $flexField = '';
-
-    #[ImageManipulation(fileField: 'fileField')]
-    protected int $imageManipulationField = 0;
 }

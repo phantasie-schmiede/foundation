@@ -16,14 +16,13 @@ use PSBits\Foundation\Utility\Typo3VersionUtility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
+use function explode;
+use function sprintf;
+
 /**
- * Class Typo3VersionUtilityTest
- *
  * Guards the version predicate the whole extension gates its compatibility branches on. The core
  * version differs per matrix job, so each expectation is derived from the version actually running
  * and a disagreement between the two fails the build.
- *
- * @package PSBits\Foundation\Tests\Unit\Utility
  */
 class Typo3VersionUtilityTest extends UnitTestCase
 {
@@ -33,33 +32,6 @@ class Typo3VersionUtilityTest extends UnitTestCase
     {
         parent::setUp();
         $this->coreVersion = VersionNumberUtility::getNumericTypo3Version();
-    }
-
-    /**
-     * This is the gate behind passing the native DuplicationBehavior enum to
-     * ResourceStorage::addUploadedFile() and behind skipping the manual user.tsconfig import.
-     *
-     * @throws ExpectationFailedException
-     */
-    #[Test]
-    public function theV13GateIsTrueFromV13On(): void
-    {
-        self::assertSame(
-            version_compare($this->coreVersion, '13.0', '>='),
-            Typo3VersionUtility::isAtLeast('13.0')
-        );
-    }
-
-    /**
-     * @throws ExpectationFailedException
-     */
-    #[Test]
-    public function everyVersionWithinTheSupportWindowIsAtLeastTheFloor(): void
-    {
-        self::assertTrue(
-            Typo3VersionUtility::isAtLeast('13.0'),
-            'The extension supports v13 upwards, so all supported majors must satisfy the floor.'
-        );
     }
 
     /**
@@ -77,6 +49,31 @@ class Typo3VersionUtilityTest extends UnitTestCase
             Typo3VersionUtility::isAtLeast($nextMajor),
             sprintf('%s must not be considered satisfied on core %s.', $nextMajor, $this->coreVersion)
         );
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    public function everyVersionWithinTheSupportWindowIsAtLeastTheFloor(): void
+    {
+        self::assertTrue(
+            Typo3VersionUtility::isAtLeast('13.0'),
+            'The extension supports v13 upwards, so all supported majors must satisfy the floor.'
+        );
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    public function majorOnlyAndFullVersionsAreBothAccepted(): void
+    {
+        $major = (string)(int)explode('.', $this->coreVersion)[0];
+
+        self::assertTrue(Typo3VersionUtility::isAtLeast($major . '.0'));
+        self::assertTrue(Typo3VersionUtility::isAtLeast($major . '.0.0'));
+        self::assertTrue(Typo3VersionUtility::isAtLeast($this->coreVersion));
     }
 
     /**
@@ -99,15 +96,17 @@ class Typo3VersionUtilityTest extends UnitTestCase
     }
 
     /**
+     * This is the gate behind passing the native DuplicationBehavior enum to
+     * ResourceStorage::addUploadedFile() and behind skipping the manual user.tsconfig import.
+     *
      * @throws ExpectationFailedException
      */
     #[Test]
-    public function majorOnlyAndFullVersionsAreBothAccepted(): void
+    public function theV13GateIsTrueFromV13On(): void
     {
-        $major = (string)(int)explode('.', $this->coreVersion)[0];
-
-        self::assertTrue(Typo3VersionUtility::isAtLeast($major . '.0'));
-        self::assertTrue(Typo3VersionUtility::isAtLeast($major . '.0.0'));
-        self::assertTrue(Typo3VersionUtility::isAtLeast($this->coreVersion));
+        self::assertSame(
+            version_compare($this->coreVersion, '13.0', '>='),
+            Typo3VersionUtility::isAtLeast('13.0')
+        );
     }
 }

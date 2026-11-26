@@ -22,16 +22,21 @@ use PSBits\Foundation\Utility\FileUtility;
 use RuntimeException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
+use function file_get_contents;
+use function file_put_contents;
+use function glob;
+use function is_string;
+use function mkdir;
 use function ob_get_clean;
 use function ob_start;
+use function rmdir;
+use function trim;
+use function uniqid;
+use function unlink;
 
 /**
- * Class FileUtilityTest
- *
  * Filesystem-based tests run in a dedicated temporary directory that is
  * created in setUp and removed in tearDown.
- *
- * @package PSBits\Foundation\Tests\Unit\Utility
  */
 class FileUtilityTest extends UnitTestCase
 {
@@ -61,49 +66,6 @@ class FileUtilityTest extends UnitTestCase
         }
         @rmdir($this->tempDir);
         parent::tearDown();
-    }
-
-    private function tempFile(string $name, string $content = 'content'): string
-    {
-        $path = $this->tempDir . '/' . $name;
-        file_put_contents($path, $content);
-
-        return $path;
-    }
-
-    /**
-     * @return array<string, array{string, string}>
-     */
-    public static function sanitizeFileNameDataProvider(): array
-    {
-        return [
-            'unaffected name is returned unchanged'       => [
-                'simple-name.file.txt',
-                'simple-name.file.txt',
-            ],
-            'spaces are replaced'                         => [
-                'foo bar.txt',
-                'foo_bar.txt',
-            ],
-            'path separators are replaced'                => [
-                'a/b\\c',
-                'a_b_c',
-            ],
-            'non ascii characters are replaced byte-wise' => [
-                "a\303\274\303\244.txt",
-                'a____.txt',
-            ],
-        ];
-    }
-
-    /**
-     * @throws ExpectationFailedException
-     */
-    #[Test]
-    #[DataProvider('sanitizeFileNameDataProvider')]
-    public function sanitizeFileName(string $fileName, string $expected): void
-    {
-        self::assertSame($expected, FileUtility::sanitizeFileName($fileName));
     }
 
     /**
@@ -164,19 +126,28 @@ class FileUtilityTest extends UnitTestCase
     }
 
     /**
-     * @throws DivisionByZeroError
-     * @throws Exception
-     * @throws ExpectationFailedException
+     * @return array<string, array{string, string}>
      */
-    #[Test]
-    #[DataProvider('formatFileSizeDataProvider')]
-    public function formatFileSize(int|string $input, ?int $unit, int $decimals, string $expected): void
+    public static function sanitizeFileNameDataProvider(): array
     {
-        if (is_string($input)) {
-            $input = $this->tempFile($input, 'abc');
-        }
-
-        self::assertSame($expected, FileUtility::formatFileSize($input, $unit, $decimals));
+        return [
+            'unaffected name is returned unchanged'       => [
+                'simple-name.file.txt',
+                'simple-name.file.txt',
+            ],
+            'spaces are replaced'                         => [
+                'foo bar.txt',
+                'foo_bar.txt',
+            ],
+            'path separators are replaced'                => [
+                'a/b\\c',
+                'a_b_c',
+            ],
+            'non ascii characters are replaced byte-wise' => [
+                "a\303\274\303\244.txt",
+                'a____.txt',
+            ],
+        ];
     }
 
     /**
@@ -192,24 +163,19 @@ class FileUtilityTest extends UnitTestCase
     }
 
     /**
+     * @throws DivisionByZeroError
+     * @throws Exception
      * @throws ExpectationFailedException
      */
     #[Test]
-    public function resolveFileNameReturnsAbsoluteExistingPath(): void
+    #[DataProvider('formatFileSizeDataProvider')]
+    public function formatFileSize(int|string $input, ?int $unit, int $decimals, string $expected): void
     {
-        $path = $this->tempFile('resolve.txt');
+        if (is_string($input)) {
+            $input = $this->tempFile($input, 'abc');
+        }
 
-        self::assertSame($path, FileUtility::resolveFileName($path));
-    }
-
-    /**
-     * @throws ExpectationFailedException
-     */
-    #[Test]
-    public function resolveFileNameReturnsEmptyStringForUnresolvablePath(): void
-    {
-        // Paths outside the allowed project/public areas cannot be resolved.
-        self::assertSame('', FileUtility::resolveFileName('/nonexistent_outside_project/file.txt'));
+        self::assertSame($expected, FileUtility::formatFileSize($input, $unit, $decimals));
     }
 
     /**
@@ -244,19 +210,59 @@ class FileUtilityTest extends UnitTestCase
     }
 
     /**
-     * @throws DateMalformedStringException
      * @throws ExpectationFailedException
      * @throws RuntimeException
      */
     #[Test]
-    public function lockFileWithoutLifetimeCreatesEmptyLockFile(): void
+    public function initiateDownloadOutputsFileContent(): void
     {
-        $path = $this->tempFile('lock1.txt');
+        $path = $this->tempFile('download.txt', 'file content');
 
-        self::assertTrue(FileUtility::lockFile($path));
-        self::assertFileExists($path . '.lock');
-        self::assertSame('', trim(file_get_contents($path . '.lock')));
-        self::assertTrue(FileUtility::isFileLocked($path));
+        ob_start();
+        FileUtility::initiateDownload('text/plain', filename: $path);
+        $output = ob_get_clean();
+
+        self::assertSame('file content', $output);
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     * @throws RuntimeException
+     */
+    #[Test]
+    public function initiateDownloadOutputsGivenContent(): void
+    {
+        ob_start();
+        FileUtility::initiateDownload('text/plain', content: 'downloaded content', downloadName: 'file.txt');
+        $output = ob_get_clean();
+
+        self::assertSame('downloaded content', $output);
+    }
+
+    /**
+     * @throws RuntimeException
+     */
+    #[Test]
+    public function initiateDownloadWithContentButWithoutDownloadNameThrows(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('$downloadName has to be set when $content is set!');
+        $this->expectExceptionCode(1739366548);
+
+        FileUtility::initiateDownload('text/plain', content: 'content');
+    }
+
+    /**
+     * @throws RuntimeException
+     */
+    #[Test]
+    public function initiateDownloadWithoutContentAndFilenameThrows(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Either $content or $filename has to be set!');
+        $this->expectExceptionCode(1739366404);
+
+        FileUtility::initiateDownload('text/plain');
     }
 
     /**
@@ -281,6 +287,22 @@ class FileUtilityTest extends UnitTestCase
      * @throws RuntimeException
      */
     #[Test]
+    public function lockFileWithoutLifetimeCreatesEmptyLockFile(): void
+    {
+        $path = $this->tempFile('lock1.txt');
+
+        self::assertTrue(FileUtility::lockFile($path));
+        self::assertFileExists($path . '.lock');
+        self::assertSame('', trim(file_get_contents($path . '.lock')));
+        self::assertTrue(FileUtility::isFileLocked($path));
+    }
+
+    /**
+     * @throws DateMalformedStringException
+     * @throws ExpectationFailedException
+     * @throws RuntimeException
+     */
+    #[Test]
     public function lockFileWithPastLifetimeIsReleasedOnLockCheck(): void
     {
         $path = $this->tempFile('lock3.txt');
@@ -288,6 +310,37 @@ class FileUtilityTest extends UnitTestCase
         self::assertTrue(FileUtility::lockFile($path, new DateTime('-5 minutes')));
         self::assertFalse(FileUtility::isFileLocked($path));
         self::assertFileDoesNotExist($path . '.lock');
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    public function resolveFileNameReturnsAbsoluteExistingPath(): void
+    {
+        $path = $this->tempFile('resolve.txt');
+
+        self::assertSame($path, FileUtility::resolveFileName($path));
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    public function resolveFileNameReturnsEmptyStringForUnresolvablePath(): void
+    {
+        // Paths outside the allowed project/public areas cannot be resolved.
+        self::assertSame('', FileUtility::resolveFileName('/nonexistent_outside_project/file.txt'));
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    #[DataProvider('sanitizeFileNameDataProvider')]
+    public function sanitizeFileName(string $fileName, string $expected): void
+    {
+        self::assertSame($expected, FileUtility::sanitizeFileName($fileName));
     }
 
     /**
@@ -323,20 +376,6 @@ class FileUtilityTest extends UnitTestCase
      * @throws RuntimeException
      */
     #[Test]
-    public function writeCreatesFileWithContent(): void
-    {
-        $path = $this->tempDir . '/written.txt';
-
-        self::assertTrue(FileUtility::write($path, 'hello'));
-        self::assertSame('hello', file_get_contents($path));
-    }
-
-    /**
-     * @throws DateMalformedStringException
-     * @throws ExpectationFailedException
-     * @throws RuntimeException
-     */
-    #[Test]
     public function writeAppendsWhenRequested(): void
     {
         $path = $this->tempDir . '/appended.txt';
@@ -352,13 +391,12 @@ class FileUtilityTest extends UnitTestCase
      * @throws RuntimeException
      */
     #[Test]
-    public function writeWithEmptyContentSucceeds(): void
+    public function writeCreatesFileWithContent(): void
     {
-        $path = $this->tempDir . '/empty.txt';
+        $path = $this->tempDir . '/written.txt';
 
-        self::assertTrue(FileUtility::write($path, ''));
-        self::assertFileExists($path);
-        self::assertSame('', file_get_contents($path));
+        self::assertTrue(FileUtility::write($path, 'hello'));
+        self::assertSame('hello', file_get_contents($path));
     }
 
     /**
@@ -377,58 +415,25 @@ class FileUtilityTest extends UnitTestCase
     }
 
     /**
-     * @throws RuntimeException
-     */
-    #[Test]
-    public function initiateDownloadWithoutContentAndFilenameThrows(): void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Either $content or $filename has to be set!');
-        $this->expectExceptionCode(1739366404);
-
-        FileUtility::initiateDownload('text/plain');
-    }
-
-    /**
-     * @throws RuntimeException
-     */
-    #[Test]
-    public function initiateDownloadWithContentButWithoutDownloadNameThrows(): void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('$downloadName has to be set when $content is set!');
-        $this->expectExceptionCode(1739366548);
-
-        FileUtility::initiateDownload('text/plain', content: 'content');
-    }
-
-    /**
+     * @throws DateMalformedStringException
      * @throws ExpectationFailedException
      * @throws RuntimeException
      */
     #[Test]
-    public function initiateDownloadOutputsGivenContent(): void
+    public function writeWithEmptyContentSucceeds(): void
     {
-        ob_start();
-        FileUtility::initiateDownload('text/plain', content: 'downloaded content', downloadName: 'file.txt');
-        $output = ob_get_clean();
+        $path = $this->tempDir . '/empty.txt';
 
-        self::assertSame('downloaded content', $output);
+        self::assertTrue(FileUtility::write($path, ''));
+        self::assertFileExists($path);
+        self::assertSame('', file_get_contents($path));
     }
 
-    /**
-     * @throws ExpectationFailedException
-     * @throws RuntimeException
-     */
-    #[Test]
-    public function initiateDownloadOutputsFileContent(): void
+    private function tempFile(string $name, string $content = 'content'): string
     {
-        $path = $this->tempFile('download.txt', 'file content');
+        $path = $this->tempDir . '/' . $name;
+        file_put_contents($path, $content);
 
-        ob_start();
-        FileUtility::initiateDownload('text/plain', filename: $path);
-        $output = ob_get_clean();
-
-        self::assertSame('file content', $output);
+        return $path;
     }
 }

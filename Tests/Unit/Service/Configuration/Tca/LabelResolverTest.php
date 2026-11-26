@@ -27,14 +27,16 @@ use RuntimeException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class LabelResolverTest
- *
- * @package PSBits\Foundation\Tests\Unit\Service\Configuration\Tca
- */
+use function file_put_contents;
+use function is_dir;
+use function mkdir;
+use function rmdir;
+use function sprintf;
+use function unlink;
+
 class LabelResolverTest extends UnitTestCase
 {
     private const string LANGUAGE_LABEL_PREFIX = 'LLL:test_lang/xlf:';
@@ -70,52 +72,6 @@ class LabelResolverTest extends UnitTestCase
      * @throws RuntimeException
      */
     #[Test]
-    public function resolveLabelReturnsValidPlainTextLabel(): void
-    {
-        self::assertSame('My Label', LabelResolver::resolveLabel('My Label', self::LANGUAGE_LABEL_PREFIX . 'default'));
-    }
-
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws DateMalformedStringException
-     * @throws Error
-     * @throws Exception
-     * @throws ExpectationFailedException
-     * @throws ExtensionConfigurationExtensionNotConfiguredException
-     * @throws ExtensionConfigurationPathDoesNotExistException
-     * @throws InvalidArgumentException
-     * @throws JsonException
-     * @throws NoServerRequestGivenException // t3:14
-     * @throws ReflectionException
-     * @throws RuntimeException
-     */
-    #[Test]
-    public function resolveLabelReturnsValidLllLabel(): void
-    {
-        $this->setLoggingState(false);
-        $this->writeLanguageFile(['my_label']);
-
-        self::assertSame(
-            self::LANGUAGE_LABEL_PREFIX . 'my_label',
-            LabelResolver::resolveLabel(self::LANGUAGE_LABEL_PREFIX . 'my_label', self::LANGUAGE_LABEL_PREFIX . 'default')
-        );
-    }
-
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws DateMalformedStringException
-     * @throws Error
-     * @throws Exception
-     * @throws ExpectationFailedException
-     * @throws ExtensionConfigurationExtensionNotConfiguredException
-     * @throws ExtensionConfigurationPathDoesNotExistException
-     * @throws InvalidArgumentException
-     * @throws JsonException
-     * @throws NoServerRequestGivenException // t3:14
-     * @throws ReflectionException
-     * @throws RuntimeException
-     */
-    #[Test]
     public function resolveLabelFallsBackToDefaultIfLabelIsMissing(): void
     {
         $this->setLoggingState(false);
@@ -124,36 +80,6 @@ class LabelResolverTest extends UnitTestCase
         self::assertSame(
             self::LANGUAGE_LABEL_PREFIX . 'default',
             LabelResolver::resolveLabel(self::LANGUAGE_LABEL_PREFIX . 'missing', self::LANGUAGE_LABEL_PREFIX . 'default')
-        );
-    }
-
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws DateMalformedStringException
-     * @throws Error
-     * @throws Exception
-     * @throws ExpectationFailedException
-     * @throws ExtensionConfigurationExtensionNotConfiguredException
-     * @throws ExtensionConfigurationPathDoesNotExistException
-     * @throws InvalidArgumentException
-     * @throws JsonException
-     * @throws NoServerRequestGivenException // t3:14
-     * @throws ReflectionException
-     * @throws RuntimeException
-     */
-    #[Test]
-    public function resolveLabelReturnsFallbackIfDefaultIsMissing(): void
-    {
-        $this->setLoggingState(false);
-        $this->writeLanguageFile([]);
-
-        self::assertSame(
-            'fallback',
-            LabelResolver::resolveLabel(
-                self::LANGUAGE_LABEL_PREFIX . 'missing',
-                self::LANGUAGE_LABEL_PREFIX . 'default',
-                'fallback'
-            )
         );
     }
 
@@ -207,12 +133,79 @@ class LabelResolverTest extends UnitTestCase
     }
 
     /**
+     * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws Error
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
+     * @throws JsonException
+     * @throws NoServerRequestGivenException // t3:14
      * @throws ReflectionException
+     * @throws RuntimeException
      */
-    private function setLoggingState(bool $state): void
+    #[Test]
+    public function resolveLabelReturnsFallbackIfDefaultIsMissing(): void
     {
-        $logMissingLanguageLabels = new ReflectionProperty(LoggingUtility::class, 'logMissingLanguageLabels');
-        $logMissingLanguageLabels->setValue(null, $state);
+        $this->setLoggingState(false);
+        $this->writeLanguageFile([]);
+
+        self::assertSame(
+            'fallback',
+            LabelResolver::resolveLabel(
+                self::LANGUAGE_LABEL_PREFIX . 'missing',
+                self::LANGUAGE_LABEL_PREFIX . 'default',
+                'fallback'
+            )
+        );
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws Error
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
+     * @throws JsonException
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
+    #[Test]
+    public function resolveLabelReturnsValidLllLabel(): void
+    {
+        $this->setLoggingState(false);
+        $this->writeLanguageFile(['my_label']);
+
+        self::assertSame(
+            self::LANGUAGE_LABEL_PREFIX . 'my_label',
+            LabelResolver::resolveLabel(self::LANGUAGE_LABEL_PREFIX . 'my_label', self::LANGUAGE_LABEL_PREFIX . 'default')
+        );
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws Error
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws InvalidArgumentException
+     * @throws JsonException
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
+    #[Test]
+    public function resolveLabelReturnsValidPlainTextLabel(): void
+    {
+        self::assertSame('My Label', LabelResolver::resolveLabel('My Label', self::LANGUAGE_LABEL_PREFIX . 'default'));
     }
 
     /**
@@ -222,6 +215,15 @@ class LabelResolverTest extends UnitTestCase
     {
         $logMissingLanguageLabels = new ReflectionProperty(LoggingUtility::class, 'logMissingLanguageLabels');
         $logMissingLanguageLabels->setValue(null, null);
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    private function setLoggingState(bool $state): void
+    {
+        $logMissingLanguageLabels = new ReflectionProperty(LoggingUtility::class, 'logMissingLanguageLabels');
+        $logMissingLanguageLabels->setValue(null, $state);
     }
 
     /**

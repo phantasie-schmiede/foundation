@@ -27,26 +27,47 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextFactory;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
+use function array_map;
+use function method_exists;
+
 /**
- * Class TranslateViewHelperTest
- *
  * Renders the view helper against the real localization stack: the language
  * files, the language service installed by the extension and the plural form
  * handling all run for real, which a unit test cannot do without faking the
  * result. The unit test in Tests/Unit covers the parts that need no running
  * instance: argument registration and the request resolution.
- *
- * @package PSBits\Foundation\Tests\Functional
  */
 class TranslateViewHelperTest extends FunctionalTestCase
 {
-    public const int    ROOT_PAGE_ID          = 1;
     public const string FIXTURE_LANGUAGE_FILE = 'Tests/Functional/Fixtures/Language/fixture.xlf';
+    public const int    ROOT_PAGE_ID          = 1;
 
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/psbits/foundation',
     ];
     private ServerRequest $request;
+
+    protected function tearDown(): void
+    {
+        unset($GLOBALS['TYPO3_REQUEST']);
+        parent::tearDown();
+    }
+
+    private static function fixtureKey(string $key): string
+    {
+        return 'LLL:EXT:foundation/' . self::FIXTURE_LANGUAGE_FILE . ':' . $key;
+    }
+
+    #[Test]
+    public function aLabelIsResolvedForTheRequestLanguage(): void
+    {
+        $this->bootstrapRequest(1);
+
+        self::assertSame(
+            'Testnachricht',
+            $this->render(['id' => self::fixtureKey('message')])
+        );
+    }
 
     #[Test]
     public function aLabelIsResolvedFromTheDefaultLanguageFile(): void
@@ -60,13 +81,45 @@ class TranslateViewHelperTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function aLabelIsResolvedForTheRequestLanguage(): void
+    public function aMissingLabelFallsBackToTheDefault(): void
     {
-        $this->bootstrapRequest(1);
+        $this->bootstrapRequest(0);
 
         self::assertSame(
-            'Testnachricht',
-            $this->render(['id' => self::fixtureKey('message')])
+            'Hello Jane',
+            $this->render([
+                'id'        => self::fixtureKey('doesNotExist'),
+                'default'   => 'Hello %s',
+                'arguments' => ['Jane'],
+            ])
+        );
+    }
+
+    #[Test]
+    public function anExcludedSiteLanguageReturnsNull(): void
+    {
+        $this->bootstrapRequest(2);
+
+        self::assertNull(
+            $this->render([
+                'id'                => self::fixtureKey('message'),
+                'excludedLanguages' => ['da'],
+            ]),
+            'A language listed in excludedLanguages must return null instead of the label.'
+        );
+    }
+
+    #[Test]
+    public function namedArgumentsAreReplacedInTheLabel(): void
+    {
+        $this->bootstrapRequest(0);
+
+        self::assertSame(
+            'Hello Jane!',
+            $this->render([
+                'id'        => self::fixtureKey('withArgument'),
+                'arguments' => ['name' => 'Jane'],
+            ])
         );
     }
 
@@ -94,49 +147,6 @@ class TranslateViewHelperTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function namedArgumentsAreReplacedInTheLabel(): void
-    {
-        $this->bootstrapRequest(0);
-
-        self::assertSame(
-            'Hello Jane!',
-            $this->render([
-                'id'        => self::fixtureKey('withArgument'),
-                'arguments' => ['name' => 'Jane'],
-            ])
-        );
-    }
-
-    #[Test]
-    public function anExcludedSiteLanguageReturnsNull(): void
-    {
-        $this->bootstrapRequest(2);
-
-        self::assertNull(
-            $this->render([
-                'id'                => self::fixtureKey('message'),
-                'excludedLanguages' => ['da'],
-            ]),
-            'A language listed in excludedLanguages must return null instead of the label.'
-        );
-    }
-
-    #[Test]
-    public function aMissingLabelFallsBackToTheDefault(): void
-    {
-        $this->bootstrapRequest(0);
-
-        self::assertSame(
-            'Hello Jane',
-            $this->render([
-                'id'        => self::fixtureKey('doesNotExist'),
-                'default'   => 'Hello %s',
-                'arguments' => ['Jane'],
-            ])
-        );
-    }
-
-    #[Test]
     public function theKeyArgumentResolvesTheLabel(): void
     {
         $this->bootstrapRequest(1);
@@ -145,12 +155,6 @@ class TranslateViewHelperTest extends FunctionalTestCase
             'Testnachricht',
             $this->render(['key' => self::fixtureKey('message')])
         );
-    }
-
-    protected function tearDown(): void
-    {
-        unset($GLOBALS['TYPO3_REQUEST']);
-        parent::tearDown();
     }
 
     /**
@@ -192,7 +196,6 @@ class TranslateViewHelperTest extends FunctionalTestCase
      * the unit test, everything from resolveRequest() down runs for real.
      *
      * @param array<string, mixed> $arguments
-     *
      * @throws AspectNotFoundException
      * @throws ContainerExceptionInterface
      * @throws JsonException
@@ -230,10 +233,5 @@ class TranslateViewHelperTest extends FunctionalTestCase
         $viewHelper->setRenderChildrenClosure(static fn() => null);
 
         return $viewHelper->render();
-    }
-
-    private static function fixtureKey(string $key): string
-    {
-        return 'LLL:EXT:foundation/' . self::FIXTURE_LANGUAGE_FILE . ':' . $key;
     }
 }

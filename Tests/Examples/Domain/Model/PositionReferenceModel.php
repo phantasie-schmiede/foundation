@@ -20,11 +20,7 @@ use PSBits\Foundation\Attribute\TCA\Tab;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
- * Class PositionReferenceModel
- *
  * A domain model whose fields reference a user-defined palette and tab in their position specifications.
- *
- * @package PSBits\Foundation\Tests\Examples\Domain\Model
  */
 #[Table('tx_foundation_position_reference')]
 #[Ctrl(coreFields: 'none', delete: null, iconFile: null, origUid: null)]
@@ -32,6 +28,14 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 #[Tab(identifier: 'ref_tab', label: 'Ref Tab')]
 class PositionReferenceModel extends AbstractEntity
 {
+    #[Column(position: 'after:ref_palette')]
+    #[Input]
+    protected string $afterPalette = '';
+
+    #[Column(position: 'after:ref_tab')]
+    #[Input]
+    protected string $afterTab = '';
+
     #[Column(position: 'before:ref_palette')]
     #[Input]
     protected string $beforePalette = '';
@@ -40,15 +44,7 @@ class PositionReferenceModel extends AbstractEntity
     #[Input]
     protected string $inPalette = '';
 
-    #[Column(position: 'after:ref_palette')]
-    #[Input]
-    protected string $afterPalette = '';
-
     #[Column(position: 'tab:ref_tab')]
     #[Input]
     protected string $inTab = '';
-
-    #[Column(position: 'after:ref_tab')]
-    #[Input]
-    protected string $afterTab = '';
 }

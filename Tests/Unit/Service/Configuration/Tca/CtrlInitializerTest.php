@@ -22,14 +22,18 @@ use ReflectionClass;
 use RuntimeException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class CtrlInitializerTest
- *
- * @package PSBits\Foundation\Tests\Unit\Service\Configuration\Tca
- */
 class CtrlInitializerTest extends UnitTestCase
 {
     private const string TABLE_NAME = 'tx_ctrl_initializer_test';
+
+    /**
+     * @throws RuntimeException
+     */
+    protected function tearDown(): void
+    {
+        unset($GLOBALS['TCA'][self::TABLE_NAME]);
+        parent::tearDown();
+    }
 
     /**
      * @throws Exception
@@ -86,15 +90,6 @@ class CtrlInitializerTest extends UnitTestCase
         self::assertSame('crdate', $GLOBALS['TCA'][self::TABLE_NAME]['ctrl']['crdate']);
         self::assertNull($GLOBALS['TCA'][self::TABLE_NAME]['ctrl']['tstamp']);
         self::assertNull($GLOBALS['TCA'][self::TABLE_NAME]['ctrl']['enablecolumns']);
-    }
-
-    /**
-     * @throws RuntimeException
-     */
-    protected function tearDown(): void
-    {
-        unset($GLOBALS['TCA'][self::TABLE_NAME]);
-        parent::tearDown();
     }
 
     private function setBaseTca(): void

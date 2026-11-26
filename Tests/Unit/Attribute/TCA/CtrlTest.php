@@ -23,11 +23,6 @@ use ReflectionException;
 use ReflectionProperty;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class CtrlTest
- *
- * @package PSBits\Foundation\Tests\Unit\Attribute\TCA
- */
 class CtrlTest extends UnitTestCase
 {
     public static function coreFieldGroupDataProvider(): Generator
@@ -283,6 +278,25 @@ class CtrlTest extends UnitTestCase
      * @throws InvalidArgumentException
      */
     #[Test]
+    public function labelAltAcceptsAListOfPropertyNames(): void
+    {
+        /*
+         * labelAlt is a comma-separated string or a list of property names: getLabelAlt() converts each
+         * entry to a column name and implodes the result into the comma-separated ctrl value. Exercising
+         * the list form here keeps the constructor parameter under phpstan coverage.
+         */
+        $ctrl = new Ctrl(labelAlt: ['subtitle', 'title']);
+
+        $reflection = new ReflectionProperty(Ctrl::class, 'labelAlt');
+
+        self::assertSame(['subtitle', 'title'], $reflection->getValue($ctrl));
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     */
+    #[Test]
     public function resolveActiveCoreFieldGroupsReturnsExpectedGroups(): void
     {
         self::assertSame([
@@ -322,25 +336,6 @@ class CtrlTest extends UnitTestCase
         $ctrl = new Ctrl(searchFields: ['subtitle', 'title']);
 
         $reflection = new ReflectionProperty(Ctrl::class, 'searchFields');
-
-        self::assertSame(['subtitle', 'title'], $reflection->getValue($ctrl));
-    }
-
-    /**
-     * @throws ExpectationFailedException
-     * @throws InvalidArgumentException
-     */
-    #[Test]
-    public function labelAltAcceptsAListOfPropertyNames(): void
-    {
-        /*
-         * labelAlt is a comma-separated string or a list of property names: getLabelAlt() converts each
-         * entry to a column name and implodes the result into the comma-separated ctrl value. Exercising
-         * the list form here keeps the constructor parameter under phpstan coverage.
-         */
-        $ctrl = new Ctrl(labelAlt: ['subtitle', 'title']);
-
-        $reflection = new ReflectionProperty(Ctrl::class, 'labelAlt');
 
         self::assertSame(['subtitle', 'title'], $reflection->getValue($ctrl));
     }

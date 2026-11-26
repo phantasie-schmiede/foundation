@@ -20,16 +20,11 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use UnexpectedValueException;
 use ValueError;
 
-/**
- * Class TypoScriptUtilityTest
- *
- * @package PSBits\Foundation\Utility\TypoScript
- */
+use function file_get_contents;
+use function substr;
+
 class TypoScriptUtilityTest extends UnitTestCase
 {
-    /**
-     * @return Generator
-     */
     public static function convertArrayToTypoScriptDataProvider(): Generator
     {
         yield 'empty array' => [
@@ -81,8 +76,6 @@ class TypoScriptUtilityTest extends UnitTestCase
 
     /**
      * @param array<string, mixed> $array
-     * @param string               $expectedResult
-     * @return void
      * @throws ExpectationFailedException
      * @throws UnexpectedValueException
      * @throws ValueError

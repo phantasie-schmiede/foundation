@@ -39,22 +39,74 @@ use TypeError;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class FlexFormServiceTest
- *
- * @package PSBits\Foundation\Service\Configuration
- */
 class FlexFormServiceTest extends UnitTestCase
 {
     public const int    TEST_INT_CONSTANT    = 42;
     public const string TEST_STRING_CONSTANT = 'test_constant_value';
 
-    private FlexFormService $subject;
-
     /**
      * @var array<string, mixed>|null
      */
-    private ?array $savedTca = null;
+    private ?array          $savedTca = null;
+    private FlexFormService $subject;
+
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws CannotUseOnlyMethodsException
+     * @throws ClassIsEnumerationException
+     * @throws ClassIsFinalException
+     * @throws DuplicateMethodException
+     * @throws IncompatibleReturnValueException
+     * @throws InvalidArgumentException
+     * @throws InvalidMethodNameException
+     * @throws NameAlreadyInUseException
+     * @throws OriginalConstructorInvocationRequiredException
+     * @throws PhpRuntimeException
+     * @throws ReflectionException
+     * @throws RuntimeException
+     * @throws TypeError
+     * @throws UnknownTypeException
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->savedTca = $GLOBALS['TCA'] ?? null;
+        $providerMock   = $this->getMockBuilder(EarlyAccessConstantsProvider::class)
+            ->onlyMethods(['getGlobalVariables'])
+            ->getMock();
+
+        $providerMock->method('getGlobalVariables')
+            ->willReturn([
+                'flexForm' => [
+                    'nested' => [
+                        'answer' => 42,
+                    ],
+                    'value'  => 'early_access_value',
+                ],
+            ]);
+
+        GeneralUtility::addInstance(EarlyAccessConstantsProvider::class, $providerMock);
+        GlobalVariableService::registerGlobalVariableProvider(EarlyAccessConstantsProvider::class);
+        GlobalVariableService::clearCache();
+        $this->subject = new FlexFormService();
+    }
+
+    /**
+     * @throws PhpRuntimeException
+     */
+    protected function tearDown(): void
+    {
+        if (null === $this->savedTca) {
+            unset($GLOBALS['TCA']);
+        } else {
+            $GLOBALS['TCA'] = $this->savedTca;
+        }
+        $this->savedTca = null;
+
+        GlobalVariableService::clearCache();
+        GeneralUtility::purgeInstances();
+        parent::tearDown();
+    }
 
     public static function processDataProvider(): Generator
     {
@@ -130,31 +182,6 @@ class FlexFormServiceTest extends UnitTestCase
     }
 
     /**
-     * On v14, plugins are registered as their own content type, so the data structure is applied to that type and
-     * the flexform field is added to its showitem.
-     *
-     * @throws ExpectationFailedException
-     * @throws SkippedWithMessageException
-     */
-    #[Test]
-    public function registerAppliesTheFlexFormToThePluginContentTypeOnV14(): void
-    {
-        if (!Typo3VersionUtility::isAtLeast('14.0')) {
-            self::markTestSkipped('This behavior only applies to TYPO3 v14 or higher.');
-        }
-
-        $GLOBALS['TCA']['tt_content']['types']['poems_poem'] = [
-            'showitem' => '--palette--;;headers, bodytext',
-        ];
-
-        $this->subject->register('<T3DataStructure/>', 'Poems_Poem');
-
-        $type = $GLOBALS['TCA']['tt_content']['types']['poems_poem'];
-        self::assertSame('<T3DataStructure/>', $type['columnsOverrides']['pi_flexform']['config']['ds']);
-        self::assertStringContainsString('--div--;core.form.tabs:plugin, pi_flexform', $type['showitem']);
-    }
-
-    /**
      * Below v14, the flexform is applied as a subtype of the list content type. addPiFlexFormValue() only extends the
      * existing column-level ds array, so the test pre-seeds it.
      *
@@ -181,60 +208,27 @@ class FlexFormServiceTest extends UnitTestCase
     }
 
     /**
-     * @throws BaseInvalidArgumentException
-     * @throws CannotUseOnlyMethodsException
-     * @throws ClassIsEnumerationException
-     * @throws ClassIsFinalException
-     * @throws DuplicateMethodException
-     * @throws IncompatibleReturnValueException
-     * @throws InvalidArgumentException
-     * @throws InvalidMethodNameException
-     * @throws NameAlreadyInUseException
-     * @throws OriginalConstructorInvocationRequiredException
-     * @throws PhpRuntimeException
-     * @throws ReflectionException
-     * @throws RuntimeException
-     * @throws TypeError
-     * @throws UnknownTypeException
+     * On v14, plugins are registered as their own content type, so the data structure is applied to that type and
+     * the flexform field is added to its showitem.
+     *
+     * @throws ExpectationFailedException
+     * @throws SkippedWithMessageException
      */
-    protected function setUp(): void
+    #[Test]
+    public function registerAppliesTheFlexFormToThePluginContentTypeOnV14(): void
     {
-        parent::setUp();
-        $this->savedTca = $GLOBALS['TCA'] ?? null;
-        $providerMock   = $this->getMockBuilder(EarlyAccessConstantsProvider::class)
-            ->onlyMethods(['getGlobalVariables'])
-            ->getMock();
-
-        $providerMock->method('getGlobalVariables')
-            ->willReturn([
-                'flexForm' => [
-                    'nested' => [
-                        'answer' => 42,
-                    ],
-                    'value'  => 'early_access_value',
-                ],
-            ]);
-
-        GeneralUtility::addInstance(EarlyAccessConstantsProvider::class, $providerMock);
-        GlobalVariableService::registerGlobalVariableProvider(EarlyAccessConstantsProvider::class);
-        GlobalVariableService::clearCache();
-        $this->subject = new FlexFormService();
-    }
-
-    /**
-     * @throws PhpRuntimeException
-     */
-    protected function tearDown(): void
-    {
-        if (null === $this->savedTca) {
-            unset($GLOBALS['TCA']);
-        } else {
-            $GLOBALS['TCA'] = $this->savedTca;
+        if (!Typo3VersionUtility::isAtLeast('14.0')) {
+            self::markTestSkipped('This behavior only applies to TYPO3 v14 or higher.');
         }
-        $this->savedTca = null;
 
-        GlobalVariableService::clearCache();
-        GeneralUtility::purgeInstances();
-        parent::tearDown();
+        $GLOBALS['TCA']['tt_content']['types']['poems_poem'] = [
+            'showitem' => '--palette--;;headers, bodytext',
+        ];
+
+        $this->subject->register('<T3DataStructure/>', 'Poems_Poem');
+
+        $type = $GLOBALS['TCA']['tt_content']['types']['poems_poem'];
+        self::assertSame('<T3DataStructure/>', $type['columnsOverrides']['pi_flexform']['config']['ds']);
+        self::assertStringContainsString('--div--;core.form.tabs:plugin, pi_flexform', $type['showitem']);
     }
 }

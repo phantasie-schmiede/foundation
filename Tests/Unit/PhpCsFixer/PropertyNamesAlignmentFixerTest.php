@@ -22,131 +22,13 @@ use PSBits\Qa\PhpCsFixer\Fixer\PropertyNamesAlignmentFixer;
 use SplFileInfo;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
+use function usort;
+
 /**
  * Class PropertyNamesAlignmentFixer
- *
- * @package PSBits\Foundation\Tests\Unit\PhpCsFixer
  */
 class PropertyNamesAlignmentFixerTest extends UnitTestCase
 {
-    public static function alignPropertiesDataProvider(): Generator
-    {
-        yield 'property names are aligned by the rightmost name' => [
-            '<?php
-class Foo
-{
-    protected string $defaultLabelPath = \'\';
-    protected string $tableName = \'\';
-    protected readonly NameResolver $nameResolver;
-}
-',
-            '<?php
-class Foo
-{
-    protected string                $defaultLabelPath = \'\';
-    protected string                $tableName = \'\';
-    protected readonly NameResolver $nameResolver;
-}
-',
-        ];
-        yield 'a single property is left as-is' => [
-            '<?php
-class Foo
-{
-    protected string $name = \'\';
-}
-',
-            '<?php
-class Foo
-{
-    protected string $name = \'\';
-}
-',
-        ];
-        yield 'mixed modifiers and types are aligned by the rightmost name' => [
-            '<?php
-class Foo
-{
-    public static string $a = \'\';
-    public static int $b = 0;
-    public static string|int $c = \'\';
-}
-',
-            '<?php
-class Foo
-{
-    public static string     $a = \'\';
-    public static int        $b = 0;
-    public static string|int $c = \'\';
-}
-',
-        ];
-    }
-
-    public static function unchangedCodeDataProvider(): Generator
-    {
-        yield 'a method between properties breaks the block' => [
-            '<?php
-class Foo
-{
-    protected string $a = \'\';
-
-    public function bar(): void
-    {
-    }
-
-    protected string $b = \'\';
-}
-',
-        ];
-        yield 'a blank line between properties breaks the block' => [
-            '<?php
-class Foo
-{
-    protected string $a = \'\';
-
-    protected string $b = \'\';
-}
-',
-        ];
-        yield 'a doc comment between properties breaks the block' => [
-            '<?php
-class Foo
-{
-    protected string $a = \'\';
-
-    /**
-     * The b.
-     */
-    protected string $b = \'\';
-}
-',
-        ];
-        yield 'a multiline property default breaks the block' => [
-            '<?php
-class Foo
-{
-    protected string $a = \'\';
-    protected array $b = [
-        1,
-        2,
-    ];
-    protected string $c = \'\';
-}
-',
-        ];
-        yield 'an aligned block is left as-is' => [
-            '<?php
-class Foo
-{
-    protected string                $defaultLabelPath = \'\';
-    protected string                $tableName        = \'\';
-    protected readonly NameResolver $nameResolver;
-}
-',
-        ];
-    }
-
     public static function alignConstructorParametersDataProvider(): Generator
     {
         yield 'promoted property names are aligned by the rightmost name' => [
@@ -241,30 +123,58 @@ class Foo
         ];
     }
 
-    /**
-     * @throws ExpectationFailedException
-     */
-    #[Test]
-    #[DataProvider('alignPropertiesDataProvider')]
-    public function propertyNamesAreAligned(string $input, string $expected): void
+    public static function alignPropertiesDataProvider(): Generator
     {
-        self::assertSame(
-            $expected,
-            $this->applyFixer(new PropertyNamesAlignmentFixer(), $input)
-        );
-    }
-
-    /**
-     * @throws ExpectationFailedException
-     */
-    #[Test]
-    #[DataProvider('unchangedCodeDataProvider')]
-    public function codeThatDoesNotRequireAlignmentIsLeftAsIs(string $input): void
-    {
-        self::assertSame(
-            $input,
-            $this->applyFixer(new PropertyNamesAlignmentFixer(), $input)
-        );
+        yield 'property names are aligned by the rightmost name' => [
+            '<?php
+class Foo
+{
+    protected string $defaultLabelPath = \'\';
+    protected string $tableName = \'\';
+    protected readonly NameResolver $nameResolver;
+}
+',
+            '<?php
+class Foo
+{
+    protected string                $defaultLabelPath = \'\';
+    protected string                $tableName = \'\';
+    protected readonly NameResolver $nameResolver;
+}
+',
+        ];
+        yield 'a single property is left as-is' => [
+            '<?php
+class Foo
+{
+    protected string $name = \'\';
+}
+',
+            '<?php
+class Foo
+{
+    protected string $name = \'\';
+}
+',
+        ];
+        yield 'mixed modifiers and types are aligned by the rightmost name' => [
+            '<?php
+class Foo
+{
+    public static string $a = \'\';
+    public static int $b = 0;
+    public static string|int $c = \'\';
+}
+',
+            '<?php
+class Foo
+{
+    public static string     $a = \'\';
+    public static int        $b = 0;
+    public static string|int $c = \'\';
+}
+',
+        ];
     }
 
     public static function trimExcessWhitespaceDataProvider(): Generator
@@ -339,6 +249,139 @@ class Foo
         ];
     }
 
+    public static function unchangedCodeDataProvider(): Generator
+    {
+        yield 'a method between properties breaks the block' => [
+            '<?php
+class Foo
+{
+    protected string $a = \'\';
+
+    public function bar(): void
+    {
+    }
+
+    protected string $b = \'\';
+}
+',
+        ];
+        yield 'a blank line between properties breaks the block' => [
+            '<?php
+class Foo
+{
+    protected string $a = \'\';
+
+    protected string $b = \'\';
+}
+',
+        ];
+        yield 'a doc comment between properties breaks the block' => [
+            '<?php
+class Foo
+{
+    protected string $a = \'\';
+
+    /**
+     * The b.
+     */
+    protected string $b = \'\';
+}
+',
+        ];
+        yield 'a multiline property default breaks the block' => [
+            '<?php
+class Foo
+{
+    protected string $a = \'\';
+    protected array $b = [
+        1,
+        2,
+    ];
+    protected string $c = \'\';
+}
+',
+        ];
+        yield 'an aligned block is left as-is' => [
+            '<?php
+class Foo
+{
+    protected string                $defaultLabelPath = \'\';
+    protected string                $tableName        = \'\';
+    protected readonly NameResolver $nameResolver;
+}
+',
+        ];
+    }
+
+    /**
+     * The alignment must run before binary_operator_spaces, so the padding inserted
+     * by this fixer is taken into account when the assignment signs are aligned.
+     *
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    public function alignmentCooperatesWithBinaryOperatorSpaces(): void
+    {
+        $input = '<?php
+class Foo
+{
+    protected string $defaultLabelPath = \'\';
+    protected string $tableName = \'\';
+    protected readonly NameResolver $nameResolver;
+}
+';
+        $expected = '<?php
+class Foo
+{
+    protected string                $defaultLabelPath = \'\';
+    protected string                $tableName        = \'\';
+    protected readonly NameResolver $nameResolver;
+}
+';
+
+        $fixers = (new FixerFactory())
+            ->registerBuiltInFixers()
+            ->registerCustomFixers([new PropertyNamesAlignmentFixer()])
+            ->useRuleSet(
+                new RuleSet(
+                    [
+                        'binary_operator_spaces'          => [
+                            'operators' => [
+                                '=' => 'align_single_space_minimal',
+                            ],
+                        ],
+                        'PSBits/property_names_alignment' => true,
+                    ]
+                )
+            )
+            ->getFixers();
+
+        usort($fixers, static fn($a, $b): int => [$b->getPriority(), $b->getName()] <=> [$a->getPriority(), $a->getName()]);
+
+        $tokens = Tokens::fromCode($input);
+
+        foreach ($fixers as $fixer) {
+            if ($fixer->isCandidate($tokens)) {
+                $fixer->fix(new SplFileInfo(__FILE__), $tokens);
+            }
+        }
+
+        self::assertSame($expected, $tokens->generateCode());
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    #[DataProvider('unchangedCodeDataProvider')]
+    public function codeThatDoesNotRequireAlignmentIsLeftAsIs(string $input): void
+    {
+        self::assertSame(
+            $input,
+            $this->applyFixer(new PropertyNamesAlignmentFixer(), $input)
+        );
+    }
+
     /**
      * @throws ExpectationFailedException
      */
@@ -392,59 +435,16 @@ class Foo
     }
 
     /**
-     * The alignment must run before binary_operator_spaces, so the padding inserted
-     * by this fixer is taken into account when the assignment signs are aligned.
-     *
      * @throws ExpectationFailedException
      */
     #[Test]
-    public function alignmentCooperatesWithBinaryOperatorSpaces(): void
+    #[DataProvider('alignPropertiesDataProvider')]
+    public function propertyNamesAreAligned(string $input, string $expected): void
     {
-        $input = '<?php
-class Foo
-{
-    protected string $defaultLabelPath = \'\';
-    protected string $tableName = \'\';
-    protected readonly NameResolver $nameResolver;
-}
-';
-        $expected = '<?php
-class Foo
-{
-    protected string                $defaultLabelPath = \'\';
-    protected string                $tableName        = \'\';
-    protected readonly NameResolver $nameResolver;
-}
-';
-
-        $fixers = (new FixerFactory())
-            ->registerBuiltInFixers()
-            ->registerCustomFixers([new PropertyNamesAlignmentFixer()])
-            ->useRuleSet(
-                new RuleSet(
-                    [
-                        'binary_operator_spaces'          => [
-                            'operators' => [
-                                '=' => 'align_single_space_minimal',
-                            ],
-                        ],
-                        'PSBits/property_names_alignment' => true,
-                    ]
-                )
-            )
-            ->getFixers();
-
-        \usort($fixers, static fn($a, $b): int => [$b->getPriority(), $b->getName()] <=> [$a->getPriority(), $a->getName()]);
-
-        $tokens = Tokens::fromCode($input);
-
-        foreach ($fixers as $fixer) {
-            if ($fixer->isCandidate($tokens)) {
-                $fixer->fix(new SplFileInfo(__FILE__), $tokens);
-            }
-        }
-
-        self::assertSame($expected, $tokens->generateCode());
+        self::assertSame(
+            $expected,
+            $this->applyFixer(new PropertyNamesAlignmentFixer(), $input)
+        );
     }
 
     private function applyFixer(PropertyNamesAlignmentFixer $fixer, string $code): string

@@ -17,11 +17,6 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\ExpectationFailedException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class PluralFormUtilityTest
- *
- * @package PSBits\Foundation\Utility\Localization
- */
 class PluralFormUtilityTest extends UnitTestCase
 {
     public static function getPluralFormDataProvider(): Generator

@@ -15,11 +15,6 @@ use PSBits\Foundation\Attribute\TCA\ColumnType\Input;
 use PSBits\Foundation\Attribute\TCA\Ctrl;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-/**
- * Class MacGuffin
- *
- * @package PSBitsTest\Tcafixture\Domain\Model
- */
 #[Ctrl]
 class MacGuffin extends AbstractEntity
 {

@@ -18,12 +18,8 @@ use PSBits\Foundation\Attribute\TCA\Ctrl;
 use PSBits\Foundation\Attribute\TCA\Mapping\Table;
 
 /**
- * Class ExtendedTcaChildModel
- *
  * Child model extending ExtendedTcaParentModel. Used to test the TCA
  * override mode, which only adds properties declared in the child class.
- *
- * @package PSBits\Foundation\Tests\Examples\Domain\Model
  */
 #[Table('tx_foundation_extended_tca')]
 #[Ctrl(label: 'overrideField')]

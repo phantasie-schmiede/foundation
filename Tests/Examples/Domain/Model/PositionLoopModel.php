@@ -18,12 +18,8 @@ use PSBits\Foundation\Attribute\TCA\Mapping\Table;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
- * Class PositionLoopModel
- *
  * The position of both fields references the other field, which creates a
  * loop that TcaService must detect.
- *
- * @package PSBits\Foundation\Tests\Examples\Domain\Model
  */
 #[Table('tx_foundation_position_loop')]
 #[Ctrl(

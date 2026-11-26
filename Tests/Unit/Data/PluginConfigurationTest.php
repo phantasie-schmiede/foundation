@@ -22,14 +22,93 @@ use PSBits\Foundation\Enum\ContentType;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
- * Class PluginConfigurationTest
- *
  * Getter coverage for the configuration data classes.
- *
- * @package PSBits\Foundation\Tests\Unit\Data
  */
 class PluginConfigurationTest extends UnitTestCase
 {
+    /**
+     * @return array<string, array{string, string|null, string|null, string|null, array<string, mixed>|null, bool, string|null}>
+     */
+    public static function mainModuleConfigurationDataProvider(): array
+    {
+        return [
+            'full configuration' => [
+                'mymain',
+                'module-mymain',
+                'LLL:EXT:core/Resources/Private/Language/locallang_mod_sys1.xlf:mymain',
+                'TYPO3/CMS/Some/Navigation',
+                ['after' => 'tools'],
+                false,
+                'live',
+            ],
+            'defaults'           => [
+                'mymain',
+                null,
+                null,
+                null,
+                null,
+                true,
+                null,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string, array<int|string, string|list<string>>, string|null, string|null, string|null, string, array<string, mixed>|null, bool, string|null}>
+     */
+    public static function moduleConfigurationDataProvider(): array
+    {
+        return [
+            'full configuration' => [
+                'mychild',
+                'group',
+                ['PSBits\Some\Controller\ChildController'],
+                'module-mychild',
+                'Child label',
+                'TYPO3/CMS/Some/ChildNavigation',
+                'mymain',
+                ['before' => 'system'],
+                false,
+                'live, disabled',
+            ],
+            'defaults'           => [
+                'mychild',
+                'group, user',
+                [],
+                null,
+                null,
+                null,
+                'web',
+                null,
+                true,
+                null,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{int, string, list<string>, string|null, string|null}>
+     */
+    public static function pageTypeConfigurationDataProvider(): array
+    {
+        return [
+            'full configuration' => [
+                99,
+                'special_page',
+                ['tt_content', 'news'],
+                'page-type-special',
+                'Special page',
+            ],
+            'defaults'           => [
+                100,
+                'simple_page',
+                [],
+                null,
+                null,
+            ],
+        ];
+    }
+
     /**
      * @return array<string, array{string, bool, array<int|string, string|list<string>>, string, string, string, string, int, bool, ContentType, bool}>
      */
@@ -66,79 +145,6 @@ class PluginConfigurationTest extends UnitTestCase
     }
 
     /**
-     * @param array<int|string, string|list<string>> $controllers
-     * @throws ExpectationFailedException
-     */
-    #[Test]
-    #[DataProvider('pluginConfigurationDataProvider')]
-    public function pluginConfigurationReturnsConstructorValues(
-        string     $name,
-        bool       $addToElementWizard,
-        array      $controllers,
-        string     $flexForm,
-        string     $group,
-        string     $iconIdentifier,
-        string     $title,
-        int        $typeNum,
-        bool       $typeNumCacheable,
-        ContentType $typeNumContentType,
-        bool       $typeNumDisableAllHeaderCode,
-    ): void {
-        $configuration = new PluginConfiguration(
-            name: $name,
-            addToElementWizard: $addToElementWizard,
-            controllers: $controllers,
-            flexForm: $flexForm,
-            group: $group,
-            iconIdentifier: $iconIdentifier,
-            title: $title,
-            typeNum: $typeNum,
-            typeNumCacheable: $typeNumCacheable,
-            typeNumContentType: $typeNumContentType,
-            typeNumDisableAllHeaderCode: $typeNumDisableAllHeaderCode,
-        );
-
-        self::assertSame($name, $configuration->getName());
-        self::assertSame($addToElementWizard, $configuration->isAddToElementWizard());
-        self::assertSame($controllers, $configuration->getControllers());
-        self::assertSame($flexForm, $configuration->getFlexForm());
-        self::assertSame($group, $configuration->getGroup());
-        self::assertSame($iconIdentifier, $configuration->getIconIdentifier());
-        self::assertSame($title, $configuration->getTitle());
-        self::assertSame($typeNum, $configuration->getTypeNum());
-        self::assertSame($typeNumCacheable, $configuration->isTypeNumCacheable());
-        self::assertSame($typeNumContentType, $configuration->getTypeNumContentType());
-        self::assertSame($typeNumDisableAllHeaderCode, $configuration->isTypeNumDisableAllHeaderCode());
-    }
-
-    /**
-     * @return array<string, array{string, string|null, string|null, string|null, array<string, mixed>|null, bool, string|null}>
-     */
-    public static function mainModuleConfigurationDataProvider(): array
-    {
-        return [
-            'full configuration' => [
-                'mymain',
-                'module-mymain',
-                'LLL:EXT:core/Resources/Private/Language/locallang_mod_sys1.xlf:mymain',
-                'TYPO3/CMS/Some/Navigation',
-                ['after' => 'tools'],
-                false,
-                'live',
-            ],
-            'defaults'           => [
-                'mymain',
-                null,
-                null,
-                null,
-                null,
-                true,
-                null,
-            ],
-        ];
-    }
-
-    /**
      * @param array<string, mixed>|null $position
      * @throws ExpectationFailedException
      */
@@ -170,39 +176,6 @@ class PluginConfigurationTest extends UnitTestCase
         self::assertSame($position, $configuration->getPosition());
         self::assertSame($renderInModuleMenu, $configuration->getRenderInModuleMenu());
         self::assertSame($workspaces, $configuration->getWorkspaces());
-    }
-
-    /**
-     * @return array<string, array{string, string, array<int|string, string|list<string>>, string|null, string|null, string|null, string, array<string, mixed>|null, bool, string|null}>
-     */
-    public static function moduleConfigurationDataProvider(): array
-    {
-        return [
-            'full configuration' => [
-                'mychild',
-                'group',
-                ['PSBits\Some\Controller\ChildController'],
-                'module-mychild',
-                'Child label',
-                'TYPO3/CMS/Some/ChildNavigation',
-                'mymain',
-                ['before' => 'system'],
-                false,
-                'live, disabled',
-            ],
-            'defaults'           => [
-                'mychild',
-                'group, user',
-                [],
-                null,
-                null,
-                null,
-                'web',
-                null,
-                true,
-                null,
-            ],
-        ];
     }
 
     /**
@@ -250,29 +223,6 @@ class PluginConfigurationTest extends UnitTestCase
     }
 
     /**
-     * @return array<string, array{int, string, list<string>, string|null, string|null}>
-     */
-    public static function pageTypeConfigurationDataProvider(): array
-    {
-        return [
-            'full configuration' => [
-                99,
-                'special_page',
-                ['tt_content', 'news'],
-                'page-type-special',
-                'Special page',
-            ],
-            'defaults'           => [
-                100,
-                'simple_page',
-                [],
-                null,
-                null,
-            ],
-        ];
-    }
-
-    /**
      * @param list<string> $allowedTables
      * @throws ExpectationFailedException
      */
@@ -298,5 +248,51 @@ class PluginConfigurationTest extends UnitTestCase
         self::assertSame($allowedTables, $configuration->getAllowedTables());
         self::assertSame($iconIdentifier, $configuration->getIconIdentifier());
         self::assertSame($label, $configuration->getLabel());
+    }
+
+    /**
+     * @param array<int|string, string|list<string>> $controllers
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    #[DataProvider('pluginConfigurationDataProvider')]
+    public function pluginConfigurationReturnsConstructorValues(
+        string     $name,
+        bool       $addToElementWizard,
+        array      $controllers,
+        string     $flexForm,
+        string     $group,
+        string     $iconIdentifier,
+        string     $title,
+        int        $typeNum,
+        bool       $typeNumCacheable,
+        ContentType $typeNumContentType,
+        bool       $typeNumDisableAllHeaderCode,
+    ): void {
+        $configuration = new PluginConfiguration(
+            name: $name,
+            addToElementWizard: $addToElementWizard,
+            controllers: $controllers,
+            flexForm: $flexForm,
+            group: $group,
+            iconIdentifier: $iconIdentifier,
+            title: $title,
+            typeNum: $typeNum,
+            typeNumCacheable: $typeNumCacheable,
+            typeNumContentType: $typeNumContentType,
+            typeNumDisableAllHeaderCode: $typeNumDisableAllHeaderCode,
+        );
+
+        self::assertSame($name, $configuration->getName());
+        self::assertSame($addToElementWizard, $configuration->isAddToElementWizard());
+        self::assertSame($controllers, $configuration->getControllers());
+        self::assertSame($flexForm, $configuration->getFlexForm());
+        self::assertSame($group, $configuration->getGroup());
+        self::assertSame($iconIdentifier, $configuration->getIconIdentifier());
+        self::assertSame($title, $configuration->getTitle());
+        self::assertSame($typeNum, $configuration->getTypeNum());
+        self::assertSame($typeNumCacheable, $configuration->isTypeNumCacheable());
+        self::assertSame($typeNumContentType, $configuration->getTypeNumContentType());
+        self::assertSame($typeNumDisableAllHeaderCode, $configuration->isTypeNumDisableAllHeaderCode());
     }
 }

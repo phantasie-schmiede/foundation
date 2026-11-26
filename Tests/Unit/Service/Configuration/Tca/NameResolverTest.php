@@ -44,24 +44,25 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ClassesConfiguration;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
+use function file_put_contents;
+use function mkdir;
+use function rmdir;
+use function uniqid;
+use function unlink;
+
 /**
- * Class NameResolverTest
- *
  * Unit tests for the name resolution part of the TCA configuration (class name to table name, property name to
  * column name, class to table mapping).
- *
- * @package PSBits\Foundation\Tests\Unit\Service\Configuration\Tca
  */
 class NameResolverTest extends UnitTestCase
 {
-    private ExtensionInformationService $extensionInformationService;
-    private PackageManager              $packageManager;
-    private NameResolver                $subject;
-
     /**
      * @var PackageInterface[]
      */
-    private array $activePackages = [];
+    private array                       $activePackages = [];
+    private ExtensionInformationService $extensionInformationService;
+    private PackageManager              $packageManager;
+    private NameResolver                $subject;
 
     /**
      * @throws Exception
@@ -92,28 +93,56 @@ class NameResolverTest extends UnitTestCase
     }
 
     /**
-     * @throws ReflectionException
-     */
-    private function resetStaticState(): void
-    {
-        $classTableMapping = new ReflectionProperty(NameResolver::class, 'classTableMapping');
-        $classTableMapping->setValue(null, []);
-        $allowCaching = new ReflectionProperty(NameResolver::class, 'allowCaching');
-        $allowCaching->setValue(null, true);
-    }
-
-    /**
-     * @throws BaseInvalidArgumentException
+     * @throws Exception
      * @throws ExpectationFailedException
-     * @throws ReflectionException
+     * @throws FrameworkException
+     * @throws IncompatibleReturnValueException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
      */
     #[Test]
-    public function convertClassNameToTableNameReturnsNameFromTableAttribute(): void
+    public function checkClassesConfigurationLoadsClassesFilesFromActivePackages(): void
     {
-        self::assertSame(
-            'tx_foundation_all_tca_attributes',
-            $this->subject->convertClassNameToTableName(AllTcaAttributesModel::class)
+        $packagePath = rtrim(Environment::getProjectPath(), '/') . '/var/tca_service_test/' . uniqid();
+        mkdir($packagePath . '/Configuration/Extbase/Persistence', 0777, true);
+        file_put_contents(
+            $packagePath . '/Configuration/Extbase/Persistence/Classes.php',
+            '<?php return ' . var_export([
+                ChildTcaModel::class  => [
+                    'properties' => [
+                        'childProperty' => [],
+                    ],
+                ],
+                ParentTcaModel::class => [
+                    'properties' => [
+                        'parentProperty' => [],
+                    ],
+                ],
+            ], true) . ';'
         );
+
+        $package = $this->createMock(PackageInterface::class);
+        $package->method('getPackagePath')
+            ->willReturn($packagePath . '/');
+        $this->activePackages = [$package];
+
+        $method = new ReflectionMethod(NameResolver::class, 'checkClassesConfiguration');
+        $method->invoke($this->subject);
+
+        $classesConfiguration = new ReflectionProperty(NameResolver::class, 'classesConfiguration');
+        /** @var ClassesConfiguration $configuration */
+        $configuration = $classesConfiguration->getValue($this->subject);
+        self::assertTrue($configuration->hasClass(ChildTcaModel::class));
+        self::assertArrayHasKey(
+            'parentProperty',
+            $configuration->getConfigurationFor(ChildTcaModel::class)['properties']
+        );
+
+        unlink($packagePath . '/Configuration/Extbase/Persistence/Classes.php');
+        rmdir($packagePath . '/Configuration/Extbase/Persistence');
+        rmdir($packagePath . '/Configuration/Extbase');
+        rmdir($packagePath . '/Configuration');
+        rmdir($packagePath);
     }
 
     /**
@@ -127,6 +156,20 @@ class NameResolverTest extends UnitTestCase
         self::assertSame(
             'tx_foundation_data_pluginconfiguration',
             $this->subject->convertClassNameToTableName(PluginConfiguration::class)
+        );
+    }
+
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ExpectationFailedException
+     * @throws ReflectionException
+     */
+    #[Test]
+    public function convertClassNameToTableNameReturnsNameFromTableAttribute(): void
+    {
+        self::assertSame(
+            'tx_foundation_all_tca_attributes',
+            $this->subject->convertClassNameToTableName(AllTcaAttributesModel::class)
         );
     }
 
@@ -178,11 +221,11 @@ class NameResolverTest extends UnitTestCase
      * @throws ReflectionException
      */
     #[Test]
-    public function convertPropertyNameToColumnNameReturnsNameFromFieldAttribute(): void
+    public function convertPropertyNameToColumnNameFallsBackToConventionWithoutFieldAttribute(): void
     {
         self::assertSame(
-            'mapped_field',
-            $this->subject->convertPropertyNameToColumnName('mappedField', AllTcaAttributesModel::class)
+            'text_field',
+            $this->subject->convertPropertyNameToColumnName('textField', AllTcaAttributesModel::class)
         );
     }
 
@@ -192,11 +235,11 @@ class NameResolverTest extends UnitTestCase
      * @throws ReflectionException
      */
     #[Test]
-    public function convertPropertyNameToColumnNameFallsBackToConventionWithoutFieldAttribute(): void
+    public function convertPropertyNameToColumnNameReturnsNameFromFieldAttribute(): void
     {
         self::assertSame(
-            'text_field',
-            $this->subject->convertPropertyNameToColumnName('textField', AllTcaAttributesModel::class)
+            'mapped_field',
+            $this->subject->convertPropertyNameToColumnName('mappedField', AllTcaAttributesModel::class)
         );
     }
 
@@ -222,6 +265,30 @@ class NameResolverTest extends UnitTestCase
             'custom_text',
             $this->subject->convertPropertyNameToColumnName('textField', AllTcaAttributesModel::class)
         );
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     * @throws ImplementationException
+     * @throws LogicException
+     * @throws ReflectionException
+     */
+    #[Test]
+    public function convertTableNameToClassNamesFindsMappedClassNames(): void
+    {
+        $classTableMapping = new ReflectionProperty(NameResolver::class, 'classTableMapping');
+        $classTableMapping->setValue(null, [
+            'tca'          => [
+                AllTcaAttributesModel::class => 'tx_foundation_all_tca_attributes',
+            ],
+            'tcaOverrides' => [
+                ForeignTableModel::class => 'tx_foreign_thing',
+            ],
+        ]);
+
+        self::assertSame([AllTcaAttributesModel::class], $this->subject->convertTableNameToClassNames('tx_foundation_all_tca_attributes'));
+        self::assertSame([ForeignTableModel::class], $this->subject->convertTableNameToClassNames('tx_foreign_thing'));
+        self::assertSame([], $this->subject->convertTableNameToClassNames('tx_unknown_table'));
     }
 
     /**
@@ -298,30 +365,6 @@ class NameResolverTest extends UnitTestCase
 
     /**
      * @throws ExpectationFailedException
-     * @throws ImplementationException
-     * @throws LogicException
-     * @throws ReflectionException
-     */
-    #[Test]
-    public function convertTableNameToClassNamesFindsMappedClassNames(): void
-    {
-        $classTableMapping = new ReflectionProperty(NameResolver::class, 'classTableMapping');
-        $classTableMapping->setValue(null, [
-            'tca'          => [
-                AllTcaAttributesModel::class => 'tx_foundation_all_tca_attributes',
-            ],
-            'tcaOverrides' => [
-                ForeignTableModel::class => 'tx_foreign_thing',
-            ],
-        ]);
-
-        self::assertSame([AllTcaAttributesModel::class], $this->subject->convertTableNameToClassNames('tx_foundation_all_tca_attributes'));
-        self::assertSame([ForeignTableModel::class], $this->subject->convertTableNameToClassNames('tx_foreign_thing'));
-        self::assertSame([], $this->subject->convertTableNameToClassNames('tx_unknown_table'));
-    }
-
-    /**
-     * @throws ExpectationFailedException
      */
     #[Test]
     public function inheritPropertiesFromParentClassesMergesParentProperties(): void
@@ -349,6 +392,7 @@ class NameResolverTest extends UnitTestCase
 
         self::assertSame(
             [
+                // PSBits/alphabetical_array_keys=off — inherited properties retain their insertion order.
                 'parentProperty' => [
                     'fieldName' => 'child_override',
                 ],
@@ -361,64 +405,22 @@ class NameResolverTest extends UnitTestCase
     }
 
     /**
-     * @throws Exception
-     * @throws ExpectationFailedException
-     * @throws FrameworkException
-     * @throws IncompatibleReturnValueException
-     * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     */
-    #[Test]
-    public function checkClassesConfigurationLoadsClassesFilesFromActivePackages(): void
-    {
-        $packagePath = rtrim(Environment::getProjectPath(), '/') . '/var/tca_service_test/' . uniqid();
-        mkdir($packagePath . '/Configuration/Extbase/Persistence', 0777, true);
-        file_put_contents(
-            $packagePath . '/Configuration/Extbase/Persistence/Classes.php',
-            '<?php return ' . var_export([
-                ChildTcaModel::class  => [
-                    'properties' => [
-                        'childProperty' => [],
-                    ],
-                ],
-                ParentTcaModel::class => [
-                    'properties' => [
-                        'parentProperty' => [],
-                    ],
-                ],
-            ], true) . ';'
-        );
-
-        $package = $this->createMock(PackageInterface::class);
-        $package->method('getPackagePath')
-            ->willReturn($packagePath . '/');
-        $this->activePackages = [$package];
-
-        $method = new ReflectionMethod(NameResolver::class, 'checkClassesConfiguration');
-        $method->invoke($this->subject);
-
-        $classesConfiguration = new ReflectionProperty(NameResolver::class, 'classesConfiguration');
-        /** @var ClassesConfiguration $configuration */
-        $configuration = $classesConfiguration->getValue($this->subject);
-        self::assertTrue($configuration->hasClass(ChildTcaModel::class));
-        self::assertArrayHasKey(
-            'parentProperty',
-            $configuration->getConfigurationFor(ChildTcaModel::class)['properties']
-        );
-
-        unlink($packagePath . '/Configuration/Extbase/Persistence/Classes.php');
-        rmdir($packagePath . '/Configuration/Extbase/Persistence');
-        rmdir($packagePath . '/Configuration/Extbase');
-        rmdir($packagePath . '/Configuration');
-        rmdir($packagePath);
-    }
-
-    /**
      * @param array<string, mixed> $configuration
      */
     private function injectClassesConfiguration(array $configuration): void
     {
         $classesConfiguration = new ReflectionProperty(NameResolver::class, 'classesConfiguration');
         $classesConfiguration->setValue($this->subject, new ClassesConfiguration($configuration));
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    private function resetStaticState(): void
+    {
+        $classTableMapping = new ReflectionProperty(NameResolver::class, 'classTableMapping');
+        $classTableMapping->setValue(null, []);
+        $allowCaching = new ReflectionProperty(NameResolver::class, 'allowCaching');
+        $allowCaching->setValue(null, true);
     }
 }

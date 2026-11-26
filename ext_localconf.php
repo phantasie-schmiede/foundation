@@ -33,7 +33,6 @@ defined('TYPO3') or die();
     $pluginService = GeneralUtility::makeInstance(PluginService::class);
 
     foreach ($extensionInformationService->getAllExtensionInformation() as $extensionInformation) {
-        $pageTypeService->addToRegistry($extensionInformation);
         $pageTypeService->addToDragArea($extensionInformation);
         $pluginService->configurePlugins($extensionInformation);
     }

@@ -17,12 +17,8 @@ use PSBits\Foundation\Attribute\TCA\Mapping\Table;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
- * Class ProtectedSortModel
- *
  * Sorts on a reserved system column, which is a misconfiguration TcaService
  * has to reject.
- *
- * @package PSBits\Foundation\Tests\Examples\Domain\Model
  */
 #[Table('tx_foundation_protected_sort')]
 #[Ctrl(

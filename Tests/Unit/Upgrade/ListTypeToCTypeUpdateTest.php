@@ -22,6 +22,7 @@ use PHPUnit\Framework\SkippedWithMessageException;
 use PSBits\Foundation\Data\ExtensionInformationInterface;
 use PSBits\Foundation\Data\PluginConfiguration;
 use PSBits\Foundation\Service\ExtensionInformationService;
+use ReflectionException;
 use ReflectionMethod;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Upgrades\AbstractListTypeToCTypeUpdate;
@@ -29,19 +30,34 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 use function array_key_first;
 use function array_values;
-use ReflectionException;
+use function class_exists;
 
 /**
- * Class ListTypeToCTypeUpdateTest
- *
  * The upgrade wizard is only functional on TYPO3 v14, where the core provides the upgrade wizard infrastructure, so
  * the tests are skipped on v13.
- *
- * @package PSBits\Foundation\Upgrade
  */
 class ListTypeToCTypeUpdateTest extends UnitTestCase
 {
     private ListTypeToCTypeUpdate $subject;
+
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws SkippedWithMessageException
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        if (false === class_exists(AbstractListTypeToCTypeUpdate::class)) {
+            self::markTestSkipped('The upgrade wizard is only available on TYPO3 v14.');
+        }
+
+        $this->subject = $this->createSubject(
+            $this->createExtensionInformation('poems', [new PluginConfiguration(name: 'Poem')])
+        );
+    }
 
     /**
      * @throws Exception
@@ -120,15 +136,6 @@ class ListTypeToCTypeUpdateTest extends UnitTestCase
     }
 
     /**
-     * @return array<string, string>
-     * @throws ReflectionException // t3:13
-     */
-    private function getMapping(ListTypeToCTypeUpdate $subject): array
-    {
-        return (new ReflectionMethod(ListTypeToCTypeUpdate::class, 'getListTypeToCTypeMapping'))->invoke($subject);
-    }
-
-    /**
      * @throws Exception
      * @throws IncompatibleReturnValueException
      * @throws InvalidArgumentException
@@ -144,21 +151,11 @@ class ListTypeToCTypeUpdateTest extends UnitTestCase
     }
 
     /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws SkippedWithMessageException
+     * @return array<string, string>
+     * @throws ReflectionException // t3:13
      */
-    protected function setUp(): void
+    private function getMapping(ListTypeToCTypeUpdate $subject): array
     {
-        parent::setUp();
-
-        if (false === class_exists(AbstractListTypeToCTypeUpdate::class)) {
-            self::markTestSkipped('The upgrade wizard is only available on TYPO3 v14.');
-        }
-
-        $this->subject = $this->createSubject(
-            $this->createExtensionInformation('poems', [new PluginConfiguration(name: 'Poem')])
-        );
+        return (new ReflectionMethod(ListTypeToCTypeUpdate::class, 'getListTypeToCTypeMapping'))->invoke($subject);
     }
 }

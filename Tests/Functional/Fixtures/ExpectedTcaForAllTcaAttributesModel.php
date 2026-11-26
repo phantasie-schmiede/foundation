@@ -40,12 +40,12 @@ return [
         ],
         'check_field'              => [
             'config' => [
+                'cols'               => 1,
                 'EXT'                => [
                     'foundation' => [
                         'databaseDefinition' => 'tinyint unsigned DEFAULT 0 NOT NULL',
                     ],
                 ],
-                'cols'               => 1,
                 'invertStateDisplay' => false,
                 'items'              => [],
                 'type'               => 'check',
@@ -81,12 +81,12 @@ return [
         ],
         'email_field'              => [
             'config' => [
+                'eval' => 'trim',
                 'EXT'  => [
                     'foundation' => [
                         'databaseDefinition' => 'varchar(255) DEFAULT \'\' NOT NULL',
                     ],
                 ],
-                'eval' => 'trim',
                 'type' => 'email',
             ],
             'label'  => $baseLL . 'emailField',
@@ -119,11 +119,6 @@ return [
         ],
         'file_field'               => [
             'config' => [
-                'EXT'          => [
-                    'foundation' => [
-                        'databaseDefinition' => 'int unsigned DEFAULT 0 NOT NULL',
-                    ],
-                ],
                 'allowed'      => 'common-image-types',
                 'appearance'   => [
                     'showRecalculateLink' => false,
@@ -132,19 +127,24 @@ return [
                     'enableCascadingDelete' => true,
                 ],
                 'disallowed'   => 'jpg',
+                'EXT'          => [
+                    'foundation' => [
+                        'databaseDefinition' => 'int unsigned DEFAULT 0 NOT NULL',
+                    ],
+                ],
                 'type'         => 'file',
             ],
             'label'  => $baseLL . 'fileField',
         ],
         'flex_field'               => [
             'config' => [
+                'ds'   => [
+                    'default' => 'FILE:EXT:core/Configuration/FlexForms/FlexForm.xml',
+                ],
                 'EXT'  => [
                     'foundation' => [
                         'databaseDefinition' => 'text NOT NULL',
                     ],
-                ],
-                'ds'   => [
-                    'default' => 'FILE:EXT:core/Configuration/FlexForms/FlexForm.xml',
                 ],
                 'type' => 'flex',
             ],
@@ -163,13 +163,13 @@ return [
         ],
         'group_field'              => [
             'config' => [
+                'allowed'        => 'sys_category',
+                'autoSizeMax'    => 5,
                 'EXT'            => [
                     'foundation' => [
                         'databaseDefinition' => 'text NOT NULL',
                     ],
                 ],
-                'allowed'        => 'sys_category',
-                'autoSizeMax'    => 5,
                 'hideDeleteIcon' => true,
                 'minitems'       => 1,
                 'MM_table_where' => 'AND 1=1',
@@ -213,8 +213,8 @@ return [
                     'useSortable'                     => true,
                 ],
                 'behaviour'      => [
-                    'enableCascadingDelete'           => true,
                     'disableMovingChildrenWithParent' => true,
+                    'enableCascadingDelete'           => true,
                 ],
                 'customControls' => [
                     'preview',
@@ -231,12 +231,12 @@ return [
         ],
         'json_field'               => [
             'config' => [
+                'enableCodeEditor'  => true,
                 'EXT'               => [
                     'foundation' => [
                         'databaseDefinition' => 'text NOT NULL',
                     ],
                 ],
-                'enableCodeEditor'  => true,
                 'placeholder'       => '',
                 'type'              => 'json',
             ],
@@ -244,15 +244,15 @@ return [
         ],
         'link_field'               => [
             'config' => [
+                'appearance'   => [
+                    'enableBrowser' => true,
+                ],
+                'autocomplete' => false,
                 'EXT'          => [
                     'foundation' => [
                         'databaseDefinition' => 'text NOT NULL',
                     ],
                 ],
-                'appearance'   => [
-                    'enableBrowser' => true,
-                ],
-                'autocomplete' => false,
                 'placeholder'  => 'Please enter URL',
                 'size'         => 50,
                 'type'         => 'link',
@@ -261,16 +261,16 @@ return [
         ],
         'mapped_field'             => [
             'config' => [
-                'EXT'          => [
-                    'foundation' => [
-                        'databaseDefinition' => 'varchar(255) DEFAULT \'\' NOT NULL',
-                    ],
-                ],
                 'autocomplete' => 'off',
                 'behaviour'    => [
                     'allowLanguageSynchronization' => true,
                 ],
                 'eval'         => 'trim',
+                'EXT'          => [
+                    'foundation' => [
+                        'databaseDefinition' => 'varchar(255) DEFAULT \'\' NOT NULL',
+                    ],
+                ],
                 'fieldControl' => [
                     'addRecord' => [
                         'disabled' => true,
@@ -411,14 +411,14 @@ return [
         ],
         'text_field'               => [
             'config' => [
+                'cols'            => 32,
+                'enableTabulator' => true,
+                'eval'            => 'trim',
                 'EXT'             => [
                     'foundation' => [
                         'databaseDefinition' => 'text NOT NULL',
                     ],
                 ],
-                'cols'            => 32,
-                'enableTabulator' => true,
-                'eval'            => 'trim',
                 'placeholder'     => 'Please write...',
                 'rows'            => 5,
                 'type'            => 'text',
@@ -439,12 +439,12 @@ return [
         ],
         'uuid_field'               => [
             'config' => [
+                'enableCopyToClipboard' => false,
                 'EXT'                   => [
                     'foundation' => [
                         'databaseDefinition' => 'char(36) DEFAULT \'\' NOT NULL',
                     ],
                 ],
-                'enableCopyToClipboard' => false,
                 'size'                  => 36,
                 'type'                  => 'uuid',
                 'version'               => 4,
@@ -460,6 +460,11 @@ return [
         'type'            => 'record_type',
     ],
     'palettes' => [
+        'hidden_palette'   => [
+            'isHiddenPalette' => true,
+            'label'           => 'HiddenPalette',
+            'showitem'        => '',
+        ],
         'labelled_palette' => [
             'label'    => 'PaletteLabel',
             'showitem' => 'check_field',
@@ -467,19 +472,12 @@ return [
         'main_palette'     => [
             'showitem' => 'mapped_field',
         ],
-        'hidden_palette'   => [
-            'isHiddenPalette' => true,
-            'label'           => 'HiddenPalette',
-            'showitem'        => '',
-        ],
     ],
     'types'    => [
         '0' => [
-            'showitem' => '--palette--;;main_palette, --div--;Extra Tab, text_field, --palette--;;labelled_palette, number_field, select_field, group_field, inline_field, category_field, file_field, datetime_field, link_field, slug_field, color_field, enum_field, pass_through_field, user_field, email_field, json_field, radio_field, password_field, uuid_field, none_field, folder_field, flex_field, image_manipulation_field',
+            'showitem' => 'category_field, --palette--;;labelled_palette, number_field, color_field, datetime_field, email_field, enum_field, file_field, flex_field, folder_field, group_field, image_manipulation_field, inline_field, json_field, link_field, --palette--;;main_palette, none_field, pass_through_field, password_field, radio_field, select_field, slug_field, --div--;Extra Tab, text_field, user_field, uuid_field',
         ],
         '1' => [
-            'showitem'         => '--palette--;;main_palette, --div--;Extra Tab, text_field, --palette--;;labelled_palette, number_field, select_field, group_field, inline_field, category_field, file_field, datetime_field, link_field, slug_field, color_field, enum_field, pass_through_field, user_field, email_field, json_field, radio_field, password_field, uuid_field, none_field, folder_field, flex_field, image_manipulation_field',
-            'previewRenderer'  => 'PSBits\\Foundation\\Tests\\Examples\\Utility\\DummyPreviewRenderer',
             'columnsOverrides' => [
                 'text_field' => [
                     'config' => [
@@ -493,6 +491,8 @@ return [
                 ],
                 'saveAndClose'  => true,
             ],
+            'previewRenderer'  => 'PSBits\\Foundation\\Tests\\Examples\\Utility\\DummyPreviewRenderer',
+            'showitem'         => 'category_field, --palette--;;labelled_palette, number_field, color_field, datetime_field, email_field, enum_field, file_field, flex_field, folder_field, group_field, image_manipulation_field, inline_field, json_field, link_field, --palette--;;main_palette, none_field, pass_through_field, password_field, radio_field, select_field, slug_field, --div--;Extra Tab, text_field, user_field, uuid_field',
         ],
     ],
 ];

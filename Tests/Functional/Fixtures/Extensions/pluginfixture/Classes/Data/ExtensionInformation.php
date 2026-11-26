@@ -12,19 +12,22 @@ declare(strict_types=1);
 namespace PSBitsTest\Pluginfixture\Data;
 
 use PSBits\Foundation\Data\AbstractExtensionInformation;
+use PSBits\Foundation\Data\PageTypeConfiguration;
 use PSBits\Foundation\Data\PluginConfiguration;
 use PSBitsTest\Pluginfixture\Controller\PluginFixtureController;
 
-/**
- * Class ExtensionInformation
- *
- * @package PSBitsTest\Pluginfixture\Data
- */
 class ExtensionInformation extends AbstractExtensionInformation
 {
     public function __construct()
     {
         parent::__construct();
+        $this->addPageType(
+            new PageTypeConfiguration(
+                doktype: 4242,
+                name: 'restrictedPage',
+                allowedTables: ['pages'],
+            )
+        );
         $this->addPlugin(
             new PluginConfiguration(
                 name      : 'PluginFixture',

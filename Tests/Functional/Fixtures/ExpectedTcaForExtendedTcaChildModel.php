@@ -17,27 +17,27 @@ $expected['columns']['override_field'] = [
     'label'  => $childLL . 'overrideField',
     'config' => [
         'eval' => 'trim',
-        'max'  => 255,
-        'size' => 20,
-        'type' => 'input',
         'EXT'  => [
             'foundation' => [
                 'databaseDefinition' => 'varchar(255) DEFAULT \'\' NOT NULL',
             ],
         ],
+        'max'  => 255,
+        'size' => 20,
+        'type' => 'input',
     ],
 ];
 $expected['columns']['status_field'] = [
     'label'  => $childLL . 'statusField',
     'config' => [
-        'format'   => 'integer',
-        'type'     => 'number',
         'EXT'      => [
             'foundation' => [
                 'databaseDefinition' => 'int DEFAULT 0 NOT NULL',
             ],
         ],
+        'format'   => 'integer',
         'required' => true,
+        'type'     => 'number',
     ],
 ];
 $expected['ctrl']['label'] = 'overrideField';

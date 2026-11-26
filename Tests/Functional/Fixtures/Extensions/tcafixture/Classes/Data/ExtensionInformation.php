@@ -13,11 +13,6 @@ namespace PSBitsTest\Tcafixture\Data;
 
 use PSBits\Foundation\Data\AbstractExtensionInformation;
 
-/**
- * Class ExtensionInformation
- *
- * @package PSBitsTest\Tcafixture\Data
- */
 class ExtensionInformation extends AbstractExtensionInformation
 {
 }

@@ -17,11 +17,6 @@ use PHPUnit\Framework\ExpectationFailedException;
 use PSBits\Foundation\Service\Configuration\Tca\ShowItemList;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class ShowItemListTest
- *
- * @package PSBits\Foundation\Tests\Unit\Service\Configuration\Tca
- */
 class ShowItemListTest extends UnitTestCase
 {
     /**
@@ -62,28 +57,6 @@ class ShowItemListTest extends UnitTestCase
      * @throws ExpectationFailedException
      */
     #[Test]
-    #[DataProvider('containsPaletteReferenceDataProvider')]
-    public function containsPaletteReference(string $showItem, string $paletteIdentifier, bool $expected): void
-    {
-        self::assertSame($expected, ShowItemList::fromString($showItem)->containsPaletteReference($paletteIdentifier));
-    }
-
-    /**
-     * @throws ExpectationFailedException
-     */
-    #[Test]
-    public function containsPaletteReferenceFindsReferenceInList(): void
-    {
-        $showItemList = ShowItemList::fromString('field_a, --palette--;main;my_palette, field_b');
-
-        self::assertTrue($showItemList->containsPaletteReference('my_palette'));
-        self::assertFalse($showItemList->containsPaletteReference('other_palette'));
-    }
-
-    /**
-     * @throws ExpectationFailedException
-     */
-    #[Test]
     public function containsFieldFindsPlainField(): void
     {
         $showItemList = ShowItemList::fromString('field_a, field_b');
@@ -104,6 +77,28 @@ class ShowItemListTest extends UnitTestCase
         self::assertTrue($showItemList->containsField('field_a'));
         self::assertFalse($showItemList->containsField('field_b'));
         self::assertFalse($showItemList->containsField('my_palette'));
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    #[DataProvider('containsPaletteReferenceDataProvider')]
+    public function containsPaletteReference(string $showItem, string $paletteIdentifier, bool $expected): void
+    {
+        self::assertSame($expected, ShowItemList::fromString($showItem)->containsPaletteReference($paletteIdentifier));
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    public function containsPaletteReferenceFindsReferenceInList(): void
+    {
+        $showItemList = ShowItemList::fromString('field_a, --palette--;main;my_palette, field_b');
+
+        self::assertTrue($showItemList->containsPaletteReference('my_palette'));
+        self::assertFalse($showItemList->containsPaletteReference('other_palette'));
     }
 
     /**

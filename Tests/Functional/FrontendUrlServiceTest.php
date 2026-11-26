@@ -21,11 +21,6 @@ use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-/**
- * Class FrontendUrlServiceTest
- *
- * @package PSBits\Foundation\Tests\Functional
- */
 class FrontendUrlServiceTest extends FunctionalTestCase
 {
     use SiteBasedTestTrait;
@@ -37,43 +32,15 @@ class FrontendUrlServiceTest extends FunctionalTestCase
         'typo3conf/ext/psbits/foundation',
     ];
 
-    #[DataProvider('buildPageUrlDataProvider')]
-    #[Test]
-    public function buildPageUrlHandlesAllScenarios(
-        int $pageId,
-        array $parameters,
-        string $fragment,
-        ?int $languageId,
-        bool $absolute,
-        ?string $expectedStartsWith,
-        ?string $expectedEndsWith,
-        array $expectedContains,
-        ?string $expectedException
-    ): void {
-        $service = GeneralUtility::makeInstance(FrontendUrlService::class);
+    protected function setUp(): void
+    {
+        parent::setUp();
 
-        if (null !== $expectedException) {
-            $this->expectException($expectedException);
-            $service->buildPageUrl($pageId, $parameters, $fragment, $languageId, $absolute);
-
-            return;
-        }
-
-        $url = $service->buildPageUrl($pageId, $parameters, $fragment, $languageId, $absolute);
-
-        self::assertIsString($url);
-
-        if (null !== $expectedStartsWith) {
-            self::assertStringStartsWith($expectedStartsWith, $url);
-        }
-
-        foreach ($expectedContains as $expectedPart) {
-            self::assertStringContainsString($expectedPart, $url);
-        }
-
-        if (null !== $expectedEndsWith) {
-            self::assertStringEndsWith($expectedEndsWith, $url);
-        }
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
+        $this->writeSiteConfiguration(
+            'frontend_url_service_test',
+            $this->buildSiteConfiguration(self::ROOT_PAGE_ID, 'https://example.org/')
+        );
     }
 
     public static function buildPageUrlDataProvider(): Generator
@@ -151,14 +118,42 @@ class FrontendUrlServiceTest extends FunctionalTestCase
         ];
     }
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    #[DataProvider('buildPageUrlDataProvider')]
+    #[Test]
+    public function buildPageUrlHandlesAllScenarios(
+        int $pageId,
+        array $parameters,
+        string $fragment,
+        ?int $languageId,
+        bool $absolute,
+        ?string $expectedStartsWith,
+        ?string $expectedEndsWith,
+        array $expectedContains,
+        ?string $expectedException
+    ): void {
+        $service = GeneralUtility::makeInstance(FrontendUrlService::class);
 
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
-        $this->writeSiteConfiguration(
-            'frontend_url_service_test',
-            $this->buildSiteConfiguration(self::ROOT_PAGE_ID, 'https://example.org/')
-        );
+        if (null !== $expectedException) {
+            $this->expectException($expectedException);
+            $service->buildPageUrl($pageId, $parameters, $fragment, $languageId, $absolute);
+
+            return;
+        }
+
+        $url = $service->buildPageUrl($pageId, $parameters, $fragment, $languageId, $absolute);
+
+        self::assertIsString($url);
+
+        if (null !== $expectedStartsWith) {
+            self::assertStringStartsWith($expectedStartsWith, $url);
+        }
+
+        foreach ($expectedContains as $expectedPart) {
+            self::assertStringContainsString($expectedPart, $url);
+        }
+
+        if (null !== $expectedEndsWith) {
+            self::assertStringEndsWith($expectedEndsWith, $url);
+        }
     }
 }

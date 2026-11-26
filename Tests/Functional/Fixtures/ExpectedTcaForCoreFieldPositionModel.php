@@ -13,14 +13,14 @@ $baseLL = 'LLL:EXT:foundation/Resources/Private/Language/Backend/Configuration/T
 
 $inputConfiguration = [
     'eval' => 'trim',
-    'max'  => 255,
-    'size' => 20,
-    'type' => 'input',
     'EXT'  => [
         'foundation' => [
             'databaseDefinition' => 'varchar(255) DEFAULT \'\' NOT NULL',
         ],
     ],
+    'max'  => 255,
+    'size' => 20,
+    'type' => 'input',
 ];
 
 return [
@@ -38,8 +38,6 @@ return [
             'config' => $inputConfiguration,
         ],
         'endtime'                     => [
-            'label'   => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
-            'exclude' => true,
             'config'  => [
                 'behaviour' => [
                     'allowLanguageSynchronization' => true,
@@ -50,6 +48,8 @@ return [
                 ],
                 'type'      => 'datetime',
             ],
+            'exclude' => true,
+            'label'   => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
         ],
         'hidden'                      => [
             'label'   => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.enabled',
@@ -57,8 +57,8 @@ return [
             'config'  => [
                 'items'      => [
                     [
-                        'label'              => '',
                         'invertStateDisplay' => true,
+                        'label'              => '',
                     ],
                 ],
                 'renderType' => 'checkboxToggle',
@@ -102,8 +102,6 @@ return [
             'config' => $inputConfiguration,
         ],
         'starttime'                   => [
-            'label'   => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
-            'exclude' => true,
             'config'  => [
                 'behaviour' => [
                     'allowLanguageSynchronization' => true,
@@ -111,13 +109,15 @@ return [
                 'default'   => 0,
                 'type'      => 'datetime',
             ],
+            'exclude' => true,
+            'label'   => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
         ],
         'sys_language_uid'            => [
-            'label'   => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
-            'exclude' => true,
             'config'  => [
                 'type' => 'language',
             ],
+            'exclude' => true,
+            'label'   => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
         ],
     ],
     'ctrl'     => [
@@ -149,7 +149,7 @@ return [
     ],
     'types'    => [
         '0' => [
-            'showitem' => 'name, --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language, after_language, --palette--;;language, before_access, --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access, hidden, after_hidden, new_line_time_restriction, --linebreak--, --palette--;;timeRestriction',
+            'showitem' => 'before_access, --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access, hidden, after_hidden, new_line_time_restriction, --linebreak--, --palette--;;timeRestriction, --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language, after_language, --palette--;;language, name',
         ],
     ],
 ];

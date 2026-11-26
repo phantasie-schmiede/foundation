@@ -26,11 +26,6 @@ use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-/**
- * Class TypoScriptProviderServiceTest
- *
- * @package PSBits\Foundation\Tests\Functional
- */
 class TypoScriptProviderServiceTest extends FunctionalTestCase
 {
     use SiteBasedTestTrait;
@@ -40,6 +35,18 @@ class TypoScriptProviderServiceTest extends FunctionalTestCase
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/psbits/foundation',
     ];
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
+    }
+
+    protected function tearDown(): void
+    {
+        unset($GLOBALS['TSFE'], $GLOBALS['TYPO3_REQUEST']);
+        parent::tearDown();
+    }
 
     /**
      * @throws ContainerExceptionInterface
@@ -73,22 +80,8 @@ class TypoScriptProviderServiceTest extends FunctionalTestCase
         self::assertIsArray($typoScript['config']);
     }
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
-    }
-
-    protected function tearDown(): void
-    {
-        unset($GLOBALS['TSFE'], $GLOBALS['TYPO3_REQUEST']);
-        parent::tearDown();
-    }
-
     /**
      * @param int $applicationType Constant from SystemEnvironmentBuilder::REQUESTTYPE_*
-     *
-     * @return ServerRequestInterface
      */
     private function createRequest(int $applicationType): ServerRequestInterface
     {

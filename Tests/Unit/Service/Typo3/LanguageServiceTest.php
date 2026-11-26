@@ -26,11 +26,8 @@ use TYPO3\CMS\Core\Localization\LocalizationFactory;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class LanguageServiceTest
- *
- * @package PSBits\Foundation\Service\Typo3
- */
+use function substr;
+
 class LanguageServiceTest extends UnitTestCase
 {
     private const array LOCAL_LANGUAGE = [

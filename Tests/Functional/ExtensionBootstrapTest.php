@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace PSBits\Foundation\Tests\Functional;
 
 use PHPUnit\Framework\Attributes\Test;
+use PSBits\Foundation\Service\ExtensionInformationService;
 use PSBits\Foundation\Utility\Localization\LoggingUtility;
 use PSBits\Foundation\Utility\Typo3VersionUtility;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
@@ -21,20 +22,28 @@ use TYPO3\CMS\Core\Package\PackageManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
+use function class_exists;
+use function dirname;
+
 /**
- * Class ExtensionBootstrapTest
- *
  * Guards the seams that differ between the supported TYPO3 majors. It is cheap on
  * purpose: as soon as core drops one of these files, this is the test that tells
  * us which version conditional we need.
- *
- * @package PSBits\Foundation\Tests\Functional
  */
 class ExtensionBootstrapTest extends FunctionalTestCase
 {
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/psbits/foundation',
     ];
+
+    #[Test]
+    public function classesAutoloadThroughComposer(): void
+    {
+        self::assertTrue(
+            class_exists(ExtensionInformationService::class),
+            'The PSBits\\Foundation namespace is not autoloadable.'
+        );
+    }
 
     #[Test]
     public function extensionIsLoadedAsPackage(): void
@@ -45,41 +54,7 @@ class ExtensionBootstrapTest extends FunctionalTestCase
         self::assertNotNull($package, 'The extension was not resolved as a composer package.');
         self::assertSame(
             realpath($package->getPackagePath()),
-            realpath(\dirname(__DIR__, 2))
-        );
-    }
-
-    /**
-     * Configuration/Icons.php reads the extension's public icons straight from the package
-     * path, so the symlink below public/typo3conf/ext is never needed for them to be found.
-     * What has to hold is that the icons are picked up and registered from the package, which
-     * is what Configuration/Icons.php is responsible for. The identifier is derived from the
-     * extension key plus the file name, see IconUtility::getDefaultIdentifier().
-     */
-    #[Test]
-    public function publicIconsAreRegisteredFromThePackage(): void
-    {
-        $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
-
-        // Resources/Public/Icons/Extension.svg -> foundation-extension, see
-        // IconUtility::getDefaultIdentifier(), which combines extension key and file name.
-        self::assertTrue(
-            $iconRegistry->isRegistered('foundation-extension'),
-            'The icons from Resources/Public/Icons were not registered from the package.'
-        );
-    }
-
-    /**
-     * ext_tables.php stopped being loaded in v13, so the page type registration
-     * has to live in ext_localconf.php - which is loaded in every supported
-     * version. The file must not come back.
-     */
-    #[Test]
-    public function legacyExtTablesPhpIsGone(): void
-    {
-        self::assertFileDoesNotExist(
-            \dirname(__DIR__, 2) . '/ext_tables.php',
-            'ext_tables.php is not loaded since v13. Register page types in ext_localconf.php instead.'
+            realpath(dirname(__DIR__, 2))
         );
     }
 
@@ -97,8 +72,22 @@ class ExtensionBootstrapTest extends FunctionalTestCase
             'Unexpected core version, this test only knows about the v13+ support window.'
         );
         self::assertFileExists(
-            \dirname(__DIR__, 2) . '/ext_tables.sql',
+            dirname(__DIR__, 2) . '/ext_tables.sql',
             'ext_tables.sql is still read via SqlReader/PackageSetup; dropping it loses both logging tables.'
+        );
+    }
+
+    /**
+     * ext_tables.php stopped being loaded in v13, so the page type registration
+     * runs after the TCA schemata have loaded via BootCompletedEvent instead.
+     * The file must not come back.
+     */
+    #[Test]
+    public function legacyExtTablesPhpIsGone(): void
+    {
+        self::assertFileDoesNotExist(
+            dirname(__DIR__, 2) . '/ext_tables.php',
+            'ext_tables.php is not loaded since v13. Register page types via BootCompletedEvent instead.'
         );
     }
 
@@ -118,12 +107,25 @@ class ExtensionBootstrapTest extends FunctionalTestCase
         self::assertContains(LoggingUtility::LOG_TABLES['MISSING'], $tableNames);
     }
 
+    /**
+     * Configuration/Icons.php reads the extension's public icons straight from the package
+     * path, so the symlink below public/typo3conf/ext is never needed for them to be found.
+     * What has to hold is that the icons are picked up and registered from the package, which
+     * is what Configuration/Icons.php is responsible for. The identifier is derived from the
+     * extension key plus the file name, see IconUtility::getDefaultIdentifier().
+     */
     #[Test]
-    public function classesAutoloadThroughComposer(): void
+    public function publicIconsAreRegisteredFromThePackage(): void
     {
+        $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
+
+        /*
+         * Resources/Public/Icons/Extension.svg -> foundation-extension, see
+         * IconUtility::getDefaultIdentifier(), which combines extension key and file name.
+         */
         self::assertTrue(
-            class_exists(\PSBits\Foundation\Service\ExtensionInformationService::class),
-            'The PSBits\\Foundation namespace is not autoloadable.'
+            $iconRegistry->isRegistered('foundation-extension'),
+            'The icons from Resources/Public/Icons were not registered from the package.'
         );
     }
 

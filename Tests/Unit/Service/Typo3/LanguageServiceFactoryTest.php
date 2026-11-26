@@ -15,21 +15,16 @@ use PHPUnit\Framework\ExpectationFailedException;
 use PSBits\Foundation\Service\Typo3\LanguageService;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class LanguageServiceFactoryTest
- *
- * @package PSBits\Foundation\Tests\Unit\Service\Typo3
- */
 class LanguageServiceFactoryTest extends UnitTestCase
 {
-    private const CORE_CLASS = 'TYPO3\\CMS\\Core\\Localization\\LanguageServiceFactory';
+    private const string CORE_CLASS = 'TYPO3\\CMS\\Core\\Localization\\LanguageServiceFactory';
 
     /**
      * The class names are plain strings on purpose. Referring to them with the ::class constant
      * would let the analyser and the autoloader resolve them at analysis time, so the test must
      * never name them as real symbols.
      */
-    private const FACTORY_CLASS = 'PSBits\\Foundation\\Service\\Typo3\\LanguageServiceFactory';
+    private const string FACTORY_CLASS = 'PSBits\\Foundation\\Service\\Typo3\\LanguageServiceFactory';
 
     /**
      * @throws ExpectationFailedException

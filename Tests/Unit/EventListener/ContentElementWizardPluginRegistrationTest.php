@@ -40,75 +40,38 @@ use function array_filter;
 use function array_keys;
 use function array_search;
 
-/**
- * Class ContentElementWizardPluginRegistrationTest
- *
- * @package PSBits\Foundation\EventListener
- */
 class ContentElementWizardPluginRegistrationTest extends UnitTestCase
 {
     use LanguageStackSeeder;
 
     private const string LIST_TYPE = 'poems_poem';
 
-    private IconRegistry|null $iconRegistry            = null;
     protected bool            $resetSingletonInstances = true;
+    private IconRegistry|null $iconRegistry            = null;
 
     /**
-     * @throws BaseException
-     * @throws BaseInvalidArgumentException
-     * @throws ContainerExceptionInterface
-     * @throws DBALException
-     * @throws Error
      * @throws Exception
-     * @throws ExpectationFailedException
-     * @throws FrameworkException
      * @throws InvalidArgumentException
      * @throws NoPreviousThrowableException
+     * @throws ReflectionException
      */
-    #[Test]
-    public function replacesTheTcaDerivedItemWithTheVendorGroupItem(): void
+    protected function setUp(): void
     {
-        $event = $this->createEvent($this->getTcaDerivedItems());
+        parent::setUp();
 
-        $this->createSubject(new PluginConfiguration(name: 'Poem'))($event);
+        /*
+         * Prevent the missing-translation logging from looking up the extension configuration, which is not
+         * available in unit tests.
+         */
+        (new ReflectionProperty(LoggingUtility::class, 'logMissingLanguageLabels'))->setValue(null, false);
 
-        $items = $event->getWizardItems();
+        /*
+         * The language service factory is overwritten in ext_localconf.php, which does not run in unit tests.
+         * The seeder pre-seeds the singleton so translations resolve without the core factory's dependencies.
+         */
+        $this->seedLanguageStack();
 
-        self::assertArrayNotHasKey('plugins_' . self::LIST_TYPE, $items);
-        self::assertArrayHasKey('psbits', $items);
-        self::assertSame('', $items['psbits']['header']);
-
-        $item = $items['psbits_' . self::LIST_TYPE];
-        self::assertSame($this->getExpectedDefaultValues(), $item['defaultValues']);
-        self::assertSame('Poem', $item['title']);
-        self::assertSame('', $item['description']);
-        self::assertSame('content-plugin', $item['iconIdentifier']);
-    }
-
-    /**
-     * @throws BaseException
-     * @throws BaseInvalidArgumentException
-     * @throws ContainerExceptionInterface
-     * @throws DBALException
-     * @throws Error
-     * @throws Exception
-     * @throws FrameworkException
-     * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     */
-    #[Test]
-    public function removesTheTcaDerivedItemWhenThePluginIsExcluded(): void
-    {
-        $event = $this->createEvent($this->getTcaDerivedItems());
-
-        $this->createSubject(new PluginConfiguration(name: 'Poem', addToElementWizard: false))($event);
-
-        $items = $event->getWizardItems();
-
-        self::assertArrayNotHasKey('plugins_' . self::LIST_TYPE, $items);
-        self::assertArrayNotHasKey('psbits', $items);
-        self::assertArrayNotHasKey('psbits_' . self::LIST_TYPE, $items);
+        $this->iconRegistry = null;
     }
 
     /**
@@ -179,6 +142,63 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
      * @throws DBALException
      * @throws Error
      * @throws Exception
+     * @throws FrameworkException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
+    #[Test]
+    public function removesTheTcaDerivedItemWhenThePluginIsExcluded(): void
+    {
+        $event = $this->createEvent($this->getTcaDerivedItems());
+
+        $this->createSubject(new PluginConfiguration(name: 'Poem', addToElementWizard: false))($event);
+
+        $items = $event->getWizardItems();
+
+        self::assertArrayNotHasKey('plugins_' . self::LIST_TYPE, $items);
+        self::assertArrayNotHasKey('psbits', $items);
+        self::assertArrayNotHasKey('psbits_' . self::LIST_TYPE, $items);
+    }
+
+    /**
+     * @throws BaseException
+     * @throws BaseInvalidArgumentException
+     * @throws ContainerExceptionInterface
+     * @throws DBALException
+     * @throws Error
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws FrameworkException
+     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     */
+    #[Test]
+    public function replacesTheTcaDerivedItemWithTheVendorGroupItem(): void
+    {
+        $event = $this->createEvent($this->getTcaDerivedItems());
+
+        $this->createSubject(new PluginConfiguration(name: 'Poem'))($event);
+
+        $items = $event->getWizardItems();
+
+        self::assertArrayNotHasKey('plugins_' . self::LIST_TYPE, $items);
+        self::assertArrayHasKey('psbits', $items);
+        self::assertSame('', $items['psbits']['header']);
+
+        $item = $items['psbits_' . self::LIST_TYPE];
+        self::assertSame($this->getExpectedDefaultValues(), $item['defaultValues']);
+        self::assertSame('Poem', $item['title']);
+        self::assertSame('', $item['description']);
+        self::assertSame('content-plugin', $item['iconIdentifier']);
+    }
+
+    /**
+     * @throws BaseException
+     * @throws BaseInvalidArgumentException
+     * @throws ContainerExceptionInterface
+     * @throws DBALException
+     * @throws Error
+     * @throws Exception
      * @throws ExpectationFailedException
      * @throws FrameworkException
      * @throws InvalidArgumentException
@@ -209,29 +229,6 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
     }
 
     /**
-     * @throws Exception
-     * @throws IncompatibleReturnValueException
-     * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     */
-    private function createSubject(PluginConfiguration ...$plugins): ContentElementWizardPluginRegistration
-    {
-        $extensionInformationService = $this->createMock(ExtensionInformationService::class);
-        $extensionInformationService->method('getAllExtensionInformation')
-            ->willReturn([
-                $this->createExtensionInformation(...$plugins),
-            ]);
-
-        if (null === $this->iconRegistry) {
-            $this->iconRegistry = $this->createMock(IconRegistry::class);
-            $this->iconRegistry->method('isRegistered')
-                ->willReturn(false);
-        }
-
-        return new ContentElementWizardPluginRegistration($extensionInformationService, $this->iconRegistry);
-    }
-
-    /**
      * @param array<string, array<string, mixed>> $wizardItems
      * @throws BaseInvalidArgumentException
      */
@@ -245,48 +242,6 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
             0,
             new ServerRequest()
         );
-    }
-
-    /**
-     * @return array<string, array<string, mixed>>
-     */
-    private function getTcaDerivedItems(): array
-    {
-        return [
-            'plugins'                    => [
-                'header' => 'Plugins',
-            ],
-            'plugins_poems_other'        => [
-                'title'          => 'Other Plugin',
-                'description'    => '',
-                'iconIdentifier' => 'content-plugin',
-                'defaultValues'  => ['CType' => 'list', 'list_type' => 'poems_other'],
-            ],
-            'plugins_' . self::LIST_TYPE => [
-                'title'          => 'TCA Label',
-                'description'    => '',
-                'iconIdentifier' => 'content-plugin',
-                'defaultValues'  => $this->getExpectedDefaultValues(),
-            ],
-        ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function getExpectedDefaultValues(): array
-    {
-        /*
-         * On v14, plugins are registered as their own content type instead of list_type subtypes.
-         */
-        if (Typo3VersionUtility::isAtLeast('14.0')) {
-            return ['CType' => self::LIST_TYPE];
-        }
-
-        return [
-            'CType'     => 'list',
-            'list_type' => self::LIST_TYPE,
-        ];
     }
 
     /**
@@ -312,26 +267,66 @@ class ContentElementWizardPluginRegistrationTest extends UnitTestCase
 
     /**
      * @throws Exception
+     * @throws IncompatibleReturnValueException
      * @throws InvalidArgumentException
      * @throws NoPreviousThrowableException
-     * @throws ReflectionException
      */
-    protected function setUp(): void
+    private function createSubject(PluginConfiguration ...$plugins): ContentElementWizardPluginRegistration
     {
-        parent::setUp();
+        $extensionInformationService = $this->createMock(ExtensionInformationService::class);
+        $extensionInformationService->method('getAllExtensionInformation')
+            ->willReturn([
+                $this->createExtensionInformation(...$plugins),
+            ]);
 
+        if (null === $this->iconRegistry) {
+            $this->iconRegistry = $this->createMock(IconRegistry::class);
+            $this->iconRegistry->method('isRegistered')
+                ->willReturn(false);
+        }
+
+        return new ContentElementWizardPluginRegistration($extensionInformationService, $this->iconRegistry);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function getExpectedDefaultValues(): array
+    {
         /*
-         * Prevent the missing-translation logging from looking up the extension configuration, which is not
-         * available in unit tests.
+         * On v14, plugins are registered as their own content type instead of list_type subtypes.
          */
-        (new ReflectionProperty(LoggingUtility::class, 'logMissingLanguageLabels'))->setValue(null, false);
+        if (Typo3VersionUtility::isAtLeast('14.0')) {
+            return ['CType' => self::LIST_TYPE];
+        }
 
-        /*
-         * The language service factory is overwritten in ext_localconf.php, which does not run in unit tests.
-         * The seeder pre-seeds the singleton so translations resolve without the core factory's dependencies.
-         */
-        $this->seedLanguageStack();
+        return [
+            'CType'     => 'list',
+            'list_type' => self::LIST_TYPE,
+        ];
+    }
 
-        $this->iconRegistry = null;
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    private function getTcaDerivedItems(): array
+    {
+        return [
+            'plugins'                    => [
+                'header' => 'Plugins',
+            ],
+            'plugins_poems_other'        => [
+                'defaultValues'  => ['CType' => 'list', 'list_type' => 'poems_other'],
+                'description'    => '',
+                'iconIdentifier' => 'content-plugin',
+                'title'          => 'Other Plugin',
+            ],
+            'plugins_' . self::LIST_TYPE => [
+                'title'          => 'TCA Label',
+                'description'    => '',
+                'iconIdentifier' => 'content-plugin',
+                'defaultValues'  => $this->getExpectedDefaultValues(),
+            ],
+        ];
     }
 }

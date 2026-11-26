@@ -17,14 +17,14 @@ return [
             'label'  => $baseLL . 'name',
             'config' => [
                 'eval' => 'trim',
-                'max'  => 255,
-                'size' => 20,
-                'type' => 'input',
                 'EXT'  => [
                     'foundation' => [
                         'databaseDefinition' => 'varchar(255) DEFAULT \'\' NOT NULL',
                     ],
                 ],
+                'max'  => 255,
+                'size' => 20,
+                'type' => 'input',
             ],
         ],
     ],

@@ -18,16 +18,11 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Exception;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class ValidationUtilityTest
- *
- * @package PSBits\Foundation\Utility
- */
 class ValidationUtilityTest extends UnitTestCase
 {
     private const array CONSTANT = [
-        'FOO' => 'foo',
         'BAR' => 'bar',
+        'FOO' => 'foo',
     ];
 
     public static function checkKeyAgainstConstantValidDataProvider(): Generator
@@ -36,54 +31,10 @@ class ValidationUtilityTest extends UnitTestCase
         yield 'existing key BAR' => ['BAR'];
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
-    #[Test]
-    #[DataProvider('checkKeyAgainstConstantValidDataProvider')]
-    public function checkKeyAgainstConstantDoesNotThrowForExistingKey(string $key): void
-    {
-        self::assertArrayHasKey($key, self::CONSTANT);
-        ValidationUtility::checkKeyAgainstConstant(self::CONSTANT, $key);
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     */
-    #[Test]
-    public function checkKeyAgainstConstantThrowsForMissingKey(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        ValidationUtility::checkKeyAgainstConstant(self::CONSTANT, 'MISSING');
-    }
-
     public static function checkValueAgainstConstantValidDataProvider(): Generator
     {
         yield 'existing value foo' => ['foo'];
         yield 'existing value bar' => ['bar'];
-    }
-
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
-    #[Test]
-    #[DataProvider('checkValueAgainstConstantValidDataProvider')]
-    public function checkValueAgainstConstantDoesNotThrowForExistingValue(string $value): void
-    {
-        self::assertContains($value, self::CONSTANT);
-        ValidationUtility::checkValueAgainstConstant(self::CONSTANT, $value);
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     */
-    #[Test]
-    public function checkValueAgainstConstantThrowsForMissingValue(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        ValidationUtility::checkValueAgainstConstant(self::CONSTANT, 'missing');
     }
 
     /**
@@ -132,5 +83,49 @@ class ValidationUtilityTest extends UnitTestCase
     {
         $this->expectException(InvalidArgumentException::class);
         ValidationUtility::checkArrayAgainstConstantValues(self::CONSTANT, ['foo', 'invalid']);
+    }
+
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     */
+    #[Test]
+    #[DataProvider('checkKeyAgainstConstantValidDataProvider')]
+    public function checkKeyAgainstConstantDoesNotThrowForExistingKey(string $key): void
+    {
+        self::assertArrayHasKey($key, self::CONSTANT);
+        ValidationUtility::checkKeyAgainstConstant(self::CONSTANT, $key);
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    #[Test]
+    public function checkKeyAgainstConstantThrowsForMissingKey(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        ValidationUtility::checkKeyAgainstConstant(self::CONSTANT, 'MISSING');
+    }
+
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     */
+    #[Test]
+    #[DataProvider('checkValueAgainstConstantValidDataProvider')]
+    public function checkValueAgainstConstantDoesNotThrowForExistingValue(string $value): void
+    {
+        self::assertContains($value, self::CONSTANT);
+        ValidationUtility::checkValueAgainstConstant(self::CONSTANT, $value);
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    #[Test]
+    public function checkValueAgainstConstantThrowsForMissingValue(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        ValidationUtility::checkValueAgainstConstant(self::CONSTANT, 'missing');
     }
 }

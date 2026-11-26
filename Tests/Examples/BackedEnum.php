@@ -11,11 +11,6 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Tests\Examples;
 
-/**
- * Class BackedEnum
- *
- * @package PSBits\Foundation\Tests\Examples
- */
 enum BackedEnum: string
 {
     case Delta   = 'delta';

@@ -27,13 +27,9 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
- * Class GlobalVariablesViewHelperTest
- *
  * The ViewHelper used to implement renderStatic(). Fluid v5 made render() abstract, so the class was
  * migrated to render(). This guards that the migration kept the argument handling and the delegation
  * to GlobalVariableService intact.
- *
- * @package PSBits\Foundation\Tests\Unit\ViewHelpers
  */
 class GlobalVariablesViewHelperTest extends UnitTestCase
 {
@@ -41,6 +37,21 @@ class GlobalVariablesViewHelperTest extends UnitTestCase
      * GlobalVariableService keys its variables by provider class name, so a path always starts with it.
      */
     private const string PROVIDER_KEY = TestGlobalVariableProvider::class;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        GlobalVariableService::clearCache();
+    }
+
+    /**
+     * @throws RuntimeException
+     */
+    protected function tearDown(): void
+    {
+        GlobalVariableService::clearCache();
+        parent::tearDown();
+    }
 
     /**
      * @throws ExpectationFailedException
@@ -78,9 +89,9 @@ class GlobalVariablesViewHelperTest extends UnitTestCase
         $this->setArguments(
             $viewHelper,
             [
+                'fallback' => 'the-fallback',
                 'path'     => 'unregistered.key',
                 'strict'   => false,
-                'fallback' => 'the-fallback',
             ]
         );
 
@@ -195,21 +206,6 @@ class GlobalVariablesViewHelperTest extends UnitTestCase
         self::assertFalse($definitions['fallback']->isRequired());
     }
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        GlobalVariableService::clearCache();
-    }
-
-    /**
-     * @throws RuntimeException
-     */
-    protected function tearDown(): void
-    {
-        GlobalVariableService::clearCache();
-        parent::tearDown();
-    }
-
     /**
      * @throws InvalidArgumentException
      * @throws MockObjectException
@@ -260,10 +256,10 @@ class TestGlobalVariableProvider implements GlobalVariableProviderInterface
     public function getGlobalVariables(): mixed
     {
         return [
-            'topLevel' => 'The top level value',
             'nested'   => [
                 'key' => 'The nested value',
             ],
+            'topLevel' => 'The top level value',
         ];
     }
 

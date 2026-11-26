@@ -11,11 +11,6 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Tests\Examples\Domain\Model;
 
-/**
- * Class ChildTcaModel
- *
- * @package PSBits\Foundation\Tests\Examples\Domain\Model
- */
 class ChildTcaModel extends ParentTcaModel
 {
     protected string $childProperty = '';

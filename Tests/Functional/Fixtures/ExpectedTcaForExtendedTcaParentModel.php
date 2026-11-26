@@ -17,14 +17,14 @@ return [
             'label'  => $baseLL . 'baseField',
             'config' => [
                 'eval' => 'trim',
-                'max'  => 255,
-                'size' => 20,
-                'type' => 'input',
                 'EXT'  => [
                     'foundation' => [
                         'databaseDefinition' => 'varchar(255) DEFAULT \'\' NOT NULL',
                     ],
                 ],
+                'max'  => 255,
+                'size' => 20,
+                'type' => 'input',
             ],
         ],
         'parent_text'       => [
@@ -32,13 +32,13 @@ return [
             'config' => [
                 'cols' => 32,
                 'eval' => 'trim',
-                'rows' => 5,
-                'type' => 'text',
                 'EXT'  => [
                     'foundation' => [
                         'databaseDefinition' => 'text NOT NULL',
                     ],
                 ],
+                'rows' => 5,
+                'type' => 'text',
             ],
         ],
         'parent_inline'     => [
@@ -56,15 +56,15 @@ return [
                     'showSynchronizationLink'         => true,
                     'useSortable'                     => true,
                 ],
-                'foreign_field' => 'parent_uid',
-                'foreign_table' => 'sys_category',
-                'relationship'  => 'oneToMany',
-                'type'          => 'inline',
                 'EXT'           => [
                     'foundation' => [
                         'databaseDefinition' => 'int unsigned DEFAULT 0 NOT NULL',
                     ],
                 ],
+                'foreign_field' => 'parent_uid',
+                'foreign_table' => 'sys_category',
+                'relationship'  => 'oneToMany',
+                'type'          => 'inline',
             ],
         ],
         'hidden'            => [
@@ -73,8 +73,8 @@ return [
             'config'  => [
                 'items'      => [
                     [
-                        'label'              => '',
                         'invertStateDisplay' => true,
+                        'label'              => '',
                     ],
                 ],
                 'renderType' => 'checkboxToggle',
@@ -82,8 +82,6 @@ return [
             ],
         ],
         'starttime'         => [
-            'label'   => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
-            'exclude' => true,
             'config'  => [
                 'behaviour' => [
                     'allowLanguageSynchronization' => true,
@@ -91,10 +89,10 @@ return [
                 'default'   => 0,
                 'type'      => 'datetime',
             ],
+            'exclude' => true,
+            'label'   => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
         ],
         'endtime'           => [
-            'label'   => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
-            'exclude' => true,
             'config'  => [
                 'behaviour' => [
                     'allowLanguageSynchronization' => true,
@@ -105,13 +103,15 @@ return [
                 ],
                 'type'      => 'datetime',
             ],
+            'exclude' => true,
+            'label'   => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
         ],
         'sys_language_uid'  => [
-            'label'   => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
-            'exclude' => true,
             'config'  => [
                 'type' => 'language',
             ],
+            'exclude' => true,
+            'label'   => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
         ],
         'l10n_parent'       => [
             'label'       => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
@@ -156,16 +156,16 @@ return [
         'title'                    => $baseLL . 'ctrl.title',
     ],
     'palettes' => [
-        'timeRestriction' => [
-            'showitem' => 'starttime, endtime',
-        ],
         'language'        => [
             'showitem' => 'sys_language_uid, l10n_parent',
+        ],
+        'timeRestriction' => [
+            'showitem' => 'starttime, endtime',
         ],
     ],
     'types'    => [
         '0' => [
-            'showitem' => 'base_field, parent_text, parent_inline, --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language, --palette--;;language, --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access, hidden, --palette--;;timeRestriction',
+            'showitem' => 'base_field, parent_inline, parent_text, --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language, --palette--;;language, --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access, hidden, --palette--;;timeRestriction',
         ],
     ],
 ];

@@ -29,6 +29,7 @@ return [
                     '@attributes'              => [
                         'type' => 'General',
                     ],
+                    '@position'                => 0,
                     'AudioCount'               => [
                         '@nodeValue' => 1,
                         '@position'  => 0,
@@ -109,20 +110,20 @@ return [
                         '@nodeValue' => 1,
                         '@position'  => 19,
                     ],
-                    'xsi:OverallBitRate'       => [
-                        '@nodeValue' => 2636998,
-                        '@position'  => 20,
-                    ],
                     'xsi:FrameRate'            => [
                         '@nodeValue' => 25,
                         '@position'  => 21,
                     ],
-                    '@position'                => 0,
+                    'xsi:OverallBitRate'       => [
+                        '@nodeValue' => 2636998,
+                        '@position'  => 20,
+                    ],
                 ],
                 [
                     '@attributes'                       => [
                         'type' => 'Video',
                     ],
+                    '@position'                         => 1,
                     'BitDepth'                          => [
                         '@nodeValue' => 8,
                         '@position'  => 0,
@@ -180,11 +181,11 @@ return [
                         '@position'  => 13,
                     ],
                     'extra'                             => [
+                        '@position'             => 14,
                         'CodecConfigurationBox' => [
                             '@nodeValue' => 'avcC',
                             '@position'  => 0,
                         ],
-                        '@position'             => 14,
                     ],
                     'Format'                            => [
                         '@nodeValue' => 'AVC',
@@ -286,12 +287,12 @@ return [
                         '@nodeValue' => 1280,
                         '@position'  => 39,
                     ],
-                    '@position'                         => 1,
                 ],
                 [
                     '@attributes'               => [
                         'type' => 'Audio',
                     ],
+                    '@position'                 => 2,
                     'BitRate'                   => [
                         '@nodeValue' => 159946,
                         '@position'  => 0,
@@ -384,7 +385,6 @@ return [
                         '@nodeValue' => 'UTC 2015-11-18 10:51:14',
                         '@position'  => 22,
                     ],
-                    '@position'                 => 2,
                 ],
             ],
             '@position'   => 1,

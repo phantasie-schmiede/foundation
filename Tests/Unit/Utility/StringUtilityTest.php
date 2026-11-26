@@ -44,21 +44,26 @@ use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\TypoScript\AST\Node\RootNode;
 use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use ValueError;
-use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
 
-/**
- * Class StringUtilityTest
- *
- * @package PSBits\Foundation\Utility
- */
 class StringUtilityTest extends UnitTestCase
 {
     public const string TEST_CONSTANT       = 'test';
     public const array  TEST_CONSTANT_ARRAY = [
         'INDEX' => 'test',
     ];
+
+    /**
+     * @throws PhpRuntimeException
+     */
+    protected function tearDown(): void
+    {
+        unset($GLOBALS['TYPO3_REQUEST']);
+        GeneralUtility::purgeInstances();
+        parent::tearDown();
+    }
 
     public static function cleanUrlDataProvider(): Generator
     {
@@ -80,9 +85,6 @@ class StringUtilityTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @return Generator
-     */
     public static function convertStringDataProvider(): Generator
     {
         yield 'empty string' => [
@@ -310,7 +312,6 @@ class StringUtilityTest extends UnitTestCase
     }
 
     /**
-     * @param mixed $expectedResult
      * @throws BaseInvalidArgumentException
      * @throws ContainerExceptionInterface
      * @throws Error
@@ -322,7 +323,7 @@ class StringUtilityTest extends UnitTestCase
      */
     #[Test]
     #[DataProvider('convertStringDataProvider')]
-    public function convertString(string $string, $expectedResult): void
+    public function convertString(string $string, mixed $expectedResult): void
     {
         self::assertEquals(
             $expectedResult,
@@ -455,15 +456,5 @@ class StringUtilityTest extends UnitTestCase
     public function stringIsEmpty(string $string, bool $expectedResult): void
     {
         self::assertSame($expectedResult, StringUtility::isEmpty($string));
-    }
-
-    /**
-     * @throws PhpRuntimeException
-     */
-    protected function tearDown(): void
-    {
-        unset($GLOBALS['TYPO3_REQUEST']);
-        GeneralUtility::purgeInstances();
-        parent::tearDown();
     }
 }

@@ -19,11 +19,6 @@ use PSBits\Foundation\Service\Configuration\Tca\TcaTable;
 use RuntimeException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class DefaultFieldRegistryTest
- *
- * @package PSBits\Foundation\Tests\Unit\Service\Configuration\Tca
- */
 class DefaultFieldRegistryTest extends UnitTestCase
 {
     private const string TABLE_NAME = 'default_field_registry_test';
@@ -55,19 +50,6 @@ class DefaultFieldRegistryTest extends UnitTestCase
      * @throws ExpectationFailedException
      */
     #[Test]
-    public function findByReferenceReturnsMatchingDefinition(): void
-    {
-        $registry = $this->createRegistry();
-
-        self::assertSame('language', $registry->findByReference('language')?->getReference());
-        self::assertSame('hidden', $registry->findByReference('hidden')?->getReference());
-        self::assertSame('timeRestriction', $registry->findByReference('timeRestriction')?->getReference());
-    }
-
-    /**
-     * @throws ExpectationFailedException
-     */
-    #[Test]
     public function findByReferenceMatchesUnderscoredVariant(): void
     {
         $registry = $this->createRegistry();
@@ -77,6 +59,19 @@ class DefaultFieldRegistryTest extends UnitTestCase
             $registry->findByReference('language_palette')?->getReference()
         );
         self::assertSame('timeRestriction', $registry->findByReference('time_restriction')?->getReference());
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    public function findByReferenceReturnsMatchingDefinition(): void
+    {
+        $registry = $this->createRegistry();
+
+        self::assertSame('language', $registry->findByReference('language')?->getReference());
+        self::assertSame('hidden', $registry->findByReference('hidden')?->getReference());
+        self::assertSame('timeRestriction', $registry->findByReference('timeRestriction')?->getReference());
     }
 
     /**
@@ -124,9 +119,6 @@ class DefaultFieldRegistryTest extends UnitTestCase
         self::assertFalse($registry->isBlockMaterialized(DefaultFieldDefinition::BLOCK_LANGUAGE));
     }
 
-    /**
-     * @return DefaultFieldRegistry
-     */
     private function createRegistry(): DefaultFieldRegistry
     {
         return new DefaultFieldRegistry(new TcaTable(self::TABLE_NAME), [

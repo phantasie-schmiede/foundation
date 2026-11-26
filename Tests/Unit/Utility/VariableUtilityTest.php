@@ -18,11 +18,6 @@ use PHPUnit\Framework\ExpectationFailedException;
 use RuntimeException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class VariableUtilityTest
- *
- * @package PSBits\Foundation\Utility
- */
 class VariableUtilityTest extends UnitTestCase
 {
     public static function getValueByPathArrayDataProvider(): Generator
@@ -60,25 +55,22 @@ class VariableUtilityTest extends UnitTestCase
     }
 
     /**
-     * @throws RuntimeException
-     */
-    #[Test]
-    public function getValueByPathThrowsForMissingPathInStrictMode(): void
-    {
-        $this->expectException(RuntimeException::class);
-        VariableUtility::getValueByPath(['foo' => 'bar'], 'missing');
-    }
-
-    /**
      * @throws ExpectationFailedException
      * @throws RuntimeException
      */
     #[Test]
-    public function getValueByPathReturnsNullForMissingPathInNonStrictMode(): void
+    public function getValueByPathOnNestedObjectAndArray(): void
     {
-        self::assertNull(
-            VariableUtility::getValueByPath(['foo' => 'bar'], 'missing', false)
-        );
+        $inner = new class () {
+            public function getValue(): int
+            {
+                return 99;
+            }
+        };
+
+        $array = ['key' => $inner];
+
+        self::assertEquals(99, VariableUtility::getValueByPath($array, 'key.value'));
     }
 
     /**
@@ -103,17 +95,20 @@ class VariableUtilityTest extends UnitTestCase
      * @throws RuntimeException
      */
     #[Test]
-    public function getValueByPathOnNestedObjectAndArray(): void
+    public function getValueByPathReturnsNullForMissingPathInNonStrictMode(): void
     {
-        $inner = new class () {
-            public function getValue(): int
-            {
-                return 99;
-            }
-        };
+        self::assertNull(
+            VariableUtility::getValueByPath(['foo' => 'bar'], 'missing', false)
+        );
+    }
 
-        $array = ['key' => $inner];
-
-        self::assertEquals(99, VariableUtility::getValueByPath($array, 'key.value'));
+    /**
+     * @throws RuntimeException
+     */
+    #[Test]
+    public function getValueByPathThrowsForMissingPathInStrictMode(): void
+    {
+        $this->expectException(RuntimeException::class);
+        VariableUtility::getValueByPath(['foo' => 'bar'], 'missing');
     }
 }

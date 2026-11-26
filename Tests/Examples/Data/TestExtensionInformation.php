@@ -18,12 +18,8 @@ use PSBits\Foundation\Data\PageTypeConfiguration;
 use PSBits\Foundation\Data\PluginConfiguration;
 
 /**
- * Class TestExtensionInformation
- *
  * Concrete subclass of AbstractExtensionInformation for unit tests, so the
  * protected builder methods and the constructor wiring can be exercised.
- *
- * @package PSBits\Foundation\Tests\Examples\Data
  */
 class TestExtensionInformation extends AbstractExtensionInformation
 {

@@ -32,17 +32,22 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
- * Class AbstractGlobalVariablesViewHelperTest
- *
  * Guards the base key handling. The subclasses used to prepend their provider class name inside
  * renderStatic(). After the migration to render() that prefix has to be applied by the abstract
  * parent, otherwise every lookup would silently start at the wrong path and - depending on the
  * strictness setting - either return the fallback or throw.
- *
- * @package PSBits\Foundation\Tests\Unit\ViewHelpers
  */
 class AbstractGlobalVariablesViewHelperTest extends UnitTestCase
 {
+    /**
+     * @throws RuntimeException
+     */
+    protected function tearDown(): void
+    {
+        GlobalVariableService::clearCache();
+        parent::tearDown();
+    }
+
     /**
      * @return array<string, array{0: class-string, 1: string}>
      */
@@ -99,9 +104,9 @@ class AbstractGlobalVariablesViewHelperTest extends UnitTestCase
         self::assertSame(
             'The nested value',
             $method->invoke(null, TestGlobalVariableProvider::class, [
+                'fallback' => null,
                 'path'     => 'nested.key',
                 'strict'   => true,
-                'fallback' => null,
             ])
         );
     }
@@ -121,9 +126,9 @@ class AbstractGlobalVariablesViewHelperTest extends UnitTestCase
         self::assertSame(
             'the-fallback',
             $method->invoke(null, TestGlobalVariableProvider::class, [
+                'fallback' => 'the-fallback',
                 'path'     => 'nested.doesNotExist',
                 'strict'   => false,
-                'fallback' => 'the-fallback',
             ])
         );
     }
@@ -146,9 +151,9 @@ class AbstractGlobalVariablesViewHelperTest extends UnitTestCase
         self::assertSame(
             (new TestGlobalVariableProvider())->getGlobalVariables(),
             $method->invoke(null, TestGlobalVariableProvider::class, [
+                'fallback' => null,
                 'path'     => '',
                 'strict'   => true,
-                'fallback' => null,
             ])
         );
     }
@@ -174,14 +179,5 @@ class AbstractGlobalVariablesViewHelperTest extends UnitTestCase
             $property->getValue($viewHelper)['path']->isRequired(),
             'The specialised ViewHelpers define a base path themselves, so path must be optional.'
         );
-    }
-
-    /**
-     * @throws RuntimeException
-     */
-    protected function tearDown(): void
-    {
-        GlobalVariableService::clearCache();
-        parent::tearDown();
     }
 }

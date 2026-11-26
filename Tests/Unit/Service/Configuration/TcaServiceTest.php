@@ -37,14 +37,17 @@ use TYPO3\CMS\Core\Package\PackageManager;
 use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
+use function file_put_contents;
+use function is_dir;
+use function mkdir;
+use function rmdir;
+use function sprintf;
+use function unlink;
+
 /**
- * Class TcaServiceTest
- *
  * Unit tests for the TcaService facade.
  * Changes to $GLOBALS['TCA'] are restored automatically through the global
  * backup of the unit test suite.
- *
- * @package PSBits\Foundation\Tests\Unit\Service\Configuration
  */
 class TcaServiceTest extends UnitTestCase
 {
@@ -85,58 +88,6 @@ class TcaServiceTest extends UnitTestCase
     }
 
     /**
-     * @throws ReflectionException
-     */
-    private function resetLoggingState(): void
-    {
-        $logMissingLanguageLabels = new ReflectionProperty(LoggingUtility::class, 'logMissingLanguageLabels');
-        $logMissingLanguageLabels->setValue(null, null);
-    }
-
-    /**
-     * @throws RuntimeException
-     */
-    #[Test]
-    public function checkIfTableNameIsSetThrowsWithoutTableName(): void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionCode(1646899798);
-        $this->expectExceptionMessageMatches('/You have to specify a table with setTable\(\) first!$/');
-
-        $this->subject->checkIfTableNameIsSet();
-    }
-
-    /**
-     * @throws BaseInvalidArgumentException
-     * @throws ExpectationFailedException
-     * @throws ReflectionException
-     * @throws RuntimeException
-     */
-    #[Test]
-    public function setTableNameAcceptsPlainTableName(): void
-    {
-        $this->subject->setTableName(self::TABLE_NAME);
-
-        $tableName = new ReflectionProperty(TcaService::class, 'tableName');
-        self::assertSame(self::TABLE_NAME, $tableName->getValue($this->subject));
-        $this->subject->checkIfTableNameIsSet();
-    }
-
-    /**
-     * @throws BaseInvalidArgumentException
-     * @throws ExpectationFailedException
-     * @throws ReflectionException
-     */
-    #[Test]
-    public function setTableNameConvertsFullyQualifiedClassName(): void
-    {
-        $this->subject->setTableName(AllTcaAttributesModel::class);
-
-        $tableName = new ReflectionProperty(TcaService::class, 'tableName');
-        self::assertSame('tx_foundation_all_tca_attributes', $tableName->getValue($this->subject));
-    }
-
-    /**
      * @throws BaseInvalidArgumentException
      * @throws ExpectationFailedException
      * @throws ReflectionException
@@ -149,18 +100,18 @@ class TcaServiceTest extends UnitTestCase
         $this->subject->setTableName(self::TABLE_NAME);
 
         $this->subject->addColumnConfiguration('my_column', [
-            'label'  => 'My Column',
             'config' => [
                 'type' => 'string',
             ],
+            'label'  => 'My Column',
         ]);
 
         self::assertSame(
             [
-                'label'  => 'My Column',
                 'config' => [
                     'type' => 'string',
                 ],
+                'label'  => 'My Column',
             ],
             $GLOBALS['TCA'][self::TABLE_NAME]['columns']['my_column']
         );
@@ -266,6 +217,19 @@ class TcaServiceTest extends UnitTestCase
     }
 
     /**
+     * @throws RuntimeException
+     */
+    #[Test]
+    public function checkIfTableNameIsSetThrowsWithoutTableName(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionCode(1646899798);
+        $this->expectExceptionMessageMatches('/You have to specify a table with setTable\(\) first!$/');
+
+        $this->subject->checkIfTableNameIsSet();
+    }
+
+    /**
      * @throws BaseInvalidArgumentException
      * @throws ContainerExceptionInterface
      * @throws DateMalformedStringException
@@ -305,38 +269,6 @@ class TcaServiceTest extends UnitTestCase
      * @throws RuntimeException
      */
     #[Test]
-    public function createPaletteStoresPlainTextLabelAndDescription(): void
-    {
-        $GLOBALS['TCA'][self::TABLE_NAME] = [];
-        $this->subject->setTableName(self::TABLE_NAME);
-
-        $this->subject->createPalette('my_palette', 'My Label', 'My Description');
-
-        self::assertSame(
-            [
-                'showitem'    => '',
-                'label'       => 'My Label',
-                'description' => 'My Description',
-            ],
-            $GLOBALS['TCA'][self::TABLE_NAME]['palettes']['my_palette']
-        );
-    }
-
-    /**
-     * @throws BaseInvalidArgumentException
-     * @throws ContainerExceptionInterface
-     * @throws DateMalformedStringException
-     * @throws DBALException
-     * @throws Error
-     * @throws ExpectationFailedException
-     * @throws ExtensionConfigurationExtensionNotConfiguredException
-     * @throws ExtensionConfigurationPathDoesNotExistException
-     * @throws JsonException
-     * @throws NoServerRequestGivenException // t3:14
-     * @throws ReflectionException
-     * @throws RuntimeException
-     */
-    #[Test]
     public function createPaletteFallsBackToExistingDefaultLabelTranslation(): void
     {
         $GLOBALS['TCA'][self::TABLE_NAME] = [];
@@ -353,6 +285,7 @@ class TcaServiceTest extends UnitTestCase
 
         self::assertSame(
             [
+                // PSBits/alphabetical_array_keys=off — assertSame checks the generated palette's insertion order.
                 'showitem'    => '',
                 'label'       => 'LLL:test_lang/xlf:palette.my_palette.label',
                 'description' => 'Plain Description',
@@ -389,6 +322,39 @@ class TcaServiceTest extends UnitTestCase
 
     /**
      * @throws BaseInvalidArgumentException
+     * @throws ContainerExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws DBALException
+     * @throws Error
+     * @throws ExpectationFailedException
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws NoServerRequestGivenException // t3:14
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
+    #[Test]
+    public function createPaletteStoresPlainTextLabelAndDescription(): void
+    {
+        $GLOBALS['TCA'][self::TABLE_NAME] = [];
+        $this->subject->setTableName(self::TABLE_NAME);
+
+        $this->subject->createPalette('my_palette', 'My Label', 'My Description');
+
+        self::assertSame(
+            [
+                // PSBits/alphabetical_array_keys=off — assertSame checks the generated palette's insertion order.
+                'showitem'    => '',
+                'label'       => 'My Label',
+                'description' => 'My Description',
+            ],
+            $GLOBALS['TCA'][self::TABLE_NAME]['palettes']['my_palette']
+        );
+    }
+
+    /**
+     * @throws BaseInvalidArgumentException
      * @throws ExpectationFailedException
      * @throws ReflectionException
      * @throws RuntimeException
@@ -397,10 +363,10 @@ class TcaServiceTest extends UnitTestCase
     public function getConfigurationForPropertyOfDomainModelReturnsColumnConfiguration(): void
     {
         $columnConfiguration = [
-            'label'  => 'Mapped Field',
             'config' => [
                 'type' => 'string',
             ],
+            'label'  => 'Mapped Field',
         ];
         $GLOBALS['TCA']['tx_foundation_all_tca_attributes'] = [
             'columns' => [
@@ -429,6 +395,45 @@ class TcaServiceTest extends UnitTestCase
         $this->expectExceptionCode(1660914340);
 
         $this->subject->getConfigurationForPropertyOfDomainModel(new AllTcaAttributesModel(), 'mappedField');
+    }
+
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ExpectationFailedException
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
+    #[Test]
+    public function setTableNameAcceptsPlainTableName(): void
+    {
+        $this->subject->setTableName(self::TABLE_NAME);
+
+        $tableName = new ReflectionProperty(TcaService::class, 'tableName');
+        self::assertSame(self::TABLE_NAME, $tableName->getValue($this->subject));
+        $this->subject->checkIfTableNameIsSet();
+    }
+
+    /**
+     * @throws BaseInvalidArgumentException
+     * @throws ExpectationFailedException
+     * @throws ReflectionException
+     */
+    #[Test]
+    public function setTableNameConvertsFullyQualifiedClassName(): void
+    {
+        $this->subject->setTableName(AllTcaAttributesModel::class);
+
+        $tableName = new ReflectionProperty(TcaService::class, 'tableName');
+        self::assertSame('tx_foundation_all_tca_attributes', $tableName->getValue($this->subject));
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    private function resetLoggingState(): void
+    {
+        $logMissingLanguageLabels = new ReflectionProperty(LoggingUtility::class, 'logMissingLanguageLabels');
+        $logMissingLanguageLabels->setValue(null, null);
     }
 
     /**

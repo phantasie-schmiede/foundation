@@ -19,13 +19,9 @@ use PSBits\Foundation\Enum\Relationship;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
- * Class InvalidRelationshipModel
- *
  * Defines a file column with the "manyToMany" relationship, which the file
  * column type does not support. The TCA validation has to reject this
  * misconfiguration.
- *
- * @package PSBits\Foundation\Tests\Examples\Domain\Model
  */
 #[Table('tx_foundation_invalid_relationship')]
 #[Ctrl(
@@ -37,9 +33,9 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 )]
 class InvalidRelationshipModel extends AbstractEntity
 {
-    #[Input]
-    protected string $title = '';
-
     #[File(relationship: Relationship::manyToMany)]
     protected int $documents = 0;
+
+    #[Input]
+    protected string $title = '';
 }

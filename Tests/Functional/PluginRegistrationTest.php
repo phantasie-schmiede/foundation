@@ -16,9 +16,9 @@ use PHPUnit\Framework\Attributes\Test;
 use PSBits\Foundation\Utility\Typo3VersionUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
+use function sprintf;
+
 /**
- * Class PluginRegistrationTest
- *
  * The plugin of the fixture extension pluginfixture is registered at boot by the PluginService through
  * Configuration/TCA/Overrides/tt_content.php, while the TCA is still being built. On v14 the core
  * withholds the IconRegistry until the boot is complete, so the registration must not resolve it
@@ -28,8 +28,6 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  * On v13 the plugin is registered as a list_type subtype, which the core deprecates in favour of the
  * CType registration. That deprecation is the expected consequence of the v13 compatibility path, so
  * it is ignored for this test.
- *
- * @package PSBits\Foundation\Tests\Functional
  */
 #[IgnoreDeprecations]
 class PluginRegistrationTest extends FunctionalTestCase
@@ -40,6 +38,20 @@ class PluginRegistrationTest extends FunctionalTestCase
         'typo3conf/ext/psbits/foundation',
         'typo3conf/ext/psbitstest/pluginfixture',
     ];
+
+    #[Test]
+    public function pluginCTypeHasATypeIconOnV14(): void
+    {
+        if (!Typo3VersionUtility::isAtLeast('14.0')) {
+            static::markTestSkipped('Plugins are registered as their own content type on v14 only.');
+        }
+
+        static::assertArrayHasKey(
+            self::PLUGIN_SIGNATURE,
+            $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes'] ?? [],
+            'The plugin type icon is missing from the tt_content ctrl configuration.'
+        );
+    }
 
     #[Test]
     public function pluginIsRegisteredInTheTtContentTcaAtBoot(): void
@@ -68,20 +80,6 @@ class PluginRegistrationTest extends FunctionalTestCase
             $expectedIcon,
             $pluginItem['icon'] ?? null,
             'The plugin icon identifier is not what the PluginService is expected to register.'
-        );
-    }
-
-    #[Test]
-    public function pluginCTypeHasATypeIconOnV14(): void
-    {
-        if (!Typo3VersionUtility::isAtLeast('14.0')) {
-            static::markTestSkipped('Plugins are registered as their own content type on v14 only.');
-        }
-
-        static::assertArrayHasKey(
-            self::PLUGIN_SIGNATURE,
-            $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes'] ?? [],
-            'The plugin type icon is missing from the tt_content ctrl configuration.'
         );
     }
 }

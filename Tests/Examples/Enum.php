@@ -11,11 +11,6 @@ declare(strict_types=1);
 
 namespace PSBits\Foundation\Tests\Examples;
 
-/**
- * Class Enum
- *
- * @package PSBits\Foundation\Tests\Examples
- */
 enum Enum
 {
     case Alpha;

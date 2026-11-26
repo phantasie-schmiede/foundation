@@ -13,14 +13,14 @@ $baseLL = 'LLL:EXT:foundation/Resources/Private/Language/Backend/Configuration/T
 
 $inputConfiguration = [
     'eval' => 'trim',
-    'max'  => 255,
-    'size' => 20,
-    'type' => 'input',
     'EXT'  => [
         'foundation' => [
             'databaseDefinition' => 'varchar(255) DEFAULT \'\' NOT NULL',
         ],
     ],
+    'max'  => 255,
+    'size' => 20,
+    'type' => 'input',
 ];
 
 return [

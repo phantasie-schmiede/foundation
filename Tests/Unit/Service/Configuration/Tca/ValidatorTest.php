@@ -19,15 +19,19 @@ use PSBits\Foundation\Service\Configuration\Tca\Validator;
 use RuntimeException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class ValidatorTest
- *
- * @package PSBits\Foundation\Tests\Unit\Service\Configuration\Tca
- */
 class ValidatorTest extends UnitTestCase
 {
     private const string COLUMN_NAME = 'bad_field';
     private const string TABLE_NAME  = 'tx_validator_test';
+
+    /**
+     * @throws RuntimeException
+     */
+    protected function tearDown(): void
+    {
+        unset($GLOBALS['TCA'][self::TABLE_NAME]);
+        parent::tearDown();
+    }
 
     /**
      * @return array<string, array{0: array<string, mixed>, 1: string, 2: int}>
@@ -142,8 +146,8 @@ class ValidatorTest extends UnitTestCase
             ],
             'select manyToMany with MM'                   => [
                 [
-                    'MM'            => 'tx_foundation_test_mm',
                     'foreign_table' => 'tx_foundation_test_foreign',
+                    'MM'            => 'tx_foundation_test_mm',
                     'relationship'  => 'manyToMany',
                     'renderType'    => 'selectMultipleSideBySide',
                     'type'          => 'select',
@@ -193,8 +197,8 @@ class ValidatorTest extends UnitTestCase
             ],
             'inline manyToMany with MM'                   => [
                 [
-                    'MM'            => 'tx_foundation_test_mm',
                     'foreign_table' => 'tx_foundation_test_foreign',
+                    'MM'            => 'tx_foundation_test_mm',
                     'relationship'  => 'manyToMany',
                     'type'          => 'inline',
                 ],
@@ -251,8 +255,8 @@ class ValidatorTest extends UnitTestCase
             ],
             'group manyToMany with MM'                    => [
                 [
-                    'MM'           => 'tx_foundation_test_mm',
                     'allowed'      => 'tx_foundation_test_foreign',
+                    'MM'           => 'tx_foundation_test_mm',
                     'relationship' => 'manyToMany',
                     'type'         => 'group',
                 ],
@@ -281,8 +285,8 @@ class ValidatorTest extends UnitTestCase
     {
         $GLOBALS['TCA'][self::TABLE_NAME] = [
             'ctrl' => [
-                'sortby'         => 'sorting',
                 'default_sortby' => 'uid ASC',
+                'sortby'         => 'sorting',
             ],
         ];
 
@@ -342,15 +346,6 @@ class ValidatorTest extends UnitTestCase
         $this->expectExceptionCode(1541107601);
 
         (new Validator())->validate(self::TABLE_NAME);
-    }
-
-    /**
-     * @throws RuntimeException
-     */
-    protected function tearDown(): void
-    {
-        unset($GLOBALS['TCA'][self::TABLE_NAME]);
-        parent::tearDown();
     }
 
     /**

@@ -25,11 +25,6 @@ use PSBits\Foundation\Data\PluginConfiguration;
 use PSBits\Foundation\Tests\Examples\Data\TestExtensionInformation;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class ExtensionInformationTest
- *
- * @package PSBits\Foundation\Tests\Unit\Data
- */
 class ExtensionInformationTest extends UnitTestCase
 {
     /**
@@ -61,36 +56,6 @@ class ExtensionInformationTest extends UnitTestCase
      * @throws ExpectationFailedException
      */
     #[Test]
-    public function builderMethodsCollectConfigurations(): void
-    {
-        $information = new TestExtensionInformation();
-
-        $mainModules = $information->getMainModules();
-        self::assertCount(1, $mainModules);
-        self::assertInstanceOf(MainModuleConfiguration::class, $mainModules[0]);
-        self::assertSame('testmain', $mainModules[0]->getKey());
-
-        $modules = $information->getModules();
-        self::assertCount(1, $modules);
-        self::assertInstanceOf(ModuleConfiguration::class, $modules[0]);
-        self::assertSame('testmodule', $modules[0]->getKey());
-
-        $pageTypes = $information->getPageTypes();
-        self::assertCount(1, $pageTypes);
-        self::assertInstanceOf(PageTypeConfiguration::class, $pageTypes[0]);
-        self::assertSame('test_page', $pageTypes[0]->getName());
-
-        $plugins = $information->getPlugins();
-        self::assertCount(1, $plugins);
-        self::assertInstanceOf(PluginConfiguration::class, $plugins[0]);
-        self::assertSame('test_plugin', $plugins[0]->getName());
-    }
-
-    /**
-     * @throws Exception
-     * @throws ExpectationFailedException
-     */
-    #[Test]
     public function builderMethodsAreChainable(): void
     {
         $information = new class () extends AbstractExtensionInformation {
@@ -114,6 +79,36 @@ class ExtensionInformationTest extends UnitTestCase
         }
         self::assertCount(2, $information->getModules());
         self::assertCount(1, $information->getPlugins());
+    }
+
+    /**
+     * @throws Exception
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    public function builderMethodsCollectConfigurations(): void
+    {
+        $information = new TestExtensionInformation();
+
+        $mainModules = $information->getMainModules();
+        self::assertCount(1, $mainModules);
+        self::assertInstanceOf(MainModuleConfiguration::class, $mainModules[0]);
+        self::assertSame('testmain', $mainModules[0]->getKey());
+
+        $modules = $information->getModules();
+        self::assertCount(1, $modules);
+        self::assertInstanceOf(ModuleConfiguration::class, $modules[0]);
+        self::assertSame('testmodule', $modules[0]->getKey());
+
+        $pageTypes = $information->getPageTypes();
+        self::assertCount(1, $pageTypes);
+        self::assertInstanceOf(PageTypeConfiguration::class, $pageTypes[0]);
+        self::assertSame('test_page', $pageTypes[0]->getName());
+
+        $plugins = $information->getPlugins();
+        self::assertCount(1, $plugins);
+        self::assertInstanceOf(PluginConfiguration::class, $plugins[0]);
+        self::assertSame('test_plugin', $plugins[0]->getName());
     }
 
     /**

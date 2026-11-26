@@ -19,14 +19,9 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Class ArrayUtility
- *
- * @package PSBits\Foundation\Utility
  */
 class ArrayUtilityTest extends UnitTestCase
 {
-    /**
-     * @return Generator
-     */
     public static function countRecursiveDataProvider(): Generator
     {
         yield 'empty array' => [
@@ -59,22 +54,6 @@ class ArrayUtilityTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @param array<int|string, mixed> $array
-     * @param int                      $expectedResult
-     * @return void
-     * @throws ExpectationFailedException
-     */
-    #[Test]
-    #[DataProvider('countRecursiveDataProvider')]
-    public function countRecursive(array $array, int $expectedResult): void
-    {
-        self::assertEquals(
-            $expectedResult,
-            ArrayUtility::countRecursive($array)
-        );
-    }
-
     public static function findLastOccurrenceDataProvider(): Generator
     {
         yield 'value exists once' => [
@@ -97,20 +76,6 @@ class ArrayUtilityTest extends UnitTestCase
             ['first' => 'v', 'second' => 'w', 'third' => 'v'],
             'third',
         ];
-    }
-
-    /**
-     * @param array<int|string, mixed> $array
-     * @throws ExpectationFailedException
-     */
-    #[Test]
-    #[DataProvider('findLastOccurrenceDataProvider')]
-    public function findLastOccurrence(mixed $needle, array $array, bool|int|string $expectedResult): void
-    {
-        self::assertSame(
-            $expectedResult,
-            ArrayUtility::findLastOccurrence($needle, $array)
-        );
     }
 
     public static function guaranteeArrayTypeDataProvider(): Generator
@@ -147,20 +112,6 @@ class ArrayUtilityTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @param array<int|string, mixed> $expectedResult
-     * @throws ExpectationFailedException
-     */
-    #[Test]
-    #[DataProvider('guaranteeArrayTypeDataProvider')]
-    public function guaranteeArrayType(mixed $variable, ?string $explodeOnCharacter, array $expectedResult): void
-    {
-        self::assertEquals(
-            $expectedResult,
-            ArrayUtility::guaranteeArrayType($variable, $explodeOnCharacter)
-        );
-    }
-
     public static function inArrayRecursiveDataProvider(): Generator
     {
         yield 'value found in flat array' => [
@@ -185,7 +136,7 @@ class ArrayUtilityTest extends UnitTestCase
             ['level1.level2'],
         ];
         yield 'key search finds matching key' => [
-            ['foo' => 1, 'bar' => 2],
+            ['bar' => 2, 'foo' => 1],
             'foo',
             true,
             false,
@@ -198,26 +149,6 @@ class ArrayUtilityTest extends UnitTestCase
             true,
             [0],
         ];
-    }
-
-    /**
-     * @param array<int|string, mixed> $haystack
-     * @param list<int|string>         $expectedResult
-     * @throws ExpectationFailedException
-     */
-    #[Test]
-    #[DataProvider('inArrayRecursiveDataProvider')]
-    public function inArrayRecursive(
-        array  $haystack,
-        mixed  $needle,
-        bool   $searchKey,
-        bool   $searchForSubstring,
-        array  $expectedResult,
-    ): void {
-        self::assertEquals(
-            $expectedResult,
-            ArrayUtility::inArrayRecursive($haystack, $needle, $searchKey, $searchForSubstring)
-        );
     }
 
     public static function insertIntoArrayDataProvider(): Generator
@@ -242,22 +173,6 @@ class ArrayUtilityTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @param array<int|string, mixed> $array
-     * @param array<int|string, mixed> $elements
-     * @param array<int|string, mixed> $expectedResult
-     * @throws ExpectationFailedException
-     */
-    #[Test]
-    #[DataProvider('insertIntoArrayDataProvider')]
-    public function insertIntoArray(array $array, array $elements, int $index, array $expectedResult): void
-    {
-        self::assertEquals(
-            $expectedResult,
-            ArrayUtility::insertIntoArray($array, $elements, $index)
-        );
-    }
-
     public static function isMultiDimensionalArrayDataProvider(): Generator
     {
         yield 'flat array is not multi-dimensional' => [
@@ -276,20 +191,6 @@ class ArrayUtilityTest extends UnitTestCase
             ['key' => ['nested' => 'value']],
             true,
         ];
-    }
-
-    /**
-     * @param array<int|string, mixed> $array
-     * @throws ExpectationFailedException
-     */
-    #[Test]
-    #[DataProvider('isMultiDimensionalArrayDataProvider')]
-    public function isMultiDimensionalArray(array $array, bool $expectedResult): void
-    {
-        self::assertSame(
-            $expectedResult,
-            ArrayUtility::isMultiDimensionalArray($array)
-        );
     }
 
     public static function setValueByPathDataProvider(): Generator
@@ -315,6 +216,98 @@ class ArrayUtilityTest extends UnitTestCase
             '.',
             ['foo' => ['bar' => 'new']],
         ];
+    }
+
+    /**
+     * @param array<int|string, mixed> $array
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    #[DataProvider('countRecursiveDataProvider')]
+    public function countRecursive(array $array, int $expectedResult): void
+    {
+        self::assertEquals(
+            $expectedResult,
+            ArrayUtility::countRecursive($array)
+        );
+    }
+
+    /**
+     * @param array<int|string, mixed> $array
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    #[DataProvider('findLastOccurrenceDataProvider')]
+    public function findLastOccurrence(mixed $needle, array $array, bool|int|string $expectedResult): void
+    {
+        self::assertSame(
+            $expectedResult,
+            ArrayUtility::findLastOccurrence($needle, $array)
+        );
+    }
+
+    /**
+     * @param array<int|string, mixed> $expectedResult
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    #[DataProvider('guaranteeArrayTypeDataProvider')]
+    public function guaranteeArrayType(mixed $variable, ?string $explodeOnCharacter, array $expectedResult): void
+    {
+        self::assertEquals(
+            $expectedResult,
+            ArrayUtility::guaranteeArrayType($variable, $explodeOnCharacter)
+        );
+    }
+
+    /**
+     * @param array<int|string, mixed> $haystack
+     * @param list<int|string>         $expectedResult
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    #[DataProvider('inArrayRecursiveDataProvider')]
+    public function inArrayRecursive(
+        array  $haystack,
+        mixed  $needle,
+        bool   $searchKey,
+        bool   $searchForSubstring,
+        array  $expectedResult,
+    ): void {
+        self::assertEquals(
+            $expectedResult,
+            ArrayUtility::inArrayRecursive($haystack, $needle, $searchKey, $searchForSubstring)
+        );
+    }
+
+    /**
+     * @param array<int|string, mixed> $array
+     * @param array<int|string, mixed> $elements
+     * @param array<int|string, mixed> $expectedResult
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    #[DataProvider('insertIntoArrayDataProvider')]
+    public function insertIntoArray(array $array, array $elements, int $index, array $expectedResult): void
+    {
+        self::assertEquals(
+            $expectedResult,
+            ArrayUtility::insertIntoArray($array, $elements, $index)
+        );
+    }
+
+    /**
+     * @param array<int|string, mixed> $array
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    #[DataProvider('isMultiDimensionalArrayDataProvider')]
+    public function isMultiDimensionalArray(array $array, bool $expectedResult): void
+    {
+        self::assertSame(
+            $expectedResult,
+            ArrayUtility::isMultiDimensionalArray($array)
+        );
     }
 
     /**

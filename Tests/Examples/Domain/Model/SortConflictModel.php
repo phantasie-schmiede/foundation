@@ -17,12 +17,8 @@ use PSBits\Foundation\Attribute\TCA\Mapping\Table;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
- * Class SortConflictModel
- *
  * Defines both sortBy and a non default defaultSortBy, which is a
  * misconfiguration TcaService has to reject.
- *
- * @package PSBits\Foundation\Tests\Examples\Domain\Model
  */
 #[Table('tx_foundation_sort_conflict')]
 #[Ctrl(

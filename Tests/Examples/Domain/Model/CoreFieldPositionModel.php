@@ -18,19 +18,16 @@ use PSBits\Foundation\Attribute\TCA\Mapping\Table;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
- * Class CoreFieldPositionModel
- *
  * A domain model whose fields reference the default fields (language, access, hidden, timeRestriction) in their
  * position specifications.
- *
- * @package PSBits\Foundation\Tests\Examples\Domain\Model
  */
 #[Table('tx_foundation_core_field_position')]
 #[Ctrl]
 class CoreFieldPositionModel extends AbstractEntity
 {
+    #[Column(position: 'after:hidden')]
     #[Input]
-    protected string $name = '';
+    protected string $afterHidden = '';
 
     #[Column(position: 'after:language')]
     #[Input]
@@ -40,9 +37,8 @@ class CoreFieldPositionModel extends AbstractEntity
     #[Input]
     protected string $beforeAccess = '';
 
-    #[Column(position: 'after:hidden')]
     #[Input]
-    protected string $afterHidden = '';
+    protected string $name = '';
 
     #[Column(position: 'newLineBefore:timeRestriction')]
     #[Input]

@@ -16,13 +16,68 @@ use PHPUnit\Framework\ExpectationFailedException;
 use PSBits\Foundation\Service\Configuration\Tca\Position;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class PositionTest
- *
- * @package PSBits\Foundation\Tests\Unit\Service\Configuration\Tca
- */
 class PositionTest extends UnitTestCase
 {
+    /**
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    public function applyLineBreaksAppendsLineBreakForNewLineBefore(): void
+    {
+        [
+            'position'   => $position,
+            'fieldNames' => $fieldNames,
+        ] = Position::applyLineBreaks('newLineBefore:my_field', ['field_a', 'field_b']);
+
+        self::assertSame('before:my_field', $position);
+        self::assertSame(['field_a', 'field_b', '--linebreak--'], $fieldNames);
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    public function applyLineBreaksKeepsEmptyPositionUnchanged(): void
+    {
+        [
+            'position'   => $position,
+            'fieldNames' => $fieldNames,
+        ] = Position::applyLineBreaks('', ['field_a']);
+
+        self::assertSame('', $position);
+        self::assertSame(['field_a'], $fieldNames);
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    public function applyLineBreaksKeepsOtherPositionsUnchanged(): void
+    {
+        [
+            'position'   => $position,
+            'fieldNames' => $fieldNames,
+        ] = Position::applyLineBreaks('after:my_field', ['field_a']);
+
+        self::assertSame('after:my_field', $position);
+        self::assertSame(['field_a'], $fieldNames);
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     */
+    #[Test]
+    public function applyLineBreaksPrependsLineBreakForNewLineAfter(): void
+    {
+        [
+            'position'   => $position,
+            'fieldNames' => $fieldNames,
+        ] = Position::applyLineBreaks('newLineAfter:my_field', ['field_a', 'field_b']);
+
+        self::assertSame('after:my_field', $position);
+        self::assertSame(['--linebreak--', 'field_a', 'field_b'], $fieldNames);
+    }
+
     /**
      * @throws ExpectationFailedException
      */
@@ -90,65 +145,5 @@ class PositionTest extends UnitTestCase
     public function normalizeReturnsEmptyStringForEmptyPosition(): void
     {
         self::assertSame('', Position::normalize('', fn(string $name): string => $name));
-    }
-
-    /**
-     * @throws ExpectationFailedException
-     */
-    #[Test]
-    public function applyLineBreaksPrependsLineBreakForNewLineAfter(): void
-    {
-        [
-            'position'   => $position,
-            'fieldNames' => $fieldNames,
-        ] = Position::applyLineBreaks('newLineAfter:my_field', ['field_a', 'field_b']);
-
-        self::assertSame('after:my_field', $position);
-        self::assertSame(['--linebreak--', 'field_a', 'field_b'], $fieldNames);
-    }
-
-    /**
-     * @throws ExpectationFailedException
-     */
-    #[Test]
-    public function applyLineBreaksAppendsLineBreakForNewLineBefore(): void
-    {
-        [
-            'position'   => $position,
-            'fieldNames' => $fieldNames,
-        ] = Position::applyLineBreaks('newLineBefore:my_field', ['field_a', 'field_b']);
-
-        self::assertSame('before:my_field', $position);
-        self::assertSame(['field_a', 'field_b', '--linebreak--'], $fieldNames);
-    }
-
-    /**
-     * @throws ExpectationFailedException
-     */
-    #[Test]
-    public function applyLineBreaksKeepsOtherPositionsUnchanged(): void
-    {
-        [
-            'position'   => $position,
-            'fieldNames' => $fieldNames,
-        ] = Position::applyLineBreaks('after:my_field', ['field_a']);
-
-        self::assertSame('after:my_field', $position);
-        self::assertSame(['field_a'], $fieldNames);
-    }
-
-    /**
-     * @throws ExpectationFailedException
-     */
-    #[Test]
-    public function applyLineBreaksKeepsEmptyPositionUnchanged(): void
-    {
-        [
-            'position'   => $position,
-            'fieldNames' => $fieldNames,
-        ] = Position::applyLineBreaks('', ['field_a']);
-
-        self::assertSame('', $position);
-        self::assertSame(['field_a'], $fieldNames);
     }
 }

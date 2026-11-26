@@ -19,13 +19,9 @@ use PSBits\Foundation\Attribute\TCA\Mapping\Table;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
- * Class ExtendedTcaParentModel
- *
  * Parent model for ExtendedTcaChildModel. Uses most of the default Ctrl
  * values (enable columns, language fields) to exercise the dummy
  * configuration branches of TcaService.
- *
- * @package PSBits\Foundation\Tests\Examples\Domain\Model
  */
 #[Table('tx_foundation_extended_tca')]
 #[Ctrl(
@@ -42,9 +38,9 @@ class ExtendedTcaParentModel extends AbstractEntity
     #[Input]
     protected string $baseField = '';
 
-    #[Text]
-    protected string $parentText = '';
-
     #[Inline(foreignTable: 'sys_category', foreignField: 'parentUid')]
     protected int $parentInline = 0;
+
+    #[Text]
+    protected string $parentText = '';
 }

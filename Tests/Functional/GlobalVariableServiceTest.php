@@ -26,11 +26,6 @@ use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-/**
- * Class GlobalVariableServiceTest
- *
- * @package PSBits\Foundation\Tests\Functional
- */
 class GlobalVariableServiceTest extends FunctionalTestCase
 {
     use SiteBasedTestTrait;
@@ -40,6 +35,13 @@ class GlobalVariableServiceTest extends FunctionalTestCase
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/psbits/foundation',
     ];
+
+    protected function tearDown(): void
+    {
+        GlobalVariableService::clearCache();
+        unset($GLOBALS['TSFE'], $GLOBALS['TYPO3_REQUEST']);
+        parent::tearDown();
+    }
 
     #[Test]
     public function earlyAccessConstantsProviderIsAccessibleInBackendContext(): void
@@ -81,13 +83,6 @@ class GlobalVariableServiceTest extends FunctionalTestCase
     {
         $this->mockBackendRequest();
         self::assertFalse(GlobalVariableService::has(SiteConfigurationProvider::class));
-    }
-
-    protected function tearDown(): void
-    {
-        GlobalVariableService::clearCache();
-        unset($GLOBALS['TSFE'], $GLOBALS['TYPO3_REQUEST']);
-        parent::tearDown();
     }
 
     private function mockBackendRequest(): void

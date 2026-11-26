@@ -36,11 +36,6 @@ use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExis
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-/**
- * Class TcaServiceTest
- *
- * @package PSBits\Foundation\Tests\Functional
- */
 class TcaServiceTest extends FunctionalTestCase
 {
     private const string TABLE_NAME_ALL_ATTRIBUTES           = 'tx_foundation_all_tca_attributes';
@@ -58,6 +53,23 @@ class TcaServiceTest extends FunctionalTestCase
         'typo3conf/ext/psbits/foundation',
     ];
 
+    protected function tearDown(): void
+    {
+        unset(
+            $GLOBALS['TCA'][self::TABLE_NAME_ALL_ATTRIBUTES],
+            $GLOBALS['TCA'][self::TABLE_NAME_CORE_FIELD_POSITION],
+            $GLOBALS['TCA'][self::TABLE_NAME_DATA_OBJECT],
+            $GLOBALS['TCA'][self::TABLE_NAME_EXTENDED_TCA],
+            $GLOBALS['TCA'][self::TABLE_NAME_INVALID_RELATIONSHIP],
+            $GLOBALS['TCA'][self::TABLE_NAME_MANY_TO_ONE_RELATIONSHIP],
+            $GLOBALS['TCA'][self::TABLE_NAME_POSITION_LOOP],
+            $GLOBALS['TCA'][self::TABLE_NAME_POSITION_REFERENCE],
+            $GLOBALS['TCA'][self::TABLE_NAME_PROTECTED_SORT],
+            $GLOBALS['TCA'][self::TABLE_NAME_SORT_CONFLICT]
+        );
+        parent::tearDown();
+    }
+
     /**
      * @throws ContainerExceptionInterface
      * @throws ExtensionConfigurationExtensionNotConfiguredException
@@ -68,15 +80,17 @@ class TcaServiceTest extends FunctionalTestCase
      * @throws ReflectionException
      */
     #[Test]
-    public function buildFromAttributesCreatesExpectedTcaForDataObjectModel(): void
+    public function buildFromAttributesAcceptsManyToOneRelationship(): void
     {
-        unset($GLOBALS['TCA'][self::TABLE_NAME_DATA_OBJECT]);
+        unset($GLOBALS['TCA'][self::TABLE_NAME_MANY_TO_ONE_RELATIONSHIP]);
 
-        $this->buildFromAttributes(DataObjectModel::class, self::TABLE_NAME_DATA_OBJECT, false);
+        $this->buildFromAttributes(ManyToOneRelationshipModel::class, self::TABLE_NAME_MANY_TO_ONE_RELATIONSHIP, false);
 
-        $actualTca   = $GLOBALS['TCA'][self::TABLE_NAME_DATA_OBJECT] ?? [];
-        $expectedTca = require __DIR__ . '/Fixtures/ExpectedTcaForDataObjectModel.php';
-        self::assertEquals($expectedTca, $actualTca);
+        $config = $GLOBALS['TCA'][self::TABLE_NAME_MANY_TO_ONE_RELATIONSHIP]['columns']['company']['config'] ?? [];
+
+        self::assertSame('select', $config['type']);
+        self::assertSame('sys_category', $config['foreign_table']);
+        self::assertSame('manyToOne', $config['relationship']);
     }
 
     /**
@@ -122,6 +136,27 @@ class TcaServiceTest extends FunctionalTestCase
 
         $actualTca   = $GLOBALS['TCA'][self::TABLE_NAME_POSITION_REFERENCE] ?? [];
         $expectedTca = require __DIR__ . '/Fixtures/ExpectedTcaForPositionReferenceModel.php';
+        self::assertEquals($expectedTca, $actualTca);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws MisconfiguredTcaException
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+     */
+    #[Test]
+    public function buildFromAttributesCreatesExpectedTcaForDataObjectModel(): void
+    {
+        unset($GLOBALS['TCA'][self::TABLE_NAME_DATA_OBJECT]);
+
+        $this->buildFromAttributes(DataObjectModel::class, self::TABLE_NAME_DATA_OBJECT, false);
+
+        $actualTca   = $GLOBALS['TCA'][self::TABLE_NAME_DATA_OBJECT] ?? [];
+        $expectedTca = require __DIR__ . '/Fixtures/ExpectedTcaForDataObjectModel.php';
         self::assertEquals($expectedTca, $actualTca);
     }
 
@@ -202,6 +237,27 @@ class TcaServiceTest extends FunctionalTestCase
      * @throws ReflectionException
      */
     #[Test]
+    public function buildFromAttributesThrowsOnDisallowedManyToManyRelationship(): void
+    {
+        unset($GLOBALS['TCA'][self::TABLE_NAME_INVALID_RELATIONSHIP]);
+
+        $this->expectException(MisconfiguredTcaException::class);
+        $this->expectExceptionCode(1791849601);
+        $this->expectExceptionMessageMatches('/The type "file" does not support the relationship "manyToMany"/');
+
+        $this->buildFromAttributes(InvalidRelationshipModel::class, self::TABLE_NAME_INVALID_RELATIONSHIP, false);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws JsonException
+     * @throws MisconfiguredTcaException
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+     */
+    #[Test]
     public function buildFromAttributesThrowsOnPositionLoop(): void
     {
         unset($GLOBALS['TCA'][self::TABLE_NAME_POSITION_LOOP]);
@@ -253,67 +309,6 @@ class TcaServiceTest extends FunctionalTestCase
         $this->expectExceptionMessageMatches('/would overwrite a reserved system column with sorting values/');
 
         $this->buildFromAttributes(ProtectedSortModel::class, self::TABLE_NAME_PROTECTED_SORT, false);
-    }
-
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws ExtensionConfigurationExtensionNotConfiguredException
-     * @throws ExtensionConfigurationPathDoesNotExistException
-     * @throws JsonException
-     * @throws MisconfiguredTcaException
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
-     */
-    #[Test]
-    public function buildFromAttributesThrowsOnDisallowedManyToManyRelationship(): void
-    {
-        unset($GLOBALS['TCA'][self::TABLE_NAME_INVALID_RELATIONSHIP]);
-
-        $this->expectException(MisconfiguredTcaException::class);
-        $this->expectExceptionCode(1791849601);
-        $this->expectExceptionMessageMatches('/The type "file" does not support the relationship "manyToMany"/');
-
-        $this->buildFromAttributes(InvalidRelationshipModel::class, self::TABLE_NAME_INVALID_RELATIONSHIP, false);
-    }
-
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws ExtensionConfigurationExtensionNotConfiguredException
-     * @throws ExtensionConfigurationPathDoesNotExistException
-     * @throws JsonException
-     * @throws MisconfiguredTcaException
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
-     */
-    #[Test]
-    public function buildFromAttributesAcceptsManyToOneRelationship(): void
-    {
-        unset($GLOBALS['TCA'][self::TABLE_NAME_MANY_TO_ONE_RELATIONSHIP]);
-
-        $this->buildFromAttributes(ManyToOneRelationshipModel::class, self::TABLE_NAME_MANY_TO_ONE_RELATIONSHIP, false);
-
-        $config = $GLOBALS['TCA'][self::TABLE_NAME_MANY_TO_ONE_RELATIONSHIP]['columns']['company']['config'] ?? [];
-
-        self::assertSame('select', $config['type']);
-        self::assertSame('sys_category', $config['foreign_table']);
-        self::assertSame('manyToOne', $config['relationship']);
-    }
-
-    protected function tearDown(): void
-    {
-        unset(
-            $GLOBALS['TCA'][self::TABLE_NAME_ALL_ATTRIBUTES],
-            $GLOBALS['TCA'][self::TABLE_NAME_CORE_FIELD_POSITION],
-            $GLOBALS['TCA'][self::TABLE_NAME_DATA_OBJECT],
-            $GLOBALS['TCA'][self::TABLE_NAME_EXTENDED_TCA],
-            $GLOBALS['TCA'][self::TABLE_NAME_INVALID_RELATIONSHIP],
-            $GLOBALS['TCA'][self::TABLE_NAME_MANY_TO_ONE_RELATIONSHIP],
-            $GLOBALS['TCA'][self::TABLE_NAME_POSITION_LOOP],
-            $GLOBALS['TCA'][self::TABLE_NAME_POSITION_REFERENCE],
-            $GLOBALS['TCA'][self::TABLE_NAME_PROTECTED_SORT],
-            $GLOBALS['TCA'][self::TABLE_NAME_SORT_CONFLICT]
-        );
-        parent::tearDown();
     }
 
     /**

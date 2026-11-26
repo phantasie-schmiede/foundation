@@ -15,8 +15,6 @@ use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
- * Class TcaBootTest
- *
  * The TCA of the fixture extension tcafixture is built at boot from the model
  * attributes by Configuration/TCA/Overrides/buildTcaForAllDomainModels.php.
  * This test pins that whole chain: the attribute TCA must be present in
@@ -24,8 +22,6 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  * migration. It fails if the building file is moved back to a flat
  * Configuration/TCA/<file>.php location, because those files are only
  * honoured by their return value and the side effect would be dropped.
- *
- * @package PSBits\Foundation\Tests\Functional
  */
 class TcaBootTest extends FunctionalTestCase
 {
@@ -37,17 +33,6 @@ class TcaBootTest extends FunctionalTestCase
     ];
 
     #[Test]
-    public function tcaOfAttributeModelsIsRegisteredAtBoot(): void
-    {
-        static::assertArrayHasKey(self::TABLE_NAME, $GLOBALS['TCA']);
-        static::assertArrayHasKey(
-            'default_sortby',
-            $GLOBALS['TCA'][self::TABLE_NAME]['ctrl'],
-            'The ctrl configuration of the attribute-built TCA is missing; the full TCA build did not run.'
-        );
-    }
-
-    #[Test]
     public function tableOfAttributeModelsIsCreatedDuringSchemaMigration(): void
     {
         $tables = $this->getConnectionPool()
@@ -56,5 +41,16 @@ class TcaBootTest extends FunctionalTestCase
             ->listTableNames();
 
         static::assertContains(self::TABLE_NAME, $tables);
+    }
+
+    #[Test]
+    public function tcaOfAttributeModelsIsRegisteredAtBoot(): void
+    {
+        static::assertArrayHasKey(self::TABLE_NAME, $GLOBALS['TCA']);
+        static::assertArrayHasKey(
+            'default_sortby',
+            $GLOBALS['TCA'][self::TABLE_NAME]['ctrl'],
+            'The ctrl configuration of the attribute-built TCA is missing; the full TCA build did not run.'
+        );
     }
 }

@@ -13,11 +13,6 @@ namespace PSBits\Foundation\Tests\Examples\Domain\Model;
 
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-/**
- * Class ParentTcaModel
- *
- * @package PSBits\Foundation\Tests\Examples\Domain\Model
- */
 class ParentTcaModel extends AbstractEntity
 {
     protected string $parentProperty = '';

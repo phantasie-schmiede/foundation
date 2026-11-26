@@ -13,11 +13,6 @@ namespace PSBitsTest\Pluginfixture\Controller;
 
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
-/**
- * Class PluginFixtureController
- *
- * @package PSBitsTest\Pluginfixture\Controller
- */
 class PluginFixtureController extends ActionController
 {
 }

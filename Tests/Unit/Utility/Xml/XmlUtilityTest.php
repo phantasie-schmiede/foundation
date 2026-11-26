@@ -23,14 +23,11 @@ use PHPUnit\Framework\InvalidArgumentException;
 use Psr\Container\ContainerExceptionInterface;
 use ReflectionException;
 use RuntimeException;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use TYPO3\CMS\Extbase\Configuration\Exception\NoServerRequestGivenException;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class XmlUtilityTest
- *
- * @package PSBits\Foundation\Utility\Xml
- */
+use function file_get_contents;
+
 class XmlUtilityTest extends UnitTestCase
 {
     public static function convertFromAndToXmlDataProvider(): Generator
